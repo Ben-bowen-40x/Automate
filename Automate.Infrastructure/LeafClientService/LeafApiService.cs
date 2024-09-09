@@ -44,7 +44,8 @@ public class LeafApiService
     #endregion
 
     #region Updater
-    private static string DefaultRepoLoc => FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", $"{nameof(LeafApiService)}Repo.json");
+    private const string _parent = ".info/ApiRepos/";
+    private static string DefaultRepoLoc => FolderFinder.GetLocalFile(nameof(Infrastructure), _parent, $"{nameof(LeafApiService)}Repo.json");
     public static bool UpdateRepo<TValueObject>(List<TValueObject> getResult, out List<TValueObject> partition, string repoLocation = "")
     {
         // Set the repo location
@@ -52,9 +53,16 @@ public class LeafApiService
             ? DefaultRepoLoc
             : repoLocation;
 
-        // Check the repo for its existence
-        if (!File.Exists(location))
-            File.WriteAllText(location, "");
+        try
+        {
+            // Check the repo for its existence
+            if (!File.Exists(location))
+                File.WriteAllText(location, "");
+        }
+        catch
+        {
+            Directory.CreateDirectory(FolderFinder.GetLocalFolder(nameof(Infrastructure), _parent));
+        }
 
         // Read repo contents
         List<TValueObject> repoContents = JsonRW.DeserializeFile<TValueObject>(location);
@@ -66,7 +74,18 @@ public class LeafApiService
 
     }
 
-    private static bool Parition<TValueObject>(List<TValueObject> getResult, List<TValueObject> repoIntermediary, out List<TValueObject> partition)
+    /// <summary>
+    /// This method finds all items in <paramref name="getResult"/> that are not in <paramref name="repoContents"/> and adds them to <paramref name="partition"/>
+    /// <para></para>
+    /// <para>Note that <paramref name="repoContents"/> is edited in this method and therefore cannot be readonly.</para>
+    /// <para>Therefore, callers to this method must pass a new-reference copy of <paramref name="repoContents"/>, not the original.</para>
+    /// </summary>
+    /// <typeparam name="TValueObject"></typeparam>
+    /// <param name="getResult"></param>
+    /// <param name="repoContents"></param>
+    /// <param name="partition"></param>
+    /// <returns></returns>
+    internal static bool Parition<TValueObject>(List<TValueObject> getResult, List<TValueObject> repoContents, out List<TValueObject> partition)
     {
         // Initiate result
         bool result = false;
@@ -76,7 +95,7 @@ public class LeafApiService
         List<TValueObject> partitionIntermediary = new(getResult.Count);
         foreach (var r in getResult)
         {
-            if (!repoIntermediary.Remove(r))
+            if (!repoContents.Remove(r))
             {
                 partitionIntermediary.Add(r);
 
