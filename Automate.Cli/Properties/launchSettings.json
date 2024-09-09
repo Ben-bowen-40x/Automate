@@ -1,0 +1,166 @@
+{
+  "profiles": {
+    // Discrepancy
+    "Analyze Discrepancy - Always Edit Options": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeDiscrepancy -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Discrepancy\\08.18-08.24.csv -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\Discrepancy-08.18-08.24.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
+    // Contact Update
+    "Update Contacts - Defaults": {
+      "commandName": "Project",
+      "commandLineArgs": "updateContacts",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
+    // Json to Csv Conversion
+    "Convert Json - Always Edit": {
+      "commandName": "Project",
+      "commandLineArgs": "convertJsonToCsv -t DwhContactForms -j ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ContactForms2024\\Forms.json -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\DWHforms2024-2.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
+    // Reset Messages
+    "Analyze Messages - Produce New Pan": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\PNContactForms.csv -t Pan",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Analyze Messages - Produce New Leaf to GAds": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t GAdsLeaf",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Analyze Messages - Produce New Leaf": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t Leaf",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Analyze Messages - Produce New Web Forms": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ManualWebForms.csv -t ManualWebForm",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
+    // Append Messages
+    "Analyze Messages - Append Pan to Power Bi": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\PNContactForms.csv -t Pan -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\PanReport.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Analyze Messages - Append Leaf to GAds": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t GAdsLeaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Analyze Messages - Append Leaf to Power Bi": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t Leaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Analyze Messages - Append Web Forms to Power Bi": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ManualWebForms.csv -t ManualWebForm -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\ManualWebForms.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
+    // Test Reset Messages
+    "test - Analyze Messages - Reset Pan to Power Bi test": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\PNContactForms.csv -t Pan -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\PanReport_Reset.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "test - Analyze Messages - Reset Leaf to GAds test": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t GAdsLeaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads_Reset.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "test - Analyze Messages - Reset Leaf to Power Bi test": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t Leaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Reset.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "test - Analyze Messages - Reset Web Forms to Power Bi test": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ManualWebForms.csv -t ManualWebForm -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\ManualWebForms_Reset.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
+    // Test Append Messages
+    "test - Analyze Messages - Append Pan to Power Bi test": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\PNContactForms.csv -t Pan -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\PanReport_Append_Test.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "test - Analyze Messages - Append Leaf to GAds test": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t GAdsLeaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads_Append_Test.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "test - Analyze Messages - Append Leaf to Power Bi test": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze-Copy.csv -t Leaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Append_Test.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "test - Analyze Messages - Append Web Forms to Power Bi test": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ManualWebForms.csv -t ManualWebForm -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\ManualWebForms_Append_Test.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
+    // Example
+    "Example - All Options": {
+      "commandName": "Project",
+      "commandLineArgs": "example -f ./ -s ../ -t ../../../../",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Example - No Options": {
+      "commandName": "Project",
+      "commandLineArgs": "example",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

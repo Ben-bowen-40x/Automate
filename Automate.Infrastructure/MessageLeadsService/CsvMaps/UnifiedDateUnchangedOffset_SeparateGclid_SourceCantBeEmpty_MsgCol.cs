@@ -1,0 +1,53 @@
+﻿using CsvHelper.Configuration.Attributes;
+using Automate.Domain.ValueObjects;
+using Automate.Application.InfrastructureInterfaces;
+
+namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
+
+public class UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol : IMessageConvert
+{
+    [Name("Prospect Cellphone", "Phone Number")]
+    public string? PhoneNumber { get; set; }
+    [Name("Creation", "Message Creation")]
+    public string? StartDate { get; set; }
+    [Name("Message")]
+    public string? Contents { get; set; }
+    [Name("Message Source")]
+    public string? Source { get; set; }
+    public IMessage ConvertToMessage()
+    {
+        // Convert local to DateTimeOffset
+        DateTimeOffset start =
+            DateTimeOffset.TryParse(StartDate, out DateTimeOffset startResult)
+            ? startResult
+            : DateTimeOffset.MinValue;
+
+        // Source Url
+        string url = Source is null ? string.Empty : Gclid(Source!);
+
+        // Phone number
+        PhoneNumber number =
+            PhoneNumber is null || PhoneNumber == string.Empty || PhoneNumber.Length < 10
+        #region Source Separator
+            || Source is null || Source == string.Empty
+        #endregion
+            ? new(0)
+            : new(PhoneNumber);
+        string message =
+            Contents is null
+            ? string.Empty
+            : CsvMapsHelper.ContentsJoined(Contents!);
+
+        return new Message(number, start, message, url);
+    }
+
+    private static string Gclid(string str)
+    {
+        string g = "gclid=";
+        if (str.Contains(g))
+            return str.Split(g)[1].Split('/')[0];
+        else return str;
+    }
+
+}
+
