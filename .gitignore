@@ -8,9 +8,6 @@
 **/.info**
 **/.info**/
 
-#j
-/Automate.Cli/Verbs/VerbHelper/JsonFileType.cs
-
 #m
 /Automate.Cli/Verbs/VerbHelper/MessageCsvType.cs
 /Automate.Domain/ValueObjects/PatternHelper.cs
