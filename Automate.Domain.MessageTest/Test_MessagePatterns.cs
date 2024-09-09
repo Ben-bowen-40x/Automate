@@ -1,4 +1,4 @@
-﻿using Automate.Domain.TextAnalysis;
+﻿using Automate.Domain.MessageAnalysis;
 namespace Automate.Domain.TextQualificationTests;
 public class Test_MessagePatterns
 {

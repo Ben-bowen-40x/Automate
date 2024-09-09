@@ -9,9 +9,15 @@ public class LeafClient_Test
 {
     public LeafClient_Test()
     {
-        _config = new InfrastructureConfiguration().Settings;
+        Config = (ILeafTestSettings)new InfraTestConfiguration().TestSettings;
+
+        Client = new HttpClient();
+        Client.DefaultRequestHeaders.Add("Accept", "application/json");
+        Client.DefaultRequestHeaders.Add("Authorization", Config.LeafTokenType);
+        Client.BaseAddress = new(Config.LeafBase!);
     }
-    private IInfrastructureTestSettings _config { get; }
+    private ILeafTestSettings Config { get; }
+    private HttpClient Client { get; }
 
     [
         Theory,
@@ -19,12 +25,9 @@ public class LeafClient_Test
     ]
     public async void TestHttpClientAsync(int offset, int limit)
     {
-        var client = new HttpClient();
-        client.DefaultRequestHeaders.Add("Accept", "application/json");
-        client.DefaultRequestHeaders.Add("Authorization", _config.LeafTokenType);
-        client.BaseAddress = new(_config.LeafBase!);
-
-        HttpResponseMessage response = await client.GetAsync(_config.LeafThreadsEndpoint($"?offset={offset}&limit={limit}"));
+        Uri url = Config.LeafThreadsEp($"?offset={offset}&limit={limit}")!;
+        HttpResponseMessage response = await Client.GetAsync(url);
+        var headers = response.Headers;
         LeafThread[]? result = await response.Content.ReadFromJsonAsync<LeafThread[]>();
         IEnumerable<IMessage> messages = result is not null && result.Length > 0
             ? result.Select(r => r.ConvertToMessage())
@@ -32,10 +35,11 @@ public class LeafClient_Test
     }
     [
         Theory,
-        InlineData(0, 10)
+        InlineData(0, 1)
     ]
-    public async void TestClientGenericAsync(int offset, int limit)
+    public void TestLeafAsync(int offset, int limit)
     {
 
+        var result = LeafApiService.GetAsync<LeafThread>(Client, Config, offset, limit);
     }
 }

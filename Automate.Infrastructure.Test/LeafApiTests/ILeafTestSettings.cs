@@ -1,20 +1,15 @@
-﻿namespace Automate.Infrastructure.Test.LeafApiTests;
+﻿using Automate.Infrastructure.LeafClientService;
 
-public interface ILeafTestSettings
+namespace Automate.Infrastructure.Test.LeafApiTests;
+
+public interface ILeafTestSettings : ILeafApiSettings
 {
-    public string? LeafName { get; set; }
-    public string? LeafTokenType { get; set; }
-    public string? LeafRefreshToken { get; set; }
-    public string? LeafBase { get; set; }
-    public string? LeafAcctUuid { get; set; }
-    public string? LeafUuid { get; set; }
-    public string? LeafThreads { get; set; }
-    public Uri? LeafThreadsEndpoint(string additions = "")
+    public Uri? LeafThreadsEp(string additions = "")
     {
         Uri? result = default;
-        if (LeafBase is not null && LeafThreads is not null)
+        if (LeafBase is not null && LeafThreadsEndpoint is not null)
         {
-            result = new(LeafBase + "/" + LeafThreads + additions);
+            result = new(LeafBase + LeafThreadsEndpoint + additions);
         }
         return result;
     }

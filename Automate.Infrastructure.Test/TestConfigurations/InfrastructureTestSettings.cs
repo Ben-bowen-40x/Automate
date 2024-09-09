@@ -14,4 +14,5 @@ public class InfrastructureTestSettings : IInfrastructureTestSettings
 
     // ICsvTestFileSettings
     public string? CsvAppendTestFile { get; set; }
+    public string? LeafThreadsEndpoint { get; set; }
 }

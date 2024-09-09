@@ -1,6 +1,8 @@
-﻿namespace Automate.Infrastructure.Test.LeafApiTests;
+﻿using Automate.Infrastructure.LeafClientService;
 
-public class LeafTestSettings : ILeafTestSettings
+namespace Automate.Infrastructure.Test.LeafApiTests;
+
+public class LeafTestSettings : ILeafApiSettings
 {
     public string? LeafName { get; set; }
     public string? LeafTokenType { get; set; }
@@ -9,4 +11,5 @@ public class LeafTestSettings : ILeafTestSettings
     public string? LeafAcctUuid { get; set; }
     public string? LeafUuid { get; set; }
     public string? LeafThreads { get; set; }
+    public string? LeafThreadsEndpoint { get; set; }
 }

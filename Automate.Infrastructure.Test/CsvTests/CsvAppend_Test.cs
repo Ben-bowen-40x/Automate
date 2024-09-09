@@ -9,7 +9,7 @@ public class CsvAppend_Test
 {
     public CsvAppend_Test()
     {
-        TestFileLocation1 = new InfrastructureConfiguration().Settings.CsvAppendTestFile!;
+        TestFileLocation1 = new InfraTestConfiguration().TestSettings.CsvAppendTestFile!;
     }
     public string TestFileLocation1 { get; }
     [

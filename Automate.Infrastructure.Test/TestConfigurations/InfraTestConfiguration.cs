@@ -2,16 +2,16 @@
 
 namespace Automate.Infrastructure.Test.TestConfigurations;
 
-public class InfrastructureConfiguration
+public class InfraTestConfiguration
 {
-    public InfrastructureConfiguration()
+    public InfraTestConfiguration()
     {
         var builder = new ConfigurationBuilder()
             .AddUserSecrets<IInfrastructureTestSettings>();
         IConfigurationRoot config = builder.Build();
         
-        Settings = new InfrastructureTestSettings();
-        config.Bind(Settings);
+        TestSettings = new InfrastructureTestSettings();
+        config.Bind(TestSettings);
     }
-    public IInfrastructureTestSettings Settings { get; }
+    public IInfrastructureTestSettings TestSettings { get; }
 }
