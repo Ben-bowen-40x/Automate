@@ -16,6 +16,7 @@ internal class Settings : IInfrastructureSettings, IDomainSettings
     public string? LeafBase { get; set; }
     public string? LeafAcctUuid { get; set; }
     public string? LeafUuid { get; set; }
+    public string? LeafThreadsEndpoint { get; set; }
 
     // IMessagePatternSettings
     public string? Company { get; set; }
