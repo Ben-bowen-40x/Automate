@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include=".info\ApiRepos\LeafApiServiceRepoTest.json" />
     <Content Include=".info\ApiRepos\LeafApiServiceRepo.json" />
     <Content Include=".info\Discrepancy\Discrepancy.csv" />
     <Content Include=".info\Discrepancy\Discrepancy.sql" />
