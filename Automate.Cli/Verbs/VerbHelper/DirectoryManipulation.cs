@@ -36,7 +36,7 @@ public class DirectoryManipulation
                 : $"This was the literal input, which is not a valid path and therefore does not exist: \n\"{path}\"";
         }
         return newLineTab
-            // DO NOT change the weird spacing in the string, please. The weird spacing makes it easier to read
+            // DO NOT change the weird spacing in the string, please.
             ? $"This was the literal input: \n\t{path}\nAnd this is the actual path, confirmed to exist by the system: \n\t{Path.GetFullPath(path)}"
             : $"This was the literal input: \n{path}  \nAnd this is the actual path, confirmed to exist by the system:   \n{Path.GetFullPath(path)}";
     }

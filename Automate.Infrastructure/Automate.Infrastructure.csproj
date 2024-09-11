@@ -9,15 +9,11 @@
 
   <ItemGroup>
     <Compile Remove=".info\Discrepancy\Past\**" />
-    <Compile Remove=".info\Reports\Past\**" />
     <EmbeddedResource Remove=".info\Discrepancy\Past\**" />
-    <EmbeddedResource Remove=".info\Reports\Past\**" />
     <None Remove=".info\Discrepancy\Past\**" />
-    <None Remove=".info\Reports\Past\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include=".info\ApiRepos\LeafApiServiceRepoTest.json" />
     <Content Include=".info\ApiRepos\LeafApiServiceRepo.json" />
     <Content Include=".info\Discrepancy\Discrepancy.csv" />
     <Content Include=".info\Discrepancy\Discrepancy.sql" />
@@ -31,9 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSharpFunctionalExtensions" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.5" />
     <PackageReference Include="System.Text.Json" Version="8.0.4" />
   </ItemGroup>
@@ -48,6 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include=".info\ApiRepos\LeafTesting\" />
     <Folder Include=".info\FormAnalysis\LocalRepo\" />
     <Folder Include=".info\Reports\ContactUpdate\" />
   </ItemGroup>

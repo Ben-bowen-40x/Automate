@@ -3,10 +3,10 @@ using CommandLine;
 
 namespace Automate.Cli.Verbs;
 
-[Verb(Example, HelpText = "This is an example.")]
+[Verb(VerbName, HelpText = "This is an example.")]
 internal class ExampleVerb : IVerb
 {
-    private const string Example = "example";
+    private const string VerbName = "example";
 
     #region Options
     [Option('f', "fileName", Required = false, HelpText = "Enter the name of the file.")]

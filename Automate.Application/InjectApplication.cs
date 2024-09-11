@@ -4,6 +4,7 @@ using Automate.Application.MessageAnalysis;
 using Automate.Application.UpdateContacts;
 using Automate.Application.JsonCsvConversion;
 using Automate.Application.MessageReportAnalysis;
+using Automate.Application.ApiRepoUpdate;
 
 namespace Automate.Application;
 
@@ -16,6 +17,7 @@ public static class InjectApplication
         services.AddScoped<IContactUpdateManager, ContactUpdateManager>();
         services.AddScoped<IDiscrepancyManager, DiscrepancyManager>();
         services.AddScoped<IJsonToCsvConversionManager, JsonToCsvConversionManager>();
+        services.AddScoped<ILeafApiRepoUpdateManager, LeafApiRepoUpdateManager>();
         return services;
     }
 }

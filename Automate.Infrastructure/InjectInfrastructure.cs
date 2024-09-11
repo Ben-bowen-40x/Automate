@@ -6,6 +6,7 @@ using Automate.Infrastructure.MessageLeadsService;
 using Automate.Infrastructure.ContactsUpdateService;
 using Automate.Infrastructure.JsonToCsvService;
 using Automate.Infrastructure.MessageLeadsReportService;
+using Automate.Infrastructure.LeafClientService;
 
 namespace Automate.Infrastructure;
 
@@ -19,6 +20,7 @@ public static class InjectInfrastructure
         services.AddScoped<IDiscrepancyService, DiscrepancyService>();
         services.AddScoped<IReportService, ReportServiceSingleton>();
         services.AddScoped<IJsonConversionService, JsonConversionService>();
+        services.AddScoped<ILeafApiService, LeafApiService>();
         services.AddHttpClient();
 
         // Add Leaf Client
