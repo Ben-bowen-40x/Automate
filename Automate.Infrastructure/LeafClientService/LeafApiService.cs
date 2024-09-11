@@ -141,7 +141,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
     private string? _msgRepoLoc;
     private string? _leafRepoLoc;
     private string MessageRepoLocation => _msgRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafMessages.csv");
-    private string LeafRepoLocation => _leafRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafThreads.csv");
+    private string LeafRepoLocation => _leafRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafThreads.json");
     public Result RepoUpdate(bool hardUpdate, List<LeafThread> list, List<IMessage> repoContents, string msgRepoLocation = "", string leafThreadRepoLocation = "")
     {
         // Perform local file location checks

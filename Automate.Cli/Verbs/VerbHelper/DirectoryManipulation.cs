@@ -40,4 +40,28 @@ public class DirectoryManipulation
             ? $"This was the literal input: \n\t{path}\nAnd this is the actual path, confirmed to exist by the system: \n\t{Path.GetFullPath(path)}"
             : $"This was the literal input: \n{path}  \nAnd this is the actual path, confirmed to exist by the system:   \n{Path.GetFullPath(path)}";
     }
+
+    /// <summary>
+    /// <para>If <paramref name="newLineTab"/> is <see cref="true"/> then the string will be delimited with newlines and tabs.</para>
+    /// <para>If <paramref name="newLineTab"/> is <see cref="false"/> then the string will be delimited with newlines only.</para>
+    /// <para>Note that <paramref name="newLineTab"/> defaults to <see cref="true"/></para>
+    /// </summary>
+    /// <param name="newLineTab"></param>
+    /// <param name="path"></param>
+    /// <returns></returns>
+    internal static string LocationInformation(string path, out FileInfo pathInfo, bool newLineTab = true)
+    {
+        if (!Path.Exists(path))
+        {
+            pathInfo = new("./");
+            return newLineTab
+                ? $"This was the literal input, which is not a valid path and therefore does not exist: \n\t\"{path}\""
+                : $"This was the literal input, which is not a valid path and therefore does not exist: \n\"{path}\"";
+        }
+        pathInfo = new(path);
+        return newLineTab
+            // DO NOT change the weird spacing in the string, please.
+            ? $"This was the literal input: \n\t{path}\nAnd this is the actual path, confirmed to exist by the system: \n\t{Path.GetFullPath(path)}"
+            : $"This was the literal input: \n{path}  \nAnd this is the actual path, confirmed to exist by the system:   \n{Path.GetFullPath(path)}";
+    }
 }

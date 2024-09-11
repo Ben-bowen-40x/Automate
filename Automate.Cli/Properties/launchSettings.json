@@ -49,6 +49,20 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
+    "Analyze Messages - Produce New Leaf to GAds -- LeafRepo": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeaf",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Analyze Messages - Produce New Leaf -- LeafRepo": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t Leaf",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
     "Analyze Messages - Produce New Web Forms": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ManualWebForms.csv -t ManualWebForm",
@@ -75,6 +89,20 @@
     "Analyze Messages - Append Leaf to Power Bi": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t Leaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Analyze Messages - Append Leaf to GAds -- Leaf Repo": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Analyze Messages - Append Leaf to Power Bi -- Leaf Repo": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t Leaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
@@ -109,6 +137,20 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
+    "test - Analyze Messages - Reset Leaf to GAds test -- Leaf repo": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads_Reset.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "test - Analyze Messages - Reset Leaf to Power Bi test -- Leaf Repo": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t Leaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Reset.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
     "test - Analyze Messages - Reset Web Forms to Power Bi test": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ManualWebForms.csv -t ManualWebForm -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\ManualWebForms_Reset.csv",
@@ -139,9 +181,39 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
+    "test - Analyze Messages - Append Leaf to GAds test -- Leaf Repo": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads_Append_Test.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "test - Analyze Messages - Append Leaf to Power Bi test -- Leaf Repo": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t Leaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Append_Test.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
     "test - Analyze Messages - Append Web Forms to Power Bi test": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ManualWebForms.csv -t ManualWebForm -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\ManualWebForms_Append_Test.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
+    // Reset LeafApi
+    "Update Leaf Api Repo -- Default Repo Locations -- Hard Reset": {
+      "commandName": "Project",
+      "commandLineArgs": "updateApiRepo -ut Leaf",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Update Leaf Api Repo -- Default Repo Locations -- Soft Reset": {
+      "commandName": "Project",
+      "commandLineArgs": "updateApiRepo -t Leaf",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

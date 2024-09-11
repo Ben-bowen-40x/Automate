@@ -8,11 +8,11 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
 {
     ILeafApiService _service = service;
 
-    public Result Manage(FileInfo valueRepo, FileInfo leafRepo, bool hardUpdate)
+    public Result Manage(string valueRepo, string leafRepo, bool hardUpdate)
     {
         HttpClient client = _service.GetClient(factory);
 
-        if (_service.ReposMatch(out List<IMessage> msgs, out List<LeafThread> leaf, valueRepo.FullName, leafRepo.FullName))
+        if (_service.ReposMatch(out List<IMessage> msgs, out List<LeafThread> leaf, valueRepo, leafRepo))
         {
             if (hardUpdate)
             {
@@ -27,7 +27,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
             return HardUpdate(valueRepo, leafRepo, true, client, msgs);
 
         // Locals
-        Result HardUpdate(FileInfo valueRepo, FileInfo leafRepo, bool hardUpdate, HttpClient client, List<IMessage> msgs)
+        Result HardUpdate(string valueRepo, string leafRepo, bool hardUpdate, HttpClient client, List<IMessage> msgs)
         {
             Task<Result<List<LeafThread>>> threads = _service.GetLeafThreadsAsync(client);
             if (!threads.IsFaulted)
@@ -35,7 +35,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                 var threadVals = threads.Result;
                 if (threadVals.IsSuccess)
                 {
-                    _service.RepoUpdate(hardUpdate, threadVals.Value, msgs, valueRepo.FullName, leafRepo.FullName);
+                    _service.RepoUpdate(hardUpdate, threadVals.Value, msgs, valueRepo, leafRepo);
                     return Result.Success();
                 }
                 else
@@ -45,7 +45,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                 return Result.Failure("Call to the API failed");
         }
 
-        Result SoftUpdate(FileInfo valueRepo, FileInfo leafRepo, bool hardUpdate, HttpClient client, List<IMessage> msgs)
+        Result SoftUpdate(string valueRepo, string leafRepo, bool hardUpdate, HttpClient client, List<IMessage> msgs)
         {
             Task<Result<List<LeafThread>>> threads = _service.GetLeafThreadsAsync(client, offset: msgs.Count);
             if (!threads.IsFaulted)
@@ -53,7 +53,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                 var threadVals = threads.Result;
                 if (threadVals.IsSuccess)
                 {
-                    _service.RepoUpdate(hardUpdate, threadVals.Value, msgs, valueRepo.FullName, leafRepo.FullName);
+                    _service.RepoUpdate(hardUpdate, threadVals.Value, msgs, valueRepo, leafRepo);
                     return Result.Success();
                 }
                 else
