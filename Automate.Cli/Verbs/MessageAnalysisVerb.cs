@@ -34,22 +34,7 @@ internal class MessageAnalysisVerb : IVerb
     {
         // Inform the user what is going on
         InformUser();
-
-        // Verify that the file inputs exist. If they don't, they default them
-        string messageLocation = Path.Exists(MessageLocation)
-            ? Path.GetFullPath(MessageLocation)
-            : string.Empty;
-        string callQueryLocation = Path.Exists(CallQueryLocation)
-            ? Path.GetFullPath(CallQueryLocation)
-            : string.Empty;
-        string customerQueryLocation = Path.Exists(CustomerQueryLocation)
-            ? Path.GetFullPath(CustomerQueryLocation)
-            : string.Empty;
-        string reportLocation = TryCreate(ReportLocation, out string error)
-            ? Path.GetFullPath(ReportLocation)
-            : Append 
-                ? throw new ArgumentException($"The user provided the following literal as the report location: {ReportLocation} -- That file location does not exist. This cannot be done when the option {nameof(Append)} is {Append} because no such {nameof(ReportLocation)} exists. This resulted in the following error:\n {error}") 
-                : ReportLocation;
+        VerifyInput(out string messageLocation, out string callQueryLocation, out string customerQueryLocation, out string reportLocation);
 
         // Execute
         Dictionary<bool, FileInfo> result = MessageVerbHelper.Execute(Append, service, messageLocation, callQueryLocation, customerQueryLocation, reportLocation, MessageType);
@@ -58,6 +43,25 @@ internal class MessageAnalysisVerb : IVerb
         StringLogger.NameLog(DateTime.Now, AnalyzeMessages, MessageType.ToString());
 
         return DetermineReturnCode(result, MessageLocation, CallQueryLocation, CustomerQueryLocation, ReportLocation);
+    }
+
+    private void VerifyInput(out string messageLocation, out string callQueryLocation, out string customerQueryLocation, out string reportLocation)
+    {
+        // Verify that the file inputs exist. If they don't, they default them
+        messageLocation = Path.Exists(MessageLocation)
+            ? Path.GetFullPath(MessageLocation)
+            : string.Empty;
+        callQueryLocation = Path.Exists(CallQueryLocation)
+            ? Path.GetFullPath(CallQueryLocation)
+            : string.Empty;
+        customerQueryLocation = Path.Exists(CustomerQueryLocation)
+            ? Path.GetFullPath(CustomerQueryLocation)
+            : string.Empty;
+        reportLocation = TryCreate(ReportLocation, out string error)
+            ? Path.GetFullPath(ReportLocation)
+            : Append
+                ? throw new ArgumentException($"The user provided the following literal as the report location: {ReportLocation} -- That file location does not exist. This cannot be done when the option {nameof(Append)} is {Append} because no such {nameof(ReportLocation)} exists. This resulted in the following error:\n {error}")
+                : ReportLocation;
     }
 
     #endregion
@@ -70,7 +74,10 @@ internal class MessageAnalysisVerb : IVerb
         try
         {
             if (!Path.Exists(location))
-                File.Create(location);
+            {
+                var file = File.Create(location);
+                file.Close();
+            }
             result = true;
         }
         catch (Exception ex)
