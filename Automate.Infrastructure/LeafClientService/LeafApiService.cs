@@ -12,13 +12,13 @@ namespace Automate.Infrastructure.LeafClientService;
 public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
 {
     #region Setup
-    internal static Uri LeafThreadUrl(ILeafApiSettings settings, int offset, int limit) => new($"{settings.LeafBase}{settings.LeafThreadsEndpoint}?offset={offset}&limit={limit}");
-    internal Uri LeafThreadUrl(int offset, int limit) => new($"{settings.LeafBase}{settings.LeafThreadsEndpoint}?offset={offset}&limit={limit}");
     public HttpClient GetClient(IHttpClientFactory factory)
     {
         var client = factory.CreateClient(settings.LeafName!);
         return client;
     }
+    internal static Uri LeafThreadUrl(ILeafApiSettings settings, int offset, int limit) => new($"{settings.LeafBase}{settings.LeafThreadsEndpoint}?offset={offset}&limit={limit}");
+    internal Uri LeafThreadUrl(int offset, int limit) => new($"{settings.LeafBase}{settings.LeafThreadsEndpoint}?offset={offset}&limit={limit}");
     #endregion
 
     #region Internal
@@ -82,11 +82,14 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
             ? MessageRepoLocation
             : msgRepoLoc;
 
+        // Check if location exists
+        if (!File.Exists(repo))
+            File.WriteAllText(repo, "");
+
         // Retrieve contents
-        var content = CsvRW.ParseFromCsv<MessageClass>(repo);
+        List<MessageClass> content = CsvRW.ParseFromCsv<MessageClass>(repo);
         var conversion = content.Select(c => c.ConvertToMessage()).ToList();
         return conversion;
-
     }
 
     internal List<LeafThread> RetrieveLeafRepo(string leafRepo = "")
@@ -96,13 +99,27 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
             ? LeafRepoLocation
             : leafRepo;
 
-        // Retrieve contents
-        var content = JsonRW.DeserializeFile<LeafThread>(repo);
-        return content;
+        // Check if location exists
+        if (!File.Exists(repo))
+            File.WriteAllText(repo, "");
+
+        try
+        {
+            // Retrieve contents
+            List<LeafThread> content = JsonRW.DeserializeFile<LeafThread>(repo);
+            return content;
+        }
+        catch { return []; }
+
     }
     #endregion
 
     #region Implementation
+    private static string? _msgRepoLoc;
+    private string? _leafRepoLoc;
+    public static string MessageRepoLocation => _msgRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafMessages.csv");
+    private string LeafRepoLocation => _leafRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafThreads.json");
+
     public async Task<Result<List<LeafThread>>> GetLeafThreadsAsync(HttpClient client, int offset = 0, int errorLimit = 5, int sleepInterval = 500)
     {
         const int limit = 1000;
@@ -137,73 +154,41 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
 
         return master;
     }
-
-    private string? _msgRepoLoc;
-    private string? _leafRepoLoc;
-    private string MessageRepoLocation => _msgRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafMessages.csv");
-    private string LeafRepoLocation => _leafRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafThreads.json");
-    public Result RepoUpdate(bool hardUpdate, List<LeafThread> list, List<IMessage> repoContents, string msgRepoLocation = "", string leafThreadRepoLocation = "")
-    {
-        // Perform local file location checks
-        string msgRepo = msgRepoLocation == string.Empty || !File.Exists(msgRepoLocation)
-            ? MessageRepoLocation
-            : msgRepoLocation;
-        string leafRepo = leafThreadRepoLocation == string.Empty || !File.Exists(leafThreadRepoLocation)
-            ? LeafRepoLocation
-            : leafThreadRepoLocation;
-
-        // Convert list to value objects
-        List<IMessage> contents = list.Select(l => l.ConvertToMessage()).ToList();
-
-        return hardUpdate && list.Count > repoContents.Count
-            ? HardUpdate(list, repoContents, msgRepo, leafRepo, contents)
-            : SoftUpdate(repoContents, msgRepo, contents);
-
-        // Locals
-        static Result HardUpdate(List<LeafThread> list, List<IMessage> repoContents, string msgRepo, string leafRepo, List<IMessage> contents)
-        {
-            try
-            {
-                // Combine and conquer the IMessage repo
-                List<IMessage> combined = [.. repoContents, .. contents];
-                CsvRW.WriteToCsv<IMessage, MessageMapRW>(msgRepo, contents);
-
-                // Write the LeafThread repo
-                JsonRW.SerializeToFile(leafRepo, list);
-
-                return Result.Success();
-            }
-            catch (Exception ex) { return Result.Failure(ex.Message); }
-        }
-
-        static Result SoftUpdate(List<IMessage> repoContents, string msgRepo, List<IMessage> contents)
-        {
-            try
-            {
-                // Attept to append contents to the local repo
-                CsvRW.AppendToCsv<IMessage, MessageMapRW>(msgRepo, contents);
-                return Result.Success();
-            }
-            catch
-            {
-                try
-                {
-                    // Combine and conquer
-                    List<IMessage> combined = [.. repoContents, .. contents];
-                    CsvRW.WriteToCsv<IMessage, MessageMapRW>(msgRepo, contents);
-                    return Result.Success();
-                }
-                catch (Exception ex) { return Result.Failure(ex.Message); }
-            }
-        }
-    }
-
+    
     public bool ReposMatch(out List<IMessage> msgs, out List<LeafThread> leaf, string msgRepo = "", string leafRepo = "")
     {
         msgs = RetrieveMessageRepo(msgRepo);
         leaf = RetrieveLeafRepo(leafRepo);
 
         return msgs.Count == leaf.Count;
+    }
+
+    public Result Update(List<LeafThread> leafRepo, List<LeafThread> apiResult, string leafRepoLoc = "")
+    {
+        string leafRepoLocation = leafRepoLoc == string.Empty || !File.Exists(leafRepoLoc)
+            ? LeafRepoLocation
+            : leafRepoLoc;
+
+        List<LeafThread> combined = [.. leafRepo, .. apiResult];
+        var result = Update(combined, leafRepoLocation);
+
+        return result;
+    }
+
+    public Result Update(List<LeafThread> leafRepo, string leafRepoLoc)
+    {
+        string leafRepoLocation = leafRepoLoc == string.Empty || !File.Exists(leafRepoLoc)
+            ? LeafRepoLocation
+            : leafRepoLoc;
+
+        try
+        {
+            JsonRW.SerializeToFile(leafRepoLocation, leafRepo); return Result.Success();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(ex.Message);
+        }
     }
     #endregion
 }

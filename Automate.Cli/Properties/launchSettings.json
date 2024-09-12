@@ -51,14 +51,14 @@
     },
     "Analyze Messages - Produce New Leaf to GAds -- LeafRepo": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeaf",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeafRepo",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Produce New Leaf -- LeafRepo": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t Leaf",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
@@ -95,14 +95,14 @@
     },
     "Analyze Messages - Append Leaf to GAds -- Leaf Repo": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads.csv",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeafRepo -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Append Leaf to Power Bi -- Leaf Repo": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t Leaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
@@ -139,14 +139,14 @@
     },
     "test - Analyze Messages - Reset Leaf to GAds test -- Leaf repo": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads_Reset.csv",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeafRepo -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads_Reset.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "test - Analyze Messages - Reset Leaf to Power Bi test -- Leaf Repo": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t Leaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Reset.csv",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Reset.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
@@ -183,14 +183,14 @@
     },
     "test - Analyze Messages - Append Leaf to GAds test -- Leaf Repo": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads_Append_Test.csv",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeafRepo -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads_Append_Test.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "test - Analyze Messages - Append Leaf to Power Bi test -- Leaf Repo": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t Leaf -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Append_Test.csv",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Append_Test.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
@@ -204,16 +204,23 @@
     },
 
     // Reset LeafApi
-    "Update Leaf Api Repo -- Default Repo Locations -- Hard Reset": {
+    "Update Leaf Api Repo -- Default Repo Locations -- Hard update": {
       "commandName": "Project",
       "commandLineArgs": "updateApiRepo -ut Leaf",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    "Update Leaf Api Repo -- Default Repo Locations -- Soft Reset": {
+    "Update Leaf Api Repo -- Default Repo Locations -- Soft update": {
       "commandName": "Project",
       "commandLineArgs": "updateApiRepo -t Leaf",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Update Leaf Api Repo -- Default Repo Locations -- Force update": {
+      "commandName": "Project",
+      "commandLineArgs": "updateApiRepo -uft Leaf",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

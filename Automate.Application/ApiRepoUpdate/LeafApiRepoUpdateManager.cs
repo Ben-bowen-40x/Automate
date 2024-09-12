@@ -1,66 +1,77 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.ValueObjects;
 using CSharpFunctionalExtensions;
+using System.Threading;
 
 namespace Automate.Application.ApiRepoUpdate;
 
-public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactory factory) : ILeafApiRepoUpdateManager
+public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactory factory, IReportService report) : ILeafApiRepoUpdateManager
 {
     ILeafApiService _service = service;
+    IReportService _reportService = report;
 
-    public Result Manage(string valueRepo, string leafRepo, bool hardUpdate)
+    public Result Manage(string valueRepo, string leafRepo, bool hardUpdate, bool forceUpdate)
     {
         HttpClient client = _service.GetClient(factory);
+        bool match = _service.ReposMatch(out List<IMessage> msgs, out List<LeafThread> leaf, valueRepo, leafRepo);
+        const string failure = "Call to the API failed";
 
-        if (_service.ReposMatch(out List<IMessage> msgs, out List<LeafThread> leaf, valueRepo, leafRepo))
+        // Force Update
+        if (forceUpdate)
         {
-            if (hardUpdate)
+            // Call
+            Task<Result<List<LeafThread>>> threads = _service.GetLeafThreadsAsync(client);
+
+            // Check for errors
+            if (!threads.IsFaulted)
             {
-                return HardUpdate(valueRepo, leafRepo, hardUpdate, client, msgs);
+                var threadVals = threads.Result;
+                if (threadVals.IsSuccess)
+                {
+                    var value = threadVals.Value;
+                    _service.Update(value, leafRepo);
+
+                    List<IMessage> m = value.Select(v => v.ConvertToMessage()).ToList();
+                    _reportService.GenerateLeafMessages(m, out FileInfo _, valueRepo);
+
+                    return Result.Success();
+                }
+                else
+                    return threads.Result;
             }
             else
+                return Result.Failure(failure);
+        }
+        else if (hardUpdate)
+        {
+            // Call
+            Task<Result<List<LeafThread>>> threads = _service.GetLeafThreadsAsync(client, leaf.Count - 1);
+
+            // Check for errors
+            if (!threads.IsFaulted)
             {
-                return SoftUpdate(valueRepo, leafRepo, hardUpdate, client, msgs);
+                var threadVals = threads.Result;
+                if (threadVals.IsSuccess)
+                {
+                    List<LeafThread> value = threadVals.Value;
+                    _service.Update(leaf, value, leafRepo);
+
+                    List<IMessage> m = value.Select(v => v.ConvertToMessage()).ToList();
+                    _reportService.GenerateLeafMessages(m, out FileInfo _, valueRepo);
+
+                    return Result.Success();
+                }
+                else
+                    return threads.Result;
             }
+            else
+                return Result.Failure(failure);
         }
         else
-            return HardUpdate(valueRepo, leafRepo, true, client, msgs);
-
-        // Locals
-        Result HardUpdate(string valueRepo, string leafRepo, bool hardUpdate, HttpClient client, List<IMessage> msgs)
         {
-            Task<Result<List<LeafThread>>> threads = _service.GetLeafThreadsAsync(client);
-            if (!threads.IsFaulted)
-            {
-                var threadVals = threads.Result;
-                if (threadVals.IsSuccess)
-                {
-                    _service.RepoUpdate(hardUpdate, threadVals.Value, msgs, valueRepo, leafRepo);
-                    return Result.Success();
-                }
-                else
-                    return threads.Result;
-            }
-            else
-                return Result.Failure("Call to the API failed");
-        }
-
-        Result SoftUpdate(string valueRepo, string leafRepo, bool hardUpdate, HttpClient client, List<IMessage> msgs)
-        {
-            Task<Result<List<LeafThread>>> threads = _service.GetLeafThreadsAsync(client, offset: msgs.Count);
-            if (!threads.IsFaulted)
-            {
-                var threadVals = threads.Result;
-                if (threadVals.IsSuccess)
-                {
-                    _service.RepoUpdate(hardUpdate, threadVals.Value, msgs, valueRepo, leafRepo);
-                    return Result.Success();
-                }
-                else
-                    return threads.Result;
-            }
-            else
-                return Result.Failure("Call to the API failed");
+            List<IMessage> m = leaf.Select(l => l.ConvertToMessage()).ToList();
+            _reportService.GenerateLeafMessages(m, out FileInfo _, valueRepo);
+            return Result.Success();
         }
     }
 }

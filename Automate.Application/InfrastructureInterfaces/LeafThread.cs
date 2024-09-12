@@ -36,7 +36,7 @@ public class LeafThread : IMessageConvert
 
         // Extract contents
         string contents = first.Message is not null
-            ? first.Message
+            ? ContentsJoined(first.Message)
             : string.Empty;
 
         // Extract Source
@@ -45,13 +45,20 @@ public class LeafThread : IMessageConvert
             : string.Empty;
 
         return new Message(num, dto, contents, source);
+
+        static string ContentsJoined(string contents)
+        {
+            string s = string.Join('|', contents.Split(',', '"'));
+            string strin = string.Join(" | ", s.Split('\n', '\r'));
+            return strin;
+        }
     }
     private static Msg GetFirstMessage(List<Msg> messages)
     {
         Msg leastRecent = messages.Last();
         foreach (var m in messages)
         {
-            if (DateTime.Compare(m.Creation, leastRecent.Creation) < 0)
+            if (DateTime.Compare(m.Creation, leastRecent.Creation) < 0 && m.Direction == "ingress")
             {
                 leastRecent = m;
             }

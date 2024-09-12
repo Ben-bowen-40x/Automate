@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include=".info\ApiRepos\LeafApiServiceRepo.json" />
+    <Content Include=".info\ApiRepos\LeafThreads.json" />
     <Content Include=".info\Discrepancy\Discrepancy.csv" />
     <Content Include=".info\Discrepancy\Discrepancy.sql" />
     <Content Include=".info\Discrepancy\LocalRepo\Discrepancy.json" />
@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include=".info\ApiRepos\LeafMessages.csv" />
     <None Include=".info\FormAnalysis\FormsToAnalyze.csv" />
     <None Include=".info\MessageAnalysis\PNContactForms.csv" />
     <None Include=".info\Reports\TextReport_LF.csv" />

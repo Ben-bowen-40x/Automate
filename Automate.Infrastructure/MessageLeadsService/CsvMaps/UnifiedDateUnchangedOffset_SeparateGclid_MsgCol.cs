@@ -6,13 +6,13 @@ namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
 public class UnifiedDateUnchangedOffset_SeparateGclid_MsgCol : IMessageConvert
 {
-    [Name("Prospect Cellphone", "Phone Number")]
+    [Name("Prospect Cellphone", "Phone Number","Number")]
     public string? PhoneNumber { get; set; }
-    [Name("Creation", "Message Creation")]
+    [Name("Creation", "Message Creation","Date")]
     public string? StartDate { get; set; }
-    [Name("Message")]
+    [Name("Message","Contents")]
     public string? Contents { get; set; }
-    [Name("Message Source")]
+    [Name("Message Source","Source")]
     public string? Source { get; set; }
     public IMessage ConvertToMessage()
     {

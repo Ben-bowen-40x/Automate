@@ -18,10 +18,13 @@ internal class UpdateApiRepoVerb : IVerb
     [Option('v', "valueRepo", Required = false, HelpText = "Enter the existing repository that will be updated. This repo is for value objects and is used elsewhere.")]
     public string ValueRepositoryLoc { get; set; } = string.Empty;
 
-    [Option('l', "apiRepo", Required = false, HelpText = "Enter the local repository that will be updated for the api. This repo is for api call return values and is used as a backup.")]
+    [Option('l', "apiRepo", Required = false, HelpText = "Enter the local repository that will be updated for the api. This repo is for api call return values and is used in soft and hard updates, but not force updates.")]
     public string ApiRepositoryLoc { get; set; } = string.Empty;
 
-    [Option('u', "updateRepo", Required = true, Default = false, HelpText = "Specifies whether you would like a hard reset of both the Api repo AND the value repo.")]
+    [Option('f', "forceUpdate", Required = false, Default = false, HelpText = "Specifies whether you would like to force a call to the api. This will pull all data from the API until all calls are exhausted, and that information will be used to refresh the domain value repo. This will only work if this application is up-to-date with the API and connected online.")]
+    public bool ForceUpdate { get; set; }
+
+    [Option('u', "hardUpdate", Required = false, Default = false, HelpText = "Specifies whether you would like to refresh the data in the local repo. If not, the local repo will be used to update the domain value repo instead.")]
     public bool Update { get; set; }
     #endregion
 
@@ -33,7 +36,7 @@ internal class UpdateApiRepoVerb : IVerb
         Console.WriteLine($"- Api type: \"{Type}\"");
         Console.WriteLine($"- Value Repository location: \n    {DirectoryManipulation.LocationInformation(ValueRepositoryLoc)}");
         Console.WriteLine($"- Api Repository location: \n    {DirectoryManipulation.LocationInformation(ApiRepositoryLoc)}");
-        Console.WriteLine($"- Whether to update the repository: {Update}");
+        Console.WriteLine($"- Whether to perform a hard update on the repositories: {ForceUpdate}");
 
         // Validate Input
         string valueInfo = !File.Exists(ValueRepositoryLoc)
@@ -51,12 +54,12 @@ internal class UpdateApiRepoVerb : IVerb
         {
             case ApiType.Leaf:
                 var manager = service.GetRequiredService<ILeafApiRepoUpdateManager>();
-                var result = manager.Manage(valueInfo, repoInfo, Update);
+                var result = manager.Manage(valueInfo, repoInfo, Update, ForceUpdate);
                 code = DetermineReturnCode(result);
                 break;
             default:
                 var m = service.GetRequiredService<ILeafApiRepoUpdateManager>();
-                var r = m.Manage(valueInfo, repoInfo, Update);
+                var r = m.Manage(valueInfo, repoInfo, Update, ForceUpdate);
                 code = DetermineReturnCode(r);
                 break;
         };

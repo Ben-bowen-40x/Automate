@@ -49,7 +49,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
     public List<IMessage> RetrieveReportMessages(string reportLocation, out List<QualifiedMessageRecord> records)
     {
         // Check to see whether the report file actually exists. If not, create it
-        if(!File.Exists(reportLocation))
+        if (!File.Exists(reportLocation))
             File.WriteAllText(reportLocation, string.Empty);
 
         // Retrieve messages from report
@@ -284,6 +284,8 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         return mostRecent;
     }
 
+    private static DateTimeOffset? _twelve;
+    private static DateTimeOffset Early => _twelve ??= new(new DateTime(2012, 1, 1)); // This is a sufficient amount of time in the past 
     /// <summary>
     /// <paramref name="items"/> must be of type <see cref="IList{T}"/> because we will be using the indices of <paramref name="items"/>
     /// </summary>
@@ -295,7 +297,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         var leastRecent = items[0];
         foreach (var item in items)
         {
-            if (DateTimeOffset.Compare(item.Date, leastRecent.Date) < 0 && item.Date != DateTimeOffset.MinValue)
+            if (DateTimeOffset.Compare(item.Date, leastRecent.Date) < 0 && item.Date != DateTimeOffset.MinValue && DateTimeOffset.Compare(item.Date, Early) >= 0)
                 leastRecent = item;
         }
         return leastRecent;

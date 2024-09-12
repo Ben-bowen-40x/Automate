@@ -4,6 +4,8 @@ using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.ContactsUpdateService;
 using Automate.Infrastructure.CsvService;
+using Automate.Infrastructure.LeafClientService;
+using Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
 namespace Automate.Infrastructure.ReportingService;
 
@@ -90,5 +92,22 @@ internal class ReportServiceSingleton : IReportService
         }
         catch
         { return false; }
+    }
+
+    public bool GenerateLeafMessages(List<IMessage> msgs, out FileInfo file, string location)
+    {
+        // Check for default
+        var loc = location == string.Empty
+            ? LeafApiService.MessageRepoLocation
+            : location;
+        file = new(loc);
+
+        // Attempt to write the information to file
+        try
+        {
+            CsvRW.WriteToCsv<IMessage, MessageMapRW>(loc, msgs);
+            return true;
+        }
+        catch { return false; }
     }
 }
