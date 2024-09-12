@@ -24,9 +24,10 @@ internal class QualifiedMessageMap : ClassMap<QualifiedMessageRecord>
     public QualifiedMessageMap()
     {
         int index = 0;
+
         // Text Info
         Map(m => m.Message.Number.Number).Index(index++).Name(Phone);
-        base.Map(m => m.Message.Date.UtcDateTime).Index(index++).Name(Date);
+        Map(m => m.Message.Date.UtcDateTime).Index(index++).Name(Date);
         Map(m => m.Message.Contents).Index(index++).Name(Contents);
         Map(m => m.Message.Source).Index(index++).Name(Source);
 

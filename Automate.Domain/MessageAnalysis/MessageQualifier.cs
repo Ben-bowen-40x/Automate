@@ -81,16 +81,17 @@ public class MessageQualifier
         List<ICallRecord> result = [];
         for (var i = callRecords.Count - 1; i >= 0; i--)
         {
-            bool numsMatch = callRecords[i].Number.Number == message.Number.Number;
-
             // If the numbers match and the call is billable, Add the call to the result
-            if (numsMatch && callRecords[i].Billable)
-                result.Add(callRecords[i]);
+            if (callRecords[i].Number.Number == message.Number.Number)
+            {
+                if (callRecords[i].Billable)
+                    result.Add(callRecords[i]);
 
-            // In all cases where the numbers match, remove the call from the list of calls through which we're required to iterate
-            if (numsMatch)
+                // In all cases where the numbers match, remove the call from the list of calls through which we're required to iterate
                 callRecords.RemoveAt(i);
+            }
         }
+
         return result;
     }
 
