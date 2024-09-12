@@ -56,7 +56,9 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                     List<LeafThread> value = threadVals.Value;
                     _service.Update(leaf, value, leafRepo);
 
-                    List<IMessage> m = value.Select(v => v.ConvertToMessage()).ToList();
+                    List<IMessage> mVal = value.Select(v => v.ConvertToMessage()).ToList();
+                    List<IMessage> mLeaf = leaf.Select(v => v.ConvertToMessage()).ToList();
+                    List<IMessage> m = [.. mLeaf, .. mVal];
                     _reportService.GenerateLeafMessages(m, out FileInfo _, valueRepo);
 
                     return Result.Success();

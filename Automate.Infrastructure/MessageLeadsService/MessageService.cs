@@ -172,7 +172,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
         // If the most recent msg occurred before the most recent call AND the first msg occurred after the first call, set the local field to the list of call records
         CallRecordJson recentCall = FindMostRecent(localCalls);
         CallRecordJson firstCall = FindFirst(localCalls);
-        if (DateTimeOffset.Compare(firstMsg.Date - RawQuery.NinetyDays, firstCall.Date) > 0 && DateTimeOffset.Compare(recentMsg.Date, recentCall.Date) < 0)
+        if (DateTimeOffset.Compare(recentMsg.Date, recentCall.Date) < 0 && DateTimeOffset.Compare(firstMsg.Date - RawQuery.NinetyDays, firstCall.Date) > 0)
         {
             IEnumerable<ICallRecord> convertedCalls = ConvertCallsFromRepo(localCalls);
             _callRecordsFromRepo = convertedCalls.ToList();
@@ -199,11 +199,11 @@ public class MessageService(IDwhSettings settings) : IMessageService
             return true;
 
         // Prepare extraction of calls and customers from local repo
-        List<CustSubJson> localCalls = [];
+        List<CustSubJson> custRepo = [];
         try
         {
             // Extract the local repo of calls
-            localCalls = JsonRW.DeserializeFile<CustSubJson>(repoLocation);
+            custRepo = JsonRW.DeserializeFile<CustSubJson>(repoLocation);
         }
         catch
         {
@@ -211,10 +211,10 @@ public class MessageService(IDwhSettings settings) : IMessageService
         }
 
         // If the most recent text occurred before the most recent call, set the local field to the list of call records
-        CustSubJson recentCall = FindMostRecent(localCalls);
+        CustSubJson recentCall = FindMostRecent(custRepo);
         if (DateTimeOffset.Compare(recentMsg.Date, recentCall.Date) < 0)
         {
-            IEnumerable<ICustomerSubscription> convertedCalls = localCalls.Select(m => m.Convert());
+            IEnumerable<ICustomerSubscription> convertedCalls = custRepo.Select(m => m.Convert());
             _customerRecordsFromRepo = convertedCalls.ToList();
         }
         // Recent texts are not covered by the repo, so it must be renewed by the Db
@@ -236,12 +236,14 @@ public class MessageService(IDwhSettings settings) : IMessageService
         return mostRecent;
     }
 
+    private static DateTimeOffset? _back;
+    private static DateTimeOffset Back => _back ??= new(new DateTime(2012, 1, 1));
     private static T FindFirst<T>(IList<T> items) where T : IDatedRecord
     {
         var leastRecent = items[0];
         foreach (var item in items)
         {
-            if (DateTimeOffset.Compare(item.Date, leastRecent.Date) < 0 && item.Date != DateTimeOffset.MinValue)
+            if (DateTimeOffset.Compare(item.Date, leastRecent.Date) < 0 && DateTimeOffset.Compare(item.Date, Back) > 0 && item.Date != DateTimeOffset.MinValue)
                 leastRecent = item;
         }
         return leastRecent;
