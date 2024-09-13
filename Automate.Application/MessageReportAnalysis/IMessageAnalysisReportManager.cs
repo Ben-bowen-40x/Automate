@@ -4,5 +4,5 @@ namespace Automate.Application.MessageReportAnalysis;
 
 public interface IMessageAnalysisReportManager
 {
-    Dictionary<bool, FileInfo> ManageMessageAnalysis<T>(string messages, string calls, string customers, string report) where T : IMessageConvert;
+    Dictionary<bool, FileInfo> ManageMessageAnalysis<T>(string commandName, string messages, string calls, string customers, string report) where T : IMessageConvert;
 }

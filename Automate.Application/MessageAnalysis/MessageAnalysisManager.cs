@@ -8,7 +8,7 @@ public class MessageAnalysisManager(IMessageService textService, IReportService 
     private readonly IMessageService _textService = textService;
     private readonly IReportService _reportService = reportService;
 
-    public Dictionary<bool, FileInfo> ManageMessageAnalysis<T>(string messages, string callQuery, string customerQuery, string report) where T : IMessageConvert
+    public Dictionary<bool, FileInfo> ManageMessageAnalysis<T>(string reportDefault, string messages, string callQuery, string customerQuery, string report) where T : IMessageConvert
     {
         // Retrieve Items
         List<IMessage> textMessages = _textService.GetMessages<T>(messages);
@@ -19,7 +19,7 @@ public class MessageAnalysisManager(IMessageService textService, IReportService 
         List<QualifiedMessageRecord> qualified = MessageQualifier.Qualify(textMessages, calls, customers);
 
         // Generate Report
-        bool success = _reportService.GenerateMessageLeadReport(qualified, out FileInfo file, report);
+        bool success = _reportService.GenerateMessageLeadReport(reportDefault, qualified, out FileInfo file, report);
 
         return new() { { success, file } };
     }
