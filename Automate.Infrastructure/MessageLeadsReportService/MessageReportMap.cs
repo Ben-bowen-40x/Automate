@@ -38,7 +38,7 @@ internal class MessageReportMap : ClassMap<QualifiedMessageRecord>, IMessageConv
     [Name(QualifiedMessageMap.Phone)]
     public long Number { get; set; }
     [Name(QualifiedMessageMap.Date)]
-    public DateTime Date { get; set; }
+    public DateTimeOffset Date { get; set; }
     [Name(QualifiedMessageMap.Contents)]
     public string? Contents { get; set; }
     [Name(QualifiedMessageMap.Source)]
@@ -74,7 +74,7 @@ internal class MessageReportMap : ClassMap<QualifiedMessageRecord>, IMessageConv
         PhoneNumber num = new(Number);
 
         // convert date 
-        DateTime date = Date;
+        DateTimeOffset date = Date;
 
         // Convert Contents
         string content = Contents is null || Contents == string.Empty 
