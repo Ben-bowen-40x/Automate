@@ -1,14 +1,13 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.ValueObjects;
 using CSharpFunctionalExtensions;
-using System.Threading;
 
 namespace Automate.Application.ApiRepoUpdate;
 
 public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactory factory, IReportService report) : ILeafApiRepoUpdateManager
 {
-    ILeafApiService _service = service;
-    IReportService _reportService = report;
+    readonly ILeafApiService _service = service;
+    readonly IReportService _reportService = report;
 
     public Result Manage(string valueRepo, string leafRepo, bool hardUpdate, bool forceUpdate)
     {
@@ -25,7 +24,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
             // Check for errors
             if (!threads.IsFaulted)
             {
-                var threadVals = threads.Result;
+                Result<List<LeafThread>> threadVals = threads.Result;
                 if (threadVals.IsSuccess)
                 {
                     var value = threadVals.Value;
@@ -50,7 +49,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
             // Check for errors
             if (!threads.IsFaulted)
             {
-                var threadVals = threads.Result;
+                Result<List<LeafThread>> threadVals = threads.Result;
                 if (threadVals.IsSuccess)
                 {
                     List<LeafThread> value = threadVals.Value;
