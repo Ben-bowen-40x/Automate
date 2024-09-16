@@ -15,16 +15,16 @@ internal class UpdateApiRepoVerb : IVerb
     [Option('t', "type", Required = true, HelpText = UpdateApiRepoHelper.ApiTypeHelpText)]
     public ApiType Type { get; set; }
 
-    [Option('v', "valueRepo", Required = false, HelpText = "Enter the existing repository that will be updated. This repo is for value objects and is used elsewhere.")]
+    [Option('v', "valueRepo", Required = false, HelpText = "Enter the existing repository that will be updated. This repo is for value objects only and is used elsewhere. If a value is not provided, a default will be used.")]
     public string ValueRepositoryLoc { get; set; } = string.Empty;
 
-    [Option('l', "apiRepo", Required = false, HelpText = "Enter the local repository that will be updated for the api. This repo is for api call return values and is used in soft and hard updates, but not force updates.")]
+    [Option('l', "apiRepo", Required = false, HelpText = "Enter the local repository that will be updated for the api. This repo is for api call return values and is used in soft and hard updates, but not force updates. If a value is not provided, a default will be used.")]
     public string ApiRepositoryLoc { get; set; } = string.Empty;
 
     [Option('f', "forceUpdate", Required = false, Default = false, HelpText = "Specifies whether you would like to force a call to the api. This will pull all data from the API until all calls are exhausted, and that information will be used to refresh the domain value repo. This will only work if this application is up-to-date with the API and connected online.")]
     public bool ForceUpdate { get; set; }
 
-    [Option('u', "hardUpdate", Required = false, Default = false, HelpText = "Specifies whether you would like to refresh the data in the local repo. If not, the local repo will be used to update the domain value repo instead.")]
+    [Option('u', "hardUpdate", Required = false, Default = false, HelpText = "Specifies whether you would like to refresh the data in the local repo. If not, the local repo will be used to update the repo containing domain values (value objects) instead.")]
     public bool Update { get; set; }
     #endregion
 
@@ -36,7 +36,8 @@ internal class UpdateApiRepoVerb : IVerb
         Console.WriteLine($"- Api type: \"{Type}\"");
         Console.WriteLine($"- Value Repository location: \n    {DirectoryManipulation.LocationInformation(ValueRepositoryLoc)}");
         Console.WriteLine($"- Api Repository location: \n    {DirectoryManipulation.LocationInformation(ApiRepositoryLoc)}");
-        Console.WriteLine($"- Whether to perform a hard update on the repositories: {ForceUpdate}");
+        Console.WriteLine($"- Whether to perform a force update on the repositories: {ForceUpdate}");
+        Console.WriteLine($"- Whether to perform a hard update on the repositories: {Update}");
 
         // Validate Input
         string valueInfo = !File.Exists(ValueRepositoryLoc)
