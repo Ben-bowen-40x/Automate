@@ -159,7 +159,7 @@
       }
     },
 
-    ///*
+    /*
     // Test Append Messages
     "test - Analyze Messages - Append Pan to Power Bi test": {
       "commandName": "Project",
@@ -228,6 +228,7 @@
       }
     },
 
+    ///*
     // Reset LeafApi Test
     "Update Leaf Api Repo -- Default Repo Locations -- Hard update -- Test": {
       "commandName": "Project",
@@ -245,11 +246,12 @@
     },
     "Update Leaf Api Repo -- Default Repo Locations -- Force update -- Test": {
       "commandName": "Project",
-      "commandLineArgs": "updateApiRepo -uft Leaf -v ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafTesting\\Messages_Test.csv -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafTesting\\Api_Test2.json",
+      "commandLineArgs": "updateApiRepo -uft Leaf -v ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafTesting\\Messages_Test.csv -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafTesting\\Api_Test.json",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
+    //*/
 
     // Example
     "Example - All Options": {
