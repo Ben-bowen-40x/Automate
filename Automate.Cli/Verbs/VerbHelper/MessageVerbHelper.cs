@@ -18,7 +18,7 @@ enum MessageCsvType
 
 public class MessageVerbHelper
 {
-    public const string HelpText = "Choose which type of message file you wish to analyze. The following options are case-sensitive: Pan, Leaf, LeafRepo, ManualWebForm, GAdsLeaf";
+    public const string HelpText = "Choose which type of message file you wish to analyze. The following options are case-sensitive: Pan, Leaf, LeafRepo, ManualWebForm, GAdsLeaf, GAdsLeafRepo";
     internal static Result<FileInfo> Execute(bool append, IServiceProvider service, string messageLocation, string callQueryLocation, string customerQueryLocation, string reportLocation, MessageCsvType messageType)
     {
         return append
