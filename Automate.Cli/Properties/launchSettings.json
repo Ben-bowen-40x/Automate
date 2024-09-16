@@ -203,7 +203,7 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-  //*/
+    //*/
 
     // Reset LeafApi
     "Update Leaf Api Repo -- Default Repo Locations -- Hard update": {
@@ -223,6 +223,29 @@
     "Update Leaf Api Repo -- Default Repo Locations -- Force update": {
       "commandName": "Project",
       "commandLineArgs": "updateApiRepo -uft Leaf",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
+    // Reset LeafApi Test
+    "Update Leaf Api Repo -- Default Repo Locations -- Hard update -- Test": {
+      "commandName": "Project",
+      "commandLineArgs": "updateApiRepo -ut Leaf -v ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafTesting\\Messages_Test.csv -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafTesting\\Api_Test.json",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Update Leaf Api Repo -- Default Repo Locations -- Soft update -- Test": {
+      "commandName": "Project",
+      "commandLineArgs": "updateApiRepo -t Leaf -v ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafTesting\\Messages_Test.csv -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafTesting\\Api_Test.json",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Update Leaf Api Repo -- Default Repo Locations -- Force update -- Test": {
+      "commandName": "Project",
+      "commandLineArgs": "updateApiRepo -uft Leaf -v ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafTesting\\Messages_Test.csv -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafTesting\\Api_Test2.json",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
