@@ -1,9 +1,9 @@
 {
   "profiles": {
     // Discrepancy
-    "Analyze Discrepancy - Always Edit Options": {
+    "Analyze Discrepancy - Always Edit": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeDiscrepancy -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Discrepancy\\08.18-08.24.csv -r ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\Discrepancy-08.18-08.24.csv",
+      "commandLineArgs": "analyzeDiscrepancy -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Discrepancy\\08.18-08.24.csv -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\Discrepancy-08.18-08.24.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
