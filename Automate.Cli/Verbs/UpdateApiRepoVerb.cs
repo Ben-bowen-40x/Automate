@@ -1,5 +1,6 @@
 ﻿using Automate.Application.ApiRepoUpdate;
 using Automate.Cli.Verbs.VerbHelper;
+using Automate.Infrastructure.LeafClientService;
 using CommandLine;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,10 +42,10 @@ internal class UpdateApiRepoVerb : IVerb
 
         // Validate Input
         string valueInfo = !File.Exists(ValueRepositoryLoc)
-            ? ""
+            ? LeafApiService.LeafRepoLocation
             : ValueRepositoryLoc;
         string repoInfo = !File.Exists(ApiRepositoryLoc)
-            ? ""
+            ? LeafApiService.MessageRepoLocation
             : ApiRepositoryLoc;
 
         // prepare result
