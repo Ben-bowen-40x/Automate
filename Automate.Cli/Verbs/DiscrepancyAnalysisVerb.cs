@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Automate.Application.Discrepancy;
 using Automate.Cli.Verbs.VerbHelper;
 using Automate.Domain.SolutionFunctionality;
+using CSharpFunctionalExtensions;
 
 namespace Automate.Cli.Verbs;
 
@@ -32,7 +33,7 @@ internal class DiscrepancyAnalysisVerb : IVerb
 
         // Prepare the result
         var callManager = service.GetRequiredService<IDiscrepancyManager>();
-        Dictionary<bool, FileInfo> result = callManager.ManageDiscrepancyAnalysis(fileName, report, query);
+        Result<FileInfo> result = callManager.ManageDiscrepancyAnalysis(fileName, report, query);
 
         // Name log 
         StringLogger.NameLog(DateTime.Now, AnalyzeDiscrepancy);
@@ -63,20 +64,19 @@ internal class DiscrepancyAnalysisVerb : IVerb
         File.WriteAllText(report, "");
     }
 
-    static int DetermineReturnCode(string fileName, string report, string query, Dictionary<bool, FileInfo> result)
+    static int DetermineReturnCode(string fileName, string report, string query, Result<FileInfo> result)
     {
-        bool resultBool = result.Keys.ToList()[0];
-        if (resultBool)
+        if (result.IsSuccess)
         {
-            System.Console.WriteLine($"Generated report. Report Location:");
-            System.Console.WriteLine(result[true].FullName);
-            return ReturnCode(fileName, report, query, resultBool);
+            Console.WriteLine($"Generated report. Report Location:");
+            Console.WriteLine(result.Value.FullName);
+            return ReturnCode(fileName, report, query, result.IsSuccess);
         }
         else
         {
-            System.Console.WriteLine("Failed to generate report.");
+            Console.WriteLine("Failed to generate report.");
             StringLogger.AddLog(GetFullName.GetMemberName(new DiscrepancyAnalysisVerb(), nameof(DetermineReturnCode)), "Report failed to generate.");
-            return ReturnCode(fileName, report, query, resultBool);
+            return ReturnCode(fileName, report, query, result.IsSuccess);
         }
     }
 

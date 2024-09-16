@@ -31,9 +31,9 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                     _service.Update(value, leafRepo);
 
                     List<IMessage> m = value.Select(v => v.ConvertToMessage()).ToList();
-                    _reportService.GenerateLeafMessages(m, out FileInfo _, valueRepo);
+                    Result<FileInfo> file = _reportService.GenerateLeafMessages(m, valueRepo);
 
-                    return Result.Success();
+                    return file;
                 }
                 else
                     return threads.Result;
@@ -58,9 +58,9 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                     List<IMessage> mVal = value.Select(v => v.ConvertToMessage()).ToList();
                     List<IMessage> mLeaf = leaf.Select(v => v.ConvertToMessage()).ToList();
                     List<IMessage> m = [.. mLeaf, .. mVal];
-                    _reportService.GenerateLeafMessages(m, out FileInfo _, valueRepo);
+                    var result = _reportService.GenerateLeafMessages(m, valueRepo);
 
-                    return Result.Success();
+                    return result;
                 }
                 else
                     return threads.Result;
@@ -71,8 +71,8 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
         else
         {
             List<IMessage> m = leaf.Select(l => l.ConvertToMessage()).ToList();
-            _reportService.GenerateLeafMessages(m, out FileInfo _, valueRepo);
-            return Result.Success();
+            var result = _reportService.GenerateLeafMessages(m, valueRepo);
+            return result;
         }
     }
 }

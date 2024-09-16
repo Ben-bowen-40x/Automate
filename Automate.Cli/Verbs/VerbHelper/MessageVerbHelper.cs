@@ -2,6 +2,7 @@
 using Automate.Infrastructure.MessageLeadsService.CsvMaps;
 using Automate.Application.MessageReportAnalysis;
 using Automate.Application.MessageAnalysis;
+using CSharpFunctionalExtensions;
 
 namespace Automate.Cli.Verbs.VerbHelper;
 
@@ -18,14 +19,14 @@ enum MessageCsvType
 public class MessageVerbHelper
 {
     public const string HelpText = "Choose which type of message file you wish to analyze. The following options are case-sensitive: Pan, Leaf, LeafRepo, ManualWebForm, GAdsLeaf";
-    internal static Dictionary<bool, FileInfo> Execute(bool append, IServiceProvider service, string messageLocation, string callQueryLocation, string customerQueryLocation, string reportLocation, MessageCsvType messageType)
+    internal static Result<FileInfo> Execute(bool append, IServiceProvider service, string messageLocation, string callQueryLocation, string customerQueryLocation, string reportLocation, MessageCsvType messageType)
     {
         return append
             ? Append(service, messageLocation, callQueryLocation, customerQueryLocation, reportLocation, messageType)
             : GenerateNew(service, messageLocation, callQueryLocation, customerQueryLocation, reportLocation, messageType);
 
         // Locals
-        static Dictionary<bool, FileInfo> GenerateNew(IServiceProvider service, string messageLocation, string callQueryLocation, string customerQueryLocation, string reportLocation, MessageCsvType messageType)
+        static Result<FileInfo> GenerateNew(IServiceProvider service, string messageLocation, string callQueryLocation, string customerQueryLocation, string reportLocation, MessageCsvType messageType)
         {
             var m = service.GetRequiredService<IMessageAnalysisManager>();
             return messageType switch
@@ -40,7 +41,7 @@ public class MessageVerbHelper
             };
         }
 
-        static Dictionary<bool, FileInfo> Append(IServiceProvider service, string messageLocation, string callQueryLocation, string customerQueryLocation, string reportLocation, MessageCsvType messageType)
+        static Result<FileInfo> Append(IServiceProvider service, string messageLocation, string callQueryLocation, string customerQueryLocation, string reportLocation, MessageCsvType messageType)
         {
             IMessageAnalysisReportManager manage = service.GetRequiredService<IMessageAnalysisReportManager>();
             return messageType switch

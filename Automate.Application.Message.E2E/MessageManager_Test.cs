@@ -31,13 +31,13 @@ public class MessageManager_Test(IDwhSettings settings)
         var result =
             fileName switch
             {
-                MsgLeads => manager.ManageMessageAnalysis<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>("","", "", "", ""),
-                CctLeads => manager.ManageMessageAnalysis<SplitDateMountainOffsetMsgCol>("","", "", "", ""),
+                MsgLeads => manager.ManageMessageAnalysis<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>("", "", "", "", ""),
+                CctLeads => manager.ManageMessageAnalysis<SplitDateMountainOffsetMsgCol>("", "", "", "", ""),
                 _ => manager.ManageMessageAnalysis<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>("", "", "", "", "")
             };
         StringLogger.ProduceLog(DateTime.Now, sender, member, $"End Test");
 
         // Assert
-        Assert.True(result[true].Exists);
+        Assert.True(result.IsSuccess);
     }
 }

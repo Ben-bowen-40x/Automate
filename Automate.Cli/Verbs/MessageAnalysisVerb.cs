@@ -1,6 +1,7 @@
 ﻿using CommandLine;
 using Automate.Cli.Verbs.VerbHelper;
 using Automate.Domain.SolutionFunctionality;
+using CSharpFunctionalExtensions;
 
 namespace Automate.Cli.Verbs;
 
@@ -37,7 +38,7 @@ internal class MessageAnalysisVerb : IVerb
         VerifyInput(out string messageLocation, out string callQueryLocation, out string customerQueryLocation, out string reportLocation);
 
         // Execute
-        Dictionary<bool, FileInfo> result = MessageVerbHelper.Execute(Append, service, messageLocation, callQueryLocation, customerQueryLocation, reportLocation, MessageType);
+        Result<FileInfo> result = MessageVerbHelper.Execute(Append, service, messageLocation, callQueryLocation, customerQueryLocation, reportLocation, MessageType);
 
         // Logger
         StringLogger.NameLog(DateTime.Now, AnalyzeMessages, MessageType.ToString());
@@ -117,27 +118,21 @@ internal class MessageAnalysisVerb : IVerb
         Console.WriteLine("");
     }
 
-    private static int DetermineReturnCode(Dictionary<bool, FileInfo> result, string msgLoc, string callQuery, string customerQuery, string reportLoc)
+    private static int DetermineReturnCode(Result<FileInfo> result, string msgLoc, string callQuery, string customerQuery, string reportLoc)
     {
-        if (result.Keys.Count == 0)
+        if (result.IsSuccess)
         {
-            System.Console.WriteLine("There was a critical error. The report could not be generated.");
-            return ProgramErrorCodes.Message_CriticalFailure;
-        }
-
-        bool resultBool = result.Keys.ToList()[0];
-        if (resultBool)
-        {
-            System.Console.WriteLine("The report creation was successful.");
-            System.Console.WriteLine("Here is the report:");
-            System.Console.WriteLine(result[true]);
+            Console.WriteLine("The report creation was successful.");
+            Console.WriteLine("Here is the report:");
+            Console.WriteLine(result.IsSuccess);
         }
         else
         {
-            System.Console.WriteLine("The report creation was NOT successful.");
+            Console.WriteLine("There was a critical error. The report could not be generated.");
+            return ProgramErrorCodes.Message_CriticalFailure;
         }
 
-        return DetermineReturnCode(resultBool, msgLoc, callQuery, customerQuery, reportLoc);
+        return DetermineReturnCode(result.IsSuccess, msgLoc, callQuery, customerQuery, reportLoc);
     }
 
     private static int DetermineReturnCode(bool result, string msgLoc, string callQuery, string customerQuery, string reportLoc)

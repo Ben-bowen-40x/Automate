@@ -44,67 +44,69 @@ internal class ContactUpdateVerb : IVerb
     {
         const string generated = "The contacts where generated.";
         const string notGenerated = "At least one contact was not generated";
-        string exists = $"The directory containing the contacts given by the user exists. Here is the directory:\n{result.ContactLocation.FullName}";
-        string nExists = $"The directory provided by the user did not exist, so one was generated instead. Here is the directory:\n{result.ContactLocation.FullName}";
+        string exists = result.ContactLocation.IsSuccess
+            ? $"The directory containing the contacts given by the user exists. Here is the directory:\n{result.ContactLocation.Value.FullName}"
+            : $"The directory containing the contacts given by the user does not exist, or the contacts could not be generated.";
+        string nExists = $"The directory provided by the user did not exist, so one was generated instead.";
         const string uploaded = "The contacts were successfully uploaded";
         const string nUploaded = "The contacts were not successfully uploaded";
-        if (directoryExists && result.GeneratedContacts && result.UploadedContacts)
+        if (directoryExists && result.ContactLocation.IsSuccess && result.UploadedContacts)
         {
-            System.Console.WriteLine(generated);
-            System.Console.WriteLine(exists);
-            System.Console.WriteLine(uploaded);
+            Console.WriteLine(generated);
+            Console.WriteLine(exists);
+            Console.WriteLine(uploaded);
             return ProgramErrorCodes.Success;
         }
-        else if (!directoryExists && result.GeneratedContacts && result.UploadedContacts)
+        else if (!directoryExists && result.ContactLocation.IsSuccess && result.UploadedContacts)
         {
-            System.Console.WriteLine(generated);
-            System.Console.WriteLine(nExists);
-            System.Console.WriteLine(uploaded);
+            Console.WriteLine(generated);
+            Console.WriteLine(nExists);
+            Console.WriteLine(uploaded);
             return ProgramErrorCodes.Contacts_DirectoryFailed;
         }
-        else if (directoryExists && !result.GeneratedContacts && result.UploadedContacts)
+        else if (directoryExists && !result.ContactLocation.IsSuccess && result.UploadedContacts)
         {
-            System.Console.WriteLine(notGenerated);
-            System.Console.WriteLine(exists);
-            System.Console.WriteLine(uploaded);
+            Console.WriteLine(notGenerated);
+            Console.WriteLine(exists);
+            Console.WriteLine(uploaded);
             return ProgramErrorCodes.Contacts_ContactGenFailed;
         }
-        else if (directoryExists && result.GeneratedContacts && !result.UploadedContacts)
+        else if (directoryExists && result.ContactLocation.IsSuccess && !result.UploadedContacts)
         {
-            System.Console.WriteLine(generated);
-            System.Console.WriteLine(exists);
-            System.Console.WriteLine(nUploaded);
+            Console.WriteLine(generated);
+            Console.WriteLine(exists);
+            Console.WriteLine(nUploaded);
             return ProgramErrorCodes.Contacts_UploadFailed;
         }
-        else if (!directoryExists && !result.GeneratedContacts && result.UploadedContacts)
+        else if (!directoryExists && !result.ContactLocation.IsSuccess && result.UploadedContacts)
         {
-            System.Console.WriteLine(notGenerated);
-            System.Console.WriteLine(nExists);
-            System.Console.WriteLine(uploaded);
+            Console.WriteLine(notGenerated);
+            Console.WriteLine(nExists);
+            Console.WriteLine(uploaded);
             return ProgramErrorCodes.Contacts_DirectoryAndContactsFailed;
         }
-        else if (!directoryExists && result.GeneratedContacts && !result.UploadedContacts)
+        else if (!directoryExists && result.ContactLocation.IsSuccess && !result.UploadedContacts)
         {
-            System.Console.WriteLine(generated);
-            System.Console.WriteLine(exists);
-            System.Console.WriteLine(nUploaded);
+            Console.WriteLine(generated);
+            Console.WriteLine(exists);
+            Console.WriteLine(nUploaded);
             return ProgramErrorCodes.Contacts_DirectoryAndUploadFailed;
         }
-        else if (directoryExists && !result.GeneratedContacts && !result.UploadedContacts)
+        else if (directoryExists && !result.ContactLocation.IsSuccess && !result.UploadedContacts)
         {
-            System.Console.WriteLine(notGenerated);
-            System.Console.WriteLine(exists);
-            System.Console.WriteLine(nUploaded);
+            Console.WriteLine(notGenerated);
+            Console.WriteLine(exists);
+            Console.WriteLine(nUploaded);
             return ProgramErrorCodes.Contacts_ContactsAndUploadFailed;
         }
-        else if (!directoryExists && !result.GeneratedContacts && !result.UploadedContacts)
+        else if (!directoryExists && !result.ContactLocation.IsSuccess && !result.UploadedContacts)
         {
-            System.Console.WriteLine(notGenerated);
-            System.Console.WriteLine(nExists);
-            System.Console.WriteLine(nUploaded);
+            Console.WriteLine(notGenerated);
+            Console.WriteLine(nExists);
+            Console.WriteLine(nUploaded);
             return ProgramErrorCodes.Contacts_CriticalFailure;
         }
-        System.Console.WriteLine("An unknown error occurred");
+        Console.WriteLine("An unknown error occurred");
         return ProgramErrorCodes.Contacts_Unknown;
     }
     #endregion

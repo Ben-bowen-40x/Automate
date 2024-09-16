@@ -1,6 +1,7 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.DiscrepancyAnalysis;
 using Automate.Domain.ValueObjects;
+using CSharpFunctionalExtensions;
 
 namespace Automate.Application.Discrepancy;
 
@@ -16,7 +17,7 @@ public class DiscrepancyManager(IDiscrepancyService discrepancyService, IReportS
     /// <param name="reportLoc"></param>
     /// <param name="comparisonQuery"></param>
     /// <returns></returns>
-    public Dictionary<bool, FileInfo> ManageDiscrepancyAnalysis(string sourceCsv, string reportLoc, string comparisonQuery)
+    public Result<FileInfo> ManageDiscrepancyAnalysis(string sourceCsv, string reportLoc, string comparisonQuery)
     {
         // Retrieve billed leads via the infrastructure layer
         List<DiscrepancyCall> billedCalls = _discrepancyService.GetBillableSourceCalls(sourceCsv);
@@ -31,9 +32,9 @@ public class DiscrepancyManager(IDiscrepancyService discrepancyService, IReportS
         List<DiscrepancyMatch> analyzed = AnalyzeDiscrepancyWithNotePatterns.FindReasoning(matches);
 
         // Put the matches into a report
-        bool result = _reportService.GenerateDiscrepancyReport(analyzed, out FileInfo file, reportLoc);
+        Result<FileInfo> result = _reportService.GenerateDiscrepancyReport(analyzed, reportLoc);
 
         // Return result
-        return new() { { result, file } };
+        return result;
     }
 }

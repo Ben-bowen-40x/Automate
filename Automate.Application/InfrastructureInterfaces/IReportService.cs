@@ -1,14 +1,15 @@
 ﻿using Automate.Application.UpdateContacts;
 using Automate.Domain.ValueObjects;
+using CSharpFunctionalExtensions;
 
 namespace Automate.Application.InfrastructureInterfaces;
 
 public interface IReportService
 {
-    bool AppendMessageLeadReport(List<QualifiedMessageRecord> messages, out FileInfo file, string reportLocation);
-    bool GenerateContactsReport(List<List<Contacts>> contacts, out DirectoryInfo directory, string reportDirectory);
-    bool GenerateDiscrepancyReport(List<DiscrepancyMatch> matches, out FileInfo file, string reportLocation);
-    bool GenerateMessageLeadReport(string reportDefault, List<QualifiedMessageRecord> messages, out FileInfo file, string reportLocation);
-    bool GenerateLeafMessages(List<IMessage> msgs, out FileInfo file, string location);
-    bool GenerateMessageLeadReportAppend(string reportDefault, List<QualifiedMessageRecord> messages, out FileInfo file, string reportLocation);
+    Result<FileInfo> AppendMessageLeadReport(List<QualifiedMessageRecord> messages, string reportLocation);
+    Result<DirectoryInfo> GenerateContactsReport(List<List<Contacts>> contacts, string reportDirectory);
+    Result<FileInfo> GenerateDiscrepancyReport(List<DiscrepancyMatch> matches, string reportLocation);
+    Result<FileInfo> GenerateMessageLeadReport(string reportDefault, List<QualifiedMessageRecord> messages, string reportLocation);
+    Result<FileInfo> GenerateLeafMessages(List<IMessage> msgs, string location);
+    Result<FileInfo> GenerateMessageLeadReportAppend(string reportDefault, List<QualifiedMessageRecord> messages, string reportLocation);
 }
