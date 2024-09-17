@@ -195,7 +195,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
     {
         // Find out whether the local repository contains records up to the most recent text message
         // Ensure the local file repos exist and are not empty
-        if (!File.Exists(repoLocation) || File.ReadAllText(repoLocation) == string.Empty)
+        if (!File.Exists(repoLocation))
             return true;
 
         // Prepare extraction of calls and customers from local repo
@@ -204,6 +204,8 @@ public class MessageService(IDwhSettings settings) : IMessageService
         {
             // Extract the local repo of calls
             custRepo = JsonRW.DeserializeFile<CustSubJson>(repoLocation);
+            if (custRepo.Count == 0)
+                return true;
         }
         catch
         {
