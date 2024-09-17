@@ -115,7 +115,7 @@ internal class ReportServiceSingleton : IReportService
     }
 
     private string? _msgReportDefault;
-    private string MsgReportDefault(string name) => _msgReportDefault ??= $"{name}_{DateTime.Now.ToString(DateTimeStrings.FileDateTimeFormat)}.csv";
+    private string MsgReportDefault(string name) => _msgReportDefault ??= $"{name}{DateTime.Now.ToString(DateTimeStrings.FileDateTimeFormat)}.csv";
     public bool GenerateMessageLeadReport(string reportDefault, List<QualifiedMessageRecord> messages, out FileInfo file, string reportLocation = "")
     {
         // Create a default report name in case one is not provided
