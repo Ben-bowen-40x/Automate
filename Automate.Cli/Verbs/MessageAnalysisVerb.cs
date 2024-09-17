@@ -12,7 +12,7 @@ internal class MessageAnalysisVerb : IVerb
 
     #region Options
     // Required Options
-    [Option('s', "source", Required = true, HelpText = "Enter the csv file location of message messages." + fileDefault)]
+    [Option('s', "source", Required = true, HelpText = "Enter the csv file location of messages." + fileDefault)]
     public string MessageLocation { get; set; } = string.Empty;
     [Option('r', "reportLocation", Required = false, HelpText = "Enter the location where you would like the report file to be output." + fileDefault + "In any case, the program will print to screen the location where the report file is generated. Also, remember that you are providing the full file path, not a relative path.")]
     public string ReportLocation { get; set; } = string.Empty;
