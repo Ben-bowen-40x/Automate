@@ -124,7 +124,7 @@ internal class MessageAnalysisVerb : IVerb
         {
             Console.WriteLine("The report creation was successful.");
             Console.WriteLine("Here is the report:");
-            Console.WriteLine(result.IsSuccess);
+            Console.WriteLine(result.Value);
         }
         else
         {
