@@ -1,22 +1,6 @@
 {
   "profiles": {
 
-    // Example
-    "Example - All Options": {
-      "commandName": "Project",
-      "commandLineArgs": "example -f ./ -s ../ -t ../../../../",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
-      }
-    },
-    "Example - No Options": {
-      "commandName": "Project",
-      "commandLineArgs": "example",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
-      }
-    },
-
     // Discrepancy
     "Analyze Discrepancy - Always Edit": {
       "commandName": "Project",
@@ -132,6 +116,30 @@
       }
     },
 
+    // Reset LeafApi
+    "Update Leaf Api Repo -- Default Repo Locations -- Hard update": {
+      "commandName": "Project",
+      "commandLineArgs": "updateApiRepo -ut Leaf",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Update Leaf Api Repo -- Default Repo Locations -- Soft update": {
+      "commandName": "Project",
+      "commandLineArgs": "updateApiRepo -t Leaf",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Update Leaf Api Repo -- Default Repo Locations -- Force update": {
+      "commandName": "Project",
+      "commandLineArgs": "updateApiRepo -uft Leaf",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+
+    /*
     // Test Reset Messages
     "test - Analyze Messages - Reset Pan to Power Bi test": {
       "commandName": "Project",
@@ -176,7 +184,6 @@
       }
     },
 
-    /*
     // Test Append Messages
     "test - Analyze Messages - Append Pan to Power Bi test": {
       "commandName": "Project",
@@ -220,32 +227,7 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    //*/
 
-    // Reset LeafApi
-    "Update Leaf Api Repo -- Default Repo Locations -- Hard update": {
-      "commandName": "Project",
-      "commandLineArgs": "updateApiRepo -ut Leaf",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
-      }
-    },
-    "Update Leaf Api Repo -- Default Repo Locations -- Soft update": {
-      "commandName": "Project",
-      "commandLineArgs": "updateApiRepo -t Leaf",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
-      }
-    },
-    "Update Leaf Api Repo -- Default Repo Locations -- Force update": {
-      "commandName": "Project",
-      "commandLineArgs": "updateApiRepo -uft Leaf",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
-      }
-    },
-
-    ///*
     // Reset LeafApi Test
     "Update Leaf Api Repo -- Default Repo Locations -- Hard update -- Test": {
       "commandName": "Project",
@@ -267,7 +249,23 @@
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
-    }
+    },
     //*/
+
+    // Example
+    "Example - All Options": {
+      "commandName": "Project",
+      "commandLineArgs": "example -f ./ -s ../ -t ../../../../",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Example - No Options": {
+      "commandName": "Project",
+      "commandLineArgs": "example",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
   }
 }
