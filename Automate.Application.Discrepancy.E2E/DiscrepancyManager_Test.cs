@@ -3,6 +3,7 @@ using Automate.Domain.SolutionFunctionality;
 using Automate.Infrastructure.AnalyzeDiscrepancyService;
 using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.ReportingService;
+using CSharpFunctionalExtensions;
 
 namespace Automate.Application.EndToEndTest.DiscrepancyManagement;
 
@@ -21,10 +22,10 @@ public class DiscrepancyManager_Test(IDwhSettings settings)
         DiscrepancyManager manager = new(new DiscrepancyService(settings), new ReportServiceSingleton());
 
         // Act
-        Dictionary<bool, FileInfo> result = manager.ManageDiscrepancyAnalysis("","","");
+        Result<FileInfo> result = manager.ManageDiscrepancyAnalysis("", "", "");
         StringLogger.ProduceLog(DateTime.Now, sender, memberName, $"End Test");
 
         // Assert
-        Assert.True(result[true].Exists);
+        Assert.True(result.IsSuccess);
     }
 }
