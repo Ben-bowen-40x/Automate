@@ -31,6 +31,14 @@ internal class Program
       StringLogger.ProduceLog(DateTime.Now, sender, member, $"Ended Execution");
       #endregion
    }
+   private static int Run(object obj, IServiceProvider service)
+   {
+      return obj switch
+      {
+         IVerb o => o.Run(service),
+         _ => throw new Exception(),
+      };
+   }
 
    #region Private Members
    private static ParserResult<object> Execute(string[] args, IServiceProvider service)
@@ -43,14 +51,6 @@ internal class Program
       return result;
    }
 
-   private static int Run(object obj, IServiceProvider service)
-   {
-      return obj switch
-      {
-         IVerb o => o.Run(service),
-         _ => throw new Exception(),
-      };
-   }
 
    private static Type[] LoadVerbs()
    {
