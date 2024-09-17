@@ -137,7 +137,7 @@
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
-    }
+    },
 
     /*
     // Test Reset Messages
