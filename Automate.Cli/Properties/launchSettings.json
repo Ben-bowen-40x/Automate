@@ -1,5 +1,22 @@
 {
   "profiles": {
+
+    // Example
+    "Example - All Options": {
+      "commandName": "Project",
+      "commandLineArgs": "example -f ./ -s ../ -t ../../../../",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Example - No Options": {
+      "commandName": "Project",
+      "commandLineArgs": "example",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
     // Discrepancy
     "Analyze Discrepancy - Always Edit": {
       "commandName": "Project",
@@ -250,23 +267,7 @@
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
-    },
-    //*/
-
-    // Example
-    "Example - All Options": {
-      "commandName": "Project",
-      "commandLineArgs": "example -f ./ -s ../ -t ../../../../",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
-      }
-    },
-    "Example - No Options": {
-      "commandName": "Project",
-      "commandLineArgs": "example",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
-      }
     }
+    //*/
   }
 }
