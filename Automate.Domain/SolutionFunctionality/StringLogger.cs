@@ -297,13 +297,14 @@ public class StringLogger
     }
 
     // For compliance, remove historical logs
+
+    private static readonly TimeSpan thirty = TimeSpan.FromDays(30);
     private static void RemoveHistoricalLogs(params FileInfo[] logFiles)
     {
         // Check the current time
         var now = DateTime.Now;
 
         // Create thirty datys
-        var thirty = TimeSpan.FromDays(30);
 
         // Files to delete
         List<FileInfo> filesForDelete = new(logFiles.Length);
