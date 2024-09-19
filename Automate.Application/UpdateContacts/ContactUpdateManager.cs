@@ -9,8 +9,8 @@ public class ContactUpdateManager(IUpdateContactsService updateService, IReportS
     public UpdateResult UpdateContacts(string reportDirectory)
     {
         List<List<Contacts>> contacts = updateService.GenerateContactLists();
-        Task<bool> success = updateService.ExecuteContactUpdateAsync(contacts);
-        bool resultResult = success.Result;
+        Result success = updateService.ExecuteContactUpdateAsync(contacts);
+        bool resultResult = success.IsSuccess;
         Result<DirectoryInfo> report = reportService.GenerateContactsReport(contacts, reportDirectory);
         
         return new(resultResult, report);

@@ -1,9 +1,10 @@
 ﻿using Automate.Application.UpdateContacts;
+using CSharpFunctionalExtensions;
 
 namespace Automate.Application.InfrastructureInterfaces;
 
 public interface IUpdateContactsService
 {
-    Task<bool> ExecuteContactUpdateAsync(List<List<Contacts>> contacts);
+    Result ExecuteContactUpdateAsync(List<List<Contacts>> contacts);
     List<List<Contacts>> GenerateContactLists();
 }
