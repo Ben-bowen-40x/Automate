@@ -36,7 +36,7 @@ internal class Program
       return obj switch
       {
          IVerb o => o.Run(service),
-         _ => throw new Exception(),
+         _ => throw new Exception($"The verb used for parsing the command line does not implement {nameof(IVerb)}, which is invalid."),
       };
    }
 
