@@ -1,7 +1,6 @@
 ﻿using Automate.Domain.ValueObjects;
 
 namespace Automate.Application.InfrastructureInterfaces;
-
 public class LeafThread : IConvert
 {
     public string? Uuid { get; set; }
