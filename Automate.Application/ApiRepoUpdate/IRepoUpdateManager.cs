@@ -2,7 +2,7 @@
 
 namespace Automate.Application.ApiRepoUpdate;
 
-public interface ILeafApiRepoUpdateManager
+public interface IRepoUpdateManager
 {
     Result Manage(string valueRepo, string leafRepo, bool hardUpdate, bool forceUpdate);
 }

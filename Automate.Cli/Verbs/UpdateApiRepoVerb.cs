@@ -55,12 +55,12 @@ internal class UpdateApiRepoVerb : IVerb
         switch (Type)
         {
             case ApiType.Leaf:
-                var manager = service.GetRequiredService<ILeafApiRepoUpdateManager>();
+                var manager = service.GetRequiredService<IRepoUpdateManager>();
                 var result = manager.Manage(valueInfo, repoInfo, Update, ForceUpdate);
                 code = DetermineReturnCode(result);
                 break;
             default:
-                var m = service.GetRequiredService<ILeafApiRepoUpdateManager>();
+                var m = service.GetRequiredService<IRepoUpdateManager>();
                 var r = m.Manage(valueInfo, repoInfo, Update, ForceUpdate);
                 code = DetermineReturnCode(r);
                 break;

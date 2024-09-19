@@ -17,7 +17,7 @@ public static class InjectApplication
         services.AddScoped<IContactUpdateManager, ContactUpdateManager>();
         services.AddScoped<IDiscrepancyManager, DiscrepancyManager>();
         services.AddScoped<IJsonToCsvConversionManager, JsonToCsvConversionManager>();
-        services.AddScoped<ILeafApiRepoUpdateManager, LeafApiRepoUpdateManager>();
+        services.AddScoped<IRepoUpdateManager, LeafApiRepoUpdateManager>();
         return services;
     }
 }

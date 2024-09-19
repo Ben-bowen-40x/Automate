@@ -4,15 +4,15 @@ using CSharpFunctionalExtensions;
 
 namespace Automate.Application.ApiRepoUpdate;
 
-public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactory factory, IReportService report) : ILeafApiRepoUpdateManager
+public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactory factory, IReportService report) : IRepoUpdateManager
 {
     readonly ILeafApiService _service = service;
     readonly IReportService _reportService = report;
 
-    public Result Manage(string valueRepo, string leafRepo, bool hardUpdate, bool forceUpdate)
+    public Result Manage(string valueRepoCsv, string rawRepoJson, bool hardUpdate, bool forceUpdate)
     {
         HttpClient client = _service.GetClient(factory);
-        bool match = _service.ReposMatch(out List<IMessage> msgs, out List<LeafThread> leaf, valueRepo, leafRepo);
+        bool match = _service.ReposMatch(out List<IMessage> msgs, out List<LeafThread> leaf, valueRepoCsv, rawRepoJson);
         const string failure = "Call to the API failed";
 
         // Force Update
@@ -28,10 +28,10 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                 if (threadVals.IsSuccess)
                 {
                     var value = threadVals.Value;
-                    _service.Update(value, leafRepo);
+                    _service.Update(value, rawRepoJson);
 
                     List<IMessage> m = value.Select(v => v.ConvertToMessage()).ToList();
-                    Result<FileInfo> file = _reportService.GenerateLeafMessages(m, valueRepo);
+                    Result<FileInfo> file = _reportService.GenerateLeafMessages(m, valueRepoCsv);
 
                     return file;
                 }
@@ -53,12 +53,12 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                 if (threadVals.IsSuccess)
                 {
                     List<LeafThread> value = threadVals.Value;
-                    _service.Update(leaf, value, leafRepo);
+                    _service.Update(leaf, value, rawRepoJson);
 
                     List<IMessage> mVal = value.Select(v => v.ConvertToMessage()).ToList();
                     List<IMessage> mLeaf = leaf.Select(v => v.ConvertToMessage()).ToList();
                     List<IMessage> m = [.. mLeaf, .. mVal];
-                    var result = _reportService.GenerateLeafMessages(m, valueRepo);
+                    var result = _reportService.GenerateLeafMessages(m, valueRepoCsv);
 
                     return result;
                 }
@@ -71,7 +71,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
         else
         {
             List<IMessage> m = leaf.Select(l => l.ConvertToMessage()).ToList();
-            var result = _reportService.GenerateLeafMessages(m, valueRepo);
+            var result = _reportService.GenerateLeafMessages(m, valueRepoCsv);
             return result;
         }
     }
