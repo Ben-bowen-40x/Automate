@@ -1,4 +1,4 @@
-﻿using Automate.Application.ApiRepoUpdate;
+﻿using Automate.Application.RepoUpdate;
 using Automate.Cli.Verbs.VerbHelper;
 using Automate.Infrastructure.LeafClientService;
 using CommandLine;
@@ -13,7 +13,7 @@ internal class UpdateRepoVerb : IVerb
     private const string VerbName = "updateRepo";
 
     #region Options
-    [Option('t', "type", Required = true, HelpText = UpdateApiRepoHelper.ApiTypeHelpText)]
+    [Option('t', "type", Required = true, HelpText = UpdateRepoHelper.RepoTypeHelpText)]
     public RepoType Type { get; set; }
 
     [Option('v', "valueRepo", Required = false, HelpText = "Enter the existing repository that will be updated. This repo is for value objects only and is used elsewhere. If a value is not provided, a default will be used. This value must be a CSV file.")]
@@ -48,7 +48,7 @@ internal class UpdateRepoVerb : IVerb
             ? ""
             : ApiRepositoryLoc;
 
-        // prepare result
+        // Prepare result
         int code;
 
         // Execute based on the specified repository
