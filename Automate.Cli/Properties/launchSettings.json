@@ -119,21 +119,21 @@
     // Reset LeafApi
     "Update Leaf Api Repo -- Default Repo Locations -- Hard update": {
       "commandName": "Project",
-      "commandLineArgs": "updateApiRepo -ut Leaf",
+      "commandLineArgs": "updateRepo -ut Leaf",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Update Leaf Api Repo -- Default Repo Locations -- Soft update": {
       "commandName": "Project",
-      "commandLineArgs": "updateApiRepo -t Leaf",
+      "commandLineArgs": "updateRepo -t Leaf",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Update Leaf Api Repo -- Default Repo Locations -- Force update": {
       "commandName": "Project",
-      "commandLineArgs": "updateApiRepo -uft Leaf",
+      "commandLineArgs": "updateRepo -ft Leaf",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

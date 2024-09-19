@@ -8,13 +8,13 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Automate.Cli.Verbs;
 
 [Verb(VerbName, HelpText = "This updates the local repo of a specified Api. Obviously, this is get-only.")]
-internal class UpdateApiRepoVerb : IVerb
+internal class UpdateRepoVerb : IVerb
 {
-    private const string VerbName = "updateApiRepo";
+    private const string VerbName = "updateRepo";
 
     #region Options
     [Option('t', "type", Required = true, HelpText = UpdateApiRepoHelper.ApiTypeHelpText)]
-    public ApiType Type { get; set; }
+    public RepoType Type { get; set; }
 
     [Option('v', "valueRepo", Required = false, HelpText = "Enter the existing repository that will be updated. This repo is for value objects only and is used elsewhere. If a value is not provided, a default will be used. This value must be a CSV file.")]
     public string ValueRepositoryLoc { get; set; } = string.Empty;
@@ -42,10 +42,10 @@ internal class UpdateApiRepoVerb : IVerb
 
         // Validate Input
         string valueInfo = !File.Exists(ValueRepositoryLoc)
-            ? LeafApiService.LeafRepoLocation
+            ? ""
             : ValueRepositoryLoc;
         string repoInfo = !File.Exists(ApiRepositoryLoc)
-            ? LeafApiService.MessageRepoLocation
+            ? ""
             : ApiRepositoryLoc;
 
         // prepare result
@@ -54,7 +54,7 @@ internal class UpdateApiRepoVerb : IVerb
         // Execute based on the specified repository
         switch (Type)
         {
-            case ApiType.Leaf:
+            case RepoType.Leaf:
                 var manager = service.GetRequiredService<IRepoUpdateManager>();
                 var result = manager.Manage(valueInfo, repoInfo, Update, ForceUpdate);
                 code = DetermineReturnCode(result);
