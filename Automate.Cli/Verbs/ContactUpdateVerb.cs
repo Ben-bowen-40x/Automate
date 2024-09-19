@@ -9,8 +9,10 @@ namespace Automate.Cli.Verbs;
 [Verb(UpdateContacts, HelpText = "Choose to update the contacts list. This either produces or accepts an existing folder location where the contact list files will be housed.")]
 internal class ContactUpdateVerb : IVerb
 {
+    private const string UpdateContacts = "updateContacts";
+
     #region Options
-    [Option('r', "report", Required = false, HelpText = "Enter the full name of the report file, from C\\ to the folder name where the report set should be deposited. Keep in mind that it must be a directory.")]
+    [Option('r', "report", Required = false, HelpText = "Enter the full name of the directory where the contact files should be deposited.")]
     public string ReportDirectory { get; set; } = string.Empty;
     #endregion
 
@@ -38,18 +40,19 @@ internal class ContactUpdateVerb : IVerb
     #endregion
 
     #region Private
-    private const string UpdateContacts = "updateContacts";
-
     private static int DetermineReturnCode(UpdateResult result, bool directoryExists)
     {
         const string generated = "The contacts where generated.";
-        const string notGenerated = "At least one contact was not generated";
+        const string nGenerated = "At least one contact was not generated";
+        
+        const string uploaded = "The contacts were successfully uploaded";
+        const string nUploaded = "The contacts were not successfully uploaded";
+        
         string exists = result.ContactLocation.IsSuccess
             ? $"The directory containing the contacts given by the user exists. Here is the directory:\n{result.ContactLocation.Value.FullName}"
             : $"The directory containing the contacts given by the user does not exist, or the contacts could not be generated.";
-        string nExists = $"The directory provided by the user did not exist, so one was generated instead.";
-        const string uploaded = "The contacts were successfully uploaded";
-        const string nUploaded = "The contacts were not successfully uploaded";
+        const string nExists = "The directory provided by the user did not exist, so one was generated instead.";
+        
         if (directoryExists && result.ContactLocation.IsSuccess && result.UploadedContacts)
         {
             Console.WriteLine(generated);
@@ -66,7 +69,7 @@ internal class ContactUpdateVerb : IVerb
         }
         else if (directoryExists && !result.ContactLocation.IsSuccess && result.UploadedContacts)
         {
-            Console.WriteLine(notGenerated);
+            Console.WriteLine(nGenerated);
             Console.WriteLine(exists);
             Console.WriteLine(uploaded);
             return ProgramErrorCodes.Contacts_ContactGenFailed;
@@ -80,7 +83,7 @@ internal class ContactUpdateVerb : IVerb
         }
         else if (!directoryExists && !result.ContactLocation.IsSuccess && result.UploadedContacts)
         {
-            Console.WriteLine(notGenerated);
+            Console.WriteLine(nGenerated);
             Console.WriteLine(nExists);
             Console.WriteLine(uploaded);
             return ProgramErrorCodes.Contacts_DirectoryAndContactsFailed;
@@ -94,14 +97,14 @@ internal class ContactUpdateVerb : IVerb
         }
         else if (directoryExists && !result.ContactLocation.IsSuccess && !result.UploadedContacts)
         {
-            Console.WriteLine(notGenerated);
+            Console.WriteLine(nGenerated);
             Console.WriteLine(exists);
             Console.WriteLine(nUploaded);
             return ProgramErrorCodes.Contacts_ContactsAndUploadFailed;
         }
         else if (!directoryExists && !result.ContactLocation.IsSuccess && !result.UploadedContacts)
         {
-            Console.WriteLine(notGenerated);
+            Console.WriteLine(nGenerated);
             Console.WriteLine(nExists);
             Console.WriteLine(nUploaded);
             return ProgramErrorCodes.Contacts_CriticalFailure;
