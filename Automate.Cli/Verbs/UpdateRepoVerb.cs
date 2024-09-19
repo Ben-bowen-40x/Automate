@@ -34,11 +34,11 @@ internal class UpdateRepoVerb : IVerb
     {
         // Inform user of the chosen values
         Console.WriteLine($"The user chose the following values:");
-        Console.WriteLine($"- Api type: \"{Type}\"");
-        Console.WriteLine($"- Value Repository location: \n    {DirectoryManipulation.LocationInformation(ValueRepositoryLoc)}");
-        Console.WriteLine($"- Api Repository location: \n    {DirectoryManipulation.LocationInformation(ApiRepositoryLoc)}");
-        Console.WriteLine($"- Whether to perform a force update on the repositories: {ForceUpdate}");
+        Console.WriteLine($"- Repo type: \"{Type}\"");
+        Console.WriteLine($"- Value Repository location: \n\t{DirectoryManipulation.LocationInformation(ValueRepositoryLoc)}");
+        Console.WriteLine($"- Repository location: \n\t{DirectoryManipulation.LocationInformation(ApiRepositoryLoc)}");
         Console.WriteLine($"- Whether to perform a hard update on the repositories: {Update}");
+        Console.WriteLine($"- Whether to perform a force update on the repositories (This will override the Hard Update option): {ForceUpdate}");
 
         // Validate Input
         string valueInfo = !File.Exists(ValueRepositoryLoc)
