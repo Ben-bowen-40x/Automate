@@ -17,7 +17,7 @@ public class DwhRepoUpdate
         var values = DwhContextHelpers.GetItemsFromRawAsync(context, query);
         if (!values.IsFaulted)
             return values.Result.ToList();
-        return Result.Failure<List<TEntity>>("Getting values from Dwh failed.");
+        return Result.Failure<List<TEntity>>("Failed to get values from Dwh.");
     }
 
     internal Result<List<TEntity>> GetItems<TEntity>(DwhContext<TEntity> context, List<TEntity> existingRepo, string query) where TEntity : class
@@ -25,7 +25,7 @@ public class DwhRepoUpdate
         var values = DwhContextHelpers.GetItemsFromRawAsync(context, query);
         if (!values.IsFaulted)
             return values.Result.ToList();
-        return Result.Failure<List<TEntity>>("Getting values from Dwh failed.");
+        return Result.Failure<List<TEntity>>("Failed to get values from Dwh.");
     }
 
     public List<TTarget> Convert<TTarget, TEntity>(List<TEntity> list) where TEntity : IConversionCompatible
