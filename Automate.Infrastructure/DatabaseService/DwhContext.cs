@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Automate.Infrastructure.DatabaseService;
 
-internal class DwhContext<T>(string connectionStr) : DbContext where T : class
+public class DwhContext<T>(string connectionStr) : DbContext where T : class
 {
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     internal DbSet<T> Result { get; set; }
