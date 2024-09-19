@@ -2,7 +2,7 @@
 using Automate.Domain.ValueObjects;
 using CSharpFunctionalExtensions;
 
-namespace Automate.Application.ApiRepoUpdate;
+namespace Automate.Application.RepoUpdate;
 
 public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactory factory, IReportService report) : IRepoUpdateManager
 {

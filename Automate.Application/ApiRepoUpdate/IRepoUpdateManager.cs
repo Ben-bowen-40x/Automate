@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace Automate.Application.ApiRepoUpdate;
+namespace Automate.Application.RepoUpdate;
 
 public interface IRepoUpdateManager
 {

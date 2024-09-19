@@ -4,7 +4,7 @@ using Automate.Application.MessageAnalysis;
 using Automate.Application.UpdateContacts;
 using Automate.Application.JsonCsvConversion;
 using Automate.Application.MessageReportAnalysis;
-using Automate.Application.ApiRepoUpdate;
+using Automate.Application.RepoUpdate;
 
 namespace Automate.Application;
 
