@@ -2,10 +2,11 @@
 using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.DateTimeConversion;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
-public class SplitDateMountainOffsetMsgCol : IMessageConvert
+public class SplitDateMountainOffsetMsgCol : IConvert
 {
     [Name("Customer #")]
     public string? PhoneNumber { get; set; }
@@ -17,7 +18,7 @@ public class SplitDateMountainOffsetMsgCol : IMessageConvert
     public string? Contents { get; set; }
     [Name("Account Name")]
     public string? Source { get; set; }
-    public IMessage ConvertToMessage()
+    public IMessage Convert<SplitDateMountainOffsetMsgCl, IMessage>()
     {
         // Convert local to DateTimeOffset
         DateTime startDate =
@@ -44,6 +45,11 @@ public class SplitDateMountainOffsetMsgCol : IMessageConvert
             ? string.Empty
             : CsvMapsHelper.ContentsJoined(Contents!);
 
-        return new Message(number, start, message, source);
+        // Cast new message into IMessage
+        List<Message> rlist = [new Message(number, start, message, source)];
+        List<IMessage> mlist = (List<IMessage>)rlist.Cast<IMessage>();
+        IMessage result = mlist[0];
+
+        return result;
     }
 }

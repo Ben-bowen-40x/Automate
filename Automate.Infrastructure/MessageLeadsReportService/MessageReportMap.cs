@@ -4,7 +4,7 @@ using Automate.Infrastructure.ReportingService;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 namespace Automate.Infrastructure.MessageLeadsReportService;
-internal class MessageReportMap : ClassMap<QualifiedMessageRecord>, IMessageConvert
+internal class MessageReportMap : ClassMap<QualifiedMessageRecord>, IConvert
 {
     MessageReportMap()
     {
@@ -68,7 +68,7 @@ internal class MessageReportMap : ClassMap<QualifiedMessageRecord>, IMessageConv
     public DateTime SubCancelDate { get; set; }
     [Name(QualifiedMessageMap.Sellers)]
     public string? Sellers { get; set; }
-    public IMessage ConvertToMessage()
+    public IMessage Convert<MessageReportMap, IMessage>()
     {
         // Convert phone number
         PhoneNumber num = new(Number);
@@ -86,13 +86,17 @@ internal class MessageReportMap : ClassMap<QualifiedMessageRecord>, IMessageConv
             ? string.Empty 
             : Source;
 
-        // Return result
-        return new Message(num, date, content, source);
+        // Cast new message into IMessage
+        List<Message> rlist = [new Message(num, date, content, source)];
+        List<IMessage> mlist = (List<IMessage>)rlist.Cast<IMessage>();
+        IMessage result = mlist[0];
+
+        return result;
     }
     public QualifiedMessageRecord ConvertToQualifiedRecord()
     {
         // Retrieve message info from the data
-        IMessage message = ConvertToMessage();
+        IMessage message = Convert<MessageReportMap, IMessage>();
 
         // Convert sellers
         string sellers = Sellers is null || Sellers == string.Empty

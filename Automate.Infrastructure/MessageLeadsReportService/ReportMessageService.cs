@@ -56,14 +56,14 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         IEnumerable<MessageReportMap> reportColumns = CsvRW.ParseFromCsv<MessageReportMap>(reportLocation);
 
         // Convert report columns to IMessage
-        List<IMessage> reportRecords = reportColumns.Select(m => m.ConvertToMessage()).ToList();
+        List<IMessage> reportRecords = reportColumns.Select(m => m.Convert<MessageReportMap, IMessage>()).ToList();
 
         // Convert report columns to qualified messages
         records = reportColumns.Select(m => m.ConvertToQualifiedRecord()).ToList();
 
         return reportRecords;
     }
-    public List<IMessage> GetMessages<T>(string messageLocation) where T : IMessageConvert
+    public List<IMessage> GetMessages<T>(string messageLocation) where T : IConvert
     {
         // Retrieve Messages
         string msgLocStr = messageLocation == string.Empty
@@ -73,7 +73,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
 
         // Convert from column type to IMessage type...
         List<IMessage> msgs = messageCol
-            .Select(m => m.ConvertToMessage()).ToList();
+            .Select(m => m.Convert<T, IMessage>()).ToList();
 
         // Remove duplicates from message origin
         List<IMessage> uniqueMsgs = RemoveDuplicates(msgs);

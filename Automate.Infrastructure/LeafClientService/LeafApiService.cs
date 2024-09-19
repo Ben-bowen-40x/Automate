@@ -88,7 +88,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
 
         // Retrieve contents
         List<MessageClass> content = CsvRW.ParseFromCsv<MessageClass>(repo);
-        var conversion = content.Select(c => c.ConvertToMessage()).ToList();
+        List<IMessage> conversion = content.Select(c => c.Convert<MessageClass, IMessage>()).ToList();
         return conversion;
     }
 

@@ -3,13 +3,13 @@ using Automate.Domain.ValueObjects;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
-public class MessageClass : IMessageConvert
+public class MessageClass : IConvert
 {
     public string? Number { get; set; }
     public string? Contents { get; set; }
     public string? Source { get; set; }
     public DateTimeOffset Date { get; set; }
-    public IMessage ConvertToMessage()
+    public IMessage Convert<MessageClass, IMessage>()
     {
         // Convert number
         PhoneNumber num = Number is not null
@@ -26,6 +26,11 @@ public class MessageClass : IMessageConvert
             ? Source
             : string.Empty;
 
-        return new Message(num, Date, contents, source); 
+        // Cast new message into IMessage
+        List<Message> rlist = [new Message(num, Date, contents, source)];
+        List<IMessage> mlist = (List<IMessage>)rlist.Cast<IMessage>();
+        IMessage result = mlist[0];
+
+        return result;
     }
 }

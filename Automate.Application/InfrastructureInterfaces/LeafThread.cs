@@ -2,7 +2,7 @@
 
 namespace Automate.Application.InfrastructureInterfaces;
 
-public class LeafThread : IMessageConvert
+public class LeafThread : IConvert
 {
     public string? Uuid { get; set; }
     public string? Profile { get; set; }
@@ -18,7 +18,7 @@ public class LeafThread : IMessageConvert
     public Prospect? Prospect { get; set; }
     public Msg[]? Messages { get; set; }
     public Assignee? Assignee { get; set; }
-    public IMessage ConvertToMessage()
+    public IMessage Convert<LeafThread, IMessage>()
     {
         // Get the first chronological message in the list
         List<Msg> messages = Messages is not null && Messages.Length > 0
@@ -44,7 +44,12 @@ public class LeafThread : IMessageConvert
             ? first.Source
             : string.Empty;
 
-        return new Message(num, dto, contents, source);
+        // Cast new message into IMessage
+        List<Message> rlist = [new Message(num, dto, contents, source)];
+        List<IMessage> mlist = (List<IMessage>)rlist.Cast<IMessage>();
+        IMessage result = mlist[0];
+
+        return result;
 
         static string ContentsJoined(string contents)
         {

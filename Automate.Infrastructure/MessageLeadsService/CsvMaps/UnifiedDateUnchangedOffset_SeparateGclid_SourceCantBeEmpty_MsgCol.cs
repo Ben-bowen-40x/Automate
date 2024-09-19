@@ -4,17 +4,17 @@ using Automate.Application.InfrastructureInterfaces;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
-public class UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol : IMessageConvert
+public class UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol : IConvert
 {
-    [Name("Prospect Cellphone", "Phone Number","Number")]
+    [Name("Prospect Cellphone", "Phone Number", "Number")]
     public string? PhoneNumber { get; set; }
     [Name("Creation", "Message Creation", "Date")]
     public string? StartDate { get; set; }
-    [Name("Message","Contents")]
+    [Name("Message", "Contents")]
     public string? Contents { get; set; }
-    [Name("Message Source","Source")]
+    [Name("Message Source", "Source")]
     public string? Source { get; set; }
-    public IMessage ConvertToMessage()
+    public IMessage Convert<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol, IMessage>()
     {
         // Convert local to DateTimeOffset
         DateTimeOffset start =
@@ -38,7 +38,12 @@ public class UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol :
             ? string.Empty
             : CsvMapsHelper.ContentsJoined(Contents!);
 
-        return new Message(number, start, message, url);
+        // Cast new message into IMessage
+        List<Message> rlist = [new Message(number, start, message, url)];
+        List<IMessage> mlist = (List<IMessage>)rlist.Cast<IMessage>();
+        IMessage result = mlist[0];
+
+        return result;
     }
 
     private static string Gclid(string str)

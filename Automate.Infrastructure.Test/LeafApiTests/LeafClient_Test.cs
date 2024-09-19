@@ -40,7 +40,7 @@ public class LeafClient_Test
         var headers = response.Headers;
         LeafThread[]? result = await response.Content.ReadFromJsonAsync<LeafThread[]>();
         IEnumerable<IMessage> messages = result is not null && result.Length > 0
-            ? result.Select(r => r.ConvertToMessage())
+            ? result.Select(r => r.Convert<LeafThread, IMessage>())
             : [];
     }
     #endregion
@@ -94,7 +94,7 @@ public class LeafClient_Test
                 List<LeafThread> value = result.Value;
                 int ct = value.Count;
                 string repo = $"{Config.LeafApiTestRepo}/LeafTestRepo_{ct}_{now}.json";
-                List<IMessage> messages = value.Select(v => v.ConvertToMessage()).ToList();
+                List<IMessage> messages = value.Select(v => v.Convert<LeafThread, IMessage>()).ToList();
                 JsonRW.SerializeToFile(repo, messages);
                 resume = ct == limit;
             }
@@ -127,7 +127,7 @@ public class LeafClient_Test
         int c = limit * 10;
         List<LeafThread> masterList = new(c);
         List<IMessage> messageList = new(c);
-        
+
         bool resume = true;
         while (resume)
         {
@@ -138,7 +138,7 @@ public class LeafClient_Test
                 List<LeafThread> value = result.Value;
                 value.ForEach(v => masterList.Add(v));
 
-                List<IMessage> messages = value.Select(v => v.ConvertToMessage()).ToList();
+                List<IMessage> messages = value.Select(v => v.Convert<LeafThread, IMessage>()).ToList();
                 messages.ForEach(m => messageList.Add(m));
 
                 resume = value.Count == limit;

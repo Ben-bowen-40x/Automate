@@ -46,14 +46,14 @@ public class MessageService(IDwhSettings settings) : IMessageService
     #endregion
 
     #region Implementation
-    public List<IMessage> GetMessages<T>(string msgs) where T : IMessageConvert
+    public List<IMessage> GetMessages<T>(string msgs) where T : IConvert
     {
         // Retrieve Messages
         string msgLocStr = msgs == string.Empty ? Location(_messagesLocation) : msgs;
         IEnumerable<T> messageCol = CsvRW.ParseFromCsv<T>(msgLocStr);
 
         // Convert from column type to IMessage type
-        IEnumerable<IMessage> messages = messageCol.Select(m => m.ConvertToMessage());
+        IEnumerable<IMessage> messages = messageCol.Select(m => m.Convert<T, IMessage>());
         List<IMessage> msgList = messages.ToList();
 
         // Remove duplicates

@@ -9,7 +9,7 @@ public class MessageAnalysisManager(IMessageService textService, IReportService 
     private readonly IMessageService _textService = textService;
     private readonly IReportService _reportService = reportService;
 
-    public Result<FileInfo> ManageMessageAnalysis<T>(string reportDefault, string messages, string callQuery, string customerQuery, string report) where T : IMessageConvert
+    public Result<FileInfo> ManageMessageAnalysis<T>(string reportDefault, string messages, string callQuery, string customerQuery, string report) where T : IConvert
     {
         // Retrieve Items
         List<IMessage> textMessages = _textService.GetMessages<T>(messages);

@@ -1,10 +1,11 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.ValueObjects;
 using CsvHelper.Configuration.Attributes;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
-public class NoTimeMsgCol : IMessageConvert
+public class NoTimeMsgCol : IConvert
 {
     [Name("Phone")]
     public string? PhoneNumber { get; set; }
@@ -14,7 +15,7 @@ public class NoTimeMsgCol : IMessageConvert
     public string? Contents { get; set; }
     [Name("Referring URL")]
     public string? Source { get; set; }
-    public IMessage ConvertToMessage()
+    public IMessage Convert<NoTimeMsgCol, IMessage>()
     {
         // Convert Phone Number
         PhoneNumber number = PhoneNumber is null || PhoneNumber == string.Empty ? new(0) : new(PhoneNumber);
@@ -33,7 +34,11 @@ public class NoTimeMsgCol : IMessageConvert
         // Convert Source
         string source = Source is null || Source == string.Empty ? string.Empty : Source;
 
-        // Return
-        return new Message(number, date, contents, source);
+        // Cast new message into IMessage
+        List<Message> rlist = [new Message(number, date, contents, source)];
+        List<IMessage> mlist = (List<IMessage>)rlist.Cast<IMessage>();
+        IMessage result = mlist[0];
+
+        return result;
     }
 }
