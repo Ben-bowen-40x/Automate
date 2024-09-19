@@ -73,7 +73,6 @@ public class StringLogger
             string location = GetFullName.GetMemberName(sender, memberName);
             AddLogInternal([.. args, $"Ended Log {location}", $"Log produced at {end.ToString(DateTimeStrings.InternalDateTimeFormat)}"]);
             _builder!.Append("\n\n");
-            RemoveHistoricalLogs();
             Log();
         }
     }
@@ -198,6 +197,8 @@ public class StringLogger
             else
                 File.AppendAllText(log1.FullName, _builder.ToString());
 
+            RemoveHistoricalLogs(log1, new(logFile2), new(logFile3));
+
             // Reset the private items
             _builder = null;
             _firstEntry = null;
@@ -224,7 +225,6 @@ public class StringLogger
             }
 
             // Remove historical files from log folder
-            RemoveHistoricalLogs(logFolder, logFolder2, logFolder3);
         }
 
         static void CheckNextFolder(FileInfo logFolder, FileInfo logFolder2, FileInfo logFolder3)
@@ -303,8 +303,6 @@ public class StringLogger
     {
         // Check the current time
         var now = DateTime.Now;
-
-        // Create thirty datys
 
         // Files to delete
         List<FileInfo> filesForDelete = new(logFiles.Length);
