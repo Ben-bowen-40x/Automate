@@ -2,6 +2,11 @@
 
 public enum DwhQueryType
 {
+    AllCalls,
+    AllCustomers
+}
+public enum DwhConnectionType
+{
     Calls,
-    Customers
+    Customers,
 }
