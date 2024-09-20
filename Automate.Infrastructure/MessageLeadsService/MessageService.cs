@@ -11,7 +11,7 @@ namespace Automate.Infrastructure.MessageLeadsService;
 
 public class MessageService(IDwhSettings settings) : IMessageService
 {
-    readonly RawQuery RawQuery = new(settings);
+    readonly RawQuery _rawQuery = new(settings);
     #region Pathing
     // Parent folder
     private const string _fileLoc = @".info\MessageAnalysis";
@@ -77,7 +77,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
             // Retrieve Calls using Db
             DwhContext<CallDbEntity> callContext = new(settings.CallsConnectionString!);
             FileInfo callLocation = callLoc == string.Empty || !File.Exists(callLoc) ? new(Location(_callRecordQuery)) : new(callLoc);
-            string query = RawQuery.MessageCallQuery(_startDate);
+            string query = _rawQuery.MessageCallQuery(_startDate);
             try
             {
                 Task<IEnumerable<CallDbEntity>> callTask =
@@ -118,7 +118,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
                 customerLocation == string.Empty || !File.Exists(customerLocation)
                 ? new(Location(_customerRecordQuery))
                 : new(customerLocation);
-            string query = RawQuery.MessageCustomerQuery();
+            string query = _rawQuery.MessageCustomerQuery();
             try
             {
                 Task<IEnumerable<CustSubDbEntity>> customerTask =
@@ -172,7 +172,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
         // If the most recent msg occurred before the most recent call AND the first msg occurred after the first call, set the local field to the list of call records
         CallRecordJson recentCall = FindMostRecent(localCalls);
         CallRecordJson firstCall = FindFirst(localCalls);
-        if (DateTimeOffset.Compare(recentMsg.Date, recentCall.Date) < 0 && DateTimeOffset.Compare(firstMsg.Date - RawQuery.NinetyDays, firstCall.Date) > 0)
+        if (DateTimeOffset.Compare(recentMsg.Date, recentCall.Date) < 0 && DateTimeOffset.Compare(firstMsg.Date - _rawQuery.NinetyDays, firstCall.Date) > 0)
         {
             IEnumerable<ICallRecord> convertedCalls = ConvertCallsFromRepo(localCalls);
             _callRecordsFromRepo = convertedCalls.ToList();

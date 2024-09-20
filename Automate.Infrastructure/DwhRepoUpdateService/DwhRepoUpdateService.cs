@@ -8,7 +8,7 @@ namespace Automate.Infrastructure.DwhRepoUpdateService;
 public class DwhRepoUpdateService(IDwhSettings settings) : IDwhRepoUpdateService
 {
     readonly IDwhSettings _settings = settings;
-    readonly RawQuery RawQuery = new(settings);
+    readonly RawQuery _rawQuery = new(settings);
 
     #region Getters
     public string GetConnection(DwhConnectionType type)
@@ -22,9 +22,9 @@ public class DwhRepoUpdateService(IDwhSettings settings) : IDwhRepoUpdateService
     public string GetQuery(DwhQueryType type)
         => type switch
         {
-            DwhQueryType.AllCalls => RawQuery.CallBasicAddon,
-            DwhQueryType.AllCustomers => RawQuery.CustomerBasic,
-            _ => RawQuery.CustomerBasic
+            DwhQueryType.AllCalls => _rawQuery.CallBasicAddon,
+            DwhQueryType.AllCustomers => _rawQuery.CustomerBasic,
+            _ => _rawQuery.CustomerBasic
         };
 
     public Result<List<TEntity>> GetEntitiesList<TEntity>(string connectionString, string query) where TEntity : class, IPhoneNumberCompatible
@@ -46,7 +46,7 @@ public class DwhRepoUpdateService(IDwhSettings settings) : IDwhRepoUpdateService
     public Result<List<TEntity>> GetEntitiesParition<TEntity>(DwhQueryType type, List<TEntity> existing, string connectionString, string query) where TEntity : class, IPhoneNumberCompatible
     {
         // Filter the connection string
-        string newQuery = RawQuery.Filter(type, query, existing.Select(e => e.Number.Number).ToList());
+        string newQuery = _rawQuery.Filter(type, query, existing.Select(e => e.Number.Number).ToList());
         return GetEntitiesList<TEntity>(connectionString, newQuery);
     }
 

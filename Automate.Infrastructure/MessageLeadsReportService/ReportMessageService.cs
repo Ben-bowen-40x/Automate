@@ -11,7 +11,7 @@ namespace Automate.Infrastructure.MessageLeadsReportService;
 
 public class ReportMessageService(IDwhSettings settings) : IReportMessageService
 {
-    readonly RawQuery RawQuery = new(settings);
+    readonly RawQuery _rawQuery = new(settings);
     #region Pathing
     // Parent folder
     private const string _fileLoc = @".info\MessageAnalysis";
@@ -125,7 +125,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
             FileInfo callLocation = callLoc == string.Empty || !File.Exists(callLoc)
                 ? new(Location(_callRecordQuery))
                 : new(callLoc);
-            string query = RawQuery.MessageCallQuery(_startDate);
+            string query = _rawQuery.MessageCallQuery(_startDate);
             try
             {
                 Task<IEnumerable<CallDbEntity>> callTask =
@@ -166,7 +166,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
                 customerLocation == string.Empty || !File.Exists(customerLocation)
                 ? new(Location(_customerRecordQuery))
                 : new(customerLocation);
-            string query = RawQuery.MessageCustomerQuery();
+            string query = _rawQuery.MessageCustomerQuery();
             try
             {
                 Task<IEnumerable<CustSubDbEntity>> customerTask =
@@ -220,7 +220,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         // If the most recent msg occurred before the most recent call AND the first msg occurred after the first call, set the local field to the list of call records
         CallRecordJson recentCall = FindMostRecent(localCalls);
         CallRecordJson firstCall = FindFirst(localCalls);
-        if (DateTimeOffset.Compare(firstMsg.Date - RawQuery.NinetyDays, firstCall.Date) > 0 && DateTimeOffset.Compare(recentMsg.Date, recentCall.Date) < 0)
+        if (DateTimeOffset.Compare(firstMsg.Date - _rawQuery.NinetyDays, firstCall.Date) > 0 && DateTimeOffset.Compare(recentMsg.Date, recentCall.Date) < 0)
         {
             IEnumerable<ICallRecord> convertedCalls = ConvertCallsFromRepo(localCalls);
             _callRecordsFromRepo = convertedCalls.ToList();

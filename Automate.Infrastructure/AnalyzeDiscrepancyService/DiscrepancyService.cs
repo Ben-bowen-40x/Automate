@@ -14,6 +14,7 @@ namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 /// </summary>
 internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
 {
+    readonly RawQuery _rawQuery = new(settings);
     #region Facilitating members
     const string _parentFile = @".info\Discrepancy";
     const string _discrepancyDefaultFile = "Discrepancy.csv";
@@ -65,7 +66,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
             try
             {
                 DwhContext<DiscrepancyCallDbEntity> context = new(settings.CallsConnectionString!);
-                string q = new RawQuery(settings).DiscrepancyQuery();
+                string q = _rawQuery.DiscrepancyQuery();
                 Task<IEnumerable<DiscrepancyCallDbEntity>> task = DwhContextHelpers.GetItemsFromRawAsync(context, q);
                 List<DiscrepancyCallDbEntity> comparisonLeads = task.Result.ToList();
                 comparisonLeads.Sort();
