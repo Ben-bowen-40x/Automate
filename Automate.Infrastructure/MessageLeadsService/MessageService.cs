@@ -6,12 +6,12 @@ using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.JsonService;
 using Automate.Infrastructure.MessageLeadsService.DbMaps;
 using Automate.Infrastructure.MessageLeadsService.JsonMaps;
-using Automate.Infrastructure.QueryService;
 
 namespace Automate.Infrastructure.MessageLeadsService;
 
 public class MessageService(IDwhSettings settings) : IMessageService
 {
+    readonly RawQuery RawQuery = new(settings);
     #region Pathing
     // Parent folder
     private const string _fileLoc = @".info\MessageAnalysis";
