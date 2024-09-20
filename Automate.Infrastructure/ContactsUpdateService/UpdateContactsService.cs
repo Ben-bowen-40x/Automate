@@ -1,7 +1,6 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Application.UpdateContacts;
 using Automate.Infrastructure.DatabaseService;
-using Automate.Infrastructure.QueryService;
 using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.ContactsUpdateService;
@@ -25,7 +24,7 @@ internal class UpdateContactsService(IDwhSettings settings) : IUpdateContactsSer
         for (uint i = MagicNum; i < magicNumber; i++)
         {
             // Generate the raw query
-            string query = RawQuery.ContactQuery(i);
+            string query = new RawQuery(settings).ContactQuery(i);
 
             // Query the database
             DwhContext<ContactsDbEntity> contactsContext = new(settings.CallsConnectionString!);
