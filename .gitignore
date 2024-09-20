@@ -15,9 +15,6 @@
 #o
 **/obj
 
-#r
-/Automate.Infrastructure/QueryService/RawQuery.cs
-
 #v
 /.vs
 
