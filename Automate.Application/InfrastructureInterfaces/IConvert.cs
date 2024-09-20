@@ -1,10 +1,12 @@
-﻿namespace Automate.Application.InfrastructureInterfaces;
+﻿using Automate.Domain.ValueObjects;
+
+namespace Automate.Application.InfrastructureInterfaces;
 
 public interface IConvert
 {
     TTarget Convert<TOrigin, TTarget>();
 }
-public interface IConversionCompatible
+public interface IPhoneNumberCompatible
 {
-    TTarget Convert<TTarget, TOrigin>(object? input = null);
+    PhoneNumber Number { get; }
 }
