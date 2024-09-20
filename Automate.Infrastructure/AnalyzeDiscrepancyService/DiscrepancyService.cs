@@ -4,7 +4,6 @@ using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.CsvService;
 using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.JsonService;
-using Automate.Infrastructure.QueryService;
 
 namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 
@@ -66,7 +65,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
             try
             {
                 DwhContext<DiscrepancyCallDbEntity> context = new(settings.CallsConnectionString!);
-                string q = RawQuery.DiscrepancyQuery();
+                string q = new RawQuery(settings).DiscrepancyQuery();
                 Task<IEnumerable<DiscrepancyCallDbEntity>> task = DwhContextHelpers.GetItemsFromRawAsync(context, q);
                 List<DiscrepancyCallDbEntity> comparisonLeads = task.Result.ToList();
                 comparisonLeads.Sort();
