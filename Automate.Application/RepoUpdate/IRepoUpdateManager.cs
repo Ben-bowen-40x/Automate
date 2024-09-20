@@ -4,5 +4,5 @@ namespace Automate.Application.RepoUpdate;
 
 public interface IRepoUpdateManager
 {
-    Result Manage(string valueRepo, string leafRepo, bool hardUpdate, bool forceUpdate);
+    Result Manage(string valueRepoCsv, string repoJson, bool hardUpdate, bool forceUpdate);
 }
