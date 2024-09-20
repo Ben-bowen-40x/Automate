@@ -1,9 +1,9 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 
 namespace Automate.Infrastructure.DatabaseService;
-public class RawQuery(IDwhSettings settings)
+public class RawQuery(IRawQuerySettings settings)
 {
-    readonly IDwhSettings _s = settings;
+    readonly IRawQuerySettings _s = settings;
     private string QueryDateFormat => _s.QueryDateFormat!;
 
     #region Basic Queries
