@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Automate.Application.InfrastructureValueObjects;
+using CSharpFunctionalExtensions;
 
 namespace Automate.Application.InfrastructureInterfaces;
 

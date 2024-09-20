@@ -1,4 +1,4 @@
-﻿using Automate.Application.InfrastructureInterfaces;
+﻿using Automate.Application.InfrastructureValueObjects;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.JsonService;
 using Automate.Infrastructure.LeafClientService;

@@ -1,6 +1,7 @@
-﻿using Automate.Domain.ValueObjects;
+﻿using Automate.Application.InfrastructureInterfaces;
+using Automate.Domain.ValueObjects;
 
-namespace Automate.Application.InfrastructureInterfaces;
+namespace Automate.Application.InfrastructureValueObjects;
 public class LeafThread : IConvert
 {
     public string? Uuid { get; set; }

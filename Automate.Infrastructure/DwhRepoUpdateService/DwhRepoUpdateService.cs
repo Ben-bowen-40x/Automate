@@ -1,4 +1,5 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
+using Automate.Application.InfrastructureValueObjects;
 using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.JsonService;
 using CSharpFunctionalExtensions;

@@ -1,4 +1,5 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
+using Automate.Application.InfrastructureValueObjects;
 using Automate.Domain.ValueObjects;
 using CSharpFunctionalExtensions;
 
