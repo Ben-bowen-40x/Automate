@@ -45,11 +45,9 @@ public class LeafThread : IConvert
             : string.Empty;
 
         // Cast new message into IMessage
-        List<Message> rlist = [new Message(num, dto, contents, source)];
-        List<IMessage> mlist = (List<IMessage>)rlist.Cast<IMessage>();
-        IMessage result = mlist[0];
+        IMessage rMsg = (IMessage)(Domain.ValueObjects.IMessage)new Message(num, dto, contents, source);
 
-        return result;
+        return rMsg;
 
         static string ContentsJoined(string contents)
         {

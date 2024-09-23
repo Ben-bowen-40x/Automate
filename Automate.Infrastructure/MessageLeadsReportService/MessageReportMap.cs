@@ -87,11 +87,9 @@ internal class MessageReportMap : ClassMap<QualifiedMessageRecord>, IConvert
             : Source;
 
         // Cast new message into IMessage
-        List<Message> rlist = [new Message(num, date, content, source)];
-        List<IMessage> mlist = (List<IMessage>)rlist.Cast<IMessage>();
-        IMessage result = mlist[0];
+        IMessage rMsg = (IMessage)(Domain.ValueObjects.IMessage)new Message(num, date, content, source);
 
-        return result;
+        return rMsg;
     }
     public QualifiedMessageRecord ConvertToQualifiedRecord()
     {

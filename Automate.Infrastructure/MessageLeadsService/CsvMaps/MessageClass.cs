@@ -9,7 +9,7 @@ public class MessageClass : IConvert
     public string? Contents { get; set; }
     public string? Source { get; set; }
     public DateTimeOffset Date { get; set; }
-    public IMessage Convert<MessageClass, IMessage>()
+    public IMessage Convert()
     {
         // Convert number
         PhoneNumber num = Number is not null
@@ -27,10 +27,13 @@ public class MessageClass : IConvert
             : string.Empty;
 
         // Cast new message into IMessage
-        List<Message> rlist = [new Message(num, Date, contents, source)];
-        List<IMessage> mlist = (List<IMessage>)rlist.Cast<IMessage>();
-        IMessage result = mlist[0];
+        IMessage rMsg = new Message(num, Date, contents, source);
 
-        return result;
+        return rMsg;
+    }
+
+    public IMessage Convert<MessageClass, IMessage>()
+    {
+        return (IMessage)Convert();
     }
 }
