@@ -13,7 +13,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
     public Result Manage(string valueRepoCsv, string rawRepoJson, bool hardUpdate, bool forceUpdate)
     {
         HttpClient client = _service.GetClient(factory);
-        bool match = _service.ReposMatch(out List<IMessage> msgs, out List<LeafThread> leaf, valueRepoCsv, rawRepoJson);
+        Result<bool> _ = _service.ReposMatch(out List<IMessage> msgs, out List<LeafThread> leaf, valueRepoCsv, rawRepoJson);
         const string failure = "Call to the API failed";
 
         // Force Update

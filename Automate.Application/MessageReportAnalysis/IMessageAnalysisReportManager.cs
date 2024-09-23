@@ -1,4 +1,5 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
+using Automate.Domain.ValueObjects;
 using CSharpFunctionalExtensions;
 
 namespace Automate.Application.MessageReportAnalysis;

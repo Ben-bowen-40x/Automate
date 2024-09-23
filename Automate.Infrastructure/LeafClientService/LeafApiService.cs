@@ -76,7 +76,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         }
     }
 
-    internal List<IMessage> RetrieveMessageRepo(string msgRepoLoc = "")
+    internal static Result<List<IMessage>> RetrieveMessageRepo(string msgRepoLoc = "")
     {
         // Check loc string
         string repo = msgRepoLoc == string.Empty || !File.Exists(msgRepoLoc)
@@ -88,12 +88,19 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
             File.WriteAllText(repo, "");
 
         // Retrieve contents
-        List<MessageClass> content = CsvRW.ParseFromCsv<MessageClass>(repo);
-        List<IMessage> conversion = content.Select(c => c.Convert<MessageClass, IMessage>()).ToList();
-        return conversion;
+        try
+        {
+            List<MessageClass> content = CsvRW.ParseFromCsv<MessageClass>(repo);
+            List<IMessage> conversion = content.Select(c => c.Convert<MessageClass, IMessage>()).ToList();
+            return conversion;
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure<List<IMessage>>(ex.Message);
+        }
     }
 
-    internal List<LeafThread> RetrieveLeafRepo(string leafRepo = "")
+    internal static Result<List<LeafThread>> RetrieveLeafRepo(string leafRepo = "")
     {
         // Check location string
         string repo = leafRepo == string.Empty || !File.Exists(leafRepo)
@@ -110,7 +117,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
             List<LeafThread> content = JsonRW.DeserializeFile<LeafThread>(repo);
             return content;
         }
-        catch { return []; }
+        catch (Exception ex) { return Result.Failure<List<LeafThread>>(ex.Message); }
 
     }
     #endregion
@@ -155,13 +162,26 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
 
         return master;
     }
-    
-    public bool ReposMatch(out List<IMessage> msgs, out List<LeafThread> leaf, string msgRepo = "", string leafRepo = "")
-    {
-        msgs = RetrieveMessageRepo(msgRepo);
-        leaf = RetrieveLeafRepo(leafRepo);
 
-        return msgs.Count == leaf.Count;
+    public Result<bool> ReposMatch(out List<IMessage> msgs, out List<LeafThread> leaf, string msgRepo = "", string leafRepo = "")
+    {
+        var imsgs = RetrieveMessageRepo(msgRepo);
+        var ileaf = RetrieveLeafRepo(leafRepo);
+        msgs = [];
+        leaf = [];
+
+        if (imsgs.IsSuccess && ileaf.IsSuccess)
+        {
+            msgs = imsgs.Value;
+            leaf = ileaf.Value;
+            return msgs.Count == leaf.Count;
+        }
+        else if (imsgs.IsFailure)
+            return Result.Failure<bool>(imsgs.Error);
+        else if (ileaf.IsFailure)
+            return Result.Failure<bool>(ileaf.Error);
+        else
+            return Result.Failure<bool>(imsgs + " " + ileaf.Error);
     }
 
     public Result Update(List<LeafThread> leafRepo, List<LeafThread> apiResult, string leafRepoLoc = "")
