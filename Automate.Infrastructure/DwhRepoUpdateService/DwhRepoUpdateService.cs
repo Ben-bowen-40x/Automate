@@ -6,7 +6,7 @@ using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.DwhRepoUpdateService;
 
-public class DwhRepoUpdateService(IDwhSettings settings) : IDwhRepoUpdateService
+public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
 {
     readonly IDwhSettings _settings = settings;
     readonly RawQuery _rawQuery = new(settings);

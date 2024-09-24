@@ -2,11 +2,12 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.DateTimeConversion;
+using Automate.Application.InfrastructureInterfaces;
 
 namespace Automate.Infrastructure.MessageLeadsService.DbMaps;
 
 [PrimaryKey("SubscriptionId")]
-public class CustSubDbEntity
+public class CustSubDbEntity : IPhoneNumberCompatible
 {
     [Column("SubscriptionId")]
     public required int SubscriptionId { get; set; }
@@ -17,7 +18,7 @@ public class CustSubDbEntity
     [Column("SubscriptionStartDate")]
     public DateTime? SubscriptionStartDate { get; set; }
     [Column("Number")]
-    public string? Number { get; set; }
+    public string? Number1 { get; set; }
     [Column("Number2")]
     public string? Number2 { get; set; }
     [Column("CustomerCancelDate")]
@@ -38,6 +39,10 @@ public class CustSubDbEntity
     public string? Seller2 { get; set; }
     [Column("Seller3")]
     public string? Seller3 { get; set; }
+
+    private PhoneNumber? num;
+    public PhoneNumber Number => num ??= Number1 is null ? new(0) : new(Number1);
+
     public CustomerSubscription Convert()
     {
         // Conversions
@@ -51,7 +56,7 @@ public class CustSubDbEntity
         DateTimeOffset subDate = DateTimeConversions.ConvertLocalToDTOffset(subStartInter, TimeZoneEnum.Pacific, out DateTimeOffset subDateResult) ? subDateResult : DateTimeOffset.MinValue;
 
         // Convert phone numbers
-        PhoneNumber number1 = Number is null ? new(0) : new(Number);
+        PhoneNumber number1 = Number1 is null ? new(0) : new(Number1);
         PhoneNumber number2 = Number2 is null ? new(0) : new(Number2);
 
         // Convert cancel date

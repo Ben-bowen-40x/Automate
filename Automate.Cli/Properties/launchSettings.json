@@ -139,6 +139,52 @@
       }
     },
 
+    // Reset Call repo
+    "Update Call Repo -- Default Repo Locations -- Hard update": {
+      "commandName": "Project",
+      "commandLineArgs": "updateRepo -ut Calls -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LocalRepo\\CallRepo.json",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Update Call Repo -- Default Repo Locations -- Soft update": {
+      "commandName": "Project",
+      "commandLineArgs": "updateRepo -t Calls -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LocalRepo\\CallRepo.json",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Update Call Repo -- Default Repo Locations -- Force update": {
+      "commandName": "Project",
+      "commandLineArgs": "updateRepo -ft Calls -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LocalRepo\\CallRepo.json",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
+    // Reset Customer repo
+    "Update Customers Repo -- Default Repo Locations -- Hard update": {
+      "commandName": "Project",
+      "commandLineArgs": "updateRepo -ut Customers -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LocalRepo\\CustomerRepo.json",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Update Customers Repo -- Default Repo Locations -- Soft update": {
+      "commandName": "Project",
+      "commandLineArgs": "updateRepo -t Customers -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LocalRepo\\CustomerRepo.json",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Update Customers Repo -- Default Repo Locations -- Force update": {
+      "commandName": "Project",
+      "commandLineArgs": "updateRepo -ft Customers -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LocalRepo\\CustomerRepo.json",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
     /*
     // Test Reset Messages
     "test - Analyze Messages - Reset Pan to Power Bi test": {

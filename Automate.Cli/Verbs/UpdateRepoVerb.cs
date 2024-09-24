@@ -1,6 +1,8 @@
-﻿using Automate.Application.RepoUpdate;
+﻿using Automate.Application.InfrastructureValueObjects;
+using Automate.Application.RepoUpdate;
+using Automate.Application.TypedRepoUpdate;
 using Automate.Cli.Verbs.VerbHelper;
-using Automate.Infrastructure.LeafClientService;
+using Automate.Infrastructure.MessageLeadsService.DbMaps;
 using CommandLine;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,10 +19,10 @@ internal class UpdateRepoVerb : IVerb
     public RepoType Type { get; set; }
 
     [Option('v', "valueRepo", Required = false, HelpText = "Enter the existing repository that will be updated. This repo is for value objects only and is used elsewhere. If a value is not provided, a default will be used. This value must be a CSV file.")]
-    public string ValueRepositoryLoc { get; set; } = string.Empty;
+    public string ValueRepositoryCsv { get; set; } = string.Empty;
 
     [Option('a', "apiRepo", Required = false, HelpText = "Enter the local repository that will be updated for the api. This repo is for api call return values and is used in soft and hard updates, but not force updates. If a value is not provided, a default will be used. This value must be a JSON file.")]
-    public string ApiRepositoryLoc { get; set; } = string.Empty;
+    public string ApiRepositoryJson { get; set; } = string.Empty;
 
     [Option('f', "forceUpdate", Required = false, Default = false, HelpText = "Specifies whether you would like to force a call to the api. This will pull all data from the API until all calls are exhausted, and that information will be used to refresh the domain value repo. This will only work if this application is up-to-date with the API and connected online.")]
     public bool ForceUpdate { get; set; }
@@ -35,18 +37,20 @@ internal class UpdateRepoVerb : IVerb
         // Inform user of the chosen values
         Console.WriteLine($"The user chose the following values:");
         Console.WriteLine($"- Repo type: \"{Type}\"");
-        Console.WriteLine($"- Value Repository location: \n\t{DirectoryManipulation.LocationInformation(ValueRepositoryLoc)}");
-        Console.WriteLine($"- Repository location: \n\t{DirectoryManipulation.LocationInformation(ApiRepositoryLoc)}");
+        Console.WriteLine($"- Value Repository location: \n\t{DirectoryManipulation.LocationInformation(ValueRepositoryCsv)}");
+        Console.WriteLine($"- Repository location: \n\t{DirectoryManipulation.LocationInformation(ApiRepositoryJson)}");
         Console.WriteLine($"- Whether to perform a hard update on the repositories: {Update}");
         Console.WriteLine($"- Whether to perform a force update on the repositories (This will override the Hard Update option): {ForceUpdate}");
 
         // Validate Input
-        string valueInfo = !File.Exists(ValueRepositoryLoc)
+        var valueCsv = DirectoryManipulation.VerifyType(ValueRepositoryCsv);
+        var apiJson = DirectoryManipulation.VerifyType(ApiRepositoryJson);
+        string valueInfo = !File.Exists(ValueRepositoryCsv) || (valueCsv.IsSuccess && valueCsv.Value == FileType.Csv)
             ? ""
-            : ValueRepositoryLoc;
-        string repoInfo = !File.Exists(ApiRepositoryLoc)
+            : ValueRepositoryCsv;
+        string repoInfo = !File.Exists(ApiRepositoryJson) || (apiJson.IsSuccess && apiJson.Value == FileType.Json)
             ? ""
-            : ApiRepositoryLoc;
+            : ApiRepositoryJson;
 
         // Prepare result
         int code;
@@ -58,6 +62,16 @@ internal class UpdateRepoVerb : IVerb
                 var manager = service.GetRequiredService<IRepoUpdateManager>();
                 var result = manager.Manage(valueInfo, repoInfo, Update, ForceUpdate);
                 code = DetermineReturnCode(result);
+                break;
+            case RepoType.Calls:
+                var manage = service.GetRequiredService<ITypedRepoUpdateManager>();
+                Result resul = manage.Manage<CallDbEntity>(DwhQueryType.AllCalls, DwhConnectionType.Calls, ApiRepositoryJson, ForceUpdate || Update);
+                code = DetermineReturnCode(resul);
+                break;
+            case RepoType.Customers:
+                var manag = service.GetRequiredService<ITypedRepoUpdateManager>();
+                Result resu = manag.Manage<CustSubDbEntity>(DwhQueryType.AllCustomers, DwhConnectionType.Customers, ApiRepositoryJson, ForceUpdate || Update);
+                code = DetermineReturnCode(resu);
                 break;
             default:
                 var m = service.GetRequiredService<IRepoUpdateManager>();

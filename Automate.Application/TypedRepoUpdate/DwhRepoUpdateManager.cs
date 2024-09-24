@@ -7,7 +7,7 @@ namespace Automate.Application.TypedRepoUpdate;
 internal class DwhRepoUpdateManager(IDwhRepoUpdateService service) : ITypedRepoUpdateManager
 {
     readonly IDwhRepoUpdateService _service = service;
-    public Result Manage<TEntity, TTarget>(DwhQueryType type, DwhConnectionType connection, string repoJson, bool hardUpdate) where TEntity : class, IPhoneNumberCompatible
+    public Result Manage<TEntity>(DwhQueryType type, DwhConnectionType connection, string repoJson, bool hardUpdate) where TEntity : class, IPhoneNumberCompatible
     {
         // Set up 
         string query = _service.GetQuery(type);
