@@ -1,4 +1,6 @@
-﻿namespace Automate.Cli.Verbs.VerbHelper;
+﻿using CSharpFunctionalExtensions;
+
+namespace Automate.Cli.Verbs.VerbHelper;
 
 public class DirectoryManipulation
 {
@@ -64,4 +66,27 @@ public class DirectoryManipulation
             ? $"This was the literal input: \n\t{path}\nAnd this is the actual path, confirmed to exist by the system: \n\t{Path.GetFullPath(path)}"
             : $"This was the literal input: \n{path}  \nAnd this is the actual path, confirmed to exist by the system:   \n{Path.GetFullPath(path)}";
     }
+
+    internal static Result<FileType> VerifyType(string location)
+    {
+        if (!File.Exists(location))
+            return Result.Failure<FileType>($"The provided file location does not exist. Here is the provided file location: \"{location}\"");
+
+        FileInfo fileInfo = new(location);
+        var ext = fileInfo.Extension;
+        return ext switch
+        {
+            ".json" => FileType.Json,
+            ".csv" => FileType.Csv,
+            ".txt" => FileType.Txt,
+            _ => Result.Failure<FileType>($"The provided file location has a file extension that is unrecognized. This is the provided extension: \"{ext}\"")
+        };
+    }
+}
+
+internal enum FileType
+{
+    Csv,
+    Json,
+    Txt
 }
