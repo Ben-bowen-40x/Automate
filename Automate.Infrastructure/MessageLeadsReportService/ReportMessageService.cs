@@ -63,6 +63,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
 
         return reportRecords;
     }
+
     public List<IMessage> GetMessages<T>(string messageLocation) where T : IConvert
     {
         // Retrieve Messages
@@ -115,6 +116,23 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         return result;
     }
 
+    public List<ICallRecord> GetCallRecords_(List<long> msgNums, string callRepo)
+    {
+        // Prepare the repo location
+        FileInfo callLocation = callRepo == string.Empty || !File.Exists(callRepo)
+            ? new(Location(_callRecordRepo))
+            : new(callRepo);
+
+        List<CallRecordJson> localCalls = JsonRW.DeserializeFile<CallRecordJson>(callLocation.FullName);
+        IEnumerable<ICallRecord> filteredCalls = localCalls
+            .Select(c => c.Convert())
+            .Where(c =>
+                msgNums
+                .Contains(c.Number.Number)
+             );
+        return filteredCalls.ToList();
+    }
+
     public List<ICallRecord> GetCallRecords(string callLoc)
     {
         string callLocRepo = Location(_callRecordRepo);
@@ -155,6 +173,23 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         return result.ToList();
     }
 
+    public List<ICustomerSubscription> GetCustomerRecords_(List<long> msgNums, string customerRepo)
+    {
+        // Prepare the repo location. This is the default location
+        FileInfo customerLocation = customerRepo == string.Empty || !File.Exists(customerRepo)
+            ? new(Location(_customerRecordRepo))
+            : new(customerRepo);
+
+        List<CustSubJson> localCustomers = JsonRW.DeserializeFile<CustSubJson>(customerLocation.FullName);
+        IEnumerable<ICustomerSubscription> filteredCustomers = localCustomers
+            .Select(c => c.Convert())
+            .Where(c =>
+                msgNums
+                .Contains(c.Number.Number)
+            );
+        return filteredCustomers.ToList();
+
+    }
     public List<ICustomerSubscription> GetCustomerRecords(string customerLocation)
     {
         string customerLocRepo = Location(_customerRecordRepo);
