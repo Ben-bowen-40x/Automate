@@ -23,11 +23,17 @@ internal class MessageAnalysisVerb : IVerb
     [Option('a', "appendToReport", Default = false, HelpText = "This option allows the user to append the results of the analysis to the report, rather than generating an entirely new report.")]
     public bool Append { get; set; }
 
-    // Not Required Options
+    // Not Required Calls
     [Option('c', "calls", Required = false, HelpText = "Enter the sql file location that retrieves call records." + fileDefault + queryWarning)]
     public string CallQueryLocation { get; set; } = string.Empty;
+    [Option('C', "callRepo", Required = false, HelpText = "Enter the call repository file location that contains call records in local repo. This must be a Json. If one is not provided, or if the provided file does not exist, or the provided repo is not a Json file, a default will be used instead.")]
+    public string CallRepoLocation { get; set; } = string.Empty;
+
+    // Not Required Customers
     [Option('q', "customers", Required = false, HelpText = "Enter the sql file location that retrieves customer records." + fileDefault + queryWarning)]
     public string CustomerQueryLocation { get; set; } = string.Empty;
+    [Option('Q', "customerRepo", Required = false, HelpText = "Enter the customer repository file location that holds customer records in local repo. This must be a Json file. If one is not provided, or if the provided file does not exist, or the provided repo is not a Json file, a default will be used instead.")]
+    public string CustomerRepoLocation { get; set; } = string.Empty;
     #endregion
 
     #region Public (Besides Options)
@@ -35,7 +41,7 @@ internal class MessageAnalysisVerb : IVerb
     {
         // Inform the user what is going on
         InformUser();
-        VerifyInput(out string messageLocation, out string callQueryLocation, out string customerQueryLocation, out string reportLocation);
+        VerifyInput(out string messageLocation, out string callQueryLocation, out string callRepoLocation, out string customerQueryLocation, out string customerRepoLocation, out string reportLocation);
 
         // Execute
         Result<FileInfo> result = MessageVerbHelper.Execute(Append, service, messageLocation, callQueryLocation, customerQueryLocation, reportLocation, MessageType);
@@ -46,29 +52,47 @@ internal class MessageAnalysisVerb : IVerb
         return DetermineReturnCode(result, MessageLocation, CallQueryLocation, CustomerQueryLocation, ReportLocation);
     }
 
-    private void VerifyInput(out string messageLocation, out string callQueryLocation, out string customerQueryLocation, out string reportLocation)
+    private void VerifyInput(out string messageLocation, out string callQueryLocation, out string callRepoLocation, out string customerQueryLocation, out string customerRepoLocation, out string reportLocation)
     {
-        // Verify that the file inputs exist. If they don't, they default them
-        messageLocation = Path.Exists(MessageLocation)
+        // Verify that the file inputs exist. If they don't, default them
+        Result<FileType> msgLoc = PathManipulation.VerifyType(MessageLocation);
+        messageLocation = Path.Exists(MessageLocation) && msgLoc.IsSuccess && msgLoc.Value == FileType.Csv
             ? Path.GetFullPath(MessageLocation)
             : string.Empty;
-        callQueryLocation = Path.Exists(CallQueryLocation)
+
+        // Call Locations
+        Result<FileType> callLoc = PathManipulation.VerifyType(CallQueryLocation);
+        callQueryLocation = Path.Exists(CallQueryLocation) && callLoc.IsSuccess && callLoc.Value == FileType.Sql
             ? Path.GetFullPath(CallQueryLocation)
             : string.Empty;
-        customerQueryLocation = Path.Exists(CustomerQueryLocation)
+        Result<FileType> callRepo = PathManipulation.VerifyType(CallRepoLocation);
+        callRepoLocation = Path.Exists(CallRepoLocation) && callRepo.IsSuccess && callRepo.Value == FileType.Json
+            ? Path.GetFullPath(CallRepoLocation)
+            : string.Empty;
+
+        // Customer Locations
+        Result<FileType> customerLoc = PathManipulation.VerifyType(CustomerQueryLocation);
+        customerQueryLocation = Path.Exists(CustomerQueryLocation) && customerLoc.IsSuccess && customerLoc.Value == FileType.Sql
             ? Path.GetFullPath(CustomerQueryLocation)
             : string.Empty;
-        reportLocation = TryCreate(ReportLocation, out string error)
+        Result<FileType> customerRepo = PathManipulation.VerifyType(CustomerRepoLocation);
+        customerRepoLocation = Path.Exists(CustomerRepoLocation) && customerRepo.IsSuccess && customerRepo.Value == FileType.Json
+            ? Path.GetFullPath(CustomerRepoLocation)
+            : string.Empty;
+
+        // Report location
+        Result<FileType> reportLoc = PathManipulation.VerifyType(ReportLocation);
+        reportLocation = TryCreate(ReportLocation, out string error) && reportLoc.IsSuccess && reportLoc.Value == FileType.Csv
             ? Path.GetFullPath(ReportLocation)
             : Append
-                ? throw new ArgumentException($"The user provided the following literal as the report location: {ReportLocation} -- That file location does not exist. This cannot be done when the option {nameof(Append)} is {Append} because no such {nameof(ReportLocation)} exists. This resulted in the following error:\n {error}")
+                ? throw new ArgumentException($"The user provided the following literal as the report location: {ReportLocation} -- That file location does not exist. This cannot be done when the option {nameof(Append)} is {Append} because no such file location exists. This resulted in the following error:\n {error}")
                 : ReportLocation;
     }
 
     #endregion
 
     #region Private
-    private static bool TryCreate(string location, out string error)
+    private static bool TryCreate(this string location, out string error)
     {
         bool result = false;
         error = string.Empty;
