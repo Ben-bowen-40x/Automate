@@ -6,5 +6,5 @@ namespace Automate.Application.MessageReportAnalysis;
 
 public interface IMessageAnalysisReportManager
 {
-    Result<FileInfo> ManageMessageAnalysis<T>(string commandName, string messages, string calls, string customers, string report) where T : IConvert;
+    Result<FileInfo> Manage<T>(string commandName, string messages, string calls, string customers, string report) where T : IConvert;
 }
