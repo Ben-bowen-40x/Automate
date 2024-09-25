@@ -23,7 +23,7 @@ internal class DiscrepancyAnalysisVerb : IVerb
 
     public int Run(IServiceProvider service)
     {
-        string parent = DirectoryManipulation.RetrieveParentDir(ReportLocation);
+        string parent = PathManipulation.RetrieveParentDir(ReportLocation);
 
         // Verify command line input
         VerifyUserInput(parent, out string fileName, out string report, out string query);
@@ -45,9 +45,9 @@ internal class DiscrepancyAnalysisVerb : IVerb
     #region Private Members
     private void InformUser(string fileName, string report, string query)
     {
-        Console.WriteLine($"For the following option, \"{nameof(BillableCallCsvLoc)}\" -- {DirectoryManipulation.LocationInformation(fileName)}");
-        Console.WriteLine($"\nFor the following option, \"{nameof(ReportLocation)}\" -- {DirectoryManipulation.LocationInformation(report)}");
-        Console.WriteLine($"\nFor the following option, \"{nameof(ComparisonCallQueryLoc)}\" -- {DirectoryManipulation.LocationInformation(query)}");
+        Console.WriteLine($"For the following option, \"{nameof(BillableCallCsvLoc)}\" -- {PathManipulation.LocationInformation(fileName)}");
+        Console.WriteLine($"\nFor the following option, \"{nameof(ReportLocation)}\" -- {PathManipulation.LocationInformation(report)}");
+        Console.WriteLine($"\nFor the following option, \"{nameof(ComparisonCallQueryLoc)}\" -- {PathManipulation.LocationInformation(query)}");
     }
 
     private void VerifyUserInput(string parent, out string fileName, out string report, out string query)

@@ -20,7 +20,7 @@ internal class ContactUpdateVerb : IVerb
     public int Run(IServiceProvider service)
     {
         // Inform the user what's going on
-        Console.WriteLine($"For the following option, \"{nameof(ReportDirectory)}\" -- {DirectoryManipulation.LocationInformation(ReportDirectory)}");
+        Console.WriteLine($"For the following option, \"{nameof(ReportDirectory)}\" -- {PathManipulation.LocationInformation(ReportDirectory)}");
 
         // Validate the user's information
         bool directoryNull = ReportDirectory != string.Empty;

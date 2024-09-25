@@ -2,7 +2,7 @@
 
 namespace Automate.Cli.Verbs.VerbHelper;
 
-public class DirectoryManipulation
+public class PathManipulation
 {
 
     internal static string RetrieveParentDir(string fileLoc)
@@ -88,5 +88,6 @@ internal enum FileType
 {
     Csv,
     Json,
+    Sql,
     Txt
 }

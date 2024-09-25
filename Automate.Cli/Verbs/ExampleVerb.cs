@@ -25,15 +25,15 @@ internal class ExampleVerb : IVerb
         string fileLocation =
             FileLocation == string.Empty || !Path.Exists(FileLocation)
             ? nothing(FileLocation)
-            : DirectoryManipulation.LocationInformation(FileLocation);
+            : PathManipulation.LocationInformation(FileLocation);
         string secondLocation =
             SecondFileLocation == string.Empty || !Path.Exists(SecondFileLocation)
             ? nothing(SecondFileLocation)
-            : DirectoryManipulation.LocationInformation(SecondFileLocation);
+            : PathManipulation.LocationInformation(SecondFileLocation);
         string thirdLocation =
             ThirdFileLocation == string.Empty || !Path.Exists(ThirdFileLocation)
             ? nothing(ThirdFileLocation)
-            : DirectoryManipulation.LocationInformation(ThirdFileLocation);
+            : PathManipulation.LocationInformation(ThirdFileLocation);
 
         Console.WriteLine("The following are the options the user chose:");
         Console.WriteLine($"- {nameof(FileLocation)}: \n{fileLocation}");

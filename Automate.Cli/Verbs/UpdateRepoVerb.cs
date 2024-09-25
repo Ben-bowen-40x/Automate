@@ -37,14 +37,14 @@ internal class UpdateRepoVerb : IVerb
         // Inform user of the chosen values
         Console.WriteLine($"The user chose the following values:");
         Console.WriteLine($"- Repo type: \"{Type}\"");
-        Console.WriteLine($"- Value Repository location: \n\t{DirectoryManipulation.LocationInformation(ValueRepositoryCsv)}");
-        Console.WriteLine($"- Repository location: \n\t{DirectoryManipulation.LocationInformation(ApiRepositoryJson)}");
+        Console.WriteLine($"- Value Repository location: \n\t{PathManipulation.LocationInformation(ValueRepositoryCsv)}");
+        Console.WriteLine($"- Repository location: \n\t{PathManipulation.LocationInformation(ApiRepositoryJson)}");
         Console.WriteLine($"- Whether to perform a hard update on the repositories: {Update}");
         Console.WriteLine($"- Whether to perform a force update on the repositories (This will override the Hard Update option): {ForceUpdate}");
 
         // Validate Input
-        var valueCsv = DirectoryManipulation.VerifyType(ValueRepositoryCsv);
-        var apiJson = DirectoryManipulation.VerifyType(ApiRepositoryJson);
+        var valueCsv = PathManipulation.VerifyType(ValueRepositoryCsv);
+        var apiJson = PathManipulation.VerifyType(ApiRepositoryJson);
         string valueInfo = !File.Exists(ValueRepositoryCsv) || (valueCsv.IsSuccess && valueCsv.Value == FileType.Csv)
             ? ""
             : ValueRepositoryCsv;

@@ -24,7 +24,7 @@ internal class ConvertJsonToCsv : IVerb
    {
       #region Validate
       // Validate the input
-      string parent = DirectoryManipulation.RetrieveParentDir(Destination);
+      string parent = PathManipulation.RetrieveParentDir(Destination);
       if (Directory.Exists(parent))
          File.WriteAllText(Destination, "");
       else
