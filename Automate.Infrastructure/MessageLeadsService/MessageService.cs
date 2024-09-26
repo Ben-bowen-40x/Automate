@@ -68,6 +68,22 @@ public class MessageService(IDwhSettings settings) : IMessageService
 
         return uniqueMsgs;
     }
+    public List<ICallRecord> GetCallRecords(List<long> msgNums, string callRepo)
+    {
+        // Prepare the repo location
+        FileInfo callLocation = callRepo == string.Empty || !File.Exists(callRepo)
+            ? new(Location(_callRecordRepo))
+            : new(callRepo);
+
+        List<CallRecordJson> localCalls = JsonRW.DeserializeFile<CallRecordJson>(callLocation.FullName);
+        IEnumerable<ICallRecord> filteredCalls = localCalls
+            .Select(c => c.Convert())
+            .Where(c =>
+                msgNums
+                .Contains(c.Number.Number)
+             );
+        return filteredCalls.ToList();
+    }
 
     public List<ICallRecord> GetCallRecords(string callLoc)
     {
@@ -107,6 +123,23 @@ public class MessageService(IDwhSettings settings) : IMessageService
         return result.ToList();
     }
 
+    public List<ICustomerSubscription> GetCustomerRecords(List<long> msgNums, string customerRepo)
+    {
+        // Prepare the repo location. This is the default location
+        FileInfo customerLocation = customerRepo == string.Empty || !File.Exists(customerRepo)
+            ? new(Location(_customerRecordRepo))
+            : new(customerRepo);
+
+        List<CustSubJson> localCustomers = JsonRW.DeserializeFile<CustSubJson>(customerLocation.FullName);
+        IEnumerable<ICustomerSubscription> filteredCustomers = localCustomers
+            .Select(c => c.Convert())
+            .Where(c =>
+                msgNums
+                .Contains(c.Number.Number)
+            );
+        return filteredCustomers.ToList();
+
+    }
     public List<ICustomerSubscription> GetCustomerRecords(string customerLocation)
     {
         string customerLocRepo = Location(_customerRecordRepo);
