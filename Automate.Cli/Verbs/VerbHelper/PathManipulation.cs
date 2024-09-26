@@ -2,8 +2,17 @@
 
 namespace Automate.Cli.Verbs.VerbHelper;
 
-public class PathManipulation
+internal enum FileType
 {
+    Csv,
+    Json,
+    Sql,
+    Txt
+}
+
+public static class PathManipulation
+{
+    internal static string RetrieveParentDir(FileInfo fileLoc) => RetrieveParentDir(fileLoc.FullName);
 
     internal static string RetrieveParentDir(string fileLoc)
     {
@@ -16,9 +25,48 @@ public class PathManipulation
         return parent;
     }
 
-    internal static string RetrieveParentDir(FileInfo fileLoc)
+    internal static bool TryCreate(this FileInfo location, out string error) => location.FullName.TryCreate(out error);
+
+    internal static Result TryCreate(this FileInfo location) => location.FullName.TryCreate();
+
+    internal static Result TryCreate(this string location)
     {
-        return RetrieveParentDir(fileLoc.FullName);
+        try
+        {
+            bool result = location.TryCreate(out string error);
+            if (result)
+            {
+                return Result.Success();
+            }
+            else
+            {
+                return Result.Failure(error);
+            }
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure(ex.Message);
+        }
+    }
+
+    internal static bool TryCreate(this string location, out string error)
+    {
+        bool result = false;
+        error = string.Empty;
+        try
+        {
+            if (!Path.Exists(location))
+            {
+                var file = File.Create(location);
+                file.Close();
+            }
+            result = true;
+        }
+        catch (Exception ex)
+        {
+            error = ex.ToString();
+        }
+        return result;
     }
 
     /// <summary>
@@ -62,7 +110,7 @@ public class PathManipulation
         }
         pathInfo = new(path);
         return newLineTab
-            // DO NOT change the weird spacing in the string, please.
+            // DO NOT change the weird spacing in the string, please. At the moment, it lines things up in a pleasing way
             ? $"This was the literal input: \n\t{path}\nAnd this is the actual path, confirmed to exist by the system: \n\t{Path.GetFullPath(path)}"
             : $"This was the literal input: \n{path}  \nAnd this is the actual path, confirmed to exist by the system:   \n{Path.GetFullPath(path)}";
     }
@@ -79,15 +127,9 @@ public class PathManipulation
             ".json" => FileType.Json,
             ".csv" => FileType.Csv,
             ".txt" => FileType.Txt,
-            _ => Result.Failure<FileType>($"The provided file location has a file extension that is unrecognized. This is the provided extension: \"{ext}\"")
+            ".sql" => FileType.Sql,
+            _ => Result.Failure<FileType>($"The provided {nameof(FileType)} has a file extension that is unrecognized. This is the provided extension: \"{ext}\"")
         };
     }
 }
 
-internal enum FileType
-{
-    Csv,
-    Json,
-    Sql,
-    Txt
-}

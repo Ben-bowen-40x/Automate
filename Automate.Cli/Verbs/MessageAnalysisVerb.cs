@@ -82,7 +82,7 @@ internal class MessageAnalysisVerb : IVerb
 
         // Report location
         Result<FileType> reportLoc = PathManipulation.VerifyType(ReportLocation);
-        reportLocation = TryCreate(ReportLocation, out string error) && reportLoc.IsSuccess && reportLoc.Value == FileType.Csv
+        reportLocation = ReportLocation.TryCreate(out string error) && reportLoc.IsSuccess && reportLoc.Value == FileType.Csv
             ? Path.GetFullPath(ReportLocation)
             : Append
                 ? throw new ArgumentException($"The user provided the following literal as the report location: {ReportLocation} -- That file location does not exist. This cannot be done when the option {nameof(Append)} is {Append} because no such file location exists. This resulted in the following error:\n {error}")
@@ -92,26 +92,7 @@ internal class MessageAnalysisVerb : IVerb
     #endregion
 
     #region Private
-    private static bool TryCreate(this string location, out string error)
-    {
-        bool result = false;
-        error = string.Empty;
-        try
-        {
-            if (!Path.Exists(location))
-            {
-                var file = File.Create(location);
-                file.Close();
-            }
-            result = true;
-        }
-        catch (Exception ex)
-        {
-            error = ex.ToString();
-        }
-        return result;
-    }
-
+    
     private const string fileDefault = " If a file is not provided or the provided location does not exist, a default will be used instead. ";
     private const string queryWarning = " Keep in mind that the query must be properly formulated in order for the program to receive the query. ";
 
