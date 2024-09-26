@@ -12,6 +12,7 @@ namespace Automate.Infrastructure.MessageLeadsReportService;
 public class ReportMessageService(IDwhSettings settings) : IReportMessageService
 {
     readonly RawQuery _rawQuery = new(settings);
+
     #region Pathing
     // Parent folder
     private const string _fileLoc = @".info\MessageAnalysis";
@@ -190,6 +191,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         return filteredCustomers.ToList();
 
     }
+    
     public List<ICustomerSubscription> GetCustomerRecords(string customerLocation)
     {
         string customerLocRepo = Location(_customerRecordRepo);
