@@ -81,8 +81,8 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         List<IMessage> uniqueMsgs = RemoveDuplicates(msgs);
 
         // Determine whether to query the database
-        QueryDbCalls = WhetherToQueryDB(uniqueMsgs, out bool queryCustomers);
-        QueryDbCustomers = queryCustomers;
+        //QueryDbCalls = WhetherToQueryDB(uniqueMsgs, out bool queryCustomers);
+        //QueryDbCustomers = queryCustomers;
 
         return uniqueMsgs;
     }

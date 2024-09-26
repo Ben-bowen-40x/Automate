@@ -128,9 +128,8 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
     public static string MessageRepoLocation => _msgRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafMessages.csv");
     public static string LeafRepoLocation => _leafRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafThreads.json");
 
-    public async Task<Result<List<LeafThread>>> GetLeafThreadsAsync(HttpClient client, int offset = 0, int errorLimit = 5, int sleepInterval = 500)
+    public async Task<Result<List<LeafThread>>> GetLeafThreadsAsync(HttpClient client, int offset = 0, int errorLimit = 5, int sleepInterval = 500, int limit = 1000)
     {
-        const int limit = 1000;
         int errorCount = 0;
 
         List<LeafThread> master = [];
@@ -151,6 +150,8 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
                     value.ForEach(v => master.Add(v));
                     resume = value.Count == limit;
                 }
+                else
+                    return result;
                 offset += limit;
                 Thread.Sleep(sleepInterval);
             }
