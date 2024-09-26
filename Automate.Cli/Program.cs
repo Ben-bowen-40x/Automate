@@ -31,6 +31,7 @@ internal class Program
         StringLogger.ProduceLog(DateTime.Now, sender, member, $"Ended Execution");
         #endregion
     }
+
     private static int Run(object obj, IServiceProvider service)
     {
         return obj switch
@@ -40,7 +41,6 @@ internal class Program
         };
     }
 
-    #region Private Members
     private static ParserResult<object> Execute(string[] args, IServiceProvider service)
     {
         Type[] types = LoadVerbs();
@@ -51,7 +51,7 @@ internal class Program
         return result;
     }
 
-
+    #region Private Members
     private static Type[] LoadVerbs()
     {
         return Assembly.GetExecutingAssembly().GetTypes()
