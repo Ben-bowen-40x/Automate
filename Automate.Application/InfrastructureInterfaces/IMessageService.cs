@@ -5,6 +5,6 @@ namespace Automate.Application.InfrastructureInterfaces;
 public interface IMessageService
 {
     List<IMessage> GetMessages<T>(string messageLocation) where T : IConvert;
-    List<ICallRecord> GetCallRecords(string callLocation);
-    List<ICustomerSubscription> GetCustomerRecords(string customerLocation);
+    List<ICallRecord> GetCallRecords(List<long> msgNums, string callLocation);
+    List<ICustomerSubscription> GetCustomerRecords(List<long> msgNums, string customerLocation);
 }

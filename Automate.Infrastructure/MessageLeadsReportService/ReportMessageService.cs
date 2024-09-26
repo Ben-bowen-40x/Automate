@@ -116,7 +116,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         return result;
     }
 
-    public List<ICallRecord> GetCallRecords_(List<long> msgNums, string callRepo)
+    public List<ICallRecord> GetCallRecords(List<long> msgNums, string callRepo)
     {
         // Prepare the repo location
         FileInfo callLocation = callRepo == string.Empty || !File.Exists(callRepo)
@@ -173,7 +173,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         return result.ToList();
     }
 
-    public List<ICustomerSubscription> GetCustomerRecords_(List<long> msgNums, string customerRepo)
+    public List<ICustomerSubscription> GetCustomerRecords(List<long> msgNums, string customerRepo)
     {
         // Prepare the repo location. This is the default location
         FileInfo customerLocation = customerRepo == string.Empty || !File.Exists(customerRepo)
