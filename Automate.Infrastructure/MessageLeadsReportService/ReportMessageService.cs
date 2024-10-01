@@ -124,7 +124,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
             ? new(Location(_callRecordRepo))
             : new(callRepo);
 
-        List<CallRecordJson> localCalls = JsonRW.DeserializeFile<CallRecordJson>(callLocation.FullName);
+        List<CallRecordJsonReader> localCalls = JsonRW.DeserializeFile<CallRecordJsonReader>(callLocation.FullName);
         IEnumerable<ICallRecord> filteredCalls = localCalls
             .Select(c => c.Convert())
             .Where(c =>
@@ -169,7 +169,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
             return _callRecordsFromRepo;
 
         // Default behavior is to retrieve information from the local repo
-        List<CallRecordJson> localCalls = JsonRW.DeserializeFile<CallRecordJson>(callLocRepo);
+        List<CallRecordJsonReader> localCalls = JsonRW.DeserializeFile<CallRecordJsonReader>(callLocRepo);
         IEnumerable<ICallRecord> result = localCalls.Select(c => c.Convert());
         return result.ToList();
     }
@@ -181,7 +181,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
             ? new(Location(_customerRecordRepo))
             : new(customerRepo);
 
-        List<CustSubJson> localCustomers = JsonRW.DeserializeFile<CustSubJson>(customerLocation.FullName);
+        List<CustSubJsonReader> localCustomers = JsonRW.DeserializeFile<CustSubJsonReader>(customerLocation.FullName);
         IEnumerable<ICustomerSubscription> filteredCustomers = localCustomers
             .Select(c => c.Convert())
             .Where(c =>
