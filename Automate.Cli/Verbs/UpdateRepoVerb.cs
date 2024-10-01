@@ -45,10 +45,10 @@ internal class UpdateRepoVerb : IVerb
         // Validate Input
         var valueCsv = PathManipulation.VerifyType(ValueRepositoryCsv);
         var apiJson = PathManipulation.VerifyType(ApiRepositoryJson);
-        string valueInfo = !File.Exists(ValueRepositoryCsv) || (valueCsv.IsSuccess && valueCsv.Value == FileType.Csv)
+        string valueInfo = !File.Exists(ValueRepositoryCsv) || valueCsv.IsFailure || valueCsv.Value != FileType.Csv
             ? ""
             : ValueRepositoryCsv;
-        string repoInfo = !File.Exists(ApiRepositoryJson) || (apiJson.IsSuccess && apiJson.Value == FileType.Json)
+        string repoInfo = !File.Exists(ApiRepositoryJson) || apiJson.IsFailure || apiJson.Value != FileType.Json
             ? ""
             : ApiRepositoryJson;
 
