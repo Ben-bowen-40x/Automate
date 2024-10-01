@@ -138,6 +138,13 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
+    "Update Leaf Api Repo -- Default Repo Locations -- Force update, Custom Repo Location": {
+      "commandName": "Project",
+      "commandLineArgs": "updateRepo -ft Leaf -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafTesting\\ForceUpdateTest.json",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
 
     // Reset Call repo
     "Update Call Repo -- Default Repo Locations -- Hard update": {

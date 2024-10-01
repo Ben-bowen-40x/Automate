@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include=".info\ApiRepos\LeafTesting\ForceUpdateTest.json" />
     <Content Include=".info\ApiRepos\LeafThreads.json" />
     <Content Include=".info\Discrepancy\Discrepancy.csv" />
     <Content Include=".info\Discrepancy\Discrepancy.sql" />
@@ -43,7 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include=".info\ApiRepos\LeafTesting\" />
     <Folder Include=".info\FormAnalysis\LocalRepo\" />
     <Folder Include=".info\Reports\ContactUpdate\" />
   </ItemGroup>
