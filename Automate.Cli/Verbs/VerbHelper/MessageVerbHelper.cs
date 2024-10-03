@@ -40,7 +40,7 @@ public class MessageVerbHelper
             (MessageCsvType.GAdsLeafRepo, false) => generator.Manage<MessageClass>(MessageCsvType.GAdsLeafRepo.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation),
 
             // ManualWebForm
-            (MessageCsvType.ManualWebForm, true) => appender.Manage<MessageClass>(MessageCsvType.GAdsLeafRepo.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation),
+            (MessageCsvType.ManualWebForm, true) => appender.Manage<NoTimeMsgCol>(MessageCsvType.ManualWebForm.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation),
             (MessageCsvType.ManualWebForm, false) => generator.Manage<NoTimeMsgCol>(MessageCsvType.ManualWebForm.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation),
 
             // Leaf
@@ -54,9 +54,9 @@ public class MessageVerbHelper
             // Default
             _ => generator.Manage<UnifiedDateUnchangedOffset_SeparateGclid_MsgCol>(MessageCsvType.Leaf.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation)
         };
-        /* // Old Code -- This is here for verification purposes and debugging only
+         // Old Code -- This is here for verification purposes and debugging only
          // TODO: delete old code here, once everything is verified
-         * return append
+         /* return append
             ? Append(service, messageLocation, callQueryLocation, customerQueryLocation, reportLocation, messageType)
             : GenerateNew(service, messageLocation, callQueryLocation, customerQueryLocation, reportLocation, messageType);
 

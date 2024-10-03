@@ -1,7 +1,5 @@
-﻿using Automate.Application.InfrastructureInterfaces;
-using Automate.Domain.ValueObjects;
+﻿using Automate.Domain.ValueObjects;
 using CsvHelper.Configuration.Attributes;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
@@ -26,7 +24,7 @@ public class NoTimeMsgCol : IConvert
         DateTimeOffset date = new(interDate, TimeSpan.FromTicks(0));
 
         // Convert Contents
-        string contents = 
+        string contents =
         Contents is null || Contents == string.Empty
             ? string.Empty
             : CsvMapsHelper.ContentsJoined(Contents);
@@ -35,10 +33,8 @@ public class NoTimeMsgCol : IConvert
         string source = Source is null || Source == string.Empty ? string.Empty : Source;
 
         // Cast new message into IMessage
-        List<Message> rlist = [new Message(number, date, contents, source)];
-        List<IMessage> mlist = (List<IMessage>)rlist.Cast<IMessage>();
-        IMessage result = mlist[0];
+        Domain.ValueObjects.IMessage resultMsg = new Message(number, date, contents, source);
 
-        return result;
+        return (IMessage)resultMsg;
     }
 }
