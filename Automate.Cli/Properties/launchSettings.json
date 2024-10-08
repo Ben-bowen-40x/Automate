@@ -4,7 +4,7 @@
     // Discrepancy
     "Analyze Discrepancy - Always Edit": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeDiscrepancy -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Discrepancy\\09.08-09.14.csv -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\Discrepancy-09.08-09.14.csv",
+      "commandLineArgs": "analyzeDiscrepancy -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Discrepancy\\09.22-09.28.csv -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\Discrepancy-09.22-09.28.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
@@ -50,14 +50,14 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    "Analyze Messages - Produce New Leaf to GAds -- LeafRepo": {
+    "Analyze Messages - Produce New Leaf to GAds - LeafRepo": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeafRepo",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    "Analyze Messages - Produce New Leaf -- LeafRepo": {
+    "Analyze Messages - Produce New Leaf - LeafRepo": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo",
       "environmentVariables": {
@@ -94,14 +94,14 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    "Analyze Messages - Append Leaf to GAds -- Leaf Repo": {
+    "Analyze Messages - Append Leaf to GAds - Leaf Repo": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeafRepo -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    "Analyze Messages - Append Leaf to Power Bi -- Leaf Repo": {
+    "Analyze Messages - Append Leaf to Power Bi - Leaf Repo": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv",
       "environmentVariables": {
@@ -117,28 +117,28 @@
     },
 
     // Reset LeafApi
-    "Update Leaf Api Repo -- Default Repo Locations -- Hard update": {
+    "Update Leaf Api Repo - Default Repo Locations - Hard update": {
       "commandName": "Project",
       "commandLineArgs": "updateRepo -ut Leaf",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    "Update Leaf Api Repo -- Default Repo Locations -- Soft update": {
+    "Update Leaf Api Repo - Default Repo Locations - Soft update": {
       "commandName": "Project",
       "commandLineArgs": "updateRepo -t Leaf",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    "Update Leaf Api Repo -- Default Repo Locations -- Force update": {
+    "Update Leaf Api Repo - Default Repo Locations - Force update": {
       "commandName": "Project",
       "commandLineArgs": "updateRepo -ft Leaf",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    "Update Leaf Api Repo -- Default Repo Locations -- Force update, Custom Repo Location": {
+    "Update Leaf Api Repo - Default Repo Locations - Force update, Custom Repo Location": {
       "commandName": "Project",
       "commandLineArgs": "updateRepo -ft Leaf -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafTesting\\ForceUpdateTest.json",
       "environmentVariables": {
@@ -147,46 +147,32 @@
     },
 
     // Reset Call repo
-    "Update Call Repo -- Default Repo Locations -- Hard update": {
+    "Update Call Repo - Default Repo Locations - Hard/Force update": {
       "commandName": "Project",
       "commandLineArgs": "updateRepo -ut Calls -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LocalRepo\\CallRepo.json",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    "Update Call Repo -- Default Repo Locations -- Soft update": {
+    "Update Call Repo - Default Repo Locations - Soft update": {
       "commandName": "Project",
       "commandLineArgs": "updateRepo -t Calls -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LocalRepo\\CallRepo.json",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    "Update Call Repo -- Default Repo Locations -- Force update": {
-      "commandName": "Project",
-      "commandLineArgs": "updateRepo -ft Calls -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LocalRepo\\CallRepo.json",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
-      }
-    },
-
+    
     // Reset Customer repo
-    "Update Customers Repo -- Default Repo Locations -- Hard update": {
+    "Update Customers Repo - Default Repo Locations - Hard/Force update": {
       "commandName": "Project",
       "commandLineArgs": "updateRepo -ut Customers -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LocalRepo\\CustomerRepo.json",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    "Update Customers Repo -- Default Repo Locations -- Soft update": {
+    "Update Customers Repo - Default Repo Locations - Soft update": {
       "commandName": "Project",
       "commandLineArgs": "updateRepo -t Customers -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LocalRepo\\CustomerRepo.json",
-      "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
-      }
-    },
-    "Update Customers Repo -- Default Repo Locations -- Force update": {
-      "commandName": "Project",
-      "commandLineArgs": "updateRepo -ft Customers -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LocalRepo\\CustomerRepo.json",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
