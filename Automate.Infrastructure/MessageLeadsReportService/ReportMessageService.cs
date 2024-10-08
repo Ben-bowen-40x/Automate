@@ -80,10 +80,6 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         // Remove duplicates from message origin
         List<IMessage> uniqueMsgs = RemoveDuplicates(msgs);
 
-        // Determine whether to query the database
-        //QueryDbCalls = WhetherToQueryDB(uniqueMsgs, out bool queryCustomers);
-        //QueryDbCustomers = queryCustomers;
-
         return uniqueMsgs;
     }
 
@@ -177,11 +173,11 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
     public List<ICustomerSubscription> GetCustomerRecords(List<long> msgNums, string customerRepo)
     {
         // Prepare the repo location. This is the default location
-        FileInfo customerLocation = customerRepo == string.Empty || !File.Exists(customerRepo)
-            ? new(Location(_customerRecordRepo))
-            : new(customerRepo);
+        string customerLocation = customerRepo == string.Empty || !File.Exists(customerRepo)
+            ? Location(_customerRecordRepo)
+            : customerRepo;
 
-        List<CustSubJsonReader> localCustomers = JsonRW.DeserializeFile<CustSubJsonReader>(customerLocation.FullName);
+        List<CustSubJsonReader> localCustomers = JsonRW.DeserializeFile<CustSubJsonReader>(customerLocation);
         IEnumerable<ICustomerSubscription> filteredCustomers = localCustomers
             .Select(c => c.Convert())
             .Where(c =>
