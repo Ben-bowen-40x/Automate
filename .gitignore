@@ -21,3 +21,4 @@
 # Added Later
 Automate.Cli/Automate.Cli.csproj.user
 /Automate.Cli/Automate.Cli.csproj.user
+*.bat
