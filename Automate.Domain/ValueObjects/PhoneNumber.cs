@@ -7,27 +7,45 @@ public class PhoneNumber
     {
         return $"Phone Number: {Number}";
     }
-    
+
     public bool IsDefault { get; private set; }
 
     public static long Default => 0;
-    
+
     public long Number { get; set; }
-    
+
     public PhoneNumber(PhoneNumber number)
     {
         Number = number.Number;
         IsDefault = number.IsDefault;
     }
-    
+
     public PhoneNumber(long number)
     {
         Number = ValidateNumericalInput(number);
     }
-    
+
     public PhoneNumber(string number)
     {
         Number = NullCheck(number);
+    }
+
+    public static bool TryParse(string? number, out PhoneNumber result)
+    {
+        if (number is null)
+        {
+            result = new(0);
+            return false;
+        }
+        try
+        {
+            result = new(number!);
+            return true;
+        }
+        catch
+        {
+            result = new(0);
+            return false; }
     }
     #endregion
 
@@ -39,7 +57,7 @@ public class PhoneNumber
         else
             return ValidateStringInput(number);
     }
-    
+
     internal long ValidateStringInput(string number)
     {
         // Place intermediate variables here for debugging purposes
@@ -77,7 +95,7 @@ public class PhoneNumber
             _ => number
         };
     }
-    
+
     internal static long StrToLong(string number)
     {
         if (number.Length < 10)
