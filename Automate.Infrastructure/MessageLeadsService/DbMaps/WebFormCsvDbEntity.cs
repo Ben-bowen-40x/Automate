@@ -16,7 +16,7 @@ public class WebFormCsvDbEntity : ClassMap<WebFormCsvDbEntity>, IPhoneNumberComp
         Map(m => m.Date).Index(index++).Name(DateStr);
         Map(m => m.FirstName).Index(index++).Name(FName);
         Map(m => m.LastName).Index(index++).Name(LName);
-        Map(m => m.Phone).Index(index++).Name(Ph);
+        Map(m => m.Number.Number).Index(index++).Name(Ph);
         Map(m => m.Email).Index(index++).Name(Eml);
         Map(m => m.Problem).Index(index++).Name(Prob);
         Map(m => m.Branch).Index(index++).Name(Brnch);
