@@ -1,4 +1,6 @@
-﻿using CsvHelper.Configuration;
+﻿using Automate.Application.InfrastructureInterfaces;
+using Automate.Domain.ValueObjects;
+using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Automate.Infrastructure.MessageLeadsService.DbMaps;
 
 [Keyless]
-internal class WebFormCsvDbEntity : ClassMap<WebFormCsvDbEntity>
+public class WebFormCsvDbEntity : ClassMap<WebFormCsvDbEntity>, IPhoneNumberCompatible
 {
     WebFormCsvDbEntity()
     {
@@ -58,14 +60,17 @@ internal class WebFormCsvDbEntity : ClassMap<WebFormCsvDbEntity>
     public string? Branch { get; set; }
     [Column(Refer)]
     [Name(Refer)]
-    public string? ReferringUrl {  get; set; }
+    public string? ReferringUrl { get; set; }
     [Column(Form)]
     [Name(Form)]
-    public string? FormPageUrl {  get; set; }
+    public string? FormPageUrl { get; set; }
     [Column(Cust)]
     [Name(Cust)]
     public string? CurrentCustomer { get; set; }
     [Column(ZCode)]
     [Name(ZCode)]
     public string? Zip { get; set; }
+
+    private PhoneNumber? _number;
+    public PhoneNumber Number => _number ??= Phone is null || !PhoneNumber.TryParse(Phone, out PhoneNumber phoneResult) ? new(0) : phoneResult;
 }
