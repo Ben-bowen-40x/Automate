@@ -73,6 +73,11 @@ internal class UpdateRepoVerb : IVerb
                 Result resu = manag.Manage<CustSubDbEntity>(DwhQueryType.AllCustomers, DwhConnectionType.Customers, ApiRepositoryJson, ForceUpdate || Update);
                 code = DetermineReturnCode(resu);
                 break;
+            case RepoType.ContactForms:
+                var mana = service.GetRequiredService<ITypedRepoUpdateManager>();
+                Result res = mana.Manage<>(DwhQueryType.ContactForms, DwhConnectionType.ContactForms, ApiRepositoryJson, ForceUpdate || Update);
+                code = DetermineReturnCode(res);
+                break;
             default:
                 var m = service.GetRequiredService<IRepoUpdateManager>();
                 var r = m.Manage(valueInfo, repoInfo, Update, ForceUpdate);

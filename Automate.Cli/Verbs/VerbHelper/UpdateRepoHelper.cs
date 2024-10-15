@@ -5,6 +5,7 @@ public enum RepoType
     Leaf,
     Calls,
     Customers,
+    ContactForms,
 }
 
 internal enum RepoFileTypes
@@ -20,7 +21,8 @@ internal class UpdateRepoHelper
         Enter the name of the repo you would like to update. Your options are: 
         Leaf,
         Calls,
-        Customers
+        Customers,
+        ContactForms
         """;
 
 }

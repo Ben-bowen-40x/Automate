@@ -3,5 +3,6 @@
 public enum DwhQueryType
 {
     AllCalls,
-    AllCustomers
+    AllCustomers,
+    ContactForms
 }

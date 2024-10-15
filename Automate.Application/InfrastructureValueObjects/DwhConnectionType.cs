@@ -4,4 +4,5 @@ public enum DwhConnectionType
 {
     Calls,
     Customers,
+    ContactForms,
 }

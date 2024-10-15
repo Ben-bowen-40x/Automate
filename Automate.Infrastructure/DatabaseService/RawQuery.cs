@@ -7,7 +7,7 @@ public class RawQuery(IRawQuerySettings settings)
     private string QueryDateFormat => _s.QueryDateFormat!;
 
     #region Basic Queries
-    
+
     #region Public Basic
     public string Filter(DwhQueryType type, string query, List<long> values)
     {
@@ -28,7 +28,7 @@ public class RawQuery(IRawQuerySettings settings)
     private string CustomerBasicNumerical => _s.CustomerBasicNumerical!;
     private string CallBasic => _s.CallBasic!;
     #endregion
-    
+
     #endregion
 
     #region Message Queries
@@ -174,5 +174,11 @@ public class RawQuery(IRawQuerySettings settings)
     private ulong ContactUpdateNumber => _s.ContactUpdateNumber;
     #endregion
 
+    #endregion
+
+    #region Web Forms Query
+    public string? WebFormQuery1 { get; set; }
+    public string? WebFormQuery2 { get; set; }
+    public string? WebFormQuery WebFormQuery1
     #endregion
 }

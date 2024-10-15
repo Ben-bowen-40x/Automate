@@ -28,4 +28,8 @@ public interface IRawQuerySettings
     string? ContactUpdate2 { get; set; }
     string? ContactUpdate3 { get; set; }
     ulong ContactUpdateNumber { get; set; }
+
+    // Forms
+    public string? WebFormQuery1 { get; set; }
+    public string? WebFormQuery2 { get; set; }
 }
