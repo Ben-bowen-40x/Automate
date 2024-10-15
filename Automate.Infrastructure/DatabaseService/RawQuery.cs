@@ -93,8 +93,7 @@ public class RawQuery(IRawQuerySettings settings)
     #endregion
 
     #region Discrepancy Query
-
-    #region Public Discrepancy Query Members
+    // Public Discrepancy Query Members
     /// <summary>
     /// Returns the Discrepancy Query as a raw string
     /// </summary>
@@ -129,9 +128,8 @@ public class RawQuery(IRawQuerySettings settings)
     {
         return DiscrepancyQuery(start, DateTime.Now);
     }
-    #endregion
 
-    #region Private Discrepancy Query Members
+    // Private Discrepancy Query Members
     private string Discrepancy => _s.Discrepancy!;
 
     private const string and = "AND";
@@ -139,13 +137,11 @@ public class RawQuery(IRawQuerySettings settings)
     private string Discrepancy2 => _s.Discrepancy2!;
 
     private string OriginalDiscrepancy => _s.OriginalDiscrepancy!;
-    #endregion
 
     #endregion
 
     #region Contact Update Query
-
-    #region Public Contact Query Members
+    // Public Contact Query Members
     /// <summary>
     /// <para>Uses a <paramref name="number"/>, which is a 10-digit phone number represented as a <see cref="uint"/></para>
     /// </summary>
@@ -157,9 +153,8 @@ public class RawQuery(IRawQuerySettings settings)
         ulong num2 = ContactUpdateNumber + num;
         return ContactUpdate + $" {num} " + ContactUpdate2 + $" {num2} " + ContactUpdate3;
     }
-    #endregion
 
-    #region Private Contact Query members
+    // Private Contact Query members
     private string ContactUpdate => _s.ContactUpdate1!;
 
     private string ContactUpdate2 => _s.ContactUpdate2!;
@@ -167,10 +162,8 @@ public class RawQuery(IRawQuerySettings settings)
     private ulong ContactUpdateNumber => _s.ContactUpdateNumber;
     #endregion
 
-    #endregion
-
     #region Web Forms Query
-    public string? WebFormQuery1 { get; set; }
-    public string? WebFormQuery2 { get; set; }
+    public string WebFormQuery1 => _s.WebFormQuery1!;
+    public string WebFormQuery2 => _s.WebFormQuery2!;
     #endregion
 }
