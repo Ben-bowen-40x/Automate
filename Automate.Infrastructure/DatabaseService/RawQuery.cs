@@ -7,8 +7,7 @@ public class RawQuery(IRawQuerySettings settings)
     private string QueryDateFormat => _s.QueryDateFormat!;
 
     #region Basic Queries
-
-    #region Public Basic
+    // Public Basic
     public string Filter(DwhQueryType type, string query, List<long> values)
     {
         string vals = string.Join(",", values);
@@ -21,19 +20,17 @@ public class RawQuery(IRawQuerySettings settings)
     }
     public string CallBasicAddon => CallBasic + _s.CallBasicAddon;
     public string CustomerBasic => _s.CustomerBasic!;
-    #endregion
 
-    #region Private Basic
+    // Private Basic
     private string CallBasicNumerical => _s.CallBasicNumerical!;
     private string CustomerBasicNumerical => _s.CustomerBasicNumerical!;
     private string CallBasic => _s.CallBasic!;
-    #endregion
 
     #endregion
 
     #region Message Queries
 
-    #region Public Message Query Members
+    // Public Message Query Members
     /// <summary>
     /// When the day and year are the same and the customer date is after the subscription date, then the sub date is off for some reason in the original data
     /// </summary>
@@ -79,23 +76,19 @@ public class RawQuery(IRawQuerySettings settings)
         string query = $"{MessageCallQuery1} '{date}' {MessageCallQuery2};";
         return query;
     }
-    #endregion
 
-    #region Private Call Query Members
+    // Private Call Query Members
     private string MessageCallQuery1 => CallBasic + _s.MessageCallQuery1!;
 
     private string MessageCallQuery2 => _s.MessageCallQuery2!;
 
     private string MessageCallQuery3 => _s.MessageCallQuery3!;
 
-    #endregion
-
-    #region Private Customer Query Members
+    // Private Customer Query Members
     private string MessageCustSubQuery => CustomerBasic;
 
     private string _messageCustSubQuery2 => _s.MessageCustQuery2!;
     private string _messageCustSubQuery3 => _s.MessageCustQuery3!;
-    #endregion
 
     #endregion
 
@@ -179,6 +172,5 @@ public class RawQuery(IRawQuerySettings settings)
     #region Web Forms Query
     public string? WebFormQuery1 { get; set; }
     public string? WebFormQuery2 { get; set; }
-    public string? WebFormQuery WebFormQuery1
     #endregion
 }

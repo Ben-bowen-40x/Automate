@@ -5,13 +5,27 @@ namespace Automate.Cli;
 
 internal class Settings : IInfrastructureSettings, IDomainSettings
 {
-    #region IDwhSettings
+    #region IInfrastructureSettings
+    
+    // IDwhSettings
     public string? CallsConnectionString { get; set; }
     public string? CustomersConnectionString { get; set; }
     public string? ContactsConnectionString { get; set; }
+
+    // ILeafApiSettings
+    public string? LeafName { get; set; }
+    public string? LeafTokenType { get; set; }
+    public string? LeafRefreshToken { get; set; }
+    public string? LeafBase { get; set; }
+    public string? LeafAcctUuid { get; set; }
+    public string? LeafUuid { get; set; }
+    public string? LeafThreadsEndpoint { get; set; }
+
     #endregion
 
-    #region IRawQuery settings
+    #region IDomainSettings
+    
+    // IRawQuery settings
     public string? QueryDateFormat { get; set; }
 
     // Basics
@@ -42,21 +56,11 @@ internal class Settings : IInfrastructureSettings, IDomainSettings
     // Forms
     public string? WebFormQuery1 { get; set; }
     public string? WebFormQuery2 { get; set; }
-    #endregion
 
-    #region ILeafApiSettings
-    public string? LeafName { get; set; }
-    public string? LeafTokenType { get; set; }
-    public string? LeafRefreshToken { get; set; }
-    public string? LeafBase { get; set; }
-    public string? LeafAcctUuid { get; set; }
-    public string? LeafUuid { get; set; }
-    public string? LeafThreadsEndpoint { get; set; }
-    #endregion
-
-    #region IMessagePatternSettings
+    // IMessagePatternSettings
     public string? Company { get; set; }
     public string? Name { get; set; }
     public string? CompanyType { get; set; }
+
     #endregion
 }
