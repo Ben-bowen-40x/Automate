@@ -75,7 +75,7 @@ internal class UpdateRepoVerb : IVerb
                 break;
             case RepoType.ContactForms:
                 var mana = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result res = mana.Manage<>(DwhQueryType.ContactForms, DwhConnectionType.ContactForms, ApiRepositoryJson, ForceUpdate || Update);
+                Result res = mana.Manage<WebFormCsvDbEntity>(DwhQueryType.ContactForms, DwhConnectionType.ContactForms, ApiRepositoryJson, ForceUpdate || Update);
                 code = DetermineReturnCode(res);
                 break;
             default:
