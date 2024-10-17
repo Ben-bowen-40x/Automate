@@ -17,6 +17,7 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
         {
             DwhConnectionType.Calls => _settings.CallsConnectionString!,
             DwhConnectionType.Customers => _settings.CustomersConnectionString!,
+            DwhConnectionType.ContactForms => _settings.ContactFormsConnectionString!,
             _ => _settings.CallsConnectionString!
         };
 
@@ -37,7 +38,7 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
             Task<IEnumerable<TEntity>> values = DwhContextHelpers.GetItemsFromRawAsync(context, query);
             if (!values.IsFaulted)
                 return values.Result.ToList();
-            return Result.Failure<List<TEntity>>("Failed to get values from Dwh.");
+            return Result.Failure<List<TEntity>>($"Failed to get values from Dwh. Fault/Exception message: {values.Exception.Message}");
         }
         catch (Exception ex)
         {
