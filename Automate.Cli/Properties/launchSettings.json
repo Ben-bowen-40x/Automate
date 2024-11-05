@@ -22,7 +22,7 @@
     // Json to Csv Conversion
     "Convert Json - Always Edit": {
       "commandName": "Project",
-      "commandLineArgs": "convertJsonToCsv -t DwhContactForms -j ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ContactFormsDWH2024json.json -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\DWHforms2024-3.csv",
+      "commandLineArgs": "convertJsonToCsv -t DwhContactForms -j ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ContactFormsDWH2024json.json -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\DWHforms2024.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
