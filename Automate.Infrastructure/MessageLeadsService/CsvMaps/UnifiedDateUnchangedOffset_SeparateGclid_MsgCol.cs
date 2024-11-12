@@ -1,18 +1,17 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using Automate.Domain.ValueObjects;
-using Automate.Application.InfrastructureInterfaces;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
 public class UnifiedDateUnchangedOffset_SeparateGclid_MsgCol : IConvert
 {
-    [Name("Prospect Cellphone", "Phone Number","Number")]
+    [Name("Prospect Cellphone", "Phone Number", "Number")]
     public string? PhoneNumber { get; set; }
-    [Name("Creation", "Message Creation","Date")]
+    [Name("Creation", "Message Creation", "Date")]
     public string? StartDate { get; set; }
-    [Name("Message","Contents")]
+    [Name("Message", "Contents")]
     public string? Contents { get; set; }
-    [Name("Message Source","Source")]
+    [Name("Message Source", "Source")]
     public string? Source { get; set; }
     public IMessage Convert<UnifiedDateUnchangedOffset_SeparateGclid_MsgCol, IMessage>()
     {

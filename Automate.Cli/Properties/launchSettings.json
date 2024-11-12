@@ -71,6 +71,20 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
+    "Analyze Messages - Produce New Meta Forms, non-specific output": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MetaForms.csv -t MetaForm",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Analyze Messages - Produce New Meta Forms, specific output": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MetaForms.csv -t MetaForm -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\MetaForms.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
 
     // Append Messages
     "Analyze Messages - Append Pan to Power Bi": {

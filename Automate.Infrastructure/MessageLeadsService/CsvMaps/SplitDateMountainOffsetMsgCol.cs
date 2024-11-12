@@ -1,8 +1,6 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.DateTimeConversion;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 

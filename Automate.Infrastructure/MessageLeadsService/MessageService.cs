@@ -60,11 +60,13 @@ public class MessageService(IDwhSettings settings) : IMessageService
         List<IMessage> uniqueMsgs = RemoveDuplicates(msgList);
 
         // Use the most recent message to determine whether the local repos need to be updated
-        IMessage recentMsg = FindMostRecent(uniqueMsgs);
+        /*
+         * IMessage recentMsg = FindMostRecent(uniqueMsgs);
         IMessage firstMsg = FindFirst(uniqueMsgs);
         _startDate = firstMsg.Date;
         QueryDbCalls = CallRepoNeedsUpdate(recentMsg, firstMsg, Location(_callRecordRepo));
         QueryDbCustomers = CustomerRepoNeedsUpdate(recentMsg, Location(_customerRecordRepo));
+        */
 
         return uniqueMsgs;
     }
@@ -75,7 +77,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
             ? new(Location(_callRecordRepo))
             : new(callRepo);
 
-        List<CallRecordJson> localCalls = JsonRW.DeserializeFile<CallRecordJson>(callLocation.FullName);
+        List<CallRecordJsonReader> localCalls = JsonRW.DeserializeFile<CallRecordJsonReader>(callLocation.FullName);
         IEnumerable<ICallRecord> filteredCalls = localCalls
             .Select(c => c.Convert())
             .Where(c =>
@@ -130,7 +132,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
             ? new(Location(_customerRecordRepo))
             : new(customerRepo);
 
-        List<CustSubJson> localCustomers = JsonRW.DeserializeFile<CustSubJson>(customerLocation.FullName);
+        List<CustSubJsonReader> localCustomers = JsonRW.DeserializeFile<CustSubJsonReader>(customerLocation.FullName);
         IEnumerable<ICustomerSubscription> filteredCustomers = localCustomers
             .Select(c => c.Convert())
             .Where(c =>

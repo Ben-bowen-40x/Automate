@@ -24,6 +24,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Automate.Infrastructure.Test", "Automate.Infrastructure.Test\Automate.Infrastructure.Test.csproj", "{9A7259CC-9568-400D-9045-15B558C8DF4E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{24010172-1BFF-41F8-B843-D0C14FB44C42}"
+	ProjectSection(SolutionItems) = preProject
+		ForceUpdateRepos.bat = ForceUpdateRepos.bat
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{CA84C872-80AF-4F21-8CDD-824AD7442561}"
 EndProject
@@ -107,5 +110,8 @@ Global
 		{BE9D3339-0BB5-409C-A018-7819663CADF1} = {CA84C872-80AF-4F21-8CDD-824AD7442561}
 		{AF79A124-70FD-4358-A680-EA543EFAE188} = {CA84C872-80AF-4F21-8CDD-824AD7442561}
 		{C8BE999F-2AD1-4943-A52D-B593F84624FD} = {CA84C872-80AF-4F21-8CDD-824AD7442561}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7CB7B1B9-E01C-4B66-863D-F3F5B9239256}
 	EndGlobalSection
 EndGlobal

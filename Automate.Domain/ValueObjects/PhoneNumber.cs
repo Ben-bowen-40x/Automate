@@ -1,6 +1,8 @@
-﻿namespace Automate.Domain.ValueObjects;
+﻿using System.Text.RegularExpressions;
 
-public class PhoneNumber
+namespace Automate.Domain.ValueObjects;
+
+public partial class PhoneNumber
 {
     #region Public
     public override string ToString()
@@ -45,7 +47,8 @@ public class PhoneNumber
         catch
         {
             result = new(0);
-            return false; }
+            return false;
+        }
     }
     #endregion
 
@@ -77,12 +80,8 @@ public class PhoneNumber
 
     internal static string RemoveNondigitChars(string number)
     {
-        string spl = string.Join(string.Empty, number.Split('+'));
-        string split = string.Join(string.Empty, spl.Split('('));
-        string split2 = string.Join(string.Empty, split.Split(')'));
-        string split3 = string.Join(string.Empty, split2.Split(' '));
-        string split4 = string.Join(string.Empty, split3.Split('-'));
-        return split4;
+        string split = string.Join(string.Empty, NonDigitChar().Split(number));
+        return split;
     }
 
     internal long ValidateNumericalInput(long number)
@@ -104,5 +103,8 @@ public class PhoneNumber
             return result;
         return Default;
     }
+
+    [GeneratedRegex(@"\D")]
+    private static partial Regex NonDigitChar();
     #endregion
 }

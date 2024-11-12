@@ -406,6 +406,7 @@ internal partial class MessagePatterns
     $"^{empty}$|" +
     $"^est{letters} interesa{letters}$|" +
     $"^urgent need$|" +
+    "^something.else...$|" +
     $"^{empty}emergency{empty}$|" +
     $"^{empty}help{empty}$|" +
     $"^{empty}(hi|hello|hola){empty}$|" +
