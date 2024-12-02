@@ -86,6 +86,15 @@
       }
     },
 
+    // Append Truncate Leaf
+    "Analyze Messages - Truncated 180 days -- Append New Leaf - LeafRepo": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo -xd 180 -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv -O ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LeafReport_Gads_Truncated180.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
     // Append Messages
     "Analyze Messages - Append Pan to Power Bi": {
       "commandName": "Project",

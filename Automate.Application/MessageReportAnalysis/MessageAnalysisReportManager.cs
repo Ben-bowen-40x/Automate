@@ -11,7 +11,43 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
 
     public Result<FileInfo> Manage<T>(string reportDefault, string messages, string callsFile, string customersFile, string report) where T : IConvert
     {
-        // Retrieve Items
+        List<QualifiedMessageRecord> reportRecords = Commond<T>(messages, callsFile, customersFile, report);
+
+        // Generate Report
+        var success = _reportService.GenerateMessageLeadReportAppend(reportDefault, reportRecords, report);
+
+        return success;
+    }
+
+    public const int Days = 120;
+    public Result<FileInfo> Manage<T>(string reportDefault, string messages, string callsFile, string customersFile, string report, string truncatedReport, bool truncate, int days = Days) where T : IConvert
+    {
+        List<QualifiedMessageRecord> reportRecords = Commond<T>(messages, callsFile, customersFile, report);
+
+        // Truncate the report 
+        if (truncate)
+        {
+            DateTimeOffset past = DateTimeOffset.Now - TimeSpan.FromDays(days);
+            List<QualifiedMessageRecord> truncatedRecords = reportRecords.Where(r => DateTimeOffset.Compare(past, r.Message.Date) <= 0).ToList();
+            var result = _reportService.GenerateMessageLeadReport(reportDefault + "Truncated" + days, truncatedRecords, truncatedReport);
+            var appended = _reportService.GenerateMessageLeadReportAppend(reportDefault, reportRecords, report);
+            if(result.IsSuccess)
+                return result;
+            if(result.IsFailure && appended.IsSuccess)
+                return appended;
+            if (result.IsFailure && appended.IsFailure)
+                return result;
+        }
+
+        // Generate Report
+        var success = _reportService.GenerateMessageLeadReportAppend(reportDefault, reportRecords, report);
+
+        return success;
+    }
+
+    private List<QualifiedMessageRecord> Commond<T>(string messages, string callsFile, string customersFile, string report) where T : IConvert
+    {
+        // Retrieve Items This is here
         List<IMessage> reportMsgs = _msgService.RetrieveReportMessages(report, out List<QualifiedMessageRecord> records);
         List<IMessage> msgs = _msgService.GetMessages<T>(messages);
         List<IMessage> messagePartitions = _msgService.PartitionMessagesAndReportRecords(msgs, reportMsgs);
@@ -23,11 +59,6 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         List<QualifiedMessageRecord> qualified = MessageQualifier.Qualify(messagePartitions, calls, customers);
 
         // Collect the report together
-        List<QualifiedMessageRecord> reportRecords = [.. records, .. qualified];
-
-        // Generate Report
-        var success = _reportService.GenerateMessageLeadReportAppend(reportDefault, reportRecords, report);
-
-        return success;
+        return [.. records, .. qualified];
     }
 }

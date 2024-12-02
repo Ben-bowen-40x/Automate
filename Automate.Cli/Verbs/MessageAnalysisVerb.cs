@@ -2,6 +2,7 @@
 using Automate.Cli.Verbs.VerbHelper;
 using Automate.Domain.SolutionFunctionality;
 using CSharpFunctionalExtensions;
+using Automate.Application.MessageReportAnalysis;
 
 namespace Automate.Cli.Verbs;
 
@@ -34,6 +35,14 @@ internal class MessageAnalysisVerb : IVerb
     public string CustomerQueryLocation { get; set; } = string.Empty;
     [Option('Q', "customerRepo", Required = false, HelpText = "Enter the customer repository file location that holds customer records in local repo. This must be a Json file. If one is not provided, or if the provided file does not exist, or the provided repo is not a Json file, a default will be used instead.")]
     public string CustomerRepoLocation { get; set; } = string.Empty;
+
+    // Not Required Options
+    [Option('x', "truncate", Required = false, Default = false, HelpText = "This option is a boolean and will truncate the report. Default truncation is 120 days. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated.")]
+    public bool Truncate { get; set; } = false;
+    [Option('d', "daysToTruncate", Required = false, Default = 120, HelpText = "This option determines how many days to truncate the report. Default truncation is 120 days. This option will NOT truncate the report if the boolean 'x' option is undefined. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated.")]
+    public int DaysOfTruncation { get; set; } = 120;
+    [Option('O', "truncatedReportOutput", Required = false, HelpText = "This option is only needed if -x or -truncate is switched on. It is the output location of the truncated report.")]
+    public string TruncatedReportLoc { get; set; } = string.Empty;
     #endregion
 
     #region Public (Besides Options)
@@ -41,10 +50,10 @@ internal class MessageAnalysisVerb : IVerb
     {
         // Inform the user what is going on
         InformUser();
-        VerifyInput(out string messageLocation, out string callQueryLocation, out string callRepoLocation, out string customerQueryLocation, out string customerRepoLocation, out string reportLocation);
+        VerifyInput(out string messageLocation, out string callQueryLocation, out string callRepoLocation, out string customerQueryLocation, out string customerRepoLocation, out string reportLocation, out string truncatedReportLoc);
 
         // Execute
-        Result<FileInfo> result = MessageVerbHelper.Execute(Append, service, messageLocation, callQueryLocation, customerQueryLocation, reportLocation, MessageType);
+        Result<FileInfo> result = MessageVerbHelper.Execute(Append, service, messageLocation, callQueryLocation, customerQueryLocation, reportLocation, MessageType, truncatedReportLoc, Truncate, DaysOfTruncation);
 
         // Logger
         StringLogger.NameLog(DateTime.Now, AnalyzeMessages, MessageType.ToString());
@@ -57,7 +66,7 @@ internal class MessageAnalysisVerb : IVerb
     private const string fileDefault = " If a file is not provided or the provided location does not exist, a default will be used instead. ";
     private const string queryWarning = " Keep in mind that the query must be properly formulated in order for the program to receive the query. ";
 
-    private void VerifyInput(out string messageLocation, out string callQueryLocation, out string callRepoLocation, out string customerQueryLocation, out string customerRepoLocation, out string reportLocation)
+    private void VerifyInput(out string messageLocation, out string callQueryLocation, out string callRepoLocation, out string customerQueryLocation, out string customerRepoLocation, out string reportLocation, out string truncatedReportLoc)
     {
         // Verify that the file inputs exist. If they don't, default them
         Result<FileType> msgLoc = PathManipulation.VerifyType(MessageLocation);
@@ -74,6 +83,14 @@ internal class MessageAnalysisVerb : IVerb
         callRepoLocation = Path.Exists(CallRepoLocation) && callRepo.IsSuccess && callRepo.Value == FileType.Json
             ? Path.GetFullPath(CallRepoLocation)
             : string.Empty;
+
+        // Truncated Report Loc
+        Result<FileType> truncatedLoc = PathManipulation.VerifyType(TruncatedReportLoc);
+        truncatedReportLoc = Path.Exists(TruncatedReportLoc) && truncatedLoc.IsSuccess && truncatedLoc.Value == FileType.Csv
+            ? Path.GetFullPath(TruncatedReportLoc)
+            : string.Empty;
+        if (Truncate && truncatedReportLoc == string.Empty)
+            throw new Exception($"The user requested to truncate the report but did not specify a valid truncated report output location.");
 
         // Customer Locations
         Result<FileType> customerLoc = PathManipulation.VerifyType(CustomerQueryLocation);
@@ -114,6 +131,8 @@ internal class MessageAnalysisVerb : IVerb
         Console.WriteLine($"- Location of Message file to analyze (required): \n\t{MessageLocation}\n\t- Literal path: \n\t{messageLoc}");
         Console.WriteLine($"- Location of report output (not required): \n\t\"{ReportLocation}\"\n\t- Literal path: \n\t{reportLoc}");
         Console.WriteLine($"- Whether or not to append to existing report (defaults to False): \n\t{Append}");
+        Console.WriteLine($"- Whether or not to truncate the report (defaults to False): \n\t{Truncate}");
+        if (Truncate) Console.WriteLine($"- The number of days to truncate the report (defaults to 120): \n\t{DaysOfTruncation}");
         if (CallQueryLocation is not null && CallQueryLocation != string.Empty && CallQueryLocation.Length > 0)
             Console.WriteLine($"- Location of the sql query file that will be used to retrieve call records: \n\t{CallQueryLocation}\n\t- Literal path: \n\t{callQueryLoc}");
         if (CustomerQueryLocation is not null && CustomerQueryLocation != string.Empty && CustomerQueryLocation.Length > 0)
@@ -219,6 +238,6 @@ internal class MessageAnalysisVerb : IVerb
                 return ProgramErrorCodes.Message_NoResultAndUnknown;
         }
     }
-    
+
     #endregion
 }
