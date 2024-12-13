@@ -93,7 +93,11 @@ internal class UpdateRepoVerb : IVerb
     private static int DetermineReturnCode(Result result)
     {
         if (result.IsSuccess)
+        {
+            Console.WriteLine("Execution of this request was successful.");
             return ProgramErrorCodes.Success;
+        }
+        Console.WriteLine("Execution of this request was NOT successful.");
         return ProgramErrorCodes.Error;
     }
     #endregion
