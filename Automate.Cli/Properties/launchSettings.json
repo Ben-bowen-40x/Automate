@@ -4,7 +4,7 @@
     // Discrepancy
     "Analyze Discrepancy - Always Edit": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeDiscrepancy -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Discrepancy\\12.01-12.07.csv -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\Discrepancy-12.01-12.07.csv",
+      "commandLineArgs": "analyzeDiscrepancy -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Discrepancy\\12.15-12.28.csv -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\Discrepancy-12.15-12.28.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
