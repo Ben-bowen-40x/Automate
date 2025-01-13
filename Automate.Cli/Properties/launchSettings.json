@@ -27,6 +27,13 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
+    "Convert Json - DWH Forms": {
+      "commandName": "Project",
+      "commandLineArgs": "convertJsonToCsv -t DwhContactForms -j ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ContactFormsDWH2024json.json -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\DWHforms2024.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
 
     // Reset Messages
     "Analyze Messages - Produce New Pan": {
