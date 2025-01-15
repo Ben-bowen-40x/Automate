@@ -42,7 +42,7 @@
       }
     },
 
-    // Reset Messages
+    // Produce New Messages
     "Analyze Messages - Produce New Pan": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\PNContactForms.csv -t Pan",
@@ -95,6 +95,13 @@
     "Analyze Messages - Produce New Meta Forms, specific output": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MetaForms.csv -t MetaForm -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\MetaForms.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Analyze Messages - Produce New Libacion": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LibacionForm.csv -t Libacion",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
@@ -157,6 +164,13 @@
     "Analyze Messages - Append Web Forms to Power Bi": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ManualWebForms.csv -t ManualWebForm -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\ManualWebForms.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Analyze Messages - Append Libacion to Power Bi": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LibacionForm.csv -t Libacion -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LibacionForm.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

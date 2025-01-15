@@ -39,9 +39,7 @@ public class UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol :
             : CsvMapsHelper.ContentsJoined(Contents!);
 
         // Cast new message into IMessage
-        List<Message> rlist = [new Message(number, start, message, url)];
-        List<IMessage> mlist = (List<IMessage>)rlist.Cast<IMessage>();
-        IMessage result = mlist[0];
+        IMessage result = (IMessage)(Domain.ValueObjects.IMessage)new Message(number, start, message, url);
 
         return result;
     }

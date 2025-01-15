@@ -1,34 +1,34 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using Automate.Domain.ValueObjects;
-using Automate.Infrastructure.DateTimeConversion;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
-public class SplitDateMountainOffsetMsgCol : IConvert
+public class SplitDateUTCOffsetMsgCol : IConvert
 {
-    [Name("Customer #")]
+    [Name("phone_number")]
     public string? PhoneNumber { get; set; }
-    [Name("Date")]
+    [Name("date_submitted")]
     public string? StartDate { get; set; }
-    [Name("Time")]
+    [Name("time_submitted")]
     public string? StartTime { get; set; }
-    [Name("FormCustomFields")]
+    [Name("how_can_we_help")]
     public string? Contents { get; set; }
-    [Name("Account Name")]
+    [Name("page_name")]
     public string? Source { get; set; }
-    public IMessage Convert<SplitDateMountainOffsetMsgCl, IMessage>()
+    public IMessage Convert<SplitDateUTCOffsetMsgCol, IMessage>()
     {
-        // Convert local to DateTimeOffset
-        DateTime startDate =
-            StartDate is not null && DateTime.TryParse($"{StartDate} {StartTime}", out DateTime resultDate)
-            ? resultDate
-            : DateTime.MinValue;
+        // Convert UTC string to DateTimeOffset
+        string startTim = StartTime is not null
+            ? StartTime
+            : string.Empty;
+        string startTime = startTim.Contains("utc", StringComparison.CurrentCultureIgnoreCase) 
+            ? startTim.Replace("utc", string.Empty)
+            : startTim;
         DateTimeOffset start =
-            DateTimeConversions.ConvertLocalToDTOffset(startDate, TimeZoneEnum.Mountain, out DateTimeOffset resultOffset)
-            ? resultOffset
+            StartDate is not null && DateTimeOffset.TryParse($"{StartDate} {startTime}", out DateTimeOffset resultDate)
+            ? resultDate
             : DateTimeOffset.MinValue;
-
-        // Source Url
+        // Source
         string source = Source is null ? string.Empty : Source!;
 
         // Phone Number

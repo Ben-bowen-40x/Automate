@@ -33,8 +33,8 @@ public class NoTimeMsgCol : IConvert
         string source = Source is null || Source == string.Empty ? string.Empty : Source;
 
         // Cast new message into IMessage
-        Domain.ValueObjects.IMessage resultMsg = new Message(number, date, contents, source);
+        IMessage resultMsg = (IMessage)(Domain.ValueObjects.IMessage)new Message(number, date, contents, source);
 
-        return (IMessage)resultMsg;
+        return resultMsg;
     }
 }
