@@ -9,6 +9,13 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
+    "Analyze Discrepancy - Specific source": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeDiscrepancy -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Discrepancy\\LBC-10.01-11.csv -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\Discrepancy-LBC-10.01-11.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
 
     // Contact Update
     "Update Contacts - Defaults": {
