@@ -13,7 +13,7 @@ public class LeafClient_Test
     #region Ctor and Readonly values
     public LeafClient_Test()
     {
-        Config = (ILeafTestSettings)new InfraTestConfiguration().TestSettings;
+        Config = new InfraTestConfiguration().TestSettings;
 
         Client = new HttpClient();
         Client.DefaultRequestHeaders.Add("Accept", "application/json");
