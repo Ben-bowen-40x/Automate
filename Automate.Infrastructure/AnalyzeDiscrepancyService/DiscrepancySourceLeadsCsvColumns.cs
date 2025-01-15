@@ -6,15 +6,15 @@ namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 
 public partial class DiscrepancySourceLeadsCsvColumns : IComparable<DiscrepancySourceLeadsCsvColumns>
 {
-    // This class is used to retrieve WGL leads from a csv file
-    // All leads from WGL in this way are billable because those are the only leads that are charged
-    [Name("Caller Number")]
+    // This class is used to retrieve discrepancy leads from a csv file
+    // All leads from discrepancy in this way are billable because those are the only leads that are charged
+    [Name("Caller Number", "Number")]
     public string? PhoneNumber { get; set; }
-    [Name("Call Date & Time")]
+    [Name("Call Date & Time", "Most Recent Call")]
     public string? StartDate { get; set; }
-    [Name("Call Duration")]
+    [Name("Call Duration", "Longest Call (seconds)")]
     public string? Duration { get; set; }
-    [Name("Notes")]
+    [Name("Notes", "Name")]
     public string? Notes { get; set; }
     public DiscrepancyCall Convert()
     {
