@@ -12,7 +12,15 @@ public class InfrastructureTestSettings : IInfrastructureTestSettings
     public string? LeafThreadsEndpoint { get; set; }
     public string? LeafApiTestRepo { get; set; }
 
-
     // ICsvTestFileSettings
     public string? CsvAppendTestFile { get; set; }
+
+    // ISharpQuerySettings
+    public string? GuliagarName { get; set; }
+    public string? GuliagarNameElement { get; set; }
+    public string? GuliagarKey { get; set; }
+    public string? GuliagarKeyElement { get; set; }
+    public string? GuliagarUrl { get; set; }
+    public string? GuliagarUrl2 { get; set; }
+    public string? GuliagarBunny { get; set; }
 }

@@ -2,6 +2,6 @@
 
 namespace Automate.Domain;
 
-public   interface IDomainSettings : IMessagePatternSettings
+public interface IDomainSettings : IMessagePatternSettings
 {
 }

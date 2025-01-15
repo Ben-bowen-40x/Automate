@@ -5,8 +5,16 @@ namespace Automate.Cli;
 
 internal class Settings : IInfrastructureSettings, IDomainSettings
 {
+    #region IDomainSettings
+    // IMessagePatternSettings
+    public string? Company { get; set; }
+    public string? Name { get; set; }
+    public string? CompanyType { get; set; }
+
+    #endregion
+
     #region IInfrastructureSettings
-    
+
     // IDwhSettings
     public string? CallsConnectionString { get; set; }
     public string? CustomersConnectionString { get; set; }
@@ -21,10 +29,6 @@ internal class Settings : IInfrastructureSettings, IDomainSettings
     public string? LeafUuid { get; set; }
     public string? LeafThreadsEndpoint { get; set; }
 
-    #endregion
-
-    #region IDomainSettings
-    
     // IRawQuery settings
     public string? QueryDateFormat { get; set; }
 
@@ -57,10 +61,14 @@ internal class Settings : IInfrastructureSettings, IDomainSettings
     public string? WebFormQuery1 { get; set; }
     public string? WebFormQuery2 { get; set; }
 
-    // IMessagePatternSettings
-    public string? Company { get; set; }
-    public string? Name { get; set; }
-    public string? CompanyType { get; set; }
+    // ISharpQuerySettings
+    public string? GuliagarName { get; set; }
+    public string? GuliagarNameElement { get; set; }
+    public string? GuliagarKey { get; set; }
+    public string? GuliagarKeyElement { get; set; }
+    public string? GuliagarUrl { get; set; }
+    public string? GuliagarUrl2 { get; set; }
+    public string? GuliagarBunny { get; set; }
 
     #endregion
 }
