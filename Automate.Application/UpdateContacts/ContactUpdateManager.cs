@@ -16,5 +16,3 @@ public class ContactUpdateManager(IUpdateContactsService updateService, IReportS
         return new(resultResult, report);
     }
 }
-public record UpdateResult(bool UploadedContacts, Result<DirectoryInfo> ContactLocation);
-public record Contacts(PhoneNumber Number, PhoneNumber Phone2);

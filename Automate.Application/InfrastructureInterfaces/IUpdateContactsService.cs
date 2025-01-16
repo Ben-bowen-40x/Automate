@@ -1,4 +1,5 @@
 ﻿using Automate.Application.UpdateContacts;
+using Automate.Domain.ValueObjects;
 using CSharpFunctionalExtensions;
 
 namespace Automate.Application.InfrastructureInterfaces;
