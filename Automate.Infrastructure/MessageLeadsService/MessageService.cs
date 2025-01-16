@@ -59,15 +59,6 @@ public class MessageService(IDwhSettings settings) : IMessageService
         // Remove duplicates
         List<IMessage> uniqueMsgs = RemoveDuplicates(msgList);
 
-        // Use the most recent message to determine whether the local repos need to be updated
-        /*
-         * IMessage recentMsg = FindMostRecent(uniqueMsgs);
-        IMessage firstMsg = FindFirst(uniqueMsgs);
-        _startDate = firstMsg.Date;
-        QueryDbCalls = CallRepoNeedsUpdate(recentMsg, firstMsg, Location(_callRecordRepo));
-        QueryDbCustomers = CustomerRepoNeedsUpdate(recentMsg, Location(_customerRecordRepo));
-        */
-
         return uniqueMsgs;
     }
     public List<ICallRecord> GetCallRecords(List<long> msgNums, string callRepo)
@@ -140,8 +131,8 @@ public class MessageService(IDwhSettings settings) : IMessageService
                 .Contains(c.Number.Number)
             );
         return filteredCustomers.ToList();
-
     }
+
     public List<ICustomerSubscription> GetCustomerRecords(string customerLocation)
     {
         string customerLocRepo = Location(_customerRecordRepo);

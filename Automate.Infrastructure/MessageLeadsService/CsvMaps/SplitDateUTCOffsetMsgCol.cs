@@ -22,7 +22,7 @@ public class SplitDateUTCOffsetMsgCol : IConvert
             ? StartTime
             : string.Empty;
         string startTime = startTim.Contains("utc", StringComparison.CurrentCultureIgnoreCase) 
-            ? startTim.Replace("utc", string.Empty)
+            ? startTim.Replace("UTC", string.Empty)
             : startTim;
         DateTimeOffset start =
             StartDate is not null && DateTimeOffset.TryParse($"{StartDate} {startTime}", out DateTimeOffset resultDate)

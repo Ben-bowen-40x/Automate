@@ -1,4 +1,5 @@
 ﻿using Automate.Domain.ValueObjects;
+using Automate.Infrastructure.DateTimeConversion;
 
 namespace Automate.Infrastructure.MessageLeadsService.JsonMaps;
 
@@ -44,6 +45,20 @@ public class CustSubJsonReader : IDatedRecord
     public string? Seller3 { get; set; }
     public CustomerSubscription Convert()
     {
+        // Convert dates
+        var date = DateTimeConversions.ConvertLocalToDTOffset(Date.DateTime, TimeZoneEnum.Pacific, out DateTimeOffset dateResult)
+            ? dateResult
+            : DateTimeOffset.MaxValue;
+        var subscriptionStartDate = DateTimeConversions.ConvertLocalToDTOffset(SubscriptionStartDate.DateTime, TimeZoneEnum.Pacific, out DateTimeOffset subResult)
+            ? subResult
+            : DateTimeOffset.MaxValue;
+        var customerCancelDate = DateTimeConversions.ConvertLocalToDTOffset(CustomerCancelDate.DateTime, TimeZoneEnum.Pacific, out DateTimeOffset cxlResult)
+            ? cxlResult
+            : DateTimeOffset.MaxValue;
+        var subscriptionCancelDate = DateTimeConversions.ConvertLocalToDTOffset(SubscriptionCancelDate.DateTime, TimeZoneEnum.Pacific, out DateTimeOffset sxlResult)
+            ? sxlResult
+            : DateTimeOffset.MaxValue;
+
         // Convert Phone numbers
         PhoneNumber number1 = Number1 is not null && long.TryParse(Number1, out long num1) ? new(num1) : new(0);
         PhoneNumber number2 = Number2 is not null && long.TryParse(Number2, out long num2) ? new(num2) : new(0);
@@ -61,6 +76,6 @@ public class CustSubJsonReader : IDatedRecord
         string sellers = sellersArr.Count > 0 ? string.Join(" | ", sellersArr) : string.Empty;
 
 
-        return new CustomerSubscription(CustomerId, SubscriptionId, Date, SubscriptionStartDate, number1, number2, CustomerCancelDate, SubscriptionCancelDate, customerActive, subscriptionActive, initialCompleted, ContractValue, sellers);
+        return new CustomerSubscription(CustomerId, SubscriptionId, date, subscriptionStartDate, number1, number2, customerCancelDate, subscriptionCancelDate, customerActive, subscriptionActive, initialCompleted, ContractValue, sellers);
     }
 }
