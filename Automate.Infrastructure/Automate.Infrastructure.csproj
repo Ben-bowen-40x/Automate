@@ -24,10 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Automate.Application\Automate.Application.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AngleSharp" Version="1.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.0" />
     <PackageReference Include="MySql.EntityFrameworkCore" Version="8.0.8" />
@@ -47,6 +43,10 @@
   <ItemGroup>
     <Folder Include=".info\FormAnalysis\LocalRepo\" />
     <Folder Include=".info\Reports\ContactUpdate\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Automate.Translation\Automate.Translation.csproj" />
   </ItemGroup>
 
 </Project>
