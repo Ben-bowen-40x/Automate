@@ -97,7 +97,7 @@ internal class UpdateRepoVerb : IVerb
             Console.WriteLine("Execution of this request was successful.");
             return ProgramErrorCodes.Success;
         }
-        Console.WriteLine("Execution of this request was NOT successful.");
+        Console.WriteLine($"Execution of this request was NOT successful. {result.Error}");
         return ProgramErrorCodes.Error;
     }
     #endregion
