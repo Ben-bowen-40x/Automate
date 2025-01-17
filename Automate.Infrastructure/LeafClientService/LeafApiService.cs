@@ -3,7 +3,7 @@ using Automate.Application.InfrastructureValueObjects;
 using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.CsvManipulationService;
-using Automate.Infrastructure.JsonService;
+using Automate.Infrastructure.JsonManipulationService;
 using Automate.Infrastructure.MessageLeadsService.CsvMaps;
 using CSharpFunctionalExtensions;
 using System.Net.Http.Json;
@@ -115,7 +115,14 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         try
         {
             // Retrieve contents
-            List<LeafThread> content = JsonRW.DeserializeFile<LeafThread>(repo);
+            Result<List<LeafThread>> result = JsonService.ReadFile<LeafThread>(repo);
+
+            // The train MUST stop here because this is very unexcpected behavior at this point
+            // Plus, this point contains all of the necessary information that we need to see all the context;
+            // JsonService does NOT have enough context for exceptions to be thrown there, either during debugging or during live executions
+            List<LeafThread> content = result.IsSuccess
+                ? result.Value
+                : throw new Exception(result.Error); // Stop the train here -- this is the best place
             return content;
         }
         catch (Exception ex) { return Result.Failure<List<LeafThread>>(ex.Message); }
@@ -206,7 +213,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
 
         try
         {
-            JsonRW.SerializeToFile(leafRepoLocation, leafRepo); return Result.Success();
+            JsonService.WriteToFile(leafRepoLocation, leafRepo); return Result.Success();
         }
         catch (Exception ex)
         {

@@ -1,6 +1,6 @@
 ﻿using Automate.Application.InfrastructureValueObjects;
 using Automate.Domain.ValueObjects;
-using Automate.Infrastructure.JsonService;
+using Automate.Infrastructure.JsonManipulationService;
 using Automate.Infrastructure.LeafClientService;
 using Automate.Infrastructure.Test.TestConfigurations;
 using CSharpFunctionalExtensions;
@@ -95,7 +95,7 @@ public class LeafClient_Test
                 int ct = value.Count;
                 string repo = $"{Config.LeafApiTestRepo}/LeafTestRepo_{ct}_{now}.json";
                 List<IMessage> messages = value.Select(v => v.Convert<LeafThread, IMessage>()).ToList();
-                JsonRW.SerializeToFile(repo, messages);
+                JsonService.WriteToFile(repo, messages);
                 resume = ct == limit;
             }
             else
@@ -151,8 +151,8 @@ public class LeafClient_Test
             Thread.Sleep(10000);
         }
 
-        JsonRW.SerializeToFile(repoThread, masterList);
-        JsonRW.SerializeToFile(repoMessage, messageList);
+        JsonService.WriteToFile(repoThread, masterList);
+        JsonService.WriteToFile(repoMessage, messageList);
     }
     #endregion
 }

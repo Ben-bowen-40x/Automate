@@ -1,7 +1,7 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.SolutionFunctionality;
 using Automate.Infrastructure.CsvManipulationService;
-using Automate.Infrastructure.JsonService;
+using Automate.Infrastructure.JsonManipulationService;
 using CSharpFunctionalExtensions;
 using CsvHelper.Configuration;
 
@@ -9,16 +9,16 @@ namespace Automate.Infrastructure.JsonToCsvService;
 
 internal class JsonConversionService : IJsonConversionService
 {
-    public List<T> Extract<T>(FileInfo jsonFile)
-    {
-        return JsonRW.DeserializeFile<T>(jsonFile.FullName);
-    }
+    public Result<List<T>> Extract<T>(FileInfo jsonFile) { return JsonService.ReadFile<T>(jsonFile.FullName); }
 
-    public Result<FileInfo> SaveToCsv<T, TMap>(List<T> entities, FileInfo csvFile) where TMap : ClassMap<T>
+    public Result<FileInfo> SaveToCsv<T, TMap>(Result<List<T>> entities, FileInfo csvFile) where TMap : ClassMap<T>
     {
         try
         {
-            CsvService.Write<T, TMap>(csvFile.FullName, entities);
+            var values = entities.IsSuccess
+                ? entities.Value
+                : throw new Exception(entities.Error);
+            CsvService.Write<T, TMap>(csvFile.FullName, values);
             return csvFile;
         }
         catch (Exception ex)

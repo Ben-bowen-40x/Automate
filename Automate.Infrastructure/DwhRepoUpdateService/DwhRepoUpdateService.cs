@@ -1,7 +1,7 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Application.InfrastructureValueObjects;
 using Automate.Infrastructure.DatabaseService;
-using Automate.Infrastructure.JsonService;
+using Automate.Infrastructure.JsonManipulationService;
 using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.DwhRepoUpdateService;
@@ -57,7 +57,7 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
     {
         try
         {
-            return JsonRW.DeserializeFile<TEntity>(location);
+            return JsonService.ReadFile<TEntity>(location);
         }
         catch (Exception ex)
         {
@@ -82,7 +82,7 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
             if (!File.Exists(repoLocation))
                 File.WriteAllText(repoLocation, string.Empty);
 
-            JsonRW.SerializeToFile(repoLocation, list);
+            JsonService.WriteToFile(repoLocation, list);
             return Result.Success();
         }
         catch (Exception ex)

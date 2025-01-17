@@ -3,7 +3,7 @@ using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.DatabaseService;
-using Automate.Infrastructure.JsonService;
+using Automate.Infrastructure.JsonManipulationService;
 using Automate.Infrastructure.MessageLeadsService.DbMaps;
 using Automate.Infrastructure.MessageLeadsService.JsonMaps;
 using CSharpFunctionalExtensions;
@@ -71,7 +71,10 @@ public class MessageService(IDwhSettings settings) : IMessageService
             ? new(Location(_callRecordRepo))
             : new(callRepo);
 
-        List<CallRecordJsonReader> localCalls = JsonRW.DeserializeFile<CallRecordJsonReader>(callLocation.FullName);
+        var result = JsonService.ReadFile<CallRecordJsonReader>(callLocation.FullName);
+        List<CallRecordJsonReader> localCalls = result.IsSuccess
+            ? result.Value
+            : throw new Exception(result.Error);
         IEnumerable<ICallRecord> filteredCalls = localCalls
             .Select(c => c.Convert())
             .Where(c =>
@@ -101,7 +104,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
                 List<ICallRecord> resultList = callResult.ToList();
 
                 // Save results to local repo
-                JsonRW.SerializeToFile(callLocRepo, resultList);
+                JsonService.WriteToFile(callLocRepo, resultList);
                 return resultList;
             }
             catch (Exception ex)
@@ -114,7 +117,10 @@ public class MessageService(IDwhSettings settings) : IMessageService
             return _callRecordsFromRepo;
 
         // Default behavior is to retrieve information from the local repo
-        List<CallRecordJson> localCalls = JsonRW.DeserializeFile<CallRecordJson>(callLocRepo);
+        var r = JsonService.ReadFile<CallRecordJson>(callLocRepo);
+        List<CallRecordJson> localCalls = r.IsSuccess
+            ? r.Value
+            : throw new Exception(r.Error);
         IEnumerable<ICallRecord> result = localCalls.Select(c => c.Convert());
         return result.ToList();
     }
@@ -126,7 +132,10 @@ public class MessageService(IDwhSettings settings) : IMessageService
             ? new(Location(_customerRecordRepo))
             : new(customerRepo);
 
-        List<CustSubJsonReader> localCustomers = JsonRW.DeserializeFile<CustSubJsonReader>(customerLocation.FullName);
+        var result = JsonService.ReadFile<CustSubJsonReader>(customerLocation.FullName);
+        List<CustSubJsonReader> localCustomers = result.IsSuccess
+            ? result.Value
+            : throw new Exception(result.Error);
         IEnumerable<ICustomerSubscription> filteredCustomers = localCustomers
             .Select(c => c.Convert())
             .Where(c =>
@@ -159,7 +168,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
                 List<ICustomerSubscription> resultList = records.ToList();
 
                 // Save results to local repo
-                JsonRW.SerializeToFile(customerLocRepo, resultList);
+                JsonService.WriteToFile(customerLocRepo, resultList);
                 return resultList;
             }
             catch (Exception ex)
@@ -172,7 +181,10 @@ public class MessageService(IDwhSettings settings) : IMessageService
             return _customerRecordsFromRepo;
 
         // Exceptions default to local repo retrieval
-        List<CustSubJson> localCustomers = JsonRW.DeserializeFile<CustSubJson>(customerLocRepo);
+        var r = JsonService.ReadFile<CustSubJson>(customerLocRepo);
+        List<CustSubJson> localCustomers = r.IsSuccess
+            ? r.Value
+            : throw new Exception(r.Error);
         IEnumerable<ICustomerSubscription> result = localCustomers.Select(c => c.Convert());
         return result.ToList();
     }
@@ -191,7 +203,10 @@ public class MessageService(IDwhSettings settings) : IMessageService
         try
         {
             // Extract the local repo of calls
-            localCalls = JsonRW.DeserializeFile<CallRecordJson>(repoLocation);
+            var r = JsonService.ReadFile<CallRecordJson>(repoLocation);
+            localCalls = r.IsSuccess
+                ? r.Value
+                : throw new Exception(); // The exception message is unused here, so no need to carry Result.Error through
         }
         catch
         {
@@ -232,7 +247,10 @@ public class MessageService(IDwhSettings settings) : IMessageService
         try
         {
             // Extract the local repo of calls
-            custRepo = JsonRW.DeserializeFile<CustSubJson>(repoLocation);
+            var result = JsonService.ReadFile<CustSubJson>(repoLocation);
+            custRepo = result.IsSuccess
+                ? result.Value
+                : throw new Exception(result.Error);
             if (custRepo.Count == 0)
                 return true;
         }

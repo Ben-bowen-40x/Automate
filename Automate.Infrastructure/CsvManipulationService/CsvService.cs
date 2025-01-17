@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace Automate.Infrastructure.CsvManipulationService;
 
-
+// All exceptions should be throw by the caller, because we don't have sufficient context in this class to understand WHY the error was thrown.
 internal static class CsvService
 {
     #region Private

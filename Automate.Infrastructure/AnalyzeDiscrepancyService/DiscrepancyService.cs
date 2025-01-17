@@ -3,7 +3,7 @@ using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.DatabaseService;
-using Automate.Infrastructure.JsonService;
+using Automate.Infrastructure.JsonManipulationService;
 using Automate.Translation.DiscrepancyTranslations;
 using CSharpFunctionalExtensions;
 
@@ -81,7 +81,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
 
                 // Save results to Json
                 _comparisonLocalRepo = comparisonLeads.Select(c => c.Convert()).ToList();
-                JsonRW.SerializeToFile(repo, _comparisonLocalRepo);
+                JsonService.WriteToFile(repo, _comparisonLocalRepo);
                 return _comparisonLocalRepo;
             }
             catch (Exception ex)
@@ -97,7 +97,10 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         }
 
         // Retrieve info from the local repo
-        List<DiscrepancyJson> rp = JsonRW.DeserializeFile<DiscrepancyJson>(repo);
+        Result<List<DiscrepancyJson>> r = JsonService.ReadFile<DiscrepancyJson>(repo);
+        List<DiscrepancyJson> rp = r.IsSuccess
+            ? r.Value
+            : throw new Exception(r.Error);
         List<DiscrepancyCall> result = rp.Select(r => r.Convert()).ToList();
         return result;
     }
@@ -118,7 +121,10 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         try
         {
             // Convert info from file
-            List<DiscrepancyJson> repo = JsonRW.DeserializeFile<DiscrepancyJson>(localRepo.FullName);
+            Result<List<DiscrepancyJson>> result = JsonService.ReadFile<DiscrepancyJson>(localRepo.FullName);
+            List<DiscrepancyJson> repo = result.IsSuccess
+                ? result.Value
+                : throw new Exception(result.Error);
 
             // TODO: Translation Layer should be involved with these conversions
             calls = repo.Select(r => r.Convert()).ToList();
