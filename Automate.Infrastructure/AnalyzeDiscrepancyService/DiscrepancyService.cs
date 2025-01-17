@@ -17,6 +17,7 @@ namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
 {
     readonly RawQuery _rawQuery = new(settings);
+
     #region Facilitating members
     const string _parentFile = @".info\Discrepancy";
     const string _discrepancyDefaultFile = "Discrepancy.csv";
@@ -55,7 +56,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         // Check whether we need to update the local repo
         DiscrepancyCall mostRecent = GetMostRecent(calls);
 
-        // TODO: We should not be checking and updating the local repo here. We should be using either a custom repo verb or an existing repo
+        // TODO: We should not be checking and updating the local repo here. We should be using an existing repo that is updated using the update repo verb
         QueryDb = CheckLocalRepo(mostRecent);
 
         return calls;
@@ -126,8 +127,9 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
                 ? result.Value
                 : throw new Exception(result.Error);
 
-            // TODO: Translation Layer should be involved with these conversions
-            calls = repo.Select(r => r.Convert()).ToList();
+            calls = repo
+                .Select(r => r as IDiscrepancyJson)
+                .Select(r => r.Convert()).ToList();
         }
         catch
         {
@@ -135,8 +137,10 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         }
         DiscrepancyCall recentRepo = GetMostRecent(calls);
 
-        // Most recent date of the repo calls is before the most recent record date. And the most recent date of the repo calls is more than a specific number of hours old
+        // Most recent date of the repo calls is before the most recent record date.
         TimeSpan dateDiff = (DateTime.Now - recentRepo.Date).Duration();
+
+        // And the most recent date of the repo calls is more than a specific number of hours old
         bool withinTolerance = dateDiff < TimeSpan.FromHours(12);
         bool rec = DateTime.Compare(recentRepo.Date, recentRecord.Date) < 0;
         if (rec && !withinTolerance)
