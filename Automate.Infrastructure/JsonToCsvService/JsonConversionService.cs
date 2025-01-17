@@ -2,6 +2,7 @@
 using Automate.Domain.SolutionFunctionality;
 using Automate.Infrastructure.CsvService;
 using Automate.Infrastructure.JsonService;
+using CSharpFunctionalExtensions;
 using CsvHelper.Configuration;
 
 namespace Automate.Infrastructure.JsonToCsvService;
@@ -13,20 +14,19 @@ internal class JsonConversionService : IJsonConversionService
         return JsonRW.DeserializeFile<T>(jsonFile.FullName);
     }
 
-    public Dictionary<bool, FileInfo> SaveToCsv<T, TMap>(List<T> entities, FileInfo csvFile) where TMap : ClassMap<T>
+    public Result<FileInfo> SaveToCsv<T, TMap>(List<T> entities, FileInfo csvFile) where TMap : ClassMap<T>
     {
-        bool success = false;
         try
         {
             CsvRW.WriteToCsv<T, TMap>(csvFile.FullName, entities);
-            success = true;
+            return csvFile;
         }
         catch (Exception ex)
         {
             // Log the exception
-            StringLogger.AddLog($"The Json entities failed to save to CSV.\nException:\n{ex.Message}");
+            string error = $"The Json entities failed to save to CSV.\nException:\n{ex.Message}";
+            StringLogger.AddLog(error);
+            return Result.Failure<FileInfo>(error);
         }
-        return new() { { success, csvFile } };
     }
-
 }

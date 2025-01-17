@@ -1,4 +1,5 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
+using CSharpFunctionalExtensions;
 using CsvHelper.Configuration;
 
 namespace Automate.Application.JsonCsvConversion;
@@ -7,10 +8,10 @@ public class JsonToCsvConversionManager(IJsonConversionService service) : IJsonT
 {
     private readonly IJsonConversionService _service = service;
 
-    public Dictionary<bool, FileInfo> ManageConversion<T, TMap>(FileInfo jsonFile, FileInfo csvFile) where TMap : ClassMap<T>
+    public Result<FileInfo> ManageConversion<T, TMap>(FileInfo jsonFile, FileInfo csvFile) where TMap : ClassMap<T>
     {
         List<T> jsonEntities = _service.Extract<T>(jsonFile);
-        Dictionary<bool, FileInfo> success = _service.SaveToCsv<T, TMap>(jsonEntities, csvFile);
+        Result<FileInfo> success = _service.SaveToCsv<T, TMap>(jsonEntities, csvFile);
         return success;
     }
 }
