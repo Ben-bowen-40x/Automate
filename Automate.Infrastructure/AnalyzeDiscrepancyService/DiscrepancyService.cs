@@ -4,6 +4,7 @@ using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.CsvService;
 using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.JsonService;
+using Automate.Translation.DiscrepancyTranslations;
 
 namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 
@@ -43,10 +44,9 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
     {
         // Extract the info from csv
         string fileLocation = ValidateFile(sourceCsv, _discrepancyDefaultFile);
-        List<DiscrepancySourceLeadsCsvColumns> csvCalls = CsvRW.ParseFromCsv<DiscrepancySourceLeadsCsvColumns>(fileLocation);
-        
-        // TODO: Translation Layer should be involved in translations from Infrastructure objects to Domain objects
-        List<DiscrepancyCall> calls = csvCalls.Select(c => c.Convert()).ToList();
+        List<DiscrepancyCall> calls = CsvRW.ParseFromCsv<DiscrepancySourceLeadsCsvColumns>(fileLocation)
+            .Select(c => c as IDiscrepancyCall)
+            .Select(c => c.Convert()).ToList();
 
         // Check whether we need to update the local repo
         DiscrepancyCall mostRecent = GetMostRecent(calls);

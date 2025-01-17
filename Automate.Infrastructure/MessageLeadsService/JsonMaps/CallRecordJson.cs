@@ -1,10 +1,11 @@
 ﻿using Automate.Domain.ValueObjects;
+using Automate.Translation.ValueObjectsTranslations;
 
 namespace Automate.Infrastructure.MessageLeadsService.JsonMaps;
 
 internal class CallRecordJson : IDatedRecord
 {
-    public NumberTypeJson? Number { get; set; }
+    public INumberTypeJson? Number { get; set; }
     public bool Billable { get; set; }
     public DateTimeOffset Date { get; set; }
     public MessageCallRecord Convert()
@@ -15,7 +16,7 @@ internal class CallRecordJson : IDatedRecord
 }
 internal class CallRecordJsonReader : IDatedRecord
 {
-    public NumberTypeJson? Number { get; set; }
+    public INumberTypeJson? Number { get; set; }
     public string? Billable { get; set; }
     public DateTimeOffset Date { get; set; }
     public MessageCallRecord Convert()

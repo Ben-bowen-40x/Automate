@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
-using Automate.Translation;
+using Automate.Translation.DiscrepancyTranslations;
 
 namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 
 [Keyless]
-public partial class DiscrepancyCallDbEntity : IDiscrepancyEntity
+public class DiscrepancyCallDbEntity : IDiscrepancyEntity
 {
     [Column("contact_number_clean")]
     public long Number { get; set; }
