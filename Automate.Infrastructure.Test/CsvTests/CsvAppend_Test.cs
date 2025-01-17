@@ -1,4 +1,4 @@
-﻿using Automate.Infrastructure.CsvService;
+﻿using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.Test.TestConfigurations;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
@@ -46,7 +46,7 @@ public class CsvAppend_Test
         ];
 
         // Append to the file
-        CsvRW.AppendToCsv<CsvAppendTestColumns, CsvAppend_TestMap>(TestFileLocation1, unparsed);
+        CsvService.Append<CsvAppendTestColumns, CsvAppend_TestMap>(TestFileLocation1, unparsed);
     }
 
     [
@@ -82,10 +82,10 @@ public class CsvAppend_Test
             }
         ];
         // Read from the file
-        var contents = CsvRW.ParseFromCsv<CsvAppendTestColumns>(TestFileLocation1);
+        var contents = CsvService.Parse<CsvAppendTestColumns>(TestFileLocation1);
 
         // Append to the file
-        CsvRW.AppendToCsv<CsvAppendTestColumns, CsvAppend_TestMap>(TestFileLocation1, unparsed);
+        CsvService.Append<CsvAppendTestColumns, CsvAppend_TestMap>(TestFileLocation1, unparsed);
     }
 }
 

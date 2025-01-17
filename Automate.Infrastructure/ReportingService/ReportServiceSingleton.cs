@@ -3,7 +3,7 @@ using Automate.Application.UpdateContacts;
 using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.ContactsUpdateService;
-using Automate.Infrastructure.CsvService;
+using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.LeafClientService;
 using Automate.Infrastructure.MessageLeadsReportService;
 using Automate.Infrastructure.MessageLeadsService.CsvMaps;
@@ -35,7 +35,7 @@ internal class ReportServiceSingleton : IReportService
             {
                 string path = directory.FullName + $"ContactFile{counter++}.csv";
                 File.WriteAllText(path, _errorMessage);
-                CsvRW.WriteToCsv<Contacts, ContactsMap>(path, contact);
+                CsvService.Write<Contacts, ContactsMap>(path, contact);
             }
         }
         catch { return false; }
@@ -61,7 +61,7 @@ internal class ReportServiceSingleton : IReportService
                 File.WriteAllText(path, _errorMessage);
 
                 // TODO: Translation layer: Should it control the translation from Application/Domain objects to Infrastructure tasks?
-                CsvRW.WriteToCsv<Contacts, ContactsMap>(path, contact);
+                CsvService.Write<Contacts, ContactsMap>(path, contact);
             }
             return directory;
         }
@@ -85,7 +85,7 @@ internal class ReportServiceSingleton : IReportService
         try
         {
             File.WriteAllText(report, _errorMessage);
-            CsvRW.WriteToCsv<DiscrepancyMatch, DiscrepancyAnalysisMatchMap>(report, matches);
+            CsvService.Write<DiscrepancyMatch, DiscrepancyAnalysisMatchMap>(report, matches);
             return true;
         }
         catch
@@ -107,7 +107,7 @@ internal class ReportServiceSingleton : IReportService
         try
         {
             // TODO: Question: Are CSV write maps subject to the translation layer, as they are translations of domain objects into Infrastructure layer tasks?
-            CsvRW.WriteToCsv<DiscrepancyMatch, DiscrepancyAnalysisMatchMap>(report, matches);
+            CsvService.Write<DiscrepancyMatch, DiscrepancyAnalysisMatchMap>(report, matches);
             return file;
         }
         catch (Exception ex)
@@ -131,7 +131,7 @@ internal class ReportServiceSingleton : IReportService
             File.WriteAllText(file.FullName, _errorMessage);
         try
         {
-            CsvRW.WriteToCsv<QualifiedMessageRecord, QualifiedMessageMap>(file.FullName, messages);
+            CsvService.Write<QualifiedMessageRecord, QualifiedMessageMap>(file.FullName, messages);
             return true;
         }
         catch
@@ -152,7 +152,7 @@ internal class ReportServiceSingleton : IReportService
             File.WriteAllText(file.FullName, _errorMessage);
         try
         {
-            CsvRW.WriteToCsv<QualifiedMessageRecord, QualifiedMessageMap>(file.FullName, messages);
+            CsvService.Write<QualifiedMessageRecord, QualifiedMessageMap>(file.FullName, messages);
             return file;
         }
         catch
@@ -174,7 +174,7 @@ internal class ReportServiceSingleton : IReportService
             File.WriteAllText(file.FullName, _errorMessage);
         try
         {
-            CsvRW.WriteToCsv<QualifiedMessageRecord, MessageReportMap>(file.FullName, messages);
+            CsvService.Write<QualifiedMessageRecord, MessageReportMap>(file.FullName, messages);
             return true;
         }
         catch { return false; }
@@ -192,7 +192,7 @@ internal class ReportServiceSingleton : IReportService
             File.WriteAllText(file.FullName, _errorMessage);
         try
         {
-            CsvRW.WriteToCsv<QualifiedMessageRecord, MessageReportMap>(file.FullName, messages);
+            CsvService.Write<QualifiedMessageRecord, MessageReportMap>(file.FullName, messages);
             return file;
         }
         catch (Exception ex)
@@ -209,7 +209,7 @@ internal class ReportServiceSingleton : IReportService
         // Attempt to APPEND the information to the file
         try
         {
-            CsvRW.AppendToCsv<QualifiedMessageRecord, QualifiedMessageMap>(file.FullName, messages);
+            CsvService.Append<QualifiedMessageRecord, QualifiedMessageMap>(file.FullName, messages);
             return true;
         }
         catch
@@ -223,7 +223,7 @@ internal class ReportServiceSingleton : IReportService
         // Attempt to APPEND the information to the file
         try
         {
-            CsvRW.AppendToCsv<QualifiedMessageRecord, QualifiedMessageMap>(file.FullName, messages);
+            CsvService.Append<QualifiedMessageRecord, QualifiedMessageMap>(file.FullName, messages);
             return file;
         }
         catch (Exception ex)
@@ -243,7 +243,7 @@ internal class ReportServiceSingleton : IReportService
         // Attempt to write the information to file
         try
         {
-            CsvRW.WriteToCsv<IMessage, MessageMapRW>(loc, msgs);
+            CsvService.Write<IMessage, MessageMapRW>(loc, msgs);
             return true;
         }
         catch { return false; }
@@ -259,7 +259,7 @@ internal class ReportServiceSingleton : IReportService
         // Attempt to write the information to file
         try
         {
-            CsvRW.WriteToCsv<IMessage, MessageMapRW>(loc, msgs);
+            CsvService.Write<IMessage, MessageMapRW>(loc, msgs);
             return file;
         }
         catch (Exception ex)

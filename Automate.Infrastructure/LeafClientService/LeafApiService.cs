@@ -2,7 +2,7 @@
 using Automate.Application.InfrastructureValueObjects;
 using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
-using Automate.Infrastructure.CsvService;
+using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.JsonService;
 using Automate.Infrastructure.MessageLeadsService.CsvMaps;
 using CSharpFunctionalExtensions;
@@ -90,7 +90,8 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         // Retrieve contents
         try
         {
-            List<MessageClass> content = CsvRW.ParseFromCsv<MessageClass>(repo);
+            Result<List<MessageClass>> result = CsvService.Parse<MessageClass>(repo);
+            List<MessageClass> content = result.Value;
             List<IMessage> conversion = content.Select(c => c.Convert<MessageClass, IMessage>()).ToList();
             return conversion;
         }

@@ -1,11 +1,12 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
-using Automate.Infrastructure.CsvService;
+using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.JsonService;
 using Automate.Infrastructure.MessageLeadsService.DbMaps;
 using Automate.Infrastructure.MessageLeadsService.JsonMaps;
+using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.MessageLeadsService;
 
@@ -50,11 +51,13 @@ public class MessageService(IDwhSettings settings) : IMessageService
     {
         // Retrieve Messages
         string msgLocStr = msgs == string.Empty ? Location(_messagesLocation) : msgs;
-        IEnumerable<T> messageCol = CsvRW.ParseFromCsv<T>(msgLocStr);
+        Result<List<T>> result = CsvService.Parse<T>(msgLocStr);
+        IEnumerable<T> messageCol = result.IsSuccess
+            ? result.Value
+            : throw new Exception(result.Error);
 
         // Convert from column type to IMessage type
-        IEnumerable<IMessage> messages = messageCol.Select(m => m.Convert<T, IMessage>());
-        List<IMessage> msgList = messages.ToList();
+        List<IMessage> msgList = messageCol.Select(m => m.Convert<T, IMessage>()).ToList();
 
         // Remove duplicates
         List<IMessage> uniqueMsgs = RemoveDuplicates(msgList);

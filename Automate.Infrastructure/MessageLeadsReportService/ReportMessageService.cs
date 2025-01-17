@@ -1,11 +1,12 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
-using Automate.Infrastructure.CsvService;
+using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.JsonService;
 using Automate.Infrastructure.MessageLeadsService.DbMaps;
 using Automate.Infrastructure.MessageLeadsService.JsonMaps;
+using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.MessageLeadsReportService;
 
@@ -54,7 +55,10 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
             File.WriteAllText(reportLocation, string.Empty);
 
         // Retrieve messages from report
-        IEnumerable<MessageReportMap> reportColumns = CsvRW.ParseFromCsv<MessageReportMap>(reportLocation);
+        Result<List<MessageReportMap>> result = CsvService.Parse<MessageReportMap>(reportLocation);
+        IEnumerable<MessageReportMap> reportColumns = result.IsSuccess
+            ? result.Value
+            : throw new Exception(result.Error);
 
         // Convert report columns to IMessage
         List<IMessage> reportRecords = reportColumns.Select(m => m.Convert<MessageReportMap, IMessage>()).ToList();
@@ -71,7 +75,10 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         string msgLocStr = messageLocation == string.Empty
             ? Location(_messagesLocation)
             : messageLocation;
-        IEnumerable<T> messageCol = CsvRW.ParseFromCsv<T>(msgLocStr);
+        Result<List<T>> result = CsvService.Parse<T>(msgLocStr);
+        IEnumerable<T> messageCol = result.IsSuccess
+            ? result.Value
+            : throw new Exception(result.Error);
 
         // Convert from column type to IMessage type...
         List<IMessage> msgs = messageCol
@@ -187,7 +194,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         return filteredCustomers.ToList();
 
     }
-    
+
     public List<ICustomerSubscription> GetCustomerRecords(string customerLocation)
     {
         string customerLocRepo = Location(_customerRecordRepo);

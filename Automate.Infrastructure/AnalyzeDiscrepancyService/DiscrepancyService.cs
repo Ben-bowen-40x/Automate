@@ -1,10 +1,11 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
-using Automate.Infrastructure.CsvService;
+using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.JsonService;
 using Automate.Translation.DiscrepancyTranslations;
+using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 
@@ -44,9 +45,12 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
     {
         // Extract the info from csv
         string fileLocation = ValidateFile(sourceCsv, _discrepancyDefaultFile);
-        List<DiscrepancyCall> calls = CsvRW.ParseFromCsv<DiscrepancySourceLeadsCsvColumns>(fileLocation)
-            .Select(c => c as IDiscrepancyCall)
-            .Select(c => c.Convert()).ToList();
+        Result<List<DiscrepancySourceLeadsCsvColumns>> result = CsvService.Parse<DiscrepancySourceLeadsCsvColumns>(fileLocation);
+        List<DiscrepancyCall> calls = result.IsSuccess
+            ? result.Value
+                .Select(c => c as IDiscrepancyCall)
+                .Select(c => c.Convert()).ToList()
+            : throw new Exception(result.Error);
 
         // Check whether we need to update the local repo
         DiscrepancyCall mostRecent = GetMostRecent(calls);

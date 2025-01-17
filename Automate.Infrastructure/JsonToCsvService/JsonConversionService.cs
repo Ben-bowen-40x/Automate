@@ -1,6 +1,6 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.SolutionFunctionality;
-using Automate.Infrastructure.CsvService;
+using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.JsonService;
 using CSharpFunctionalExtensions;
 using CsvHelper.Configuration;
@@ -18,7 +18,7 @@ internal class JsonConversionService : IJsonConversionService
     {
         try
         {
-            CsvRW.WriteToCsv<T, TMap>(csvFile.FullName, entities);
+            CsvService.Write<T, TMap>(csvFile.FullName, entities);
             return csvFile;
         }
         catch (Exception ex)
