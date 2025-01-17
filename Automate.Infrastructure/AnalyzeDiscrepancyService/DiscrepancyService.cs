@@ -44,10 +44,14 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         // Extract the info from csv
         string fileLocation = ValidateFile(sourceCsv, _discrepancyDefaultFile);
         List<DiscrepancySourceLeadsCsvColumns> csvCalls = CsvRW.ParseFromCsv<DiscrepancySourceLeadsCsvColumns>(fileLocation);
+        
+        // TODO: Translation Layer should be involved in translations from Infrastructure objects to Domain objects
         List<DiscrepancyCall> calls = csvCalls.Select(c => c.Convert()).ToList();
 
         // Check whether we need to update the local repo
         DiscrepancyCall mostRecent = GetMostRecent(calls);
+
+        // TODO: We should not be checking and updating the local repo here. We should be using either a custom repo verb or an existing repo
         QueryDb = CheckLocalRepo(mostRecent);
 
         return calls;
@@ -111,6 +115,8 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         {
             // Convert info from file
             List<DiscrepancyJson> repo = JsonRW.DeserializeFile<DiscrepancyJson>(localRepo.FullName);
+
+            // TODO: Translation Layer should be involved with these conversions
             calls = repo.Select(r => r.Convert()).ToList();
         }
         catch

@@ -1,5 +1,5 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
-using Automate.Application.UpdateContacts;
+using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.DatabaseService;
 using CSharpFunctionalExtensions;
 
@@ -30,6 +30,8 @@ internal class UpdateContactsService(IDwhSettings settings) : IUpdateContactsSer
             DwhContext<ContactsDbEntity> contactsContext = new(settings.CallsConnectionString!);
             Task<IEnumerable<ContactsDbEntity>> task = DwhContextHelpers.GetItemsFromRawAsync(contactsContext, query);
             IEnumerable<ContactsDbEntity> result = task.Result;
+
+            // TODO: Translation layer should be involved in these conversions from Infrastructure items to Domain/Application items
             List<Contacts> contacts = result.Select(r => r.Convert()).ToList();
             listOfContacts.Add(contacts);
         }

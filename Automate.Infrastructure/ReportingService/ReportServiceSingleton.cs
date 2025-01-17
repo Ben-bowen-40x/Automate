@@ -59,6 +59,8 @@ internal class ReportServiceSingleton : IReportService
             {
                 string path = directory.FullName + $"ContactFile{counter++}.csv";
                 File.WriteAllText(path, _errorMessage);
+
+                // TODO: Translation layer: Should it control the translation from Application/Domain objects to Infrastructure tasks?
                 CsvRW.WriteToCsv<Contacts, ContactsMap>(path, contact);
             }
             return directory;
@@ -104,7 +106,7 @@ internal class ReportServiceSingleton : IReportService
         }
         try
         {
-            File.WriteAllText(report, _errorMessage);
+            // TODO: Question: Are CSV write maps subject to the translation layer, as they are translations of domain objects into Infrastructure layer tasks?
             CsvRW.WriteToCsv<DiscrepancyMatch, DiscrepancyAnalysisMatchMap>(report, matches);
             return file;
         }

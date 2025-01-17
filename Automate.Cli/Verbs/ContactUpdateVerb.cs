@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Automate.Application.UpdateContacts;
 using Automate.Domain.SolutionFunctionality;
 using Automate.Cli.Verbs.VerbHelper;
+using Automate.Domain.ValueObjects;
 
 namespace Automate.Cli.Verbs;
 
