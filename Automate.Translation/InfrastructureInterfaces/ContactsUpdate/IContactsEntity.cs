@@ -1,4 +1,4 @@
-﻿namespace Automate.Translation.ContactsUpdateTranslations;
+﻿namespace Automate.Translation.InfrastructureInterfaces.ContactsUpdate;
 
 public interface IContactsEntity
 {

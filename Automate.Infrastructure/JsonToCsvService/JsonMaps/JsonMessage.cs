@@ -1,5 +1,5 @@
 ﻿using Automate.Infrastructure.MessageLeadsService.DbMaps;
-using Automate.Translation.JsonToCsvTranslations;
+using Automate.Translation.InfrastructureInterfaces.JsonToCsv;
 using System.Text.Json.Serialization;
 
 namespace Automate.Infrastructure.JsonToCsvService.JsonMaps;

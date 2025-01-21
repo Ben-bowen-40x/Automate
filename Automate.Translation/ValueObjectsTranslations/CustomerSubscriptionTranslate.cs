@@ -1,10 +1,10 @@
 ﻿using Automate.Domain.ValueObjects;
 using Automate.Translation.DateTimeConvertService;
-using Automate.Translation.MessageTranslationService;
+using Automate.Translation.InfrastructureInterfaces.Message;
 
 namespace Automate.Translation.ValueObjectsTranslations;
 
-public static class CustomerSubscriptionTranslationService
+public static class CustomerSubscriptionTranslate
 {
     // From ICustSub
     public static CustomerSubscription Convert(this ICustSub entity)

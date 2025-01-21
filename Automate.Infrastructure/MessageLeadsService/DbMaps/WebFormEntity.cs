@@ -1,6 +1,6 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.ValueObjects;
-using Automate.Translation.JsonToCsvTranslations;
+using Automate.Translation.InfrastructureInterfaces.JsonToCsv;
 using Automate.Translation.ValueObjectsTranslations;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
@@ -74,5 +74,5 @@ public class WebFormEntity : ClassMap<WebFormEntity>, IPhoneNumberCompatible, IW
     public string? Zip { get; set; }
 
     private PhoneNumber? _number;
-    public PhoneNumber Number => _number ??= PhoneNumberTranslationService.Convert(Phone);
+    public PhoneNumber Number => _number ??= PhoneNumberTranslate.Convert(Phone);
 }

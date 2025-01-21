@@ -1,4 +1,4 @@
-﻿namespace Automate.Translation.InfrastructureInterfaces.DiscrepancyTranslations;
+﻿namespace Automate.Translation.InfrastructureInterfaces.Discrepancy;
 
 public interface IDiscrepancyCall : IDiscrepancyNotes
 {

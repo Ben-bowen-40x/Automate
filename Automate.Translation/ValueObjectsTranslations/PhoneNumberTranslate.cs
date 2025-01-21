@@ -2,7 +2,7 @@
 
 namespace Automate.Translation.ValueObjectsTranslations;
 
-public static class PhoneNumberTranslationService
+public static class PhoneNumberTranslate
 {
     // From NumberTypeJson (Infrastructure Object)
     public static PhoneNumber Convert(this INumberTypeJson entity)

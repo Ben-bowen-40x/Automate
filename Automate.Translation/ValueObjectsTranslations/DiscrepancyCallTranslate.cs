@@ -1,9 +1,9 @@
 ﻿using Automate.Domain.ValueObjects;
-using Automate.Translation.DiscrepancyTranslations;
+using Automate.Translation.InfrastructureInterfaces.Discrepancy;
 
 namespace Automate.Translation.ValueObjectsTranslations;
 
-public static class DiscrepancyCallTranslationService
+public static class DiscrepancyCallTranslate
 {
     // From DiscrepancyEntity (Infrastructure object) to DiscrepancyCall (Domain Value Object)
     public static DiscrepancyCall Convert(this IDiscrepancyEntity entity)

@@ -1,8 +1,8 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 
-namespace Automate.Translation.MessageTranslationService;
+namespace Automate.Translation.InfrastructureInterfaces.Message;
 
-internal interface ICustSub : IPhoneNumberCompatible
+public interface ICustSub : IPhoneNumberCompatible
 {
     int SubscriptionId { get; set; }
     int CustomerId { get; set; }

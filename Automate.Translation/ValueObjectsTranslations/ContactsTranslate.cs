@@ -1,9 +1,9 @@
 ﻿using Automate.Domain.ValueObjects;
-using Automate.Translation.ContactsUpdateTranslations;
+using Automate.Translation.InfrastructureInterfaces.ContactsUpdate;
 
 namespace Automate.Translation.ValueObjectsTranslations;
 
-public static class ContactsTranslationService
+public static class ContactsTranslate
 {
     // Contacts Entity (Infrastructure) to Contacts (Domain Value Object)
     public static Contacts Convert(this IContactsEntity entity)

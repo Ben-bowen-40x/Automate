@@ -1,6 +1,6 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 
-namespace Automate.Translation.JsonToCsvTranslations;
+namespace Automate.Translation.InfrastructureInterfaces.JsonToCsv;
 
 public interface IWebFormElem
 {

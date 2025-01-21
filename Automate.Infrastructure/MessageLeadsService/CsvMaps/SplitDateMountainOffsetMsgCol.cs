@@ -1,51 +1,24 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using Automate.Domain.ValueObjects;
-using Automate.Infrastructure.DateTimeConversion;
+using Automate.Translation.InfrastructureInterfaces.Message;
+using Automate.Translation.ValueObjectsTranslations;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
-public class SplitDateMountainOffsetMsgCol : IConvert
+public class SplitDateMountainOffsetMsgCol : IMsgTimeStr
 {
     [Name("Customer #")]
-    public string? PhoneNumber { get; set; }
+    public string? Number { get; set; }
     [Name("Date")]
-    public string? StartDate { get; set; }
+    public string? Date { get; set; }
     [Name("Time")]
-    public string? StartTime { get; set; }
+    public string? Time { get; set; }
     [Name("FormCustomFields")]
     public string? Contents { get; set; }
     [Name("Account Name")]
     public string? Source { get; set; }
-    public IMessage Convert<SplitDateMountainOffsetMsgCl, IMessage>()
+
+    public IMessage Convert<IMsgTimeStr, IMessage>()
     {
-        // Convert local to DateTimeOffset
-        DateTime startDate =
-            StartDate is not null && DateTime.TryParse($"{StartDate} {StartTime}", out DateTime resultDate)
-            ? resultDate
-            : DateTime.MinValue;
-        DateTimeOffset start =
-            DateTimeConversions.ConvertLocalToDTOffset(startDate, TimeZoneEnum.Mountain, out DateTimeOffset resultOffset)
-            ? resultOffset
-            : DateTimeOffset.MinValue;
-
-        // Source Url
-        string source = Source is null ? string.Empty : Source!;
-
-        // Phone Number
-        PhoneNumber number =
-            PhoneNumber is null || PhoneNumber == string.Empty || PhoneNumber.Length < 10
-            ? new(0)
-            : new(PhoneNumber);
-
-        // Message
-        string message =
-            Contents is null
-            ? string.Empty
-            : CsvMapsHelper.ContentsJoined(Contents!);
-
-        // Cast new message into IMessage
-        IMessage result = (IMessage)(Domain.ValueObjects.IMessage)new Message(number, start, message, source);
-
-        return result;
+        return (IMessage)this.Convert();
     }
 }

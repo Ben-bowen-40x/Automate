@@ -1,4 +1,4 @@
-﻿namespace Automate.Translation;
+﻿namespace Automate.Translation.ValueObjectsTranslations;
 
 internal class TSH // Translation Service Helper = TSH
 {

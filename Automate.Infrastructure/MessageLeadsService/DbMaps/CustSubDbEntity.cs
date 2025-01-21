@@ -2,8 +2,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.DateTimeConversion;
-using Automate.Translation.MessageTranslationService;
 using Automate.Translation.ValueObjectsTranslations;
+using Automate.Translation.InfrastructureInterfaces.Message;
 
 namespace Automate.Infrastructure.MessageLeadsService.DbMaps;
 
@@ -42,5 +42,5 @@ public class CustSubDbEntity : ICustSub
     public string? Seller3 { get; set; }
 
     private PhoneNumber? num;
-    public PhoneNumber Number => num ??= PhoneNumberTranslationService.Convert(Number1);
+    public PhoneNumber Number => num ??= PhoneNumberTranslate.Convert(Number1);
 }
