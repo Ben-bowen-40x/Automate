@@ -1,4 +1,4 @@
-﻿using Automate.Translation.DiscrepancyTranslations;
+﻿using Automate.Translation.InfrastructureInterfaces.Discrepancy;
 using Automate.Translation.ValueObjectsTranslations;
 
 namespace Automate.Infrastructure.AnalyzeDiscrepancyService;

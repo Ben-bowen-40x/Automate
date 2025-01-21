@@ -2,6 +2,7 @@
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.DatabaseService;
 using Automate.Translation.ContactsUpdateTranslations;
+using Automate.Translation.ValueObjectsTranslations;
 using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.ContactsUpdateService;

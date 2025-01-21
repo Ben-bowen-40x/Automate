@@ -1,4 +1,4 @@
-﻿namespace Automate.Infrastructure.DateTimeConversion;
+﻿namespace Automate.Translation.DateTimeConvertService;
 
 internal static class DateTimeConversions
 {
@@ -121,4 +121,11 @@ internal static class DateTimeConversions
     private static Dictionary<int, DateTime[]> DLSDates(int year)
         => new() { { year, [Sunday(year, 03, 02, 2), Sunday(year, 11, 2, 1)] } };
     #endregion
+}
+internal enum TimeZoneEnum
+{
+    Pacific,
+    Mountain,
+    Central,
+    Eastern
 }

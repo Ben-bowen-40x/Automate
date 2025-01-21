@@ -1,5 +1,4 @@
-﻿using Automate.Application.InfrastructureInterfaces;
-using Automate.Domain.ValueObjects;
+﻿using Automate.Domain.ValueObjects;
 
 namespace Automate.Application.InfrastructureValueObjects;
 public class LeafThread : IConvert

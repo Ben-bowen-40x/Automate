@@ -1,5 +1,5 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using Automate.Translation.DiscrepancyTranslations;
+using Automate.Translation.InfrastructureInterfaces.Discrepancy;
 
 namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 

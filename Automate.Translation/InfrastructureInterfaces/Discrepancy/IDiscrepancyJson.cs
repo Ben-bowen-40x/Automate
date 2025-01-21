@@ -1,6 +1,6 @@
 ﻿using Automate.Translation.ValueObjectsTranslations;
 
-namespace Automate.Translation.DiscrepancyTranslations;
+namespace Automate.Translation.InfrastructureInterfaces.Discrepancy;
 
 public interface IDiscrepancyJson
 {

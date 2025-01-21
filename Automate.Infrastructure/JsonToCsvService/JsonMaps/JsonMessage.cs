@@ -1,29 +1,31 @@
-﻿using System.Text.Json.Serialization;
+﻿using Automate.Infrastructure.MessageLeadsService.DbMaps;
+using Automate.Translation.JsonToCsvTranslations;
+using System.Text.Json.Serialization;
 
 namespace Automate.Infrastructure.JsonToCsvService.JsonMaps;
 
-public class JsonMessage
+public class JsonMessage: IWebFormString
 {
-    [JsonPropertyName("Date")]
+    [JsonPropertyName(WebFormEntity.DateStr)]
     public string? Date { get; set; }
-    [JsonPropertyName("First Name")]
+    [JsonPropertyName(WebFormEntity.FName)]
     public string? FirstName { get; set; }
-    [JsonPropertyName("Last Name")]
+    [JsonPropertyName(WebFormEntity.LName)]
     public string? LastName { get; set; }
-    [JsonPropertyName("Phone")]
+    [JsonPropertyName(WebFormEntity.Ph)]
     public string? Phone { get; set; }
-    [JsonPropertyName("Email")]
+    [JsonPropertyName(WebFormEntity.Eml)]
     public string? Email { get; set; }
-    [JsonPropertyName("Problem")]
+    [JsonPropertyName(WebFormEntity.Prob)]
     public string? Problem { get; set; }
-    [JsonPropertyName("Branch")]
+    [JsonPropertyName(WebFormEntity.Brnch)]
     public string? Branch { get; set; }
-    [JsonPropertyName("Referring URL")]
+    [JsonPropertyName(WebFormEntity.Refer)]
     public string? ReferringUrl { get; set; }
-    [JsonPropertyName("Form Page URL")]
+    [JsonPropertyName(WebFormEntity.Form)]
     public string? FormPageUrl { get; set; }
-    [JsonPropertyName("Current Customer")]
+    [JsonPropertyName(WebFormEntity.Cust)]
     public string? CurrentCustomer { get; set; }
-    [JsonPropertyName("Zip")]
+    [JsonPropertyName(WebFormEntity.ZCode)]
     public string? Zip { get; set; }
 }

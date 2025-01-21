@@ -1,4 +1,4 @@
-﻿using Automate.Translation.ContactsUpdateTranslations;
+﻿using Automate.Translation.InfrastructureInterfaces.ContactsUpdate;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
