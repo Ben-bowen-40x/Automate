@@ -8,18 +8,36 @@ public class RawQuery(IRawQuerySettings settings)
 
     #region Basic Queries
     // Public Basic
-    public string Filter(DwhQueryType type, string query, List<long> values)
+    /// <summary>
+    /// Filters the given <paramref name="query"/> based on its <paramref name="type"/> using <see cref="long"/> <paramref name="values"/>
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="query"></param>
+    /// <param name="values"></param>
+    /// <returns></returns>
+    public string Filter(DwhQueryType type, IQuery query, List<long> values)
     {
         string vals = string.Join(",", values);
+        if (query.Where is null)
+        {
+            string where = type switch
+            {
+                DwhQueryType.AllCalls => $"WHERE {CallBasicNumerical} in ({vals})",
+                DwhQueryType.AllCustomers => $"WHERE {CustomerBasicNumerical} in ({vals})",
+                _ => throw new Exception($"The type of query has not been set\nType: {type}\nQuery:\n{query}")
+            };
+            query.SetWhere(where);
+            return query.QueryString;
+        }
         return type switch
         {
-            DwhQueryType.AllCalls => $"{query} and {CallBasicNumerical} in ({vals})",
-            DwhQueryType.AllCustomers => $"{query} and {CustomerBasicNumerical} in ({vals})",
-            _ => query
+            DwhQueryType.AllCalls => $"{query.QueryString} and {CallBasicNumerical} in ({vals})",
+            DwhQueryType.AllCustomers => $"{query.QueryString} and {CustomerBasicNumerical} in ({vals})",
+            _ => query.QueryString
         };
     }
-    public string CallBasicAddon => CallBasic + _s.CallBasicAddon;
-    public string CustomerBasic => _s.CustomerBasic!;
+    public IQuery CallBasicAddon => new Query(DwhQueryType.AllCalls, CallBasic + _s.CallBasicAddon);
+    public IQuery CustomerBasic => new Query(DwhQueryType.AllCustomers, _s.CustomerBasic!);
 
     // Private Basic
     private string CallBasicNumerical => _s.CallBasicNumerical!;
@@ -85,7 +103,7 @@ public class RawQuery(IRawQuerySettings settings)
     private string MessageCallQuery3 => _s.MessageCallQuery3!;
 
     // Private Customer Query Members
-    private string MessageCustSubQuery => CustomerBasic;
+    private string MessageCustSubQuery => CustomerBasic.QueryString;
 
     private string _messageCustSubQuery2 => _s.MessageCustQuery2!;
     private string _messageCustSubQuery3 => _s.MessageCustQuery3!;
@@ -163,7 +181,7 @@ public class RawQuery(IRawQuerySettings settings)
     #endregion
 
     #region Web Forms Query
-    public string WebFormQuery1 => _s.WebFormQuery1!;
+    public IQuery WebFormQuery1 => new Query (DwhQueryType.ContactForms, _s.WebFormQuery1!);
     public string WebFormQuery2 => _s.WebFormQuery2!;
     #endregion
 }

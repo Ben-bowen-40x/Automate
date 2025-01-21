@@ -21,7 +21,7 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
             _ => _settings.CallsConnectionString!
         };
 
-    public string GetQuery(DwhQueryType type)
+    public IQuery GetQuery(DwhQueryType type)
         => type switch
         {
             DwhQueryType.AllCalls => _rawQuery.CallBasicAddon,
@@ -30,12 +30,12 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
             _ => _rawQuery.CustomerBasic
         };
 
-    public Result<List<TEntity>> GetEntitiesList<TEntity>(string connectionString, string query) where TEntity : class, IPhoneNumberCompatible
+    public Result<List<TEntity>> GetEntitiesList<TEntity>(string connectionString, IQuery query) where TEntity : class, IPhoneNumberCompatible
     {
         try
         {
             DwhContext<TEntity> context = new(connectionString);
-            Task<IEnumerable<TEntity>> values = DwhContextHelpers.GetItemsFromRawAsync(context, query);
+            Task<IEnumerable<TEntity>> values = DwhContextHelpers.GetItemsFromRawAsync(context, query.QueryString);
             if (!values.IsFaulted)
                 return values.Result.ToList();
             return Result.Failure<List<TEntity>>($"Failed to get values from Dwh. Fault/Exception message: {values.Exception.Message}");
@@ -46,10 +46,10 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
         }
     }
 
-    public Result<List<TEntity>> GetEntitiesParition<TEntity>(DwhQueryType type, List<TEntity> existing, string connectionString, string query) where TEntity : class, IPhoneNumberCompatible
+    public Result<List<TEntity>> GetEntitiesParition<TEntity>(DwhQueryType type, List<TEntity> existing, string connectionString, IQuery query) where TEntity : class, IPhoneNumberCompatible
     {
         // Filter the connection string
-        string newQuery = _rawQuery.Filter(type, query, existing.Select(e => e.Number.Number).ToList());
+        Query newQuery = new(type, _rawQuery.Filter(type, query, existing.Select(e => e.Number.Number).ToList()));
         return GetEntitiesList<TEntity>(connectionString, newQuery);
     }
 
