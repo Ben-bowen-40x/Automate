@@ -1,5 +1,7 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.ValueObjects;
+using Automate.Translation.JsonToCsvTranslations;
+using Automate.Translation.ValueObjectsTranslations;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using Microsoft.EntityFrameworkCore;
@@ -8,9 +10,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Automate.Infrastructure.MessageLeadsService.DbMaps;
 
 [Keyless]
-public class WebFormCsvDbEntity : ClassMap<WebFormCsvDbEntity>, IPhoneNumberCompatible
+public class WebFormEntity : ClassMap<WebFormEntity>, IPhoneNumberCompatible, IWebFormTyped
 {
-    WebFormCsvDbEntity()
+    public const string DateStr = "Date";
+    public const string FName = "First Name";
+    public const string LName = "Last Name";
+    public const string Ph = "Phone";
+    public const string Eml = "Email";
+    public const string Prob = "Problem";
+    public const string Brnch = "Branch";
+    public const string Refer = "Referring URL";
+    public const string Form = "Form Page URL";
+    public const string Cust = "Current Customer";
+    public const string ZCode = "Zip";
+    WebFormEntity()
     {
         int index = 0;
         Map(m => m.Date).Index(index++).Name(DateStr);
@@ -25,17 +38,6 @@ public class WebFormCsvDbEntity : ClassMap<WebFormCsvDbEntity>, IPhoneNumberComp
         Map(m => m.CurrentCustomer).Index(index++).Name(Cust);
         Map(m => m.Zip).Index(index++).Name(ZCode);
     }
-    const string DateStr = "Date";
-    const string FName = "First Name";
-    const string LName = "Last Name";
-    const string Ph = "Phone";
-    const string Eml = "Email";
-    const string Prob = "Problem";
-    const string Brnch = "Branch";
-    const string Refer = "Referring URL";
-    const string Form = "Form Page URL";
-    const string Cust = "Current Customer";
-    const string ZCode = "Zip";
 
     [Column(DateStr)]
     [Name(DateStr)]
@@ -72,5 +74,5 @@ public class WebFormCsvDbEntity : ClassMap<WebFormCsvDbEntity>, IPhoneNumberComp
     public string? Zip { get; set; }
 
     private PhoneNumber? _number;
-    public PhoneNumber Number => _number ??= Phone is null || !PhoneNumber.TryParse(Phone, out PhoneNumber phoneResult) ? new(0) : phoneResult;
+    public PhoneNumber Number => _number ??= PhoneNumberTranslationService.Convert(Phone);
 }
