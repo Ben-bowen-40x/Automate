@@ -33,7 +33,7 @@ public class LeafClient_Test
         ,
         InlineData(0, 10)
     ]
-    public async void TestHttpClientAsync(int offset, int limit)
+    public async Task TestHttpClientAsync(int offset, int limit)
     {
         Uri url = Config.LeafThreadsEp($"?offset={offset}&limit={limit}")!;
         HttpResponseMessage response = await Client.GetAsync(url);
@@ -52,7 +52,7 @@ public class LeafClient_Test
         ,
         InlineData(0, 1)
     ]
-    public async void TestLeafApiService_GetAsync(int offset, int limit)
+    public async Task TestLeafApiService_GetAsync(int offset, int limit)
     {
         await LeafApiService.GetAsync<List<LeafThread>>(Url(offset, limit), Client);
     }
@@ -65,7 +65,7 @@ public class LeafClient_Test
         ,
         InlineData(0, 1)
     ]
-    public async void TestLeafApiService_GetStringAsync(int offset, int limit)
+    public async Task TestLeafApiService_GetStringAsync(int offset, int limit)
     {
         await LeafApiService.GetAsync(Url(offset, limit), Client);
     }
@@ -79,7 +79,7 @@ public class LeafClient_Test
         InlineData(0, 1000),
     //InlineData(5000,1000)
     ]
-    public async void TestLeaf_RefreshRepoFully_PaginationMakesSense(int offset, int limit)
+    public async Task TestLeaf_RefreshRepoFully_PaginationMakesSense(int offset, int limit)
     {
         bool resume = true;
         while (resume)
@@ -116,7 +116,7 @@ public class LeafClient_Test
         InlineData(0, 1000),
     //InlineData(5000,1000)
     ]
-    public async void TestLeaf_RefreshRepoFully_PaginationMakesSense_V2(int offset, int limit)
+    public async Task TestLeaf_RefreshRepoFully_PaginationMakesSense_V2(int offset, int limit)
     {
 
         // Create the new repo file name

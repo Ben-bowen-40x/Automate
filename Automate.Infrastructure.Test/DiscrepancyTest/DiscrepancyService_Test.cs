@@ -1,11 +1,10 @@
 ﻿using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.AnalyzeDiscrepancyService;
-using Automate.Infrastructure.DatabaseService;
-using Microsoft.Extensions.Configuration;
 namespace Automate.Infrastructure.Test.DiscrepancyTest;
 
-public class DiscrepancyService_Test(IDwhSettings settings)
+public class DiscrepancyService_Test(IDwhTestSettings settings)
 {
+    private readonly IDwhTestSettings _settings = settings;
     [
         Theory,
         InlineData(true),
@@ -14,7 +13,7 @@ public class DiscrepancyService_Test(IDwhSettings settings)
     public void DiscrepancyService_RetrievesInfoProperly(bool queryDb)
     {
         // Assemble
-        DiscrepancyService service = new(settings) { QueryDb = queryDb };
+        DiscrepancyService service = new(_settings) { QueryDb = queryDb };
 
         // Act
         List<DiscrepancyCall> billableCalls = service.GetBillableSourceCalls();

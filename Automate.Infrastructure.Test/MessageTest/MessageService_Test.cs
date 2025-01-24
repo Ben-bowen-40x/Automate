@@ -1,12 +1,13 @@
 ﻿using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
-using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.MessageLeadsService;
 using Automate.Infrastructure.MessageLeadsService.CsvMaps;
+using Automate.Infrastructure.Test.DiscrepancyTest;
 namespace Automate.Infrastructure.Test.MessageTest;
 
-public class MessageService_Test(IDwhSettings settings)
+public class MessageService_Test(IDwhTestSettings settings)
 {
+    private readonly IDwhTestSettings _settings = settings;
     private const string MsgAnalysis = @".info\MessageAnalysis";
     private const string MsgLeads = "MessagesToAnalyze.csv";
     private const string CctLeads = "PNContactForms.csv";
@@ -34,8 +35,8 @@ public class MessageService_Test(IDwhSettings settings)
     public void MessageService_GetsAllThreeRecordSets(bool getTexts, bool queryDb, string fileName)
     {
         // Assemble
-        MessageService service = new(settings) { QueryDbCalls = queryDb, QueryDbCustomers = queryDb };
-        MessageService_Test obj = new(settings);
+        MessageService service = new(_settings) { QueryDbCalls = queryDb, QueryDbCustomers = queryDb };
+        MessageService_Test obj = new(_settings);
         string member = nameof(MessageService_GetsAllThreeRecordSets);
         var fullName = GetFullName.GetMemberName(obj, member);
         var folder = FolderFinder.GetLocalFolder(nameof(Infrastructure), MsgAnalysis);
