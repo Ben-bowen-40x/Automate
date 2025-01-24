@@ -1,9 +1,9 @@
 ﻿using Automate.Domain.ValueObjects;
+using Automate.Translation.CustomerTranslate;
 using Automate.Translation.DateTimeConvertService;
-using Automate.Translation.InfrastructureInterfaces.Customer;
 using Automate.Translation.ValueObjectsTranslations;
 
-namespace Automate.Translation.InfrastructureInterfaces.Customer;
+namespace Automate.Translation.CustomerTranslate;
 
 public static class CustomerSubscriptionTranslate
 {
@@ -14,8 +14,8 @@ public static class CustomerSubscriptionTranslate
     /// <returns></returns>
     public static ICustomerSubscription Convert(this ICustSubLongIdPhoneNumber entity)
     {
-        PhoneNumber number = PhoneNumberTranslate.Convert(entity.Number);
-        PhoneNumber number2 = PhoneNumberTranslate.Convert(entity.Number2);
+        PhoneNumber number = entity.Number.Convert();
+        PhoneNumber number2 = entity.Number2.Convert();
         string sellers = VerifySeller(entity.Sellers);
         return new CustomerSubscription(entity.CustomerId, entity.SubscriptionId, entity.Date, entity.SubscriptionStartDate, number, number2, entity.CustomerCancelDate, entity.SubscriptionCancelDate, entity.CustomerActive, entity.SubscriptionActive, entity.InitialCompleted, entity.DoubleValue, sellers);
     }

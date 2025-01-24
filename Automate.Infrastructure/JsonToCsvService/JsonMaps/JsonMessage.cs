@@ -1,5 +1,5 @@
 ﻿using Automate.Infrastructure.MessageLeadsService.DbMaps;
-using Automate.Translation.InfrastructureInterfaces.Contact;
+using Automate.Translation.ContactTranslate;
 using System.Text.Json.Serialization;
 
 namespace Automate.Infrastructure.JsonToCsvService.JsonMaps;

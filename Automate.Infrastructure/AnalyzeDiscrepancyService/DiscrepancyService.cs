@@ -4,7 +4,7 @@ using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.JsonManipulationService;
-using Automate.Translation.InfrastructureInterfaces.Discrepancy;
+using Automate.Translation.DiscrepancyTranslate;
 using Automate.Translation.ValueObjectsTranslations;
 using CSharpFunctionalExtensions;
 

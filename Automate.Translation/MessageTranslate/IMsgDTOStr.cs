@@ -1,6 +1,6 @@
 ﻿using Automate.Domain.ValueObjects;
 
-namespace Automate.Translation.InfrastructureInterfaces.MessageTranslate;
+namespace Automate.Translation.MessageTranslate;
 
 public interface IMsgDTOStr : IConvert
 {

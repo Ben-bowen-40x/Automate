@@ -1,4 +1,4 @@
-﻿using Automate.Translation.InfrastructureInterfaces.Contact;
+﻿using Automate.Translation.ContactTranslate;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 

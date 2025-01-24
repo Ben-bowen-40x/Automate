@@ -1,6 +1,6 @@
 ﻿using Automate.Infrastructure.JsonToCsvService.JsonMaps;
 using Automate.Infrastructure.MessageLeadsService.DbMaps;
-using Automate.Translation.InfrastructureInterfaces.Contact;
+using Automate.Translation.ContactTranslate;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 

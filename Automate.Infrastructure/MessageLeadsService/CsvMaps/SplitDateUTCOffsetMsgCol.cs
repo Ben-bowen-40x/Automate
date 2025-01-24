@@ -1,7 +1,7 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using Automate.Translation.DateTimeConvertService;
 using Automate.Translation.ValueObjectsTranslations;
-using Automate.Translation.InfrastructureInterfaces.MessageTranslate;
+using Automate.Translation.MessageTranslate;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 

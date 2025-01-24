@@ -1,5 +1,4 @@
-﻿using Automate.Domain.ValueObjects;
-using Automate.Translation.InfrastructureInterfaces.Customer;
+﻿using Automate.Translation.CustomerTranslate;
 
 namespace Automate.Infrastructure.MessageLeadsService.JsonMaps;
 

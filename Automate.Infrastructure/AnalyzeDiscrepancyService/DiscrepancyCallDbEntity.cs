@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
-using Automate.Translation.InfrastructureInterfaces.Discrepancy;
+using Automate.Translation.DiscrepancyTranslate;
 
 namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 

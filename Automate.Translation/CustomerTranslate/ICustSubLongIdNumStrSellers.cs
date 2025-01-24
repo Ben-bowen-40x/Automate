@@ -1,4 +1,4 @@
-﻿namespace Automate.Translation.InfrastructureInterfaces.Customer;
+﻿namespace Automate.Translation.CustomerTranslate;
 
 public interface ICustSubLongIdNumStrSellers
 {

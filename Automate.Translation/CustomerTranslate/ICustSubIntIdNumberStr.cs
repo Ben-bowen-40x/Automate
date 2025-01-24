@@ -1,6 +1,6 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 
-namespace Automate.Translation.InfrastructureInterfaces.Customer;
+namespace Automate.Translation.CustomerTranslate;
 
 public interface ICustSubIntIdNumberStr : IPhoneNumberCompatible
 {

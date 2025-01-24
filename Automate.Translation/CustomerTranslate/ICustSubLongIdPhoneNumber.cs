@@ -1,7 +1,7 @@
 ﻿using Automate.Domain.ValueObjects;
 using Automate.Translation.ValueObjectsTranslations;
 
-namespace Automate.Translation.InfrastructureInterfaces.Customer;
+namespace Automate.Translation.CustomerTranslate;
 
 public interface ICustSubLongIdPhoneNumber : IDatedRecord
 {

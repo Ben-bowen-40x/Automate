@@ -1,8 +1,8 @@
 ﻿using Automate.Translation.ValueObjectsTranslations;
 
-namespace Automate.Infrastructure.MessageLeadsService.JsonMaps;
+namespace Automate.Translation.CallTranslate;
 
-public class NumberTypeJson : IPhoneNumberTranslate
+public class NumberType : IPhoneNumberTranslate
 {
     public bool IsDefault { get; set; }
     public long Number { get; set; }

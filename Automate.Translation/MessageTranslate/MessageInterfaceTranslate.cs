@@ -1,7 +1,7 @@
 ﻿using Automate.Domain.ValueObjects;
 using Automate.Translation.ValueObjectsTranslations;
 
-namespace Automate.Translation.InfrastructureInterfaces.MessageTranslate;
+namespace Automate.Translation.MessageTranslate;
 public static class MessageInterfaceTranslate
 {
     #region Public
@@ -12,7 +12,7 @@ public static class MessageInterfaceTranslate
     /// <returns></returns>
     public static IMessage Convert(this IMsgStrDateTimeOffset entity)
     {
-        PhoneNumber num = PhoneNumberTranslate.Convert(entity.NumberStr);
+        PhoneNumber num = PhoneNumberTranslate.Convert(entity.Number);
         string contents = VerifyContents(entity.Contents);
         string source = VerifySource(entity.Source);
         IMessage rMsg = new Message(num, entity.Date, contents, source);

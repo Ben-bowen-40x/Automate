@@ -1,4 +1,4 @@
-﻿using Automate.Translation.InfrastructureInterfaces.MessageTranslate;
+﻿using Automate.Translation.MessageTranslate;
 using Automate.Translation.ValueObjectsTranslations;
 using CsvHelper.Configuration.Attributes;
 

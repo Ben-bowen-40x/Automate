@@ -1,6 +1,6 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 
-namespace Automate.Translation.InfrastructureInterfaces.Call;
+namespace Automate.Translation.CallTranslate;
 
 public interface ICallZoneStr : IPhoneNumberCompatible
 {

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Automate.Domain.ValueObjects;
 using Automate.Translation.ValueObjectsTranslations;
-using Automate.Translation.InfrastructureInterfaces.Call;
+using Automate.Translation.CallTranslate;
 
 namespace Automate.Infrastructure.MessageLeadsService.DbMaps;
 

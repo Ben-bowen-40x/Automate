@@ -1,6 +1,6 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 
-namespace Automate.Translation.InfrastructureInterfaces.Contact;
+namespace Automate.Translation.ContactTranslate;
 
 public interface IContactFormTyped : IPhoneNumberCompatible
 {

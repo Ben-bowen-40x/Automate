@@ -1,4 +1,4 @@
-﻿namespace Automate.Translation.InfrastructureInterfaces.Contact;
+﻿namespace Automate.Translation.ContactTranslate;
 
 public interface IContactFormString
 {

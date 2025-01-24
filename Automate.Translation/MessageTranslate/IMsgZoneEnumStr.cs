@@ -1,7 +1,7 @@
 ﻿using Automate.Domain.ValueObjects;
 using Automate.Translation.DateTimeConvertService;
 
-namespace Automate.Translation.InfrastructureInterfaces.MessageTranslate;
+namespace Automate.Translation.MessageTranslate;
 
 public interface IMsgZoneEnumStr : IConvert
 {

@@ -1,5 +1,5 @@
 ﻿using Automate.Domain.ValueObjects;
-using Automate.Translation.InfrastructureInterfaces.Discrepancy;
+using Automate.Translation.DiscrepancyTranslate;
 
 namespace Automate.Translation.ValueObjectsTranslations;
 
