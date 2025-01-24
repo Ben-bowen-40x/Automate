@@ -1,13 +1,12 @@
-﻿using Automate.Translation.InfrastructureInterfaces.Customer;
+﻿using Automate.Domain.ValueObjects;
 using Automate.Translation.ValueObjectsTranslations;
 
-namespace Automate.Infrastructure.MessageLeadsService.JsonMaps;
+namespace Automate.Translation.InfrastructureInterfaces.Customer;
 
-public class CustSubJson : ICustSubLongIdPhoneNumber
+public interface ICustSubLongIdPhoneNumber : IDatedRecord
 {
     public long SubscriptionId { get; set; }
     public long CustomerId { get; set; }
-    public DateTimeOffset Date { get; set; }
     public DateTimeOffset SubscriptionStartDate { get; set; }
     public IPhoneNumberTranslate? Number { get; set; }
     public IPhoneNumberTranslate? Number2 { get; set; }
@@ -19,3 +18,4 @@ public class CustSubJson : ICustSubLongIdPhoneNumber
     public double DoubleValue { get; set; }
     public string? Sellers { get; set; }
 }
+

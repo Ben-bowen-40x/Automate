@@ -8,9 +8,9 @@ public static class PhoneNumberTranslate
     internal static PhoneNumber Default => new(PhoneNumber.Default);
 
     // From NumberTypeJson (Infrastructure Object)
-    public static PhoneNumber Convert(this IPhoneNumberTranslate entity)
+    public static PhoneNumber Convert(this IPhoneNumberTranslate? entity)
     {
-        return Convert(entity.Number.ToString());
+        return entity is not null ? Convert(entity.Number.ToString()) : Default;
     }
     // From nullable string
     public static PhoneNumber Convert(string? phone)

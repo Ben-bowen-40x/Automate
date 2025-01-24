@@ -1,3 +1,4 @@
+using Automate.Translation.InfrastructureInterfaces.MessageTranslate;
 using Automate.Translation.ValueObjectsTranslations;
 
 namespace Automate.Translation.Test;
@@ -14,7 +15,7 @@ public class TranslationLayerTests
     ]
     public void ConvertDateStrToDateTime_ProperlyConverts(string? date, string? time, bool success)
     {
-        DateTime result = MessageInterfaceTranslate.ConvertDate(date, time);
+        DateTime result = ConvertPrimitive.ConvertDate(date, time, DateTimeDefaults.Min);
 
         if (success)
         {

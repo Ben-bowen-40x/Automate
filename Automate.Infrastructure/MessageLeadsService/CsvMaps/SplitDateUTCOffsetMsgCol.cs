@@ -1,18 +1,18 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using Automate.Translation.InfrastructureInterfaces.Message;
 using Automate.Translation.DateTimeConvertService;
 using Automate.Translation.ValueObjectsTranslations;
+using Automate.Translation.InfrastructureInterfaces.MessageTranslate;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
 public class SplitDateUTCOffsetMsgCol : IMsgZoneEnumStr
 {
     [Name("phone_number")]
-    public string? NumberStr { get; set; }
+    public string? Number { get; set; }
     [Name("date_submitted")]
-    public string? DateStr { get; set; }
+    public string? Date { get; set; }
     [Name("time_submitted")]
-    public string? TimeStr { get; set; }
+    public string? Time { get; set; }
     [Name("how_can_we_help")]
     public string? Contents { get; set; }
     [Name("page_name")]

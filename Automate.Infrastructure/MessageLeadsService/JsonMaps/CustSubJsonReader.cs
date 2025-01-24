@@ -20,39 +20,5 @@ public class CustSubJsonReader : ICustSubLongIdNumStrSellers
     public string? Seller1 { get; set; }
     public string? Seller2 { get; set; }
     public string? Seller3 { get; set; }
-    public CustomerSubscription Convert()
-    {
-        // Convert dates
-        var date = DateTimeConversions.ConvertLocalToDTOffset(Date.DateTime, TimeZoneEnum.Pacific, out DateTimeOffset dateResult)
-            ? dateResult
-            : DateTimeOffset.MaxValue;
-        var subscriptionStartDate = DateTimeConversions.ConvertLocalToDTOffset(SubscriptionStartDate.DateTime, TimeZoneEnum.Pacific, out DateTimeOffset subResult)
-            ? subResult
-            : DateTimeOffset.MaxValue;
-        var customerCancelDate = DateTimeConversions.ConvertLocalToDTOffset(CustomerCancelDate.DateTime, TimeZoneEnum.Pacific, out DateTimeOffset cxlResult)
-            ? cxlResult
-            : DateTimeOffset.MaxValue;
-        var subscriptionCancelDate = DateTimeConversions.ConvertLocalToDTOffset(SubscriptionCancelDate.DateTime, TimeZoneEnum.Pacific, out DateTimeOffset sxlResult)
-            ? sxlResult
-            : DateTimeOffset.MaxValue;
-
-        // Convert Phone numbers
-        PhoneNumber number1 = Number1 is not null && long.TryParse(Number1, out long num1) ? new(num1) : new(0);
-        PhoneNumber number2 = Number2 is not null && long.TryParse(Number2, out long num2) ? new(num2) : new(0);
-
-        // Convert booleans
-        bool customerActive = CustomerActive is not null && CustomerActive != 0;
-        bool subscriptionActive = SubscriptionActive is not null && SubscriptionActive != 0;
-        bool initialCompleted = InitialCompleted is not null && InitialCompleted != 0;
-
-        // Convert Sellers
-        List<string> sellersArr = new(3);
-        if (Seller1 is not null && Seller1 != string.Empty) sellersArr.Add(Seller1);
-        if (Seller2 is not null && Seller2 != string.Empty) sellersArr.Add(Seller2);
-        if (Seller3 is not null && Seller3 != string.Empty) sellersArr.Add(Seller3);
-        string sellers = sellersArr.Count > 0 ? string.Join(" | ", sellersArr) : string.Empty;
-
-
-        return new CustomerSubscription(CustomerId, SubscriptionId, date, subscriptionStartDate, number1, number2, customerCancelDate, subscriptionCancelDate, customerActive, subscriptionActive, initialCompleted, ContractValue, sellers);
-    }
+    
 }

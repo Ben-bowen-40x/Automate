@@ -1,6 +1,6 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using Automate.Translation.InfrastructureInterfaces.Message;
 using Automate.Translation.ValueObjectsTranslations;
+using Automate.Translation.InfrastructureInterfaces.MessageTranslate;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
@@ -9,7 +9,7 @@ public class UnifiedDateUnchangedOffset_SeparateGclid_MsgCol : IMsgDTOStrIsolate
     [Name("Prospect Cellphone", "Phone Number", "Number")]
     public string? NumberStr { get; set; }
     [Name("Creation", "Message Creation", "Date")]
-    public string? DateStr { get; set; }
+    public string? DateTimeOffsetStr { get; set; }
     [Name("Message", "Contents")]
     public string? Contents { get; set; }
     [Name("Message Source", "Source")]

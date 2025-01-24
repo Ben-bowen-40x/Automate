@@ -1,15 +1,15 @@
-﻿using Automate.Translation.InfrastructureInterfaces.Message;
+﻿using Automate.Translation.InfrastructureInterfaces.MessageTranslate;
 using Automate.Translation.ValueObjectsTranslations;
 using CsvHelper.Configuration.Attributes;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
-public class NoTimeMsgCol : IMsgNoTimeStr
+public class NoTimeMsgCol : IMsgNoTimeStrUtc
 {
     [Name("Phone")]
     public string? NumberStr { get; set; }
     [Name("Date")]
-    public string? DateStr { get; set; }
+    public string? DateTimeStr { get; set; }
     [Name("Problem")]
     public string? Contents { get; set; }
     [Name("Referring URL")]

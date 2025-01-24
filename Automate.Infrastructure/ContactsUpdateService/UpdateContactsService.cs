@@ -1,7 +1,7 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.DatabaseService;
-using Automate.Translation.InfrastructureInterfaces.ContactsUpdate;
+using Automate.Translation.InfrastructureInterfaces.Contact;
 using Automate.Translation.ValueObjectsTranslations;
 using CSharpFunctionalExtensions;
 

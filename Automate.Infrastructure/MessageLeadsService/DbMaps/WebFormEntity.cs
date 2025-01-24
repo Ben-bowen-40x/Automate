@@ -1,6 +1,5 @@
-﻿using Automate.Application.InfrastructureInterfaces;
-using Automate.Domain.ValueObjects;
-using Automate.Translation.InfrastructureInterfaces.JsonToCsv;
+﻿using Automate.Domain.ValueObjects;
+using Automate.Translation.InfrastructureInterfaces.Contact;
 using Automate.Translation.ValueObjectsTranslations;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
@@ -10,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Automate.Infrastructure.MessageLeadsService.DbMaps;
 
 [Keyless]
-public class WebFormEntity : ClassMap<WebFormEntity>, IWebFormTyped
+public class WebFormEntity : ClassMap<WebFormEntity>, IContactFormTyped
 {
     public const string DateStr = "Date";
     public const string FName = "First Name";
@@ -29,7 +28,7 @@ public class WebFormEntity : ClassMap<WebFormEntity>, IWebFormTyped
         Map(m => m.Date).Index(index++).Name(DateStr);
         Map(m => m.FirstName).Index(index++).Name(FName);
         Map(m => m.LastName).Index(index++).Name(LName);
-        Map(m => m.NumberLong.Number).Index(index++).Name(Ph);
+        Map(m => m.Number.Number).Index(index++).Name(Ph);
         Map(m => m.Email).Index(index++).Name(Eml);
         Map(m => m.Problem).Index(index++).Name(Prob);
         Map(m => m.Branch).Index(index++).Name(Brnch);
@@ -74,5 +73,5 @@ public class WebFormEntity : ClassMap<WebFormEntity>, IWebFormTyped
     public string? Zip { get; set; }
 
     private PhoneNumber? _number;
-    public PhoneNumber NumberLong => _number ??= PhoneNumberTranslate.Convert(Phone);
+    public PhoneNumber Number => _number ??= PhoneNumberTranslate.Convert(Phone);
 }

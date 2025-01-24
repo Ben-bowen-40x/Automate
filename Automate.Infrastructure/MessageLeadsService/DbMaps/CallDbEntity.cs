@@ -2,21 +2,21 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Automate.Domain.ValueObjects;
 using Automate.Translation.ValueObjectsTranslations;
-using Automate.Translation.InfrastructureInterfaces.Message;
+using Automate.Translation.InfrastructureInterfaces.Call;
 
 namespace Automate.Infrastructure.MessageLeadsService.DbMaps;
 
 [Keyless]
-public class CallDbEntity : IMsgZoneStr
+public class CallDbEntity : ICallZoneStr
 {
     [Column("contact_number_clean")]
     public long NumberLong { get; set; }
     [Column("sale_billable")]
-    public string? BillableStr { get; set; }
+    public string? Billable { get; set; }
     [Column("called_at_utc")]
     public DateTime? Date { get; set; }
     [Column("time_zone")]
-    public string? TimeZoneStr { get; set; }
+    public string? TimeZone { get; set; }
     private PhoneNumber? _num;
     public PhoneNumber Number => _num ??= PhoneNumberTranslate.Convert(NumberLong);
 }

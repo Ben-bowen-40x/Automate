@@ -1,9 +1,10 @@
 ﻿namespace Automate.Translation.InfrastructureInterfaces.Discrepancy;
 
-public interface IDiscrepancyEntity : IDiscrepancyNotes
+public interface IDiscrepancyEntity
 {
-    public long Number { get; set; }
-    public DateTime? Date { get; set; }
-    public string? Billable { get; set; }
-    public int? Duration { get; set; }
+    long Number { get; set; }
+    DateTime? Date { get; set; }
+    string? Billable { get; set; }
+    int? Duration { get; set; }
+    string? Notes { get; set; }
 }

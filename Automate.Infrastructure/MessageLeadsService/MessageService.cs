@@ -6,6 +6,9 @@ using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.JsonManipulationService;
 using Automate.Infrastructure.MessageLeadsService.DbMaps;
 using Automate.Infrastructure.MessageLeadsService.JsonMaps;
+using Automate.Translation.InfrastructureInterfaces.Call;
+using Automate.Translation.InfrastructureInterfaces.Customer;
+using Automate.Translation.ValueObjectsTranslations;
 using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.MessageLeadsService;
@@ -99,9 +102,10 @@ public class MessageService(IDwhSettings settings) : IMessageService
                     callLoc == string.Empty
                     ? DwhContextHelpers.GetItemsFromRawAsync(callContext, query)
                     : DwhContextHelpers.GetItemsFromFileAsync(callContext, callLocation);
-                IEnumerable<CallDbEntity> calls = callTask.Result;
-                IEnumerable<ICallRecord> callResult = calls.Select(c => c.Convert());
-                List<ICallRecord> resultList = callResult.ToList();
+                List<ICallRecord> resultList = callTask.Result
+                    .Select(c => (ICallZoneStr)c)
+                    .Select(c => c.Convert())
+                    .ToList();
 
                 // Save results to local repo
                 JsonService.WriteToFile(callLocRepo, resultList);

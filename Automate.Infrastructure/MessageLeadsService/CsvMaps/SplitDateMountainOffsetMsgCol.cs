@@ -1,18 +1,18 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using Automate.Translation.InfrastructureInterfaces.Message;
 using Automate.Translation.ValueObjectsTranslations;
 using Automate.Translation.DateTimeConvertService;
+using Automate.Translation.InfrastructureInterfaces.MessageTranslate;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
 public class SplitDateMountainOffsetMsgCol : IMsgZoneEnumStr
 {
     [Name("Customer #")]
-    public string? NumberStr { get; set; }
+    public string? Number { get; set; }
     [Name("Date")]
-    public string? DateStr { get; set; }
+    public string? Date { get; set; }
     [Name("Time")]
-    public string? TimeStr { get; set; }
+    public string? Time { get; set; }
     [Name("FormCustomFields")]
     public string? Contents { get; set; }
     [Name("Account Name")]

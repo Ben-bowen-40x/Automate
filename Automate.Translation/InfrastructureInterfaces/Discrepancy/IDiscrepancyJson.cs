@@ -4,9 +4,9 @@ namespace Automate.Translation.InfrastructureInterfaces.Discrepancy;
 
 public interface IDiscrepancyJson
 {
-    public IPhoneNumberTranslate? Number { get; set; }
-    public bool Billable { get; set; }
-    public DateTime Date { get; set; }
-    public TimeSpan Duration { get; set; }
-    public string? Notes { get; set; }
+    IPhoneNumberTranslate? Number { get; set; }
+    bool Billable { get; set; }
+    DateTime Date { get; set; }
+    TimeSpan Duration { get; set; }
+    string? Notes { get; set; }
 }

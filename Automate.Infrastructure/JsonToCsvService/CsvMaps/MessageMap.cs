@@ -1,12 +1,12 @@
 ﻿using Automate.Infrastructure.JsonToCsvService.JsonMaps;
 using Automate.Infrastructure.MessageLeadsService.DbMaps;
-using Automate.Translation.InfrastructureInterfaces.JsonToCsv;
+using Automate.Translation.InfrastructureInterfaces.Contact;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 
 namespace Automate.Infrastructure.JsonToCsvService.CsvMaps;
 
-public class MessageMap : ClassMap<JsonMessage>, IWebFormString
+public class MessageMap : ClassMap<JsonMessage>, IContactFormString
 {
     public MessageMap()
     {

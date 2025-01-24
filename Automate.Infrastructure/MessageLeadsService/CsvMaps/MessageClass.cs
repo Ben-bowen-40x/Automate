@@ -1,4 +1,4 @@
-﻿using Automate.Translation.InfrastructureInterfaces.Message;
+﻿using Automate.Translation.InfrastructureInterfaces.MessageTranslate;
 using Automate.Translation.ValueObjectsTranslations;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;

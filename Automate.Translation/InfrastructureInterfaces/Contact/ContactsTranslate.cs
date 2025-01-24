@@ -1,7 +1,6 @@
 ﻿using Automate.Domain.ValueObjects;
-using Automate.Translation.InfrastructureInterfaces.ContactsUpdate;
 
-namespace Automate.Translation.ValueObjectsTranslations;
+namespace Automate.Translation.InfrastructureInterfaces.Contact;
 
 public static class ContactsTranslate
 {
