@@ -1,10 +1,16 @@
-﻿namespace Automate.Translation.ValueObjectsTranslations;
+﻿using System.Text.RegularExpressions;
 
-internal class TSH // Translation Service Helper = TSH
+namespace Automate.Translation.ValueObjectsTranslations;
+
+internal partial class TSH // Translation Service Helper = TSH
 {
     internal static string ContentsJoined(string contents)
     {
-        string str = string.Join('|', contents.Split(',', '"'));
-        return string.Join(" | ", str.Split('\n', '\r'));
+        string str = string.Join('|', contents.Split(',', '"', '\n', '\r'));
+        string result = BarSpace().Replace(str, "| ");
+        return result;
     }
+
+    [GeneratedRegex(@"(\s*\|\s*)+")]
+    private static partial Regex BarSpace();
 }

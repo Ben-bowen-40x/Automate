@@ -1,6 +1,6 @@
 ﻿namespace Automate.Translation.DateTimeConvertService;
 
-internal static class DateTimeConversions
+internal static class DateTimeOffsetTranslate
 {
     #region Public
     public static DateTimeOffset ConvertLocalToDTOffset(DateTime localTime, TimeZoneEnum zone)
@@ -38,11 +38,12 @@ internal static class DateTimeConversions
         "mountain" => TimeZoneEnum.Mountain,
         "central" => TimeZoneEnum.Central,
         "eastern" or "east" => TimeZoneEnum.Eastern,
+        "utc" => TimeZoneEnum.Utc,
         _ => TimeZoneEnum.Mountain
     };
 
     private static string ConvertTimeZoneToTimeZoneId(TimeZoneEnum zone)
-        => $"{zone} Standard Time";
+        => zone == TimeZoneEnum.Utc ? "UTC" : $"{zone} Standard Time";
 
     private static DateTimeOffset ConvertLocalToDTOffset(DateTime date, TimeZoneInfo timeZone)
     {
@@ -53,7 +54,7 @@ internal static class DateTimeConversions
         if (isInvalid)
             date += fourHours;
 
-        // Convert from local to utc time
+        // ConvertTimeSpan from local to utc time
         DateTimeOffset result = TimeZoneInfo.ConvertTimeToUtc(date, timeZone);
 
         // Correct time if needed
@@ -98,7 +99,8 @@ internal static class DateTimeConversions
             TimeZoneEnum.Mountain => TimeSpan.FromHours(-7),
             TimeZoneEnum.Central => TimeSpan.FromHours(-6),
             TimeZoneEnum.Eastern => TimeSpan.FromHours(-5),
-            _ => throw new ArgumentException($"The {nameof(DLSConversion)} method only accepts the following time zones from the lower 48 states of the US: {nameof(TimeZoneEnum.Pacific)}, {nameof(TimeZoneEnum.Mountain)}, {nameof(TimeZoneEnum.Central)}, {nameof(TimeZoneEnum.Eastern)}.")
+            TimeZoneEnum.Utc => TimeSpan.FromHours(0),
+            _ => throw new ArgumentException($"The {nameof(DLSConversion)} method only accepts the following time zones from the lower 48 states of the US: {nameof(TimeZoneEnum.Pacific)}, {nameof(TimeZoneEnum.Mountain)}, {nameof(TimeZoneEnum.Central)}, {nameof(TimeZoneEnum.Eastern)}, {nameof(TimeZoneEnum.Utc)}.")
         };
     #endregion
 
@@ -122,10 +124,11 @@ internal static class DateTimeConversions
         => new() { { year, [Sunday(year, 03, 02, 2), Sunday(year, 11, 2, 1)] } };
     #endregion
 }
-internal enum TimeZoneEnum
+public enum TimeZoneEnum
 {
     Pacific,
     Mountain,
     Central,
-    Eastern
+    Eastern,
+    Utc
 }
