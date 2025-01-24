@@ -1,14 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using Automate.Domain.ValueObjects;
-using Automate.Infrastructure.DateTimeConversion;
 using Automate.Translation.ValueObjectsTranslations;
-using Automate.Translation.InfrastructureInterfaces.Message;
+using Automate.Translation.InfrastructureInterfaces.Customer;
 
 namespace Automate.Infrastructure.MessageLeadsService.DbMaps;
 
 [PrimaryKey("SubscriptionId")]
-public class CustSubDbEntity : ICustSub
+public class CustSubDbEntity : ICustSubIntIdNumberStr
 {
     [Column("SubscriptionId")]
     public required int SubscriptionId { get; set; }

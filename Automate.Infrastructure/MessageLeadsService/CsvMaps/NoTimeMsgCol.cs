@@ -7,9 +7,9 @@ namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 public class NoTimeMsgCol : IMsgNoTimeStr
 {
     [Name("Phone")]
-    public string? Number { get; set; }
+    public string? NumberStr { get; set; }
     [Name("Date")]
-    public string? Date { get; set; }
+    public string? DateStr { get; set; }
     [Name("Problem")]
     public string? Contents { get; set; }
     [Name("Referring URL")]

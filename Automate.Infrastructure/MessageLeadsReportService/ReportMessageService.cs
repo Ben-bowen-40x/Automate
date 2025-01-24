@@ -6,6 +6,9 @@ using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.JsonManipulationService;
 using Automate.Infrastructure.MessageLeadsService.DbMaps;
 using Automate.Infrastructure.MessageLeadsService.JsonMaps;
+using Automate.Translation.InfrastructureInterfaces.Customer;
+using Automate.Translation.InfrastructureInterfaces.Message;
+using Automate.Translation.ValueObjectsTranslations;
 using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.MessageLeadsReportService;
@@ -158,8 +161,9 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
                     ? DwhContextHelpers.GetItemsFromRawAsync(callContext, query)
                     : DwhContextHelpers.GetItemsFromFileAsync(callContext, callLocation);
                 IEnumerable<CallDbEntity> calls = callTask.Result;
-                IEnumerable<ICallRecord> callResult = calls.Select(c => c.Convert());
-                List<ICallRecord> resultList = callResult.ToList();
+                List<ICallRecord> resultList = calls
+                    .Select(c => c.Convert())
+                    .ToList();
 
                 // Save results to local repo
                 JsonService.WriteToFile(callLocRepo, resultList);
@@ -222,13 +226,15 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
                     customerLocation == string.Empty
                     ? DwhContextHelpers.GetItemsFromRawAsync(customerContext, query)
                     : DwhContextHelpers.GetItemsFromFileAsync(customerContext, custStr);
-                IEnumerable<CustSubDbEntity> customers = customerTask.Result;
-                IEnumerable<ICustomerSubscription> records = customers.Select(c => c.Convert());
-                List<ICustomerSubscription> resultList = records.ToList();
+                List<ICustomerSubscription> customers = customerTask.Result
+                    .Select(c => (ICustSubIntIdNumberStr)c)
+                    .Select(c => c.Convert())
+                    .Select(c => (ICustomerSubscription)c)
+                    .ToList();
 
                 // Save results to local repo
-                JsonService.WriteToFile(customerLocRepo, resultList);
-                return resultList;
+                JsonService.WriteToFile(customerLocRepo, customers);
+                return customers;
             }
             catch (Exception ex)
             {
@@ -240,12 +246,16 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
             return _customerRecordsFromRepo;
 
         // Exceptions default to local repo retrieval
-        var r = JsonService.ReadFile<CustSubJson>(customerLocRepo);
+        Result<List<CustSubJson>> r = JsonService.ReadFile<CustSubJson>(customerLocRepo);
         List<CustSubJson> localCustomers = r.IsSuccess
             ? r.Value
             : throw new Exception(r.Error);
-        IEnumerable<ICustomerSubscription> result = localCustomers.Select(c => c.Convert());
-        return result.ToList();
+        List<ICustomerSubscription> result = localCustomers
+            .Select(c => (ICustSubLongIdPhoneNumber)c)
+            .Select(c => c.Convert())
+            .Select(c => (ICustomerSubscription)c)
+            .ToList();
+        return result;
     }
     #endregion
 

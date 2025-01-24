@@ -5,7 +5,7 @@ namespace Automate.Infrastructure.MessageLeadsService.JsonMaps;
 
 internal class CallRecordJson : IDatedRecord
 {
-    public INumberTypeJson? Number { get; set; }
+    public IPhoneNumberTranslate? Number { get; set; }
     public bool Billable { get; set; }
     public DateTimeOffset Date { get; set; }
     public MessageCallRecord Convert()
@@ -16,7 +16,7 @@ internal class CallRecordJson : IDatedRecord
 }
 internal class CallRecordJsonReader : IDatedRecord
 {
-    public INumberTypeJson? Number { get; set; }
+    public IPhoneNumberTranslate? Number { get; set; }
     public string? Billable { get; set; }
     public DateTimeOffset Date { get; set; }
     public MessageCallRecord Convert()

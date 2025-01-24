@@ -1,51 +1,25 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using Automate.Domain.ValueObjects;
+using Automate.Translation.InfrastructureInterfaces.Message;
+using Automate.Translation.ValueObjectsTranslations;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
-public class UnifiedDateUnchangedOffset_SeparateGclid_MsgCol : IConvert
+public class UnifiedDateUnchangedOffset_SeparateGclid_MsgCol : IMsgDTOStrIsolateSource
 {
     [Name("Prospect Cellphone", "Phone Number", "Number")]
-    public string? PhoneNumber { get; set; }
+    public string? NumberStr { get; set; }
     [Name("Creation", "Message Creation", "Date")]
-    public string? StartDate { get; set; }
+    public string? DateStr { get; set; }
     [Name("Message", "Contents")]
     public string? Contents { get; set; }
     [Name("Message Source", "Source")]
     public string? Source { get; set; }
-    public IMessage Convert<UnifiedDateUnchangedOffset_SeparateGclid_MsgCol, IMessage>()
+
+    public SourceComponent Separator => SourceComponent.Gclid;
+
+    public IMessage Convert<IMsgDTOStrIsolateSource, IMessage>()
     {
-        // Convert local to DateTimeOffset
-        DateTimeOffset start =
-            DateTimeOffset.TryParse(StartDate, out DateTimeOffset startResult)
-            ? startResult
-            : DateTimeOffset.MinValue;
-
-        // Source Url
-        string url = Source is null ? string.Empty : Gclid(Source!);
-
-        // Phone number
-        PhoneNumber number =
-            PhoneNumber is null || PhoneNumber == string.Empty || PhoneNumber.Length < 10
-            ? new(0)
-            : new(PhoneNumber);
-        string message =
-            Contents is null
-            ? string.Empty
-            : CsvMapsHelper.ContentsJoined(Contents!);
-
-        // Cast new message into IMessage
-        IMessage result = (IMessage)(Domain.ValueObjects.IMessage)new Message(number, start, message, url);
-
-        return result;
-    }
-
-    private static string Gclid(string str)
-    {
-        string g = "gclid=";
-        if (str.Contains(g))
-            return str.Split(g)[1].Split('/')[0];
-        else return str;
+        return (IMessage)this.Convert();
     }
 }
 

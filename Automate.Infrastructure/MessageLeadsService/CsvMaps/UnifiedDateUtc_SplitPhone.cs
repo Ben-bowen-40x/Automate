@@ -1,27 +1,22 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using Automate.Translation.InfrastructureInterfaces.Message;
-using Automate.Translation.DateTimeConvertService;
 using Automate.Translation.ValueObjectsTranslations;
 
 namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
 
-public class SplitDateUTCOffsetMsgCol : IMsgZoneEnumStr
+public class UnifiedDateUtc_SplitPhone : IMsgDTOStr
 {
     [Name("phone_number")]
     public string? NumberStr { get; set; }
-    [Name("date_submitted")]
+    [Name("created_time")]
     public string? DateStr { get; set; }
-    [Name("time_submitted")]
-    public string? TimeStr { get; set; }
-    [Name("how_can_we_help")]
+    [Name("what_bugs_are_you_having_trouble_with?")]
     public string? Contents { get; set; }
-    [Name("page_name")]
+    [Name("zip_code")]
     public string? Source { get; set; }
-
-    public TimeZoneEnum TimeZone => TimeZoneEnum.Utc;
-
-    public IMessage Convert<IMsgZoneEnumStr, IMessage>()
+    public IMessage Convert<IMsgDTOStr, IMessage>()
     {
         return (IMessage)this.Convert();
     }
 }
+

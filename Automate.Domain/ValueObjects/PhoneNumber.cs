@@ -34,21 +34,24 @@ public partial class PhoneNumber
 
     public static bool TryParse(string? number, out PhoneNumber result)
     {
-        if (number is null)
-        {
-            result = new(0);
-            return false;
-        }
         try
         {
-            result = new(number!);
+            result = string.IsNullOrWhiteSpace(number)
+                    || number
+                        .Replace(" ", string.Empty)
+                        .Replace("-", string.Empty)
+                        .Replace("(", string.Empty)
+                        .Replace(")", string.Empty)
+                        .Length < 10
+                ? new(0)
+                : new(number![^10..]);
             return true;
         }
         catch
         {
-            result = new(0);
-            return false;
         }
+        result = new(0);
+        return false;
     }
     #endregion
 
