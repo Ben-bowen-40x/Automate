@@ -1,10 +1,9 @@
-﻿using Automate.Infrastructure.MessageLeadsService.DbMaps;
-using Automate.Translation.ContactTranslate;
+﻿using Automate.Translation.ContactTranslate;
 using System.Text.Json.Serialization;
 
-namespace Automate.Infrastructure.JsonToCsvService.JsonMaps;
+namespace Automate.Infrastructure.DataRetrievalFormats;
 
-public class JsonMessage: IContactFormString
+public class JsonMessage : IContactFormString
 {
     [JsonPropertyName(WebFormEntity.DateStr)]
     public string? Date { get; set; }

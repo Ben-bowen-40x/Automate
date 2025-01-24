@@ -1,5 +1,6 @@
 ﻿using Automate.Application.InfrastructureValueObjects;
 using Automate.Domain.ValueObjects;
+using Automate.Infrastructure.DataRetrievalFormats;
 using Automate.Infrastructure.JsonManipulationService;
 using Automate.Infrastructure.LeafClientService;
 using Automate.Infrastructure.Test.TestConfigurations;

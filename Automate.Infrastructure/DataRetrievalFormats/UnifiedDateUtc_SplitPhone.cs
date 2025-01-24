@@ -2,7 +2,7 @@
 using Automate.Translation.ValueObjectsTranslations;
 using Automate.Translation.MessageTranslate;
 
-namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
+namespace Automate.Infrastructure.DataRetrievalFormats;
 
 public class UnifiedDateUtc_SplitPhone : IMsgDTOStr
 {

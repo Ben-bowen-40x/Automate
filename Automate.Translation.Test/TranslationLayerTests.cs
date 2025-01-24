@@ -1,4 +1,3 @@
-using Automate.Translation.InfrastructureInterfaces.MessageTranslate;
 using Automate.Translation.ValueObjectsTranslations;
 
 namespace Automate.Translation.Test;

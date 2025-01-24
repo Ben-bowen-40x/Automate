@@ -3,7 +3,7 @@ using Automate.Translation.ValueObjectsTranslations;
 using Automate.Translation.DateTimeConvertService;
 using Automate.Translation.MessageTranslate;
 
-namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
+namespace Automate.Infrastructure.DataRetrievalFormats;
 
 public class SplitDateMountainOffsetMsgCol : IMsgZoneEnumStr
 {

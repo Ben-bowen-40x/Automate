@@ -4,7 +4,7 @@ using Automate.Domain.ValueObjects;
 using Automate.Translation.ValueObjectsTranslations;
 using Automate.Translation.CallTranslate;
 
-namespace Automate.Infrastructure.MessageLeadsService.DbMaps;
+namespace Automate.Infrastructure.DataRetrievalFormats;
 
 [Keyless]
 public class CallDbEntity : ICallZoneStr

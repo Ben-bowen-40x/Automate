@@ -1,7 +1,7 @@
 ﻿using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
+using Automate.Infrastructure.DataRetrievalFormats;
 using Automate.Infrastructure.MessageLeadsService;
-using Automate.Infrastructure.MessageLeadsService.CsvMaps;
 using Automate.Infrastructure.Test.DiscrepancyTest;
 namespace Automate.Infrastructure.Test.MessageTest;
 

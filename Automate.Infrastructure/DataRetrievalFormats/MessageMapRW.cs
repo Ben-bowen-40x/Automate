@@ -1,7 +1,7 @@
 ﻿using Automate.Domain.ValueObjects;
 using CsvHelper.Configuration;
 
-namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
+namespace Automate.Infrastructure.DataRetrievalFormats;
 
 internal class MessageMapRW : ClassMap<IMessage>
 {

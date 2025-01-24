@@ -1,7 +1,7 @@
 ﻿using Automate.Translation.CustomerTranslate;
 using Automate.Translation.ValueObjectsTranslations;
 
-namespace Automate.Infrastructure.MessageLeadsService.JsonMaps;
+namespace Automate.Infrastructure.DataRetrievalFormats;
 
 public class CustSubJson : ICustSubLongIdPhoneNumber
 {

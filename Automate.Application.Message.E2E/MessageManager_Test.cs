@@ -1,8 +1,8 @@
 ﻿using Automate.Application.MessageAnalysis;
 using Automate.Domain.SolutionFunctionality;
 using Automate.Infrastructure.DatabaseService;
+using Automate.Infrastructure.DataRetrievalFormats;
 using Automate.Infrastructure.MessageLeadsService;
-using Automate.Infrastructure.MessageLeadsService.CsvMaps;
 using Automate.Infrastructure.ReportingService;
 
 namespace Automate.Application.Message.E2E;

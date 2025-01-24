@@ -1,8 +1,7 @@
 ﻿using Automate.Domain.ValueObjects;
-using Automate.Infrastructure.ReportingService;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
-namespace Automate.Infrastructure.MessageLeadsReportService;
+namespace Automate.Infrastructure.DataRetrievalFormats;
 internal class MessageReportMap : ClassMap<QualifiedMessageRecord>, IConvert
 {
     MessageReportMap()
@@ -76,13 +75,13 @@ internal class MessageReportMap : ClassMap<QualifiedMessageRecord>, IConvert
         DateTimeOffset date = Date;
 
         // Convert Contents
-        string content = Contents is null || Contents == string.Empty 
-            ? string.Empty 
+        string content = Contents is null || Contents == string.Empty
+            ? string.Empty
             : Contents;
 
         // Convert Source
-        string source = Source is null || Source == string.Empty 
-            ? string.Empty 
+        string source = Source is null || Source == string.Empty
+            ? string.Empty
             : Source;
 
         // Cast new message into IMessage

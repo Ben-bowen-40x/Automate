@@ -6,7 +6,7 @@ using CsvHelper.Configuration.Attributes;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Automate.Infrastructure.MessageLeadsService.DbMaps;
+namespace Automate.Infrastructure.DataRetrievalFormats;
 
 [Keyless]
 public class WebFormEntity : ClassMap<WebFormEntity>, IContactFormTyped

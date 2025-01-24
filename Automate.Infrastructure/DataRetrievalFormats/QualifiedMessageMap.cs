@@ -1,7 +1,7 @@
 ﻿using CsvHelper.Configuration;
 using Automate.Domain.ValueObjects;
 
-namespace Automate.Infrastructure.ReportingService;
+namespace Automate.Infrastructure.DataRetrievalFormats;
 
 internal class QualifiedMessageMap : ClassMap<QualifiedMessageRecord>
 {

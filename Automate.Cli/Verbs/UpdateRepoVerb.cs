@@ -2,7 +2,7 @@
 using Automate.Application.RepoUpdate;
 using Automate.Application.TypedRepoUpdate;
 using Automate.Cli.Verbs.VerbHelper;
-using Automate.Infrastructure.MessageLeadsService.DbMaps;
+using Automate.Infrastructure.DataRetrievalFormats;
 using CommandLine;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,7 +1,7 @@
 ﻿using Automate.Translation.DiscrepancyTranslate;
 using Automate.Translation.ValueObjectsTranslations;
 
-namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
+namespace Automate.Infrastructure.Retrieval;
 
 internal class DiscrepancyJson : IDiscrepancyJson
 {

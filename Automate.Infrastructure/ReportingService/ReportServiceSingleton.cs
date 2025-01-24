@@ -4,9 +4,8 @@ using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.ContactsUpdateService;
 using Automate.Infrastructure.CsvManipulationService;
+using Automate.Infrastructure.DataRetrievalFormats;
 using Automate.Infrastructure.LeafClientService;
-using Automate.Infrastructure.MessageLeadsReportService;
-using Automate.Infrastructure.MessageLeadsService.CsvMaps;
 using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.ReportingService;

@@ -1,6 +1,5 @@
 ﻿using Automate.Application.JsonCsvConversion;
-using Automate.Infrastructure.JsonToCsvService.CsvMaps;
-using Automate.Infrastructure.JsonToCsvService.JsonMaps;
+using Automate.Infrastructure.DataRetrievalFormats;
 using CSharpFunctionalExtensions;
 
 namespace Automate.Cli.Verbs.VerbHelper;

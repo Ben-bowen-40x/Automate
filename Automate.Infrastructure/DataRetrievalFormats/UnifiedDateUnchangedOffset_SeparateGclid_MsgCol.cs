@@ -2,9 +2,9 @@
 using Automate.Translation.ValueObjectsTranslations;
 using Automate.Translation.MessageTranslate;
 
-namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
+namespace Automate.Infrastructure.DataRetrievalFormats;
 
-public class UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol : IMsgDTOStrNonEmptySource
+public class UnifiedDateUnchangedOffset_SeparateGclid_MsgCol : IMsgDTOStrIsolateSource
 {
     [Name("Prospect Cellphone", "Phone Number", "Number")]
     public string? NumberStr { get; set; }
@@ -14,7 +14,9 @@ public class UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol :
     public string? Contents { get; set; }
     [Name("Message Source", "Source")]
     public string? Source { get; set; }
+
     public SourceComponent Separator => SourceComponent.Gclid;
+
     public IMessage Convert<IMsgDTOStrIsolateSource, IMessage>()
     {
         return (IMessage)this.Convert();

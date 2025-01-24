@@ -2,7 +2,7 @@
 using Automate.Translation.ValueObjectsTranslations;
 using CsvHelper.Configuration.Attributes;
 
-namespace Automate.Infrastructure.MessageLeadsService.CsvMaps;
+namespace Automate.Infrastructure.DataRetrievalFormats;
 
 public class MessageClass : IMsgStrDateTimeOffset
 {

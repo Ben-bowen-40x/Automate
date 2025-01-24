@@ -4,7 +4,7 @@ using Automate.Domain.ValueObjects;
 using Automate.Translation.ValueObjectsTranslations;
 using Automate.Translation.CustomerTranslate;
 
-namespace Automate.Infrastructure.MessageLeadsService.DbMaps;
+namespace Automate.Infrastructure.DataRetrievalFormats;
 
 [PrimaryKey("SubscriptionId")]
 public class CustSubDbEntity : ICustSubIntIdNumberStr
