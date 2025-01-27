@@ -108,6 +108,17 @@ public static class ConvertPrimitive
     }
 
     /// <summary>
+    /// Converts a <paramref name="startdate"/> and <see cref="TimeSpan"/> to <see cref="DateTimeOffset"/> 
+    /// </summary>
+    /// <param name="startdate"></param>
+    /// <param name="zone"></param>
+    /// <returns></returns>
+    internal static DateTimeOffset ConvertDateTimeOffset(DateTime startdate, TimeSpan zone)
+    {
+        return new(startdate, zone);
+    }
+
+    /// <summary>
     /// Converts two nullable <see cref="string"/> values, <paramref name="date"/> and <paramref name="time"/> into <see cref="DateTime"/>
     /// </summary>
     /// <param name="date"></param>
@@ -144,17 +155,6 @@ public static class ConvertPrimitive
         return DateTime.TryParse(date, out DateTime resultDate)
             ? resultDate
             : defaultDate.DateTimeDefault();
-    }
-
-    /// <summary>
-    /// Converts a <paramref name="startdate"/> and <see cref="TimeSpan"/> to <see cref="DateTimeOffset"/>
-    /// </summary>
-    /// <param name="startdate"></param>
-    /// <param name="zone"></param>
-    /// <returns></returns>
-    internal static DateTimeOffset ConvertDateTimeOffset(DateTime startdate, TimeSpan zone)
-    {
-        return new(startdate, zone);
     }
 
     #region Private

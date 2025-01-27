@@ -6,6 +6,21 @@ public static class MessageInterfaceTranslate
 {
     #region Public
     /// <summary>
+    /// Extension Method Translates <paramref name="entity"/> from <see cref="IMsgDTONumberLong"/> to <see cref="IMessage"/>
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <returns></returns>
+    public static IMessage Convert(this IMsgDTONumberLong entity)
+    {
+        PhoneNumber number = PhoneNumberTranslate.Convert(entity.Number);
+        string contents = VerifyContents(entity.Contents);
+        string source = VerifySource(entity.Source);
+        IMessage result = new Message(number, entity.Date, contents, source);
+
+        return result;
+    }
+
+    /// <summary>
     /// Extension Method Translates <paramref name="entity"/> from <see cref="IMsgStrDateTimeOffset"/> to <see cref="IMessage"/>
     /// </summary>
     /// <param name="entity"></param>
@@ -105,13 +120,13 @@ public static class MessageInterfaceTranslate
     #region Internal Verifications
     internal static string VerifyContents(string? contents)
     {
-        return contents is null || contents == string.Empty
+        return string.IsNullOrWhiteSpace(contents)
             ? string.Empty
             : TSH.ContentsJoined(contents);
     }
     internal static string VerifySource(string? source)
     {
-        var sourcer = source is null
+        var sourcer = string.IsNullOrWhiteSpace(source)
             ? string.Empty
             : source;
         var removal = "z:"; // If this gets to be a lot, it might be worth using REGEX instead of .Contains() and .Replace()

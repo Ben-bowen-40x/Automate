@@ -2,10 +2,10 @@
 
 namespace Automate.Translation.MessageTranslate;
 
-public interface IMsgDTOStr : IConvert
+public interface IMsgDTONumberLong : IConvert
 {
-    string? Number { get; set; }
-    string? DateTimeOffsetStr { get; set; }
+    long Number { get; set; }
+    DateTimeOffset Date { get; set; }
     string? Contents { get; set; }
     string? Source { get; set; }
 }

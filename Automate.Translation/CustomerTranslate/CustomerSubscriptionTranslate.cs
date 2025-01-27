@@ -1,12 +1,36 @@
 ﻿using Automate.Domain.ValueObjects;
 using Automate.Translation.CustomerTranslate;
 using Automate.Translation.DateTimeConvertService;
+using Automate.Translation.MessageTranslate;
+using Automate.Translation.QualifiedMessageTranslate;
 using Automate.Translation.ValueObjectsTranslations;
 
 namespace Automate.Translation.CustomerTranslate;
 
 public static class CustomerSubscriptionTranslate
 {
+    /// <summary>
+    /// Converts <see cref="IQualifiedMessageTranslate"/> into <see cref="ICustomerSubscription"/>
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <returns></returns>
+    public static ICustomerSubscription Convert(this IQualifiedMessageTranslate entity)
+    {
+        PhoneNumber number = PhoneNumberTranslate.Convert(entity.Number);
+
+        // Convert sellers
+        string sellers = VerifySeller(entity.Sellers);
+
+        // Fix dates, which are in UTC already
+        DateTime subStartDate = new(entity.SubStartDate.Ticks, DateTimeKind.Utc);
+        DateTime custCxlDate = new(entity.CustomerCancelDate.Ticks, DateTimeKind.Utc);
+        DateTime subCancelDate = new(entity.SubCancelDate.Ticks, DateTimeKind.Utc);
+
+        // Retrieve customer info from the data
+        ICustomerSubscription customer = new CustomerSubscription(entity.CustomerID, entity.SubId, entity.Date, new(subStartDate), number, PhoneNumberTranslate.Default, new(custCxlDate), new(subCancelDate), entity.SubIsActive, entity.SubIsActive, entity.CompletedInitial, entity.ContractValue, sellers);
+        return customer;
+    }
+
     /// <summary>
     /// Converts <see cref="ICustSubLongIdPhoneNumber"/> into <see cref="ICustomerSubscription"/>
     /// </summary>
@@ -21,7 +45,7 @@ public static class CustomerSubscriptionTranslate
     }
 
     /// <summary>
-    /// Converts <see cref="ICustSubIntIdNumberStr"/> to <see cref="ICustomerSubscription"/>
+    /// Converts <see cref="ICustSubIntIdNumberStr"/> into <see cref="ICustomerSubscription"/>
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
@@ -62,43 +86,35 @@ public static class CustomerSubscriptionTranslate
         return new CustomerSubscription(customerId, subId, date, subDate, number1, number2, custCxl, subCxl, custActive, subActive, initial, cv, sellers);
     }
 
-    public static CustomerSubscription Convert(this ICustSubLongIdNumStrSellers entity)
+    /// <summary>
+    /// Converts <see cref="ICustSubLongIdNumStrSellers"/> into <see cref="ICustomerSubscription"/>
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <returns></returns>
+    public static ICustomerSubscription Convert(this ICustSubLongIdNumStrSellers entity)
     {
         // Convert dates
-        var date = DateTimeOffsetTranslate.ConvertLocalToDTOffset(entity.Date.DateTime, TimeZoneEnum.Pacific, out DateTimeOffset dateResult)
-            ? dateResult
-            : DateTimeOffset.MaxValue;
-        var subscriptionStartDate = DateTimeOffsetTranslate.ConvertLocalToDTOffset(entity.SubscriptionStartDate.DateTime, TimeZoneEnum.Pacific, out DateTimeOffset subResult)
-            ? subResult
-            : DateTimeOffset.MaxValue;
-        var customerCancelDate = DateTimeOffsetTranslate.ConvertLocalToDTOffset(entity.CustomerCancelDate.DateTime, TimeZoneEnum.Pacific, out DateTimeOffset cxlResult)
-            ? cxlResult
-            : DateTimeOffset.MaxValue;
-        var subscriptionCancelDate = DateTimeOffsetTranslate.ConvertLocalToDTOffset(entity.SubscriptionCancelDate.DateTime, TimeZoneEnum.Pacific, out DateTimeOffset sxlResult)
-            ? sxlResult
-            : DateTimeOffset.MaxValue;
+        DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.Date.DateTime, TimeZoneEnum.Pacific, DateTimeDefaults.Max);
+        DateTimeOffset subscriptionStartDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionStartDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefaults.Max);
+        DateTimeOffset customerCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.CustomerCancelDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefaults.Max);
+        DateTimeOffset subscriptionCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionCancelDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefaults.Max);
 
         // Convert Phone numbers
-        PhoneNumber number1 = entity.Number1 is not null && long.TryParse(entity.Number1, out long num1) ? new(num1) : new(0);
-        PhoneNumber number2 = entity.Number2 is not null && long.TryParse(entity.Number2, out long num2) ? new(num2) : new(0);
+        PhoneNumber number1 = PhoneNumberTranslate.Convert(entity.Number1);
+        PhoneNumber number2 = PhoneNumberTranslate.Convert(entity.Number2);
 
         // Convert booleans
-        bool customerActive = entity.CustomerActive is not null && entity.CustomerActive != 0;
-        bool subscriptionActive = entity.SubscriptionActive is not null && entity.SubscriptionActive != 0;
-        bool initialCompleted = entity.InitialCompleted is not null && entity.InitialCompleted != 0;
+        bool customerActive = ConvertPrimitive.ConvertBool(entity.CustomerActive);
+        bool subscriptionActive = ConvertPrimitive.ConvertBool(entity.SubscriptionActive);
+        bool initialCompleted = ConvertPrimitive.ConvertBool(entity.InitialCompleted);
 
         // Convert Sellers
-        List<string> sellersArr = new(3);
-        if (entity.Seller1 is not null && entity.Seller1 != string.Empty) sellersArr.Add(entity.Seller1);
-        if (entity.Seller2 is not null && entity.Seller2 != string.Empty) sellersArr.Add(entity.Seller2);
-        if (entity.Seller3 is not null && entity.Seller3 != string.Empty) sellersArr.Add(entity.Seller3);
-        string sellers = sellersArr.Count > 0 ? string.Join(" | ", sellersArr) : string.Empty;
-
+        string sellers = VerifySeller(entity.Seller1, entity.Seller2, entity.Seller3);
 
         return new CustomerSubscription(entity.CustomerId, entity.SubscriptionId, date, subscriptionStartDate, number1, number2, customerCancelDate, subscriptionCancelDate, customerActive, subscriptionActive, initialCompleted, entity.ContractValue, sellers);
     }
 
-    private static string VerifySeller(params string?[] sellersArr)
+    internal static string VerifySeller(params string?[] sellersArr)
     {
         string sellers;
         List<string> resultarr = [];
@@ -107,5 +123,4 @@ public static class CustomerSubscriptionTranslate
         sellers = resultarr.Count > 0 ? string.Join(" | ", sellersArr) : string.Empty;
         return sellers;
     }
-
 }

@@ -6,7 +6,10 @@ internal partial class TSH // Translation Service Helper = TSH
 {
     internal static string ContentsJoined(string contents)
     {
-        string str = string.Join('|', contents.Split(',', '"', '\n', '\r'));
+        char[] chars = [',', '"', '\n', '\r'];
+        string str = chars.Any(contents.Contains)
+            ? string.Join('|', contents.Split(chars))
+            : contents;
         string result = BarSpace().Replace(str, "| ");
         return result;
     }

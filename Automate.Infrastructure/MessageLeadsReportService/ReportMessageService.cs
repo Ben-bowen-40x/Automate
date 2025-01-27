@@ -7,6 +7,7 @@ using Automate.Infrastructure.DataRetrievalFormats;
 using Automate.Infrastructure.JsonManipulationService;
 using Automate.Translation.CallTranslate;
 using Automate.Translation.CustomerTranslate;
+using Automate.Translation.QualifiedMessageTranslate;
 using Automate.Translation.ValueObjectsTranslations;
 using CSharpFunctionalExtensions;
 
@@ -63,10 +64,14 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
             : throw new Exception(result.Error);
 
         // Convert report columns to IMessage
-        List<IMessage> reportRecords = reportColumns.Select(m => m.Convert<MessageReportMap, IMessage>()).ToList();
+        List<IMessage> reportRecords = reportColumns
+            .Select(m => m.Convert<MessageReportMap, IMessage>())
+            .ToList();
 
         // Convert report columns to qualified messages
-        records = reportColumns.Select(m => m.ConvertToQualifiedRecord()).ToList();
+        records = reportColumns
+            .Select(m => m.Converter())
+            .ToList();
 
         return reportRecords;
     }
