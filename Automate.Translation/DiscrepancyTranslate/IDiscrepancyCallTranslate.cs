@@ -1,6 +1,6 @@
 ﻿namespace Automate.Translation.DiscrepancyTranslate;
 
-public interface IDiscrepancyCall
+public interface IDiscrepancyCallTranslate
 {
     public string? Number { get; set; }
     public string? Date { get; set; }

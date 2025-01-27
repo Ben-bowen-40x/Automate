@@ -52,7 +52,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         Result<List<DiscrepancySourceLeadsCsvColumns>> result = CsvService.Parse<DiscrepancySourceLeadsCsvColumns>(fileLocation);
         List<DiscrepancyCall> calls = result.IsSuccess
             ? result.Value
-                .Select(c => c as IDiscrepancyCall)
+                .Select(c => c as IDiscrepancyCallTranslate)
                 .Select(c => c.Convert()).ToList()
             : throw new Exception(result.Error);
 

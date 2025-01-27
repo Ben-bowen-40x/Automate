@@ -26,7 +26,7 @@ public static class DiscrepancyCallTranslate
     }
 
     // From DiscrepancySourceLeadsCsvColumns (InfrastructureObject) to DiscrepancyCall (Domain Value Object)
-    public static DiscrepancyCall Convert(this IDiscrepancyCall entity)
+    public static DiscrepancyCall Convert(this IDiscrepancyCallTranslate entity)
     {
         string notes = entity.Notes is null
             ? string.Empty
