@@ -22,6 +22,6 @@ public class SplitDateMountainOffsetMsgCol : IMsgZoneEnumStr
 
     public IMessage Convert<IMsgTimeStr, IMessage>()
     {
-        return (IMessage)this.Convert();
+        return (IMessage)this.Translate();
     }
 }

@@ -22,6 +22,6 @@ public class LeafThread : ILeafThread
 
     public IMessage Convert<ILeafThread, IMessage>()
     {
-        return (IMessage)this.Convert();
+        return (IMessage)this.Translate();
     }
 }

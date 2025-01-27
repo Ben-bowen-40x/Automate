@@ -11,7 +11,7 @@ public static class CallInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static ICallRecord Convert(this ICallZoneStr entity)
+    public static ICallRecord Translate(this ICallZoneStr entity)
     {
         bool billable = ConvertPrimitive.ConvertBool(entity.Billable);
         TimeSpan timeZone = ConvertPrimitive.ConvertTimeSpan(entity.TimeZone);
@@ -25,7 +25,7 @@ public static class CallInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static ICallRecord Convert(this ICallType entity)
+    public static ICallRecord Translate(this ICallType entity)
     {
         PhoneNumber number = entity.Number.Translate();
         ICallRecord result = new MessageCallRecord(number, entity.Date, entity.Billable);
@@ -37,7 +37,7 @@ public static class CallInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static ICallRecord Convert(this ICallBillableStrNumberType entity)
+    public static ICallRecord Translate(this ICallBillableStrNumberType entity)
     {
         PhoneNumber number = entity.Number.Translate();
         bool billable = ConvertPrimitive.ConvertBool(entity.Billable);

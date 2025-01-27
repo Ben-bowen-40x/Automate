@@ -22,6 +22,6 @@ public class SplitDateUTCOffsetMsgCol : IMsgZoneEnumStr
 
     public IMessage Convert<IMsgZoneEnumStr, IMessage>()
     {
-        return (IMessage)this.Convert();
+        return (IMessage)this.Translate();
     }
 }

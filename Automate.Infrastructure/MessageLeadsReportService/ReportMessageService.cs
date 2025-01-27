@@ -70,7 +70,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
 
         // Translate report columns to qualified messages
         records = reportColumns
-            .Select(m => m.Converter())
+            .Select(m => m.Translate())
             .ToList();
 
         return reportRecords;
@@ -139,7 +139,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
             ? result.Value
             : throw new Exception(result.Error);
         IEnumerable<ICallRecord> filteredCalls = localCalls
-            .Select(c => c.Convert())
+            .Select(c => c.Translate())
             .Where(c =>
                 msgNums
                 .Contains(c.Number.Number)
@@ -166,7 +166,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
                     : DwhContextHelpers.GetItemsFromFileAsync(callContext, callLocation);
                 IEnumerable<CallDbEntity> calls = callTask.Result;
                 List<ICallRecord> resultList = calls
-                    .Select(c => c.Convert())
+                    .Select(c => c.Translate())
                     .ToList();
 
                 // Save results to local repo
@@ -187,7 +187,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         List<CallRecordJsonReader> localCalls = r.IsSuccess
             ? r.Value
             : throw new Exception(r.Error);
-        IEnumerable<ICallRecord> result = localCalls.Select(c => c.Convert());
+        IEnumerable<ICallRecord> result = localCalls.Select(c => c.Translate());
         return result.ToList();
     }
 
@@ -203,7 +203,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
             ? result.Value
             : throw new Exception(result.Error);
         IEnumerable<ICustomerSubscription> filteredCustomers = localCustomers
-            .Select(c => c.Convert())
+            .Select(c => c.Translate())
             .Where(c =>
                 msgNums
                 .Contains(c.Number.Number)
@@ -232,7 +232,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
                     : DwhContextHelpers.GetItemsFromFileAsync(customerContext, custStr);
                 List<ICustomerSubscription> customers = customerTask.Result
                     .Select(c => (ICustSubIntIdNumberStr)c)
-                    .Select(c => c.Convert())
+                    .Select(c => c.Translate())
                     .Select(c => (ICustomerSubscription)c)
                     .ToList();
 
@@ -256,7 +256,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
             : throw new Exception(r.Error);
         List<ICustomerSubscription> result = localCustomers
             .Select(c => (ICustSubLongIdPhoneNumber)c)
-            .Select(c => c.Convert())
+            .Select(c => c.Translate())
             .Select(c => (ICustomerSubscription)c)
             .ToList();
         return result;
@@ -304,7 +304,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         // Local
         static IEnumerable<ICallRecord> ConvertCallsFromRepo(List<CallRecordJson> localCalls)
         {
-            return localCalls.Select(m => m.Convert());
+            return localCalls.Select(m => m.Translate());
         }
     }
 
@@ -334,7 +334,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         CustSubJson recentCall = FindMostRecent(localCalls);
         if (DateTimeOffset.Compare(recentMsg.Date, recentCall.Date) < 0)
         {
-            IEnumerable<ICustomerSubscription> convertedCalls = localCalls.Select(m => m.Convert());
+            IEnumerable<ICustomerSubscription> convertedCalls = localCalls.Select(m => m.Translate());
             _customerRecordsFromRepo = convertedCalls.ToList();
         }
         // Recent texts are not covered by the repo, so it must be renewed by the Db

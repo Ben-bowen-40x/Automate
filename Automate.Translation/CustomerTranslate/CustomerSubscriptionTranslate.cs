@@ -10,11 +10,11 @@ namespace Automate.Translation.CustomerTranslate;
 public static class CustomerSubscriptionTranslate
 {
     /// <summary>
-    /// Converts <see cref="IQualifiedMessageTranslate"/> into <see cref="ICustomerSubscription"/>
+    /// Converts <see cref="ICustSubLongIdLongNumberStrSellers"/> into <see cref="ICustomerSubscription"/>
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static ICustomerSubscription Convert(this IQualifiedMessageTranslate entity)
+    public static ICustomerSubscription Translate(this ICustSubLongIdLongNumberStrSellers entity)
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
 
@@ -36,7 +36,7 @@ public static class CustomerSubscriptionTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static ICustomerSubscription Convert(this ICustSubLongIdPhoneNumber entity)
+    public static ICustomerSubscription Translate(this ICustSubLongIdPhoneNumber entity)
     {
         PhoneNumber number = entity.Number.Translate();
         PhoneNumber number2 = entity.Number2.Translate();
@@ -49,7 +49,7 @@ public static class CustomerSubscriptionTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static ICustomerSubscription Convert(this ICustSubIntIdNumberStr entity)
+    public static ICustomerSubscription Translate(this ICustSubIntIdNumberStr entity)
     {
         // Conversions
         long subId = entity.SubscriptionId;
@@ -91,7 +91,7 @@ public static class CustomerSubscriptionTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static ICustomerSubscription Convert(this ICustSubLongIdNumStrSellers entity)
+    public static ICustomerSubscription Translate(this ICustSubLongIdNumStrSellers entity)
     {
         // Translate dates
         DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.Date.DateTime, TimeZoneEnum.Pacific, DateTimeDefaults.Max);

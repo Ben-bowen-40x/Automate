@@ -17,7 +17,7 @@ public class UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol :
     public SourceComponent Separator => SourceComponent.Gclid;
     public IMessage Convert<IMsgDTOStrIsolateSource, IMessage>()
     {
-        return (IMessage)this.Convert();
+        return (IMessage)this.Translate();
     }
 }
 

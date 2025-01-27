@@ -2,7 +2,7 @@ using Automate.Translation.ValueObjectsTranslations;
 
 namespace Automate.Translation.Test;
 
-public class TranslationLayerTests
+public class ValueObjectTranslationTests
 {
     [
         Theory,

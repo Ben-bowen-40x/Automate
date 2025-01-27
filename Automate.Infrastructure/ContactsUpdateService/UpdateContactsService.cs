@@ -33,7 +33,7 @@ internal class UpdateContactsService(IDwhSettings settings) : IUpdateContactsSer
             Task<IEnumerable<ContactsDbEntity>> task = DwhContextHelpers.GetItemsFromRawAsync(contactsContext, query);
             List<Contacts> result = task.Result
                 .Select(c => c as IContactsEntity)
-                .Select(c => c.Convert()).ToList();
+                .Select(c => c.Translate()).ToList();
             listOfContacts.Add(result);
         }
         return listOfContacts;

@@ -17,6 +17,6 @@ public class NoTimeMsgCol : IMsgNoTimeStrUtc
 
     public IMessage Convert<IMessageNoTimeStr, IMessage>()
     {
-        return (IMessage)this.Convert();
+        return (IMessage)this.Translate();
     }
 }

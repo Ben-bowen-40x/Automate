@@ -59,7 +59,7 @@ internal class ReportServiceSingleton : IReportService
                 string path = directory.FullName + $"ContactFile{counter++}.csv";
                 File.WriteAllText(path, _errorMessage);
 
-                // TODO: Translation layer: Should it control the translation from Application/Domain objects to Infrastructure tasks?
+                // TODO: Translate layer: Should it control the translation from Application/Domain objects to Infrastructure tasks?
                 CsvService.Write<Contacts, ContactsMap>(path, contact);
             }
             return directory;

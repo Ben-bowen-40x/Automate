@@ -16,7 +16,7 @@ public class UnifiedDateUtc_SplitPhone : IMsgDTOStr
     public string? Source { get; set; }
     public IMessage Convert<IMsgDTOStr, IMessage>()
     {
-        return (IMessage)this.Convert();
+        return (IMessage)this.Translate();
     }
 }
 

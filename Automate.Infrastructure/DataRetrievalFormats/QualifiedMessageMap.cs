@@ -102,6 +102,6 @@ internal class QualifiedMessageMap : ClassMap<QualifiedMessageRecord>, IQualifie
     public IMessage Convert<IMsgDTONumberLong, IMessage>()
     {
         Translation.MessageTranslate.IMsgDTONumberLong that = this;
-        return (IMessage)that.Convert();
+        return (IMessage)that.Translate();
     }
 }

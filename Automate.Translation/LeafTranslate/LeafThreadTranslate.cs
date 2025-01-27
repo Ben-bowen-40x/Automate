@@ -6,7 +6,7 @@ namespace Automate.Translation.LeafTranslate;
 
 public static class LeafThreadTranslate
 {
-    public static IMessage Convert(this ILeafThread entity)
+    public static IMessage Translate(this ILeafThread entity)
     {
         // Get the first chronological message in the list
         List<Msg> messages = entity.Messages is not null && entity.Messages.Length > 0

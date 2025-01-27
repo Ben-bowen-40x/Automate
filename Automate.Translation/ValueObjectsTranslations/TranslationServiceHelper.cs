@@ -2,7 +2,7 @@
 
 namespace Automate.Translation.ValueObjectsTranslations;
 
-internal partial class TSH // Translation Service Helper = TSH
+internal partial class TSH // Translate Service Helper = TSH
 {
     internal static string ContentsJoined(string contents)
     {

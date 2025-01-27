@@ -19,7 +19,7 @@ public class UnifiedDateUnchangedOffset_SeparateGclid_MsgCol : IMsgDTOStrIsolate
 
     public IMessage Convert<IMsgDTOStrIsolateSource, IMessage>()
     {
-        return (IMessage)this.Convert();
+        return (IMessage)this.Translate();
     }
 }
 

@@ -10,7 +10,7 @@ public static class DiscrepancyCallTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static DiscrepancyCall Convert(this IDiscrepancyEntity entity)
+    public static DiscrepancyCall Translate(this IDiscrepancyEntity entity)
     {
         PhoneNumber number = new(entity.Number);
         bool billable = entity.Billable is not null && entity.Billable != string.Empty && entity.Billable == "billable";
@@ -26,7 +26,7 @@ public static class DiscrepancyCallTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static DiscrepancyCall Convert(this IDiscrepancyJson entity)
+    public static DiscrepancyCall Translate(this IDiscrepancyJson entity)
     {
         PhoneNumber number = entity.Number is null ? new(0) : new(entity.Number.Number);
         string notes = entity.Notes is not null ? TSH.ContentsJoined(entity.Notes) : string.Empty;
@@ -38,7 +38,7 @@ public static class DiscrepancyCallTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static DiscrepancyCall Convert(this IDiscrepancyCallTranslate entity)
+    public static DiscrepancyCall Translate(this IDiscrepancyCallTranslate entity)
     {
         string notes = entity.Notes is null
             ? string.Empty

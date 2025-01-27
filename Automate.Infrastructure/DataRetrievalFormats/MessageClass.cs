@@ -17,6 +17,6 @@ public class MessageClass : IMsgStrDateTimeOffset
 
     public IMessage Convert<IMsgStrDateTimeOffset, IMessage>()
     {
-        return (IMessage)this.Convert();
+        return (IMessage)this.Translate();
     }
 }

@@ -10,7 +10,7 @@ public static class MessageInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static IMessage Convert(this IMsgDTONumberLong entity)
+    public static IMessage Translate(this IMsgDTONumberLong entity)
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
         string contents = VerifyContents(entity.Contents);
@@ -25,7 +25,7 @@ public static class MessageInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static IMessage Convert(this IMsgStrDateTimeOffset entity)
+    public static IMessage Translate(this IMsgStrDateTimeOffset entity)
     {
         PhoneNumber num = PhoneNumberTranslate.Translate(entity.Number);
         string contents = VerifyContents(entity.Contents);
@@ -40,7 +40,7 @@ public static class MessageInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static IMessage Convert(this IMsgNoTimeStrUtc entity)
+    public static IMessage Translate(this IMsgNoTimeStrUtc entity)
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.NumberStr);
         DateTime interDate = ConvertPrimitive.ConvertDate(entity.DateTimeStr, null, DateTimeDefaults.Min);
@@ -57,7 +57,7 @@ public static class MessageInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static IMessage Convert(this IMsgDTOStr entity)
+    public static IMessage Translate(this IMsgDTOStr entity)
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
         DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.DateTimeOffsetStr, DateTimeDefaults.Min);
@@ -72,7 +72,7 @@ public static class MessageInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static IMessage Convert(this IMsgDTOStrIsolateSource entity)
+    public static IMessage Translate(this IMsgDTOStrIsolateSource entity)
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.NumberStr);
         DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.DateTimeOffsetStr, DateTimeDefaults.Min);
@@ -87,7 +87,7 @@ public static class MessageInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static IMessage Convert(this IMsgDTOStrNonEmptySource entity)
+    public static IMessage Translate(this IMsgDTOStrNonEmptySource entity)
     {
         // This particular execution is uninterested in records without a source, hence the additional calculation here
         PhoneNumber number = string.IsNullOrWhiteSpace(entity.Source) ? PhoneNumberTranslate.Default : PhoneNumberTranslate.Translate(entity.NumberStr);
@@ -103,7 +103,7 @@ public static class MessageInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static IMessage Convert(this IMsgZoneEnumStr entity)
+    public static IMessage Translate(this IMsgZoneEnumStr entity)
     {
         DateTimeOffset start = ConvertPrimitive.ConvertDateTimeOffset(entity.Date, entity.TimeZone, DateTimeDefaults.Min);
         string source = VerifySource(entity.Source);
@@ -113,8 +113,6 @@ public static class MessageInterfaceTranslate
 
         return result;
     }
-
-
     #endregion
 
     #region Internal Verifications

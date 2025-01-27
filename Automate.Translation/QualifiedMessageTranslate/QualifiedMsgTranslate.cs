@@ -8,14 +8,13 @@ public static class QualifiedMsgTranslate
 {
     /// <summary>
     /// <para>Converts <see cref="IQualifiedMessageTranslate"/> into <see cref="QualifiedMessageRecord"/></para>
-    /// <para>DO NOT change the name of this method, as <see cref="IQualifiedMessageTranslate"/> already contains a method called <see cref="IQualifiedMessageTranslate.Convert()"/> which cannot be renamed</para>
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static QualifiedMessageRecord Converter(this IQualifiedMessageTranslate entity)
+    public static QualifiedMessageRecord Translate(this IQualifiedMessageTranslate entity)
     {
-        IMessage message = MessageInterfaceTranslate.Convert(entity);
-        ICustomerSubscription customer = CustomerSubscriptionTranslate.Convert(entity);
+        IMessage message = MessageInterfaceTranslate.Translate(entity);
+        ICustomerSubscription customer = CustomerSubscriptionTranslate.Translate(entity);
 
         return new QualifiedMessageRecord(message, customer, entity.ImLead, entity.SalesLead);
     }

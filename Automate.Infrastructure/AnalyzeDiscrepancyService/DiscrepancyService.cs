@@ -53,7 +53,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         List<DiscrepancyCall> calls = result.IsSuccess
             ? result.Value
                 .Select(c => c as IDiscrepancyCallTranslate)
-                .Select(c => c.Convert()).ToList()
+                .Select(c => c.Translate()).ToList()
             : throw new Exception(result.Error);
 
         // Check whether we need to update the local repo
@@ -84,7 +84,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
                 comparisonLeads.Sort();
 
                 // Save results to Json
-                _comparisonLocalRepo = comparisonLeads.Select(c => c.Convert()).ToList();
+                _comparisonLocalRepo = comparisonLeads.Select(c => c.Translate()).ToList();
                 JsonService.WriteToFile(repo, _comparisonLocalRepo);
                 return _comparisonLocalRepo;
             }
@@ -105,7 +105,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         List<DiscrepancyJson> rp = r.IsSuccess
             ? r.Value
             : throw new Exception(r.Error);
-        List<DiscrepancyCall> result = rp.Select(r => r.Convert()).ToList();
+        List<DiscrepancyCall> result = rp.Select(r => r.Translate()).ToList();
         return result;
     }
     #endregion
@@ -132,7 +132,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
 
             calls = repo
                 .Select(r => r as IDiscrepancyJson)
-                .Select(r => r.Convert()).ToList();
+                .Select(r => r.Translate()).ToList();
         }
         catch
         {

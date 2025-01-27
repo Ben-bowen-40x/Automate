@@ -78,7 +78,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
             ? result.Value
             : throw new Exception(result.Error);
         IEnumerable<ICallRecord> filteredCalls = localCalls
-            .Select(c => c.Convert())
+            .Select(c => c.Translate())
             .Where(c =>
                 msgNums
                 .Contains(c.Number.Number)
@@ -103,7 +103,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
                     : DwhContextHelpers.GetItemsFromFileAsync(callContext, callLocation);
                 List<ICallRecord> resultList = callTask.Result
                     .Select(c => (ICallZoneStr)c)
-                    .Select(c => c.Convert())
+                    .Select(c => c.Translate())
                     .ToList();
 
                 // Save results to local repo
@@ -124,7 +124,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
         List<CallRecordJson> localCalls = r.IsSuccess
             ? r.Value
             : throw new Exception(r.Error);
-        IEnumerable<ICallRecord> result = localCalls.Select(c => c.Convert());
+        IEnumerable<ICallRecord> result = localCalls.Select(c => c.Translate());
         return result.ToList();
     }
 
@@ -140,7 +140,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
             ? result.Value
             : throw new Exception(result.Error);
         IEnumerable<ICustomerSubscription> filteredCustomers = localCustomers
-            .Select(c => c.Convert())
+            .Select(c => c.Translate())
             .Where(c =>
                 msgNums
                 .Contains(c.Number.Number)
@@ -167,7 +167,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
                     ? DwhContextHelpers.GetItemsFromRawAsync(customerContext, query)
                     : DwhContextHelpers.GetItemsFromFileAsync(customerContext, custStr);
                 IEnumerable<CustSubDbEntity> customers = customerTask.Result;
-                IEnumerable<ICustomerSubscription> records = customers.Select(c => c.Convert());
+                IEnumerable<ICustomerSubscription> records = customers.Select(c => c.Translate());
                 List<ICustomerSubscription> resultList = records.ToList();
 
                 // Save results to local repo
@@ -188,7 +188,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
         List<CustSubJson> localCustomers = r.IsSuccess
             ? r.Value
             : throw new Exception(r.Error);
-        IEnumerable<ICustomerSubscription> result = localCustomers.Select(c => c.Convert());
+        IEnumerable<ICustomerSubscription> result = localCustomers.Select(c => c.Translate());
         return result.ToList();
     }
     #endregion
@@ -234,7 +234,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
         // Local
         static IEnumerable<ICallRecord> ConvertCallsFromRepo(List<CallRecordJson> localCalls)
         {
-            return localCalls.Select(m => m.Convert());
+            return localCalls.Select(m => m.Translate());
         }
     }
 
@@ -266,7 +266,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
         CustSubJson recentCall = FindMostRecent(custRepo);
         if (DateTimeOffset.Compare(recentMsg.Date, recentCall.Date) < 0)
         {
-            IEnumerable<ICustomerSubscription> convertedCalls = custRepo.Select(m => m.Convert());
+            IEnumerable<ICustomerSubscription> convertedCalls = custRepo.Select(m => m.Translate());
             _customerRecordsFromRepo = convertedCalls.ToList();
         }
         // Recent texts are not covered by the repo, so it must be renewed by the Db
