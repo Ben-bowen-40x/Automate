@@ -1,5 +1,5 @@
 ﻿using Automate.Domain.ValueObjects;
-using Automate.Translation.ValueObjectsTranslations;
+using Automate.Translation.PhoneNumTranslate;
 
 namespace Automate.Translation.CustomerTranslate;
 

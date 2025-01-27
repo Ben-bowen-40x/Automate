@@ -1,4 +1,4 @@
-﻿using Automate.Translation.ValueObjectsTranslations;
+﻿using Automate.Translation.PhoneNumTranslate;
 
 namespace Automate.Translation.DiscrepancyTranslate;
 

@@ -1,5 +1,5 @@
 ﻿using Automate.Translation.DiscrepancyTranslate;
-using Automate.Translation.ValueObjectsTranslations;
+using Automate.Translation.PhoneNumTranslate;
 
 namespace Automate.Infrastructure.Retrieval;
 

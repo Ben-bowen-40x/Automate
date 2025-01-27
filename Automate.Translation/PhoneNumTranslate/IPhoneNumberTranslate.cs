@@ -1,4 +1,4 @@
-﻿namespace Automate.Translation.ValueObjectsTranslations;
+﻿namespace Automate.Translation.PhoneNumTranslate;
 
 public interface IPhoneNumberTranslate
 {

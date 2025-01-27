@@ -1,6 +1,6 @@
 ﻿using Automate.Domain.ValueObjects;
 
-namespace Automate.Translation.ValueObjectsTranslations;
+namespace Automate.Translation.PhoneNumTranslate;
 
 public static class PhoneNumberTranslate
 {

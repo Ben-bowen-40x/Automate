@@ -1,7 +1,7 @@
 ﻿using Automate.Domain.ValueObjects;
-using Automate.Translation.DiscrepancyTranslate;
+using Automate.Translation.ValueObjectsTranslations;
 
-namespace Automate.Translation.ValueObjectsTranslations;
+namespace Automate.Translation.DiscrepancyTranslate;
 
 public static class DiscrepancyCallTranslate
 {

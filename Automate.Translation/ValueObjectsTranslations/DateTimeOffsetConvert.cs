@@ -1,6 +1,6 @@
-﻿namespace Automate.Translation.DateTimeConvertService;
+﻿namespace Automate.Translation.ValueObjectsTranslations;
 
-internal static class DateTimeOffsetTranslate
+internal static class DateTimeOffsetConvert
 {
     #region Public
     public static DateTimeOffset ConvertLocalToDTOffset(DateTime localTime, TimeZoneEnum zone)

@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using Automate.Domain.ValueObjects;
-using Automate.Translation.ValueObjectsTranslations;
 using Automate.Translation.CallTranslate;
+using Automate.Translation.PhoneNumTranslate;
 
 namespace Automate.Infrastructure.DataRetrievalFormats;
 

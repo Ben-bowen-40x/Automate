@@ -1,5 +1,5 @@
 ﻿using Automate.Translation.CustomerTranslate;
-using Automate.Translation.ValueObjectsTranslations;
+using Automate.Translation.PhoneNumTranslate;
 
 namespace Automate.Infrastructure.DataRetrievalFormats;
 

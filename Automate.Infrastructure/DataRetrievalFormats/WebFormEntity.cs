@@ -1,6 +1,6 @@
 ﻿using Automate.Domain.ValueObjects;
 using Automate.Translation.ContactTranslate;
-using Automate.Translation.ValueObjectsTranslations;
+using Automate.Translation.PhoneNumTranslate;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using Microsoft.EntityFrameworkCore;

@@ -1,5 +1,4 @@
-﻿using Automate.Translation.DateTimeConvertService;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using System.Numerics;
 
 namespace Automate.Translation.ValueObjectsTranslations;
@@ -102,7 +101,7 @@ public static class ConvertPrimitive
     /// <returns></returns>
     internal static DateTimeOffset ConvertDateTimeOffset(DateTime startDate, TimeZoneEnum zone, DateTimeDefaults defaultDate)
     {
-        return DateTimeOffsetTranslate.ConvertLocalToDTOffset(startDate, zone, out DateTimeOffset resultOffset)
+        return DateTimeOffsetConvert.ConvertLocalToDTOffset(startDate, zone, out DateTimeOffset resultOffset)
             ? resultOffset
             : defaultDate.DateTimeOffsetDefault(); // This translation absolutely must have the min value on these particular primitives because of the way they will be used on the Domain Layer
     }
