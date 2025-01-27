@@ -58,7 +58,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
             ? result.Value
             : throw new Exception(result.Error);
 
-        // Convert from column type to IMessage type
+        // Translate from column type to IMessage type
         List<IMessage> msgList = messageCol.Select(m => m.Convert<T, IMessage>()).ToList();
 
         // Remove duplicates

@@ -73,5 +73,5 @@ public class WebFormEntity : ClassMap<WebFormEntity>, IContactFormTyped
     public string? Zip { get; set; }
 
     private PhoneNumber? _number;
-    public PhoneNumber Number => _number ??= PhoneNumberTranslate.Convert(Phone);
+    public PhoneNumber Number => _number ??= PhoneNumberTranslate.Translate(Phone);
 }

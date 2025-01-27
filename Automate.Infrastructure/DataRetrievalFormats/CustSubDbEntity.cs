@@ -41,5 +41,5 @@ public class CustSubDbEntity : ICustSubIntIdNumberStr
     public string? Seller3 { get; set; }
 
     private PhoneNumber? num;
-    public PhoneNumber Number => num ??= PhoneNumberTranslate.Convert(Number1);
+    public PhoneNumber Number => num ??= PhoneNumberTranslate.Translate(Number1);
 }

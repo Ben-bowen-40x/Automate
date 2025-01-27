@@ -33,7 +33,6 @@ internal class ContactUpdateVerb : IVerb
         var manager = service.GetRequiredService<IContactUpdateManager>();
         UpdateResult result = manager.UpdateContacts(ReportDirectory);
 
-        // Log
         StringLogger.NameLog(DateTime.Now, UpdateContacts);
 
         return DetermineReturnCode(result, directoryExists);
@@ -54,56 +53,56 @@ internal class ContactUpdateVerb : IVerb
             : $"The directory containing the contacts given by the user does not exist, or the contacts could not be generated.";
         const string nExists = "The directory provided by the user did not exist, so one was generated instead.";
         
-        if (directoryExists && result.ContactLocation.IsSuccess && result.UploadedContacts)
+        if (directoryExists && result.ContactLocation.IsSuccess && result.UploadedContacts.IsSuccess)
         {
             Console.WriteLine(generated);
             Console.WriteLine(exists);
             Console.WriteLine(uploaded);
             return ProgramErrorCodes.Success;
         }
-        else if (!directoryExists && result.ContactLocation.IsSuccess && result.UploadedContacts)
+        else if (!directoryExists && result.ContactLocation.IsSuccess && result.UploadedContacts.IsSuccess)
         {
             Console.WriteLine(generated);
             Console.WriteLine(nExists);
             Console.WriteLine(uploaded);
             return ProgramErrorCodes.Contacts_DirectoryFailed;
         }
-        else if (directoryExists && !result.ContactLocation.IsSuccess && result.UploadedContacts)
+        else if (directoryExists && !result.ContactLocation.IsSuccess && result.UploadedContacts.IsSuccess)
         {
             Console.WriteLine(nGenerated);
             Console.WriteLine(exists);
             Console.WriteLine(uploaded);
             return ProgramErrorCodes.Contacts_ContactGenFailed;
         }
-        else if (directoryExists && result.ContactLocation.IsSuccess && !result.UploadedContacts)
+        else if (directoryExists && result.ContactLocation.IsSuccess && !result.UploadedContacts.IsSuccess)
         {
             Console.WriteLine(generated);
             Console.WriteLine(exists);
             Console.WriteLine(nUploaded);
             return ProgramErrorCodes.Contacts_UploadFailed;
         }
-        else if (!directoryExists && !result.ContactLocation.IsSuccess && result.UploadedContacts)
+        else if (!directoryExists && !result.ContactLocation.IsSuccess && result.UploadedContacts.IsSuccess)
         {
             Console.WriteLine(nGenerated);
             Console.WriteLine(nExists);
             Console.WriteLine(uploaded);
             return ProgramErrorCodes.Contacts_DirectoryAndContactsFailed;
         }
-        else if (!directoryExists && result.ContactLocation.IsSuccess && !result.UploadedContacts)
+        else if (!directoryExists && result.ContactLocation.IsSuccess && !result.UploadedContacts.IsSuccess)
         {
             Console.WriteLine(generated);
             Console.WriteLine(exists);
             Console.WriteLine(nUploaded);
             return ProgramErrorCodes.Contacts_DirectoryAndUploadFailed;
         }
-        else if (directoryExists && !result.ContactLocation.IsSuccess && !result.UploadedContacts)
+        else if (directoryExists && !result.ContactLocation.IsSuccess && !result.UploadedContacts.IsSuccess)
         {
             Console.WriteLine(nGenerated);
             Console.WriteLine(exists);
             Console.WriteLine(nUploaded);
             return ProgramErrorCodes.Contacts_ContactsAndUploadFailed;
         }
-        else if (!directoryExists && !result.ContactLocation.IsSuccess && !result.UploadedContacts)
+        else if (!directoryExists && !result.ContactLocation.IsSuccess && !result.UploadedContacts.IsSuccess)
         {
             Console.WriteLine(nGenerated);
             Console.WriteLine(nExists);

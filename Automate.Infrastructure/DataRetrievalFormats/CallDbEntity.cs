@@ -18,5 +18,5 @@ public class CallDbEntity : ICallZoneStr
     [Column("time_zone")]
     public string? TimeZone { get; set; }
     private PhoneNumber? _num;
-    public PhoneNumber Number => _num ??= PhoneNumberTranslate.Convert(NumberLong);
+    public PhoneNumber Number => _num ??= PhoneNumberTranslate.Translate(NumberLong);
 }

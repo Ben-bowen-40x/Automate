@@ -58,17 +58,17 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
             File.WriteAllText(reportLocation, string.Empty);
 
         // Retrieve messages from report
-        Result<List<MessageReportMap>> result = CsvService.Parse<MessageReportMap>(reportLocation);
-        IEnumerable<MessageReportMap> reportColumns = result.IsSuccess
+        Result<List<QualifiedMessageMap>> result = CsvService.Parse<QualifiedMessageMap>(reportLocation);
+        IEnumerable<QualifiedMessageMap> reportColumns = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
 
-        // Convert report columns to IMessage
+        // Translate report columns to IMessage
         List<IMessage> reportRecords = reportColumns
-            .Select(m => m.Convert<MessageReportMap, IMessage>())
+            .Select(m => m.Convert<QualifiedMessageMap, IMessage>())
             .ToList();
 
-        // Convert report columns to qualified messages
+        // Translate report columns to qualified messages
         records = reportColumns
             .Select(m => m.Converter())
             .ToList();
@@ -87,7 +87,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
             ? result.Value
             : throw new Exception(result.Error);
 
-        // Convert from column type to IMessage type...
+        // Translate from column type to IMessage type...
         List<IMessage> msgs = messageCol
             .Select(m => m.Convert<T, IMessage>()).ToList();
 

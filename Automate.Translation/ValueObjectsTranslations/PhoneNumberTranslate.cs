@@ -8,20 +8,20 @@ public static class PhoneNumberTranslate
     internal static PhoneNumber Default => new(PhoneNumber.Default);
 
     // From NumberTypeJson (Infrastructure Object)
-    public static PhoneNumber Convert(this IPhoneNumberTranslate? entity)
+    public static PhoneNumber Translate(this IPhoneNumberTranslate? entity)
     {
-        return entity is not null ? Convert(entity.Number.ToString()) : Default;
+        return entity is not null ? Translate(entity.Number.ToString()) : Default;
     }
     // From nullable string
-    public static PhoneNumber Convert(string? phone)
+    public static PhoneNumber Translate(string? phone)
     {
         return !PhoneNumber.TryParse(phone, out PhoneNumber phoneResult)
             ? Default
             : phoneResult;
     }
     // From long
-    public static PhoneNumber Convert(long phone)
+    public static PhoneNumber Translate(long phone)
     {
-        return Convert(phone.ToString());
+        return Translate(phone.ToString());
     }
 }

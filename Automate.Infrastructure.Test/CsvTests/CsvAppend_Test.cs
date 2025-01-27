@@ -34,7 +34,7 @@ public class CsvAppend_Test
             File.WriteAllText(TestFileLocation1, $"{CsvAppendTestColumns.c1},{CsvAppendTestColumns.c2},{CsvAppendTestColumns.c3}\n");
         }
 
-        // Convert input to objects
+        // Translate input to objects
         List<CsvAppendTestColumns> unparsed =
         [
             new()
@@ -71,7 +71,7 @@ public class CsvAppend_Test
             File.WriteAllText(TestFileLocation1, $"{CsvAppendTestColumns.c1},{CsvAppendTestColumns.c2},{CsvAppendTestColumns.c3}\n");
         }
 
-        // Convert input to objects
+        // Translate input to objects
         List<CsvAppendTestColumns> unparsed =
         [
             new()

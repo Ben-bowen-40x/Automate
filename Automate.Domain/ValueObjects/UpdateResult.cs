@@ -2,4 +2,4 @@
 
 namespace Automate.Domain.ValueObjects;
 
-public record UpdateResult(bool UploadedContacts, Result<DirectoryInfo> ContactLocation);
+public record UpdateResult(Result UploadedContacts, Result<DirectoryInfo> ContactLocation);

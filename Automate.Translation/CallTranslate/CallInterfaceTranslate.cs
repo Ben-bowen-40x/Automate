@@ -27,7 +27,7 @@ public static class CallInterfaceTranslate
     /// <returns></returns>
     public static ICallRecord Convert(this ICallType entity)
     {
-        PhoneNumber number = entity.Number.Convert();
+        PhoneNumber number = entity.Number.Translate();
         ICallRecord result = new MessageCallRecord(number, entity.Date, entity.Billable);
         return result;
     }
@@ -39,7 +39,7 @@ public static class CallInterfaceTranslate
     /// <returns></returns>
     public static ICallRecord Convert(this ICallBillableStrNumberType entity)
     {
-        PhoneNumber number = entity.Number.Convert();
+        PhoneNumber number = entity.Number.Translate();
         bool billable = ConvertPrimitive.ConvertBool(entity.Billable);
         ICallRecord result = new MessageCallRecord(number, entity.Date, billable);
         return result;

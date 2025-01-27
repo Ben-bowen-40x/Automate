@@ -173,7 +173,7 @@ internal class ReportServiceSingleton : IReportService
             File.WriteAllText(file.FullName, _errorMessage);
         try
         {
-            CsvService.Write<QualifiedMessageRecord, MessageReportMap>(file.FullName, messages);
+            CsvService.Write<QualifiedMessageRecord, QualifiedMessageMap>(file.FullName, messages);
             return true;
         }
         catch { return false; }
@@ -191,7 +191,7 @@ internal class ReportServiceSingleton : IReportService
             File.WriteAllText(file.FullName, _errorMessage);
         try
         {
-            CsvService.Write<QualifiedMessageRecord, MessageReportMap>(file.FullName, messages);
+            CsvService.Write<QualifiedMessageRecord, QualifiedMessageMap>(file.FullName, messages);
             return file;
         }
         catch (Exception ex)

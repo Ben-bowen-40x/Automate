@@ -16,9 +16,9 @@ public static class CustomerSubscriptionTranslate
     /// <returns></returns>
     public static ICustomerSubscription Convert(this IQualifiedMessageTranslate entity)
     {
-        PhoneNumber number = PhoneNumberTranslate.Convert(entity.Number);
+        PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
 
-        // Convert sellers
+        // Translate sellers
         string sellers = VerifySeller(entity.Sellers);
 
         // Fix dates, which are in UTC already
@@ -38,8 +38,8 @@ public static class CustomerSubscriptionTranslate
     /// <returns></returns>
     public static ICustomerSubscription Convert(this ICustSubLongIdPhoneNumber entity)
     {
-        PhoneNumber number = entity.Number.Convert();
-        PhoneNumber number2 = entity.Number2.Convert();
+        PhoneNumber number = entity.Number.Translate();
+        PhoneNumber number2 = entity.Number2.Translate();
         string sellers = VerifySeller(entity.Sellers);
         return new CustomerSubscription(entity.CustomerId, entity.SubscriptionId, entity.Date, entity.SubscriptionStartDate, number, number2, entity.CustomerCancelDate, entity.SubscriptionCancelDate, entity.CustomerActive, entity.SubscriptionActive, entity.InitialCompleted, entity.DoubleValue, sellers);
     }
@@ -62,8 +62,8 @@ public static class CustomerSubscriptionTranslate
         DateTimeOffset subDate = DateTimeOffsetTranslate.ConvertLocalToDTOffset(subStartInter, TimeZoneEnum.Pacific, out DateTimeOffset subDateResult) ? subDateResult : DateTimeOffset.MinValue;
 
         // ConvertTimeSpan phone numbers
-        PhoneNumber number1 = PhoneNumberTranslate.Convert(entity.Number1);
-        PhoneNumber number2 = PhoneNumberTranslate.Convert(entity.Number2);
+        PhoneNumber number1 = PhoneNumberTranslate.Translate(entity.Number1);
+        PhoneNumber number2 = PhoneNumberTranslate.Translate(entity.Number2);
 
         // ConvertTimeSpan cancel date
         DateTime custCxlInter = entity.CustomerCancelDate is null ? DateTime.MinValue : (DateTime)entity.CustomerCancelDate;
@@ -93,22 +93,22 @@ public static class CustomerSubscriptionTranslate
     /// <returns></returns>
     public static ICustomerSubscription Convert(this ICustSubLongIdNumStrSellers entity)
     {
-        // Convert dates
+        // Translate dates
         DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.Date.DateTime, TimeZoneEnum.Pacific, DateTimeDefaults.Max);
         DateTimeOffset subscriptionStartDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionStartDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefaults.Max);
         DateTimeOffset customerCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.CustomerCancelDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefaults.Max);
         DateTimeOffset subscriptionCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionCancelDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefaults.Max);
 
-        // Convert Phone numbers
-        PhoneNumber number1 = PhoneNumberTranslate.Convert(entity.Number1);
-        PhoneNumber number2 = PhoneNumberTranslate.Convert(entity.Number2);
+        // Translate Phone numbers
+        PhoneNumber number1 = PhoneNumberTranslate.Translate(entity.Number1);
+        PhoneNumber number2 = PhoneNumberTranslate.Translate(entity.Number2);
 
-        // Convert booleans
+        // Translate booleans
         bool customerActive = ConvertPrimitive.ConvertBool(entity.CustomerActive);
         bool subscriptionActive = ConvertPrimitive.ConvertBool(entity.SubscriptionActive);
         bool initialCompleted = ConvertPrimitive.ConvertBool(entity.InitialCompleted);
 
-        // Convert Sellers
+        // Translate Sellers
         string sellers = VerifySeller(entity.Seller1, entity.Seller2, entity.Seller3);
 
         return new CustomerSubscription(entity.CustomerId, entity.SubscriptionId, date, subscriptionStartDate, number1, number2, customerCancelDate, subscriptionCancelDate, customerActive, subscriptionActive, initialCompleted, entity.ContractValue, sellers);

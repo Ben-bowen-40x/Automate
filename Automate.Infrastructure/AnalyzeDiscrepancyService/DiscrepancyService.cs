@@ -124,7 +124,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         List<DiscrepancyCall> calls = [];
         try
         {
-            // Convert info from file
+            // Translate info from file
             Result<List<DiscrepancyJson>> result = JsonService.ReadFile<DiscrepancyJson>(localRepo.FullName);
             List<DiscrepancyJson> repo = result.IsSuccess
                 ? result.Value
@@ -159,7 +159,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
     private static DiscrepancyCall GetMostRecent(List<DiscrepancyCall> records)
     {
         var last = records.Last();
-        //records.ForEach(r => last = DateTime.Compare(r.Date, last.Date) > 0 ? r : last);
+        //records.ForEach(r => last = DateTime.Compare(r.DateName, last.DateName) > 0 ? r : last);
         foreach (var call in records)
         {
             if (DateTime.Compare(call.Date, last.Date) > 0)

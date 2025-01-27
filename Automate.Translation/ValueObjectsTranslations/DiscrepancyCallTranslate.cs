@@ -5,7 +5,11 @@ namespace Automate.Translation.ValueObjectsTranslations;
 
 public static class DiscrepancyCallTranslate
 {
-    // From DiscrepancyEntity (Infrastructure object) to DiscrepancyCall (Domain Value Object)
+    /// <summary>
+    /// Translates <see cref="IDiscrepancyEntity"/> to <see cref="DiscrepancyCall"/>
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <returns></returns>
     public static DiscrepancyCall Convert(this IDiscrepancyEntity entity)
     {
         PhoneNumber number = new(entity.Number);
@@ -17,7 +21,11 @@ public static class DiscrepancyCallTranslate
         return new(number, billable, date, duration, notes);
     }
 
-    // From DiscrepancyJson (Infrastructure Object) to DiscrepancyCall (Domain Value Object)
+    /// <summary>
+    /// Translates <see cref="IDiscrepancyJson"/> to <see cref="DiscrepancyCall"/>
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <returns></returns>
     public static DiscrepancyCall Convert(this IDiscrepancyJson entity)
     {
         PhoneNumber number = entity.Number is null ? new(0) : new(entity.Number.Number);
@@ -25,7 +33,11 @@ public static class DiscrepancyCallTranslate
         return new DiscrepancyCall(number, entity.Billable, entity.Date, entity.Duration, notes);
     }
 
-    // From DiscrepancySourceLeadsCsvColumns (InfrastructureObject) to DiscrepancyCall (Domain Value Object)
+    /// <summary>
+    /// Translates <see cref="IDiscrepancyCallTranslate"/> to <see cref="DiscrepancyCall"/>
+    /// </summary>
+    /// <param name="entity"></param>
+    /// <returns></returns>
     public static DiscrepancyCall Convert(this IDiscrepancyCallTranslate entity)
     {
         string notes = entity.Notes is null

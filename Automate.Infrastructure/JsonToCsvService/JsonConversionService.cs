@@ -15,16 +15,18 @@ internal class JsonConversionService : IJsonConversionService
     {
         try
         {
-            var values = entities.IsSuccess
-                ? entities.Value
-                : throw new Exception(entities.Error);
-            CsvService.Write<T, TMap>(csvFile.FullName, values);
-            return csvFile;
+            if (entities.IsSuccess)
+            {
+                List<T> values = entities.Value;
+                CsvService.Write<T, TMap>(csvFile.FullName, values);
+                return csvFile;
+            }
+            StringLogger.AddLog(entities.Error);
+            return Result.Failure<FileInfo>(entities.Error);
         }
         catch (Exception ex)
         {
-            // Log the exception
-            string error = $"The Json entities failed to save to CSV.\nException:\n{ex.Message}";
+            string error = $"The Json entities failed to save to Csv.\nException\n{ex.Message}";
             StringLogger.AddLog(error);
             return Result.Failure<FileInfo>(error);
         }

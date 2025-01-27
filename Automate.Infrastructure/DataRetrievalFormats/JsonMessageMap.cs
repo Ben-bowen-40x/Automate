@@ -1,12 +1,13 @@
 ﻿using Automate.Translation.ContactTranslate;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
+using System.Text.Json.Serialization;
 
 namespace Automate.Infrastructure.DataRetrievalFormats;
 
-public class MessageMap : ClassMap<JsonMessage>, IContactFormString
+public class JsonMessageMap : ClassMap<JsonMessageMap>, IContactFormString
 {
-    public MessageMap()
+    public JsonMessageMap()
     {
         int index = 0;
         Map(m => m.Date).Index(index++).Name(WebFormEntity.DateStr);
@@ -21,27 +22,47 @@ public class MessageMap : ClassMap<JsonMessage>, IContactFormString
         Map(m => m.CurrentCustomer).Index(index++).Name(WebFormEntity.Cust);
         Map(m => m.Zip).Index(index++).Name(WebFormEntity.ZCode);
     }
+    [JsonPropertyName(WebFormEntity.DateStr)]
     [Name(WebFormEntity.DateStr)]
     public string? Date { get; set; }
+
+    [JsonPropertyName(WebFormEntity.FName)]
     [Name(WebFormEntity.FName)]
     public string? FirstName { get; set; }
+
+    [JsonPropertyName(WebFormEntity.LName)]
     [Name(WebFormEntity.LName)]
     public string? LastName { get; set; }
+
+    [JsonPropertyName(WebFormEntity.Ph)]
     [Name(WebFormEntity.Ph)]
     public string? Phone { get; set; }
+
+    [JsonPropertyName(WebFormEntity.Eml)]
     [Name(WebFormEntity.Eml)]
     public string? Email { get; set; }
+
+    [JsonPropertyName(WebFormEntity.Prob)]
     [Name(WebFormEntity.Prob)]
     public string? Problem { get; set; }
+
+    [JsonPropertyName(WebFormEntity.Brnch)]
     [Name(WebFormEntity.Brnch)]
     public string? Branch { get; set; }
+
+    [JsonPropertyName(WebFormEntity.Refer)]
     [Name(WebFormEntity.Refer)]
     public string? ReferringUrl { get; set; }
+
+    [JsonPropertyName(WebFormEntity.Form)]
     [Name(WebFormEntity.Form)]
     public string? FormPageUrl { get; set; }
+
+    [JsonPropertyName(WebFormEntity.Cust)]
     [Name(WebFormEntity.Cust)]
     public string? CurrentCustomer { get; set; }
+
+    [JsonPropertyName(WebFormEntity.ZCode)]
     [Name(WebFormEntity.ZCode)]
     public string? Zip { get; set; }
-
 }

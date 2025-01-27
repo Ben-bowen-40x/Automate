@@ -12,7 +12,7 @@ public static class MessageInterfaceTranslate
     /// <returns></returns>
     public static IMessage Convert(this IMsgDTONumberLong entity)
     {
-        PhoneNumber number = PhoneNumberTranslate.Convert(entity.Number);
+        PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
         string contents = VerifyContents(entity.Contents);
         string source = VerifySource(entity.Source);
         IMessage result = new Message(number, entity.Date, contents, source);
@@ -27,7 +27,7 @@ public static class MessageInterfaceTranslate
     /// <returns></returns>
     public static IMessage Convert(this IMsgStrDateTimeOffset entity)
     {
-        PhoneNumber num = PhoneNumberTranslate.Convert(entity.Number);
+        PhoneNumber num = PhoneNumberTranslate.Translate(entity.Number);
         string contents = VerifyContents(entity.Contents);
         string source = VerifySource(entity.Source);
         IMessage rMsg = new Message(num, entity.Date, contents, source);
@@ -42,7 +42,7 @@ public static class MessageInterfaceTranslate
     /// <returns></returns>
     public static IMessage Convert(this IMsgNoTimeStrUtc entity)
     {
-        PhoneNumber number = PhoneNumberTranslate.Convert(entity.NumberStr);
+        PhoneNumber number = PhoneNumberTranslate.Translate(entity.NumberStr);
         DateTime interDate = ConvertPrimitive.ConvertDate(entity.DateTimeStr, null, DateTimeDefaults.Min);
         DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(interDate, TimeSpan.FromTicks(0)); // This type is already in UTC
         string contents = VerifyContents(entity.Contents);
@@ -59,7 +59,7 @@ public static class MessageInterfaceTranslate
     /// <returns></returns>
     public static IMessage Convert(this IMsgDTOStr entity)
     {
-        PhoneNumber number = PhoneNumberTranslate.Convert(entity.Number);
+        PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
         DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.DateTimeOffsetStr, DateTimeDefaults.Min);
         string contents = VerifyContents(entity.Contents);
         string source = VerifySource(entity.Source);
@@ -74,7 +74,7 @@ public static class MessageInterfaceTranslate
     /// <returns></returns>
     public static IMessage Convert(this IMsgDTOStrIsolateSource entity)
     {
-        PhoneNumber number = PhoneNumberTranslate.Convert(entity.NumberStr);
+        PhoneNumber number = PhoneNumberTranslate.Translate(entity.NumberStr);
         DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.DateTimeOffsetStr, DateTimeDefaults.Min);
         string contents = VerifyContents(entity.Contents);
         string source = VerifySource(entity.Source, entity.Separator);
@@ -90,7 +90,7 @@ public static class MessageInterfaceTranslate
     public static IMessage Convert(this IMsgDTOStrNonEmptySource entity)
     {
         // This particular execution is uninterested in records without a source, hence the additional calculation here
-        PhoneNumber number = string.IsNullOrWhiteSpace(entity.Source) ? PhoneNumberTranslate.Default : PhoneNumberTranslate.Convert(entity.NumberStr);
+        PhoneNumber number = string.IsNullOrWhiteSpace(entity.Source) ? PhoneNumberTranslate.Default : PhoneNumberTranslate.Translate(entity.NumberStr);
         DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.DateTimeOffsetStr, DateTimeDefaults.Min);
         string contents = VerifyContents(entity.Contents);
         string source = VerifySource(entity.Source, entity.Separator);
@@ -107,7 +107,7 @@ public static class MessageInterfaceTranslate
     {
         DateTimeOffset start = ConvertPrimitive.ConvertDateTimeOffset(entity.Date, entity.TimeZone, DateTimeDefaults.Min);
         string source = VerifySource(entity.Source);
-        PhoneNumber number = PhoneNumberTranslate.Convert(entity.Number);
+        PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
         string message = VerifyContents(entity.Contents);
         IMessage result = new Message(number, start, message, source);
 
