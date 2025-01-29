@@ -7,7 +7,6 @@ using Automate.Infrastructure.DataRetrievalFormats;
 using Automate.Infrastructure.JsonManipulationService;
 using Automate.Translation.CallTranslate;
 using Automate.Translation.CustomerTranslate;
-using Automate.Translation.ValueObjectsTranslations;
 using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.MessageLeadsService;

@@ -3,11 +3,9 @@ using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.DatabaseService;
-using Automate.Infrastructure.DataRetrievalFormats;
 using Automate.Infrastructure.JsonManipulationService;
 using Automate.Infrastructure.Retrieval;
 using Automate.Translation.DiscrepancyTranslate;
-using Automate.Translation.ValueObjectsTranslations;
 using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.AnalyzeDiscrepancyService;

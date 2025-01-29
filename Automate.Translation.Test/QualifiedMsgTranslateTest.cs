@@ -4,7 +4,6 @@ using Automate.Translation.PhoneNumTranslate;
 using Automate.Translation.QualifiedMessageTranslate;
 using Automate.Translation.Test.ValueObjectsTranslationsTests;
 using NSubstitute;
-using System;
 
 namespace Automate.Translation.Test;
 

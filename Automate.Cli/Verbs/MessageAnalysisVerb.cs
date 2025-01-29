@@ -2,7 +2,6 @@
 using Automate.Cli.Verbs.VerbHelper;
 using Automate.Domain.SolutionFunctionality;
 using CSharpFunctionalExtensions;
-using Automate.Application.MessageReportAnalysis;
 
 namespace Automate.Cli.Verbs;
 

@@ -8,7 +8,6 @@ using Automate.Infrastructure.JsonManipulationService;
 using Automate.Translation.CallTranslate;
 using Automate.Translation.CustomerTranslate;
 using Automate.Translation.QualifiedMessageTranslate;
-using Automate.Translation.ValueObjectsTranslations;
 using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.MessageLeadsReportService;

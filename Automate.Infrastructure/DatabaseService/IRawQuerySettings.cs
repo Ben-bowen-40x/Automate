@@ -1,6 +1,4 @@
-﻿using Automate.Infrastructure.AngleService;
-
-namespace Automate.Infrastructure.DatabaseService;
+﻿namespace Automate.Infrastructure.DatabaseService;
 
 public interface IRawQuerySettings
 {

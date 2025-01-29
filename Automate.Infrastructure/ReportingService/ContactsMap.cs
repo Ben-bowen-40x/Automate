@@ -1,5 +1,4 @@
-﻿using Automate.Application.UpdateContacts;
-using Automate.Domain.ValueObjects;
+﻿using Automate.Domain.ValueObjects;
 using CsvHelper.Configuration;
 
 namespace Automate.Infrastructure.ReportingService;

@@ -1,5 +1,4 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
-using Automate.Application.UpdateContacts;
 using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.ContactsUpdateService;
