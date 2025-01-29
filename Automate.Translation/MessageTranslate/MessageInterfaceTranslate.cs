@@ -116,30 +116,28 @@ public static class MessageInterfaceTranslate
     }
     #endregion
 
-    #region Internal Verifications
-    internal static string VerifyContents(string? contents)
+    #region Verifications
+    private static string VerifyContents(string? contents)
     {
         return string.IsNullOrWhiteSpace(contents)
             ? string.Empty
             : TSH.ContentsJoined(contents);
     }
-    internal static string VerifySource(string? source)
+    private static string VerifySource(string? source)
     {
         var sourcer = string.IsNullOrWhiteSpace(source)
             ? string.Empty
             : source;
-        var removal = "z:"; // If this gets to be a lot, it might be worth using REGEX instead of .Contains() and .Replace()
-        return sourcer.Contains(removal, StringComparison.InvariantCultureIgnoreCase)
-                ? sourcer.ToLower().Replace(removal, string.Empty)
-                : sourcer;
+        var removal = "z:"; // If this gets to be a lot, it might be worth using REGEX instead 
+        return sourcer.ToLower().Replace(removal, string.Empty);
     }
-    internal static string VerifySource(string? source, SourceComponent component)
+    private static string VerifySource(string? source, SourceComponent component)
     {
         var separator = component switch
         {
             SourceComponent.Gclid => "gclid=",
             SourceComponent.Msclid => "msclid=",
-            _ => "gclid="
+            _ => throw new ArgumentException($"The {nameof(SourceComponent)} attribute has not been created for the following component separator:\n{component}")
         };
         var verified = VerifySource(source);
         var result = verified.Contains(separator)
