@@ -1,9 +1,6 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
-using Automate.Domain.ValueObjects;
+using Automate.Application.UpdateContacts;
 using Automate.Infrastructure.DatabaseService;
-using Automate.Infrastructure.DataRetrievalFormats;
-using Automate.Translation.ContactTranslate;
-using Automate.Translation.ValueObjectsTranslations;
 using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.ContactsUpdateService;
@@ -32,10 +29,9 @@ internal class UpdateContactsService(IDwhSettings settings) : IUpdateContactsSer
             // Query the database
             DwhContext<ContactsDbEntity> contactsContext = new(settings.CallsConnectionString!);
             Task<IEnumerable<ContactsDbEntity>> task = DwhContextHelpers.GetItemsFromRawAsync(contactsContext, query);
-            List<Contacts> result = task.Result
-                .Select(c => c as IContactsEntity)
-                .Select(c => c.Convert()).ToList();
-            listOfContacts.Add(result);
+            IEnumerable<ContactsDbEntity> result = task.Result;
+            List<Contacts> contacts = result.Select(r => r.Convert()).ToList();
+            listOfContacts.Add(contacts);
         }
         return listOfContacts;
     }
