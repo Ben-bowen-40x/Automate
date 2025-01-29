@@ -1,6 +1,6 @@
 ﻿namespace Automate.Translation.ValueObjectsTranslations;
 
-internal static class DateTimeOffsetConvert
+internal static class ConvertDateTimeOffset
 {
     #region Public
     public static DateTimeOffset ConvertLocalToDTOffset(DateTime localTime, TimeZoneEnum zone)
@@ -12,7 +12,6 @@ internal static class DateTimeOffsetConvert
 
         return ConvertLocalToDTOffset(localTime, timeZone);
     }
-
     public static bool ConvertLocalToDTOffset(DateTime localTime, TimeZoneEnum zone, out DateTimeOffset result)
     {
         // Find the TimeZoneInfo for the specified time zone name
@@ -27,7 +26,6 @@ internal static class DateTimeOffsetConvert
         finally { }
         return returnVal;
     }
-
     public static DateTimeOffset ConvertLocalToDTOffset(DateTime date, TimeSpan offset) => new(date, offset);
     #endregion
 
@@ -41,10 +39,8 @@ internal static class DateTimeOffsetConvert
         "utc" => TimeZoneEnum.Utc,
         _ => TimeZoneEnum.Mountain
     };
-
     private static string ConvertTimeZoneToTimeZoneId(TimeZoneEnum zone)
         => zone == TimeZoneEnum.Utc ? "UTC" : $"{zone} Standard Time";
-
     private static DateTimeOffset ConvertLocalToDTOffset(DateTime date, TimeZoneInfo timeZone)
     {
         TimeSpan fourHours = new(4, 0, 0);
@@ -62,7 +58,6 @@ internal static class DateTimeOffsetConvert
             result -= fourHours;
         return result;
     }
-
     private static DateTimeOffset DLSConversion(DateTime date, TimeZoneEnum zone)
     {
         TimeSpan oneHour = TimeSpan.FromHours(1);

@@ -58,8 +58,8 @@ public static class CustomerSubscriptionTranslate
         // ConvertTimeSpan StartDates
         DateTime dateInter = entity.Date is null ? DateTime.MinValue : (DateTime)entity.Date;
         DateTime subStartInter = entity.SubscriptionStartDate is null ? DateTime.MinValue : (DateTime)entity.SubscriptionStartDate;
-        DateTimeOffset date = DateTimeOffsetConvert.ConvertLocalToDTOffset(dateInter, TimeZoneEnum.Pacific, out DateTimeOffset dateStartResult) ? dateStartResult : DateTimeOffset.MinValue;
-        DateTimeOffset subDate = DateTimeOffsetConvert.ConvertLocalToDTOffset(subStartInter, TimeZoneEnum.Pacific, out DateTimeOffset subDateResult) ? subDateResult : DateTimeOffset.MinValue;
+        DateTimeOffset date = ConvertDateTimeOffset.ConvertLocalToDTOffset(dateInter, TimeZoneEnum.Pacific, out DateTimeOffset dateStartResult) ? dateStartResult : DateTimeOffset.MinValue;
+        DateTimeOffset subDate = ConvertDateTimeOffset.ConvertLocalToDTOffset(subStartInter, TimeZoneEnum.Pacific, out DateTimeOffset subDateResult) ? subDateResult : DateTimeOffset.MinValue;
 
         // ConvertTimeSpan phone numbers
         PhoneNumber number1 = PhoneNumberTranslate.Translate(entity.Number1);
@@ -68,8 +68,8 @@ public static class CustomerSubscriptionTranslate
         // ConvertTimeSpan cancel date
         DateTime custCxlInter = entity.CustomerCancelDate is null ? DateTime.MinValue : (DateTime)entity.CustomerCancelDate;
         DateTime subCxlInter = entity.SubscriptionCancelDate is null ? DateTime.MinValue : (DateTime)entity.SubscriptionCancelDate;
-        DateTimeOffset custCxl = DateTimeOffsetConvert.ConvertLocalToDTOffset(custCxlInter, TimeZoneEnum.Pacific, out DateTimeOffset custResult) ? custResult : DateTimeOffset.MinValue;
-        DateTimeOffset subCxl = DateTimeOffsetConvert.ConvertLocalToDTOffset(subCxlInter, TimeZoneEnum.Pacific, out DateTimeOffset subResult) ? subResult : DateTimeOffset.MinValue;
+        DateTimeOffset custCxl = ConvertDateTimeOffset.ConvertLocalToDTOffset(custCxlInter, TimeZoneEnum.Pacific, out DateTimeOffset custResult) ? custResult : DateTimeOffset.MinValue;
+        DateTimeOffset subCxl = ConvertDateTimeOffset.ConvertLocalToDTOffset(subCxlInter, TimeZoneEnum.Pacific, out DateTimeOffset subResult) ? subResult : DateTimeOffset.MinValue;
 
         // ConvertTimeSpan boolean States
         bool custActive = ConvertPrimitive.ConvertBool(entity.CustomerActive);
@@ -94,10 +94,10 @@ public static class CustomerSubscriptionTranslate
     public static ICustomerSubscription Translate(this ICustSubLongIdNumStrSellers entity)
     {
         // Translate dates
-        DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.Date.DateTime, TimeZoneEnum.Pacific, DateTimeDefaults.Max);
-        DateTimeOffset subscriptionStartDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionStartDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefaults.Max);
-        DateTimeOffset customerCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.CustomerCancelDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefaults.Max);
-        DateTimeOffset subscriptionCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionCancelDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefaults.Max);
+        DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.Date.DateTime, TimeZoneEnum.Pacific, DateTimeDefault.Max);
+        DateTimeOffset subscriptionStartDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionStartDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefault.Max);
+        DateTimeOffset customerCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.CustomerCancelDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefault.Max);
+        DateTimeOffset subscriptionCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionCancelDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefault.Max);
 
         // Translate Phone numbers
         PhoneNumber number1 = PhoneNumberTranslate.Translate(entity.Number1);

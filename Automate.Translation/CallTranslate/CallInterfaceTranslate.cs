@@ -8,15 +8,15 @@ namespace Automate.Translation.CallTranslate;
 public static class CallInterfaceTranslate
 {
     /// <summary>
-    /// Extension Method Translates from <see cref="ICallZoneStr"/> to <see cref="ICallRecord"/>
+    /// Extension Method Translates from <see cref="ICallDateTimeInUTC"/> to <see cref="ICallRecord"/>
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static ICallRecord Translate(this ICallZoneStr entity)
+    public static ICallRecord Translate(this ICallDateTimeInUTC entity)
     {
         bool billable = ConvertPrimitive.ConvertBool(entity.Billable);
         TimeSpan timeZone = ConvertPrimitive.ConvertTimeSpan(entity.TimeZone);
-        DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.Date, timeZone, DateTimeDefaults.Min);
+        DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.Date, timeZone, DateTimeDefault.Min);
         ICallRecord record = new MessageCallRecord(entity.Number, date, billable);
         return record;
     }

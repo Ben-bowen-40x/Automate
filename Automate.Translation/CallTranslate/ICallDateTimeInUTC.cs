@@ -2,7 +2,7 @@
 
 namespace Automate.Translation.CallTranslate;
 
-public interface ICallZoneStr : IPhoneNumberCompatible
+public interface ICallDateTimeInUTC : IPhoneNumberCompatible
 {
     public long NumberLong { get; set; }
     public string? Billable { get; set; }

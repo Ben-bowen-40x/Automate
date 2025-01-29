@@ -1,5 +1,4 @@
 ﻿using Automate.Translation.CustomerTranslate;
-using Automate.Translation.MessageTranslate;
 
 namespace Automate.Translation.QualifiedMessageTranslate;
 

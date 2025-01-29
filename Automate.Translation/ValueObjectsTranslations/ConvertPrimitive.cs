@@ -1,7 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using System.Numerics;
-
-namespace Automate.Translation.ValueObjectsTranslations;
+﻿namespace Automate.Translation.ValueObjectsTranslations;
 
 public static class ConvertPrimitive
 {
@@ -12,7 +9,11 @@ public static class ConvertPrimitive
     /// <returns></returns>
     internal static bool ConvertBool(string? value)
     {
-        return value is not null && value.Contains("billable") && !value.Contains("non");
+        // Unfortunately, it may be necessary to use Regex eventually
+        string[] trueConditions = ["bilable", "bilabel", "billable", "billabel"];
+        string[] falseConditions = ["non", "not"];
+        bool result = (value is not null && trueConditions.Any(value.ToLower().Contains) && !falseConditions.Any(value.ToLower().Contains)) || (bool.TryParse(value, out bool v) && v);
+        return result;
     }
 
     /// <summary>
@@ -42,16 +43,41 @@ public static class ConvertPrimitive
     /// <returns></returns>
     internal static TimeSpan ConvertTimeSpan(string? value)
     {
-        return value is not null && TimeSpan.TryParse(value, out TimeSpan tzResult) ? tzResult : new(0);
+        if (value is not null)
+        {
+            // Attempt a direct parse
+            TimeSpan tzResult = value.Contains(':') && TimeSpan.TryParse(value, out TimeSpan t)
+                ? t
+                : TimeSpan.Zero;
+
+            // Detect whether it has decimals
+            TimeSpan doubleResult = value.Contains('.') && double.TryParse(value, out double d)
+                ? TimeSpan.FromSeconds(d)
+                : TimeSpan.Zero;
+
+            // Detect whether it is an integer
+            TimeSpan intResult = int.TryParse(value, out int i)
+                ? TimeSpan.FromSeconds(i)
+                : TimeSpan.Zero;
+
+            if (tzResult != TimeSpan.Zero)
+                return tzResult;
+            if (doubleResult != TimeSpan.Zero)
+                return doubleResult;
+            if (intResult != TimeSpan.Zero)
+                return intResult;
+        }
+        return TimeSpan.Zero;
     }
 
     /// <summary>
-    /// Converts a nullable <see cref="DateTime"/> <paramref name="value"/> and <see cref="TimeSpan"/> <paramref name="timeZone"/> into <see cref="DateTimeOffset"/>
+    /// Converts a nullable <see cref="DateTime"/> <paramref name="value"/> which is already in UTC and <see cref="TimeSpan"/> <paramref name="timeZone"/> into <see cref="DateTimeOffset"/>
     /// </summary>
     /// <param name="value"></param>
     /// <param name="timeZone"></param>
     /// <returns></returns>
-    internal static DateTimeOffset ConvertDateTimeOffset(DateTime? value, TimeSpan timeZone, DateTimeDefaults defaultVal)
+    // Does not need tests because its components are guaranteed to work.
+    internal static DateTimeOffset ConvertDateTimeOffset(DateTime? value, TimeSpan timeZone, DateTimeDefault defaultVal)
     {
         DateTime dateInter = value is null ? defaultVal.DateTimeDefault() : (DateTime)value;
         DateTimeOffset date = new(dateInter, timeZone);
@@ -66,19 +92,20 @@ public static class ConvertPrimitive
     /// </summary>
     /// <param name="dtOffsetStr"></param>
     /// <returns></returns>
-    internal static DateTimeOffset ConvertDateTimeOffset(string? dtOffsetStr, DateTimeDefaults defaultDate)
+    internal static DateTimeOffset ConvertDateTimeOffset(string? dtOffsetStr, DateTimeDefault defaultDate)
     {
         // If the string to get rid of becomes tedious, You may want to use REGEX instead of .Contains() and .Replace()
         string? cleanedDate = dtOffsetStr is not null && dtOffsetStr.Contains('T', StringComparison.InvariantCultureIgnoreCase)
             ? dtOffsetStr.Replace('T', ' ') // DO NOT use string.Empty
             : dtOffsetStr;
-        return cleanedDate is null || !DateTimeOffset.TryParse
+        DateTimeOffset result = cleanedDate is null || !DateTimeOffset.TryParse
             (
                 cleanedDate,
-                out DateTimeOffset result
+                out DateTimeOffset d
             )
-            ? defaultDate.DateTimeOffsetDefault() // This translation absolutely must have the min value on these particular primitives because of the way they will be used on the Domain Layer
-            : result;
+            ? defaultDate.DateTimeOffsetDefault()
+            : d;
+        return result;
     }
 
     /// <summary>
@@ -87,9 +114,10 @@ public static class ConvertPrimitive
     /// <param name="date"></param>
     /// <param name="zone"></param>
     /// <returns></returns>
-    internal static DateTimeOffset ConvertDateTimeOffset(string? date, TimeZoneEnum zone, DateTimeDefaults defaultDate)
+    // Does not need tests because its components are already being tested
+    internal static DateTimeOffset ConvertDateTimeOffset(string? date, TimeZoneEnum zone, DateTimeDefault defaultDate)
     {
-        var datetime = ConvertDate(date, DateTimeDefaults.Min);
+        var datetime = ConvertDate(date, defaultDate);
         return ConvertDateTimeOffset(datetime, zone, defaultDate);
     }
 
@@ -99,19 +127,20 @@ public static class ConvertPrimitive
     /// <param name="startDate"></param>
     /// <param name="zone"></param>
     /// <returns></returns>
-    internal static DateTimeOffset ConvertDateTimeOffset(DateTime startDate, TimeZoneEnum zone, DateTimeDefaults defaultDate)
+    internal static DateTimeOffset ConvertDateTimeOffset(DateTime startDate, TimeZoneEnum zone, DateTimeDefault defaultDate)
     {
-        return DateTimeOffsetConvert.ConvertLocalToDTOffset(startDate, zone, out DateTimeOffset resultOffset)
+        return ValueObjectsTranslations.ConvertDateTimeOffset.ConvertLocalToDTOffset(startDate, zone, out DateTimeOffset resultOffset)
             ? resultOffset
-            : defaultDate.DateTimeOffsetDefault(); // This translation absolutely must have the min value on these particular primitives because of the way they will be used on the Domain Layer
+            : defaultDate.DateTimeOffsetDefault();
     }
 
     /// <summary>
-    /// Converts a <paramref name="startdate"/> and <see cref="TimeSpan"/> to <see cref="DateTimeOffset"/> 
+    /// Converts a <paramref name="startdate"/> that is already in UTC and <see cref="TimeSpan"/>, which is the offset, to <see cref="DateTimeOffset"/> 
     /// </summary>
     /// <param name="startdate"></param>
     /// <param name="zone"></param>
     /// <returns></returns>
+    // This doesn't need tests because its components are guaranteed to work
     internal static DateTimeOffset ConvertDateTimeOffset(DateTime startdate, TimeSpan zone)
     {
         return new(startdate, zone);
@@ -123,7 +152,7 @@ public static class ConvertPrimitive
     /// <param name="date"></param>
     /// <param name="time"></param>
     /// <returns></returns>
-    internal static DateTime ConvertDate(string? date, string? time, DateTimeDefaults defaultDate)
+    internal static DateTime ConvertDate(string? date, string? time, DateTimeDefault defaultDate)
     {
         // This translation absolutely must have the correct value on these particular primitives because of the way they will be used on the Domain Layer
         string timeNotNull = string.IsNullOrWhiteSpace(time) ? string.Empty : " " + time;
@@ -149,7 +178,7 @@ public static class ConvertPrimitive
     /// </summary>
     /// <param name="date"></param>
     /// <returns></returns>
-    internal static DateTime ConvertDate(string? date, DateTimeDefaults defaultDate)
+    internal static DateTime ConvertDate(string? date, DateTimeDefault defaultDate)
     {
         return DateTime.TryParse(date, out DateTime resultDate)
             ? resultDate
@@ -157,27 +186,27 @@ public static class ConvertPrimitive
     }
 
     #region Private
-    private static DateTime DateTimeDefault(this DateTimeDefaults dateTimeDefault)
+    internal static DateTime DateTimeDefault(this DateTimeDefault dateTimeDefault) // This is internal because it's used in testing
     {
         return dateTimeDefault switch
         {
-            DateTimeDefaults.Min => DateTime.MinValue,
-            DateTimeDefaults.Max => DateTime.MaxValue,
+            ValueObjectsTranslations.DateTimeDefault.Min => DateTime.MinValue,
+            ValueObjectsTranslations.DateTimeDefault.Max => DateTime.MaxValue,
             _ => DateTime.MinValue
         };
     }
-    private static DateTimeOffset DateTimeOffsetDefault(this DateTimeDefaults dateTimeDefault)
+    private static DateTimeOffset DateTimeOffsetDefault(this DateTimeDefault dateTimeDefault)
     {
         return dateTimeDefault switch
         {
-            DateTimeDefaults.Min => DateTimeOffset.MaxValue,
-            DateTimeDefaults.Max => DateTimeOffset.MinValue,
+            ValueObjectsTranslations.DateTimeDefault.Min => DateTimeOffset.MinValue,
+            ValueObjectsTranslations.DateTimeDefault.Max => DateTimeOffset.MaxValue,
             _ => DateTimeOffset.MinValue
         };
     }
     #endregion
 }
-internal enum DateTimeDefaults
+public enum DateTimeDefault
 {
     Min,
     Max,
