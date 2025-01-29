@@ -7,7 +7,7 @@ using Automate.Translation.PhoneNumTranslate;
 namespace Automate.Infrastructure.DataRetrievalFormats;
 
 [Keyless]
-public class CallDbEntity : ICallZoneStr
+public class CallDbEntity : ICallDateTimeInUTC
 {
     [Column("contact_number_clean")]
     public long NumberLong { get; set; }

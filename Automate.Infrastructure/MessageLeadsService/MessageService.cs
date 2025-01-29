@@ -102,7 +102,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
                     ? DwhContextHelpers.GetItemsFromRawAsync(callContext, query)
                     : DwhContextHelpers.GetItemsFromFileAsync(callContext, callLocation);
                 List<ICallRecord> resultList = callTask.Result
-                    .Select(c => (ICallZoneStr)c)
+                    .Select(c => (ICallDateTimeInUTC)c)
                     .Select(c => c.Translate())
                     .ToList();
 
