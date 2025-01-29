@@ -2,7 +2,7 @@
 
 namespace Automate.Translation.Test.ValueObjectsTranslationsTests;
 
-public class DTOConvertTests
+public class ConvertDateTimeOffsetTests
 {
     #region ConvertLocalToDTOffset(DateTime localTime, TimeZoneEnum zone)
     [
