@@ -117,13 +117,13 @@ public static class MessageInterfaceTranslate
     #endregion
 
     #region Verifications
-    private static string VerifyContents(string? contents)
+    internal static string VerifyContents(string? contents)
     {
         return string.IsNullOrWhiteSpace(contents)
             ? string.Empty
             : TSH.ContentsJoined(contents);
     }
-    private static string VerifySource(string? source)
+    internal static string VerifySource(string? source)
     {
         var sourcer = string.IsNullOrWhiteSpace(source)
             ? string.Empty
