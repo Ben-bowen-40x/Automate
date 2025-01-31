@@ -1,6 +1,6 @@
 ﻿using CsvHelper.Configuration.Attributes;
-using Automate.Translation.ValueObjectsTranslations;
 using Automate.Translation.MessageTranslate;
+using Automate.Translation.ValueObjectTranslate;
 
 namespace Automate.Infrastructure.DataRetrievalFormats;
 

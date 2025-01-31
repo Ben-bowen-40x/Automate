@@ -3,7 +3,7 @@ using Automate.Translation.CustomerTranslate;
 using Automate.Translation.MessageTranslate;
 using Automate.Translation.PhoneNumTranslate;
 using Automate.Translation.QualifiedMessageTranslate;
-using Automate.Translation.ValueObjectsTranslations;
+using Automate.Translation.ValueObjectTranslate;
 
 namespace Automate.Translation.CustomerTranslate;
 
@@ -94,10 +94,10 @@ public static class CustomerSubscriptionTranslate
     public static ICustomerSubscription Translate(this ICustSubLongIdNumStrSellers entity)
     {
         // Translate dates
-        DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.Date.DateTime, TimeZoneEnum.Pacific, DateTimeDefault.Max);
-        DateTimeOffset subscriptionStartDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionStartDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefault.Max);
-        DateTimeOffset customerCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.CustomerCancelDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefault.Max);
-        DateTimeOffset subscriptionCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionCancelDate.DateTime, TimeZoneEnum.Pacific, DateTimeDefault.Max);
+        DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.Date.DateTime, TimeZoneEnum.Pacific, DateDefault.Max);
+        DateTimeOffset subscriptionStartDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionStartDate.DateTime, TimeZoneEnum.Pacific, DateDefault.Max);
+        DateTimeOffset customerCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.CustomerCancelDate.DateTime, TimeZoneEnum.Pacific, DateDefault.Max);
+        DateTimeOffset subscriptionCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionCancelDate.DateTime, TimeZoneEnum.Pacific, DateDefault.Max);
 
         // Translate Phone numbers
         PhoneNumber number1 = PhoneNumberTranslate.Translate(entity.Number1);

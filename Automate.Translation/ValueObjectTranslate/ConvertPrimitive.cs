@@ -1,4 +1,4 @@
-﻿namespace Automate.Translation.ValueObjectsTranslations;
+﻿namespace Automate.Translation.ValueObjectTranslate;
 
 public static class ConvertPrimitive
 {
@@ -12,7 +12,7 @@ public static class ConvertPrimitive
         // Unfortunately, it may be necessary to use Regex eventually
         string[] trueConditions = ["bilable", "bilabel", "billable", "billabel"];
         string[] falseConditions = ["non", "not"];
-        bool result = (value is not null && trueConditions.Any(value.ToLower().Contains) && !falseConditions.Any(value.ToLower().Contains)) || (bool.TryParse(value, out bool v) && v);
+        bool result = value is not null && trueConditions.Any(value.ToLower().Contains) && !falseConditions.Any(value.ToLower().Contains) || bool.TryParse(value, out bool v) && v;
         return result;
     }
 
@@ -71,13 +71,16 @@ public static class ConvertPrimitive
     }
 
     /// <summary>
-    /// Converts a nullable <see cref="DateTime"/> <paramref name="value"/> which is already in UTC and <see cref="TimeSpan"/> <paramref name="timeZone"/> into <see cref="DateTimeOffset"/>
+    /// <para>Accepts nullable <see cref="DateTime"/> <paramref name="value"/> which MUST BE in UTC</para>
     /// </summary>
     /// <param name="value"></param>
     /// <param name="timeZone"></param>
-    /// <returns></returns>
+    /// <returns>
+    /// <para><see cref="DateTimeOffset"/> that is in UTC.</para>
+    /// <para>The <paramref name="defaultVal"/> is <see cref="ValueObjectTranslate.DateDefault"/> that specifies the value to return in case <paramref name="value"/> is <see cref="null"/>:</para> 
+    /// </returns>
     // Does not need tests because its components are guaranteed to work.
-    internal static DateTimeOffset ConvertDateTimeOffset(DateTime? value, TimeSpan timeZone, DateTimeDefault defaultVal)
+    internal static DateTimeOffset ConvertDateTimeOffset(DateTime? value, TimeSpan timeZone, DateDefault defaultVal)
     {
         DateTime dateInter = value is null ? defaultVal.DateTimeDefault() : (DateTime)value;
         DateTimeOffset date = new(dateInter, timeZone);
@@ -92,7 +95,7 @@ public static class ConvertPrimitive
     /// </summary>
     /// <param name="dtOffsetStr"></param>
     /// <returns></returns>
-    internal static DateTimeOffset ConvertDateTimeOffset(string? dtOffsetStr, DateTimeDefault defaultDate)
+    internal static DateTimeOffset ConvertDateTimeOffset(string? dtOffsetStr, DateDefault defaultDate)
     {
         // If the string to get rid of becomes tedious, You may want to use REGEX instead of .Contains() and .Replace()
         string? cleanedDate = dtOffsetStr is not null && dtOffsetStr.Contains('T', StringComparison.InvariantCultureIgnoreCase)
@@ -115,7 +118,7 @@ public static class ConvertPrimitive
     /// <param name="zone"></param>
     /// <returns></returns>
     // Does not need tests because its components are already being tested
-    internal static DateTimeOffset ConvertDateTimeOffset(string? date, TimeZoneEnum zone, DateTimeDefault defaultDate)
+    internal static DateTimeOffset ConvertDateTimeOffset(string? date, TimeZoneEnum zone, DateDefault defaultDate)
     {
         var datetime = ConvertDate(date, defaultDate);
         return ConvertDateTimeOffset(datetime, zone, defaultDate);
@@ -127,9 +130,10 @@ public static class ConvertPrimitive
     /// <param name="startDate"></param>
     /// <param name="zone"></param>
     /// <returns></returns>
-    internal static DateTimeOffset ConvertDateTimeOffset(DateTime startDate, TimeZoneEnum zone, DateTimeDefault defaultDate)
+    // Does not need tests because its components are already being tested
+    internal static DateTimeOffset ConvertDateTimeOffset(DateTime startDate, TimeZoneEnum zone, DateDefault defaultDate)
     {
-        return ValueObjectsTranslations.ConvertDateTimeOffset.ConvertLocalToDTOffset(startDate, zone, out DateTimeOffset resultOffset)
+        return ValueObjectTranslate.ConvertDateTimeOffset.ConvertLocalToDTOffset(startDate, zone, out DateTimeOffset resultOffset)
             ? resultOffset
             : defaultDate.DateTimeOffsetDefault();
     }
@@ -152,7 +156,7 @@ public static class ConvertPrimitive
     /// <param name="date"></param>
     /// <param name="time"></param>
     /// <returns></returns>
-    internal static DateTime ConvertDate(string? date, string? time, DateTimeDefault defaultDate)
+    internal static DateTime ConvertDate(string? date, string? time, DateDefault defaultDate)
     {
         // This translation absolutely must have the correct value on these particular primitives because of the way they will be used on the Domain Layer
         string timeNotNull = string.IsNullOrWhiteSpace(time) ? string.Empty : " " + time;
@@ -178,7 +182,7 @@ public static class ConvertPrimitive
     /// </summary>
     /// <param name="date"></param>
     /// <returns></returns>
-    internal static DateTime ConvertDate(string? date, DateTimeDefault defaultDate)
+    internal static DateTime ConvertDate(string? date, DateDefault defaultDate)
     {
         return DateTime.TryParse(date, out DateTime resultDate)
             ? resultDate
@@ -186,29 +190,19 @@ public static class ConvertPrimitive
     }
 
     #region Private
-    internal static DateTime DateTimeDefault(this DateTimeDefault dateTimeDefault) // This is internal because it's used in testing
+    // This is internal because it's used in testing
+    internal static DateTime DateTimeDefault(this DateDefault dateDefault) => dateDefault switch
     {
-        return dateTimeDefault switch
-        {
-            ValueObjectsTranslations.DateTimeDefault.Min => DateTime.MinValue,
-            ValueObjectsTranslations.DateTimeDefault.Max => DateTime.MaxValue,
-            _ => DateTime.MinValue
-        };
-    }
-    private static DateTimeOffset DateTimeOffsetDefault(this DateTimeDefault dateTimeDefault)
+        DateDefault.Min => DateTime.MinValue,
+        DateDefault.Max => DateTime.MaxValue,
+        _ => DateTime.MinValue
+    };
+    private static DateTimeOffset DateTimeOffsetDefault(this DateDefault dateDefault) => dateDefault switch
     {
-        return dateTimeDefault switch
-        {
-            ValueObjectsTranslations.DateTimeDefault.Min => DateTimeOffset.MinValue,
-            ValueObjectsTranslations.DateTimeDefault.Max => DateTimeOffset.MaxValue,
-            _ => DateTimeOffset.MinValue
-        };
-    }
+        DateDefault.Min => DateTimeOffset.MinValue,
+        DateDefault.Max => DateTimeOffset.MaxValue,
+        _ => DateTimeOffset.MinValue
+    };
     #endregion
-}
-public enum DateTimeDefault
-{
-    Min,
-    Max,
 }
 

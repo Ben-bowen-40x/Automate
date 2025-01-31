@@ -12,6 +12,7 @@ public static class PhoneNumberTranslate
     {
         return entity is not null ? Translate(entity.Number.ToString()) : Default;
     }
+    
     // From nullable string
     public static PhoneNumber Translate(string? phone)
     {
@@ -19,6 +20,7 @@ public static class PhoneNumberTranslate
             ? Default
             : phoneResult;
     }
+    
     // From long
     public static PhoneNumber Translate(long phone)
     {

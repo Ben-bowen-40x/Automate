@@ -1,7 +1,7 @@
 ﻿using Automate.Domain.ValueObjects;
 using Automate.Translation.CallTranslate;
 using Automate.Translation.PhoneNumTranslate;
-using Automate.Translation.ValueObjectsTranslations;
+using Automate.Translation.ValueObjectTranslate;
 
 namespace Automate.Translation.CallTranslate;
 
@@ -16,7 +16,7 @@ public static class CallInterfaceTranslate
     {
         bool billable = ConvertPrimitive.ConvertBool(entity.Billable);
         TimeSpan timeZone = ConvertPrimitive.ConvertTimeSpan(entity.TimeZone);
-        DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.Date, timeZone, DateTimeDefault.Min);
+        DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.Date, timeZone, DateDefault.Min);
         ICallRecord record = new MessageCallRecord(entity.Number, date, billable);
         return record;
     }

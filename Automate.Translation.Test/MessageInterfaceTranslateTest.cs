@@ -2,8 +2,7 @@
 using Automate.Translation.MessageTranslate;
 using Automate.Translation.PhoneNumTranslate;
 using Automate.Translation.Test.ValueObjectsTranslationsTests;
-using Automate.Translation.ValueObjectsTranslations;
-using CSharpFunctionalExtensions;
+using Automate.Translation.ValueObjectTranslate;
 using NSubstitute;
 
 namespace Automate.Translation.Test;
@@ -25,20 +24,20 @@ public class MessageInterfaceTranslateTest
     ]
     public void IMsgDTONumberLongTranslationTest(long number, int[] dateInts, string? contents, string? source)
     {
-        // Set up primitives
+        // Arrange primitives
         DateTimeOffset date = new(ConvertDateTimeOffsetTests.MakeDateFromIntArray(dateInts[0], dateInts[1], dateInts[2], dateInts[3], dateInts[4], dateInts[5]), TimeSpan.FromHours(0));
         var contentsGood = MessageInterfaceTranslate.VerifyContents(contents);
         var sourceGood = MessageInterfaceTranslate.VerifySource(source);
         var phNumber = PhoneNumberTranslate.Translate(number);
 
-        // Set up
+        // Arrange
         IMsgDTONumberLong mock = Substitute.For<IMsgDTONumberLong>();
         mock.Number.Returns(number);
         mock.Date.Returns(date);
         mock.Contents.Returns(contentsGood);
         mock.Source.Returns(sourceGood);
 
-        // Set up expected value
+        // Arrange expected value
         IMessage expected = Substitute.For<IMessage>();
         expected.Number.Returns(phNumber);
         expected.Date.Returns(date);
@@ -71,21 +70,21 @@ public class MessageInterfaceTranslateTest
     ]
     public void IMsgStrDateTimeOffsetTranslationTest(string number, int[] dateInts, string? contents, string? source)
     {
-        // Set up primitive conversion
+        // Arrange primitive conversion
         PhoneNumber numberConverted = PhoneNumberTranslate.Translate(number);
         DateTimeOffset date = new(ConvertDateTimeOffsetTests.MakeDateFromIntArray(dateInts[0], dateInts[1], dateInts[2], dateInts[3], dateInts[4], dateInts[5]));
         string contentsGood = MessageInterfaceTranslate.VerifyContents(contents);
         string sourceGood = MessageInterfaceTranslate.VerifySource(source);
         PhoneNumber phNumber = PhoneNumberTranslate.Translate(number);
 
-        // Set up
+        // Arrange
         IMsgStrDateTimeOffset mock = Substitute.For<IMsgStrDateTimeOffset>();
         mock.Number.Returns(number);
         mock.Date.Returns(date);
         mock.Contents.Returns(contentsGood);
         mock.Source.Returns(sourceGood);
 
-        // Set up expected
+        // Arrange expected
         IMessage expected = Substitute.For<IMessage>();
         expected.Number.Returns(numberConverted);
         expected.Date.Returns(date);
@@ -118,21 +117,21 @@ public class MessageInterfaceTranslateTest
     ]
     public void IMsgNoTimeStrUtcTranslationTest(string numberStr, string dateTimeStr, string contents, string source)
     {
-        // Set up Primitives
+        // Arrange Primitives
         PhoneNumber number = PhoneNumberTranslate.Translate(numberStr);
-        DateTime interDate = ConvertPrimitive.ConvertDate(dateTimeStr, null, DateTimeDefault.Min);
+        DateTime interDate = ConvertPrimitive.ConvertDate(dateTimeStr, null, DateDefault.Min);
         DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(interDate, TimeSpan.FromTicks(0)); // This type is already in UTC
         string contentsGood = MessageInterfaceTranslate.VerifyContents(contents);
         string sourceGood = MessageInterfaceTranslate.VerifySource(source);
 
-        // Set up 
+        // Arrange 
         IMsgNoTimeStrUtc mock = Substitute.For<IMsgNoTimeStrUtc>();
         mock.NumberStr.Returns(numberStr);
         mock.DateTimeStr.Returns(dateTimeStr);
         mock.Contents.Returns(contentsGood);
         mock.Source.Returns(sourceGood);
 
-        // Set up expected
+        // Arrange expected
         IMessage expected = Substitute.For<IMessage>();
         expected.Number.Returns(number);
         expected.Date.Returns(date);
@@ -162,26 +161,35 @@ public class MessageInterfaceTranslateTest
         "These are contents, with all kinds of\nweird stuff in it\n\"In fact, you might wonder why there are weird stuff in here.\" That is all.",
         // Source
         "z:This is the source",
-        DateTimeDefault.Min)
+        DateDefault.Min)
     ]
-    public void IMsgDTOStrTranslationTest(string numberStr, string dateTimeOffsetStr, string contents, string source, DateTimeDefault dtDefault)
+    public void IMsgDTOStrTranslationTest(string numberStr, string dateTimeOffsetStr, string contents, string source, DateDefault dtDefault)
     {
-        // Set Up primitives
+        // Arrange primitives
         PhoneNumber number = PhoneNumberTranslate.Translate(numberStr);
         DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(dateTimeOffsetStr, dtDefault);
         string contentsGood = MessageInterfaceTranslate.VerifyContents(contents);
         string sourceGood = MessageInterfaceTranslate.VerifySource(source);
 
-        // Set up 
+        // Arrange 
         IMsgDTOStr mock = Substitute.For<IMsgDTOStr>();
         mock.Number.Returns(numberStr);
         mock.DateTimeOffsetStr.Returns(dateTimeOffsetStr);
         mock.Contents.Returns(contentsGood);
         mock.Source = sourceGood;
 
-        // Actual
-        IMessage actual = Substitute.For<IMessage>();
-        actual.Number.Returns(number);
+        // Arrange expected
+        IMessage expected = Substitute.For<IMessage>();
+        expected.Number.Returns(number);
+        expected.Date.Returns(date);
+        expected.Contents.Returns(contentsGood);
+        expected.Source = sourceGood;
+
+        // Act
+        var actual = mock.Translate();
+
+        // Assert
+        Assert.Equal();
     }
     #endregion
 

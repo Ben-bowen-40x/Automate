@@ -1,4 +1,4 @@
-using Automate.Translation.ValueObjectsTranslations;
+using Automate.Translation.ValueObjectTranslate;
 
 namespace Automate.Translation.Test;
 
@@ -90,24 +90,24 @@ public class ConvertPrimitiveTests
     #region ConvertDateTimeOffset(string?, DateTimeDefault)
     [
         Theory,
-        InlineData(null, DateTimeDefault.Min, null),
-        InlineData(null, DateTimeDefault.Max, null), // Year, month, day, hour, minute, second, offset(hours)
-        InlineData("2025-01-06T19:45:03-08:00", DateTimeDefault.Min, new int[] { 2025, 01, 06, 19, 45, 03, -8 }),
-        InlineData("2025-01-06T19:45:03-08:00", DateTimeDefault.Max, new int[] { 2025, 01, 06, 19, 45, 03, -8 }),
-        InlineData("2024-12-14T07:03:15-07:00", DateTimeDefault.Min, new int[] { 2024, 12, 14, 07, 03, 15, -7 }),
-        InlineData("2024-12-14T07:03:15-07:00", DateTimeDefault.Max, new int[] { 2024, 12, 14, 07, 03, 15, -7 }),
-        InlineData("2025-01-06 19:45:03-08:00", DateTimeDefault.Min, new int[] { 2025, 01, 06, 19, 45, 03, -8 }),
-        InlineData("2025-01-06 19:45:03-08:00", DateTimeDefault.Max, new int[] { 2025, 01, 06, 19, 45, 03, -8 }),
-        InlineData("2024-12-14 07:03:15-07:00", DateTimeDefault.Min, new int[] { 2024, 12, 14, 07, 03, 15, -7 }),
-        InlineData("2024-12-14 07:03:15-07:00", DateTimeDefault.Max, new int[] { 2024, 12, 14, 07, 03, 15, -7 }),
+        InlineData(null, DateDefault.Min, null),
+        InlineData(null, DateDefault.Max, null), // Year, month, day, hour, minute, second, offset(hours)
+        InlineData("2025-01-06T19:45:03-08:00", DateDefault.Min, new int[] { 2025, 01, 06, 19, 45, 03, -8 }),
+        InlineData("2025-01-06T19:45:03-08:00", DateDefault.Max, new int[] { 2025, 01, 06, 19, 45, 03, -8 }),
+        InlineData("2024-12-14T07:03:15-07:00", DateDefault.Min, new int[] { 2024, 12, 14, 07, 03, 15, -7 }),
+        InlineData("2024-12-14T07:03:15-07:00", DateDefault.Max, new int[] { 2024, 12, 14, 07, 03, 15, -7 }),
+        InlineData("2025-01-06 19:45:03-08:00", DateDefault.Min, new int[] { 2025, 01, 06, 19, 45, 03, -8 }),
+        InlineData("2025-01-06 19:45:03-08:00", DateDefault.Max, new int[] { 2025, 01, 06, 19, 45, 03, -8 }),
+        InlineData("2024-12-14 07:03:15-07:00", DateDefault.Min, new int[] { 2024, 12, 14, 07, 03, 15, -7 }),
+        InlineData("2024-12-14 07:03:15-07:00", DateDefault.Max, new int[] { 2024, 12, 14, 07, 03, 15, -7 }),
     ]
-    public void ConvertDateStrToDateTimeOffset(string? date, DateTimeDefault def, int[]? expectedInts)
+    public void ConvertDateStrToDateTimeOffset(string? date, DateDefault def, int[]? expectedInts)
     {
         DateTimeOffset expected = expectedInts is not null
             ? new DateTimeOffset(
                 new DateTime(expectedInts[0], expectedInts[1], expectedInts[2], expectedInts[3], expectedInts[4], expectedInts[5]),
                 TimeSpan.FromHours(expectedInts[6]))
-            : def switch { DateTimeDefault.Max => DateTimeOffset.MaxValue, _ => DateTimeOffset.MinValue };
+            : def switch { DateDefault.Max => DateTimeOffset.MaxValue, _ => DateTimeOffset.MinValue };
 
         DateTimeOffset actual = ConvertPrimitive.ConvertDateTimeOffset(date, def);
         Assert.Equal(expected, actual);
@@ -118,27 +118,27 @@ public class ConvertPrimitiveTests
     [
         Theory,
         // year, month, day, hour, minute, second, offset(hours)
-        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -4 }, TimeZoneEnum.Eastern, DateTimeDefault.Min),
-        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -4 }, TimeZoneEnum.Eastern, DateTimeDefault.Max),
-        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -5 }, TimeZoneEnum.Eastern, DateTimeDefault.Min),
-        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -5 }, TimeZoneEnum.Eastern, DateTimeDefault.Max),
+        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -4 }, TimeZoneEnum.Eastern, DateDefault.Min),
+        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -4 }, TimeZoneEnum.Eastern, DateDefault.Max),
+        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -5 }, TimeZoneEnum.Eastern, DateDefault.Min),
+        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -5 }, TimeZoneEnum.Eastern, DateDefault.Max),
         // year, month, day, hour, minute, second, offset(hours)
-        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -5 }, TimeZoneEnum.Central, DateTimeDefault.Min),
-        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -5 }, TimeZoneEnum.Central, DateTimeDefault.Max),
-        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -6 }, TimeZoneEnum.Central, DateTimeDefault.Min),
-        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -6 }, TimeZoneEnum.Central, DateTimeDefault.Max),
+        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -5 }, TimeZoneEnum.Central, DateDefault.Min),
+        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -5 }, TimeZoneEnum.Central, DateDefault.Max),
+        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -6 }, TimeZoneEnum.Central, DateDefault.Min),
+        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -6 }, TimeZoneEnum.Central, DateDefault.Max),
         // year, month, day, hour, minute, second, offset(hours)
-        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -6 }, TimeZoneEnum.Mountain, DateTimeDefault.Min),
-        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -6 }, TimeZoneEnum.Mountain, DateTimeDefault.Max),
-        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -7 }, TimeZoneEnum.Mountain, DateTimeDefault.Min),
-        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -7 }, TimeZoneEnum.Mountain, DateTimeDefault.Max),
+        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -6 }, TimeZoneEnum.Mountain, DateDefault.Min),
+        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -6 }, TimeZoneEnum.Mountain, DateDefault.Max),
+        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -7 }, TimeZoneEnum.Mountain, DateDefault.Min),
+        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -7 }, TimeZoneEnum.Mountain, DateDefault.Max),
         // year, month, day, hour, minute, second, offset(hours)
-        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -7 }, TimeZoneEnum.Pacific, DateTimeDefault.Min),
-        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -7 }, TimeZoneEnum.Pacific, DateTimeDefault.Max),
-        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -8 }, TimeZoneEnum.Pacific, DateTimeDefault.Min),
-        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -8 }, TimeZoneEnum.Pacific, DateTimeDefault.Max),
+        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -7 }, TimeZoneEnum.Pacific, DateDefault.Min),
+        InlineData(new int[] { 2024, 06, 09, 05, 03, 59, -7 }, TimeZoneEnum.Pacific, DateDefault.Max),
+        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -8 }, TimeZoneEnum.Pacific, DateDefault.Min),
+        InlineData(new int[] { 2025, 01, 04, 15, 53, 02, -8 }, TimeZoneEnum.Pacific, DateDefault.Max),
     ]
-    public void ConvertNullableStringToDateTimeOffset(int[] input, TimeZoneEnum zone, DateTimeDefault def)
+    public void ConvertNullableStringToDateTimeOffset(int[] input, TimeZoneEnum zone, DateDefault def)
     {
         DateTime newDate = new(input[0], input[1], input[2], input[3], input[4], input[5]);
         DateTimeOffset expected = new(newDate - TimeSpan.FromHours(input[6]), TimeSpan.FromSeconds(0));
@@ -150,17 +150,17 @@ public class ConvertPrimitiveTests
     #region ConvertDate(string? date, string? time, DateTimeDefault)
     [
         Theory,
-        InlineData(null, null, DateTimeDefault.Min, false),
-        InlineData(null, "6:35 PM utc", DateTimeDefault.Max, false),
-        InlineData(null, "6:35 PM utc", DateTimeDefault.Min, false),
-        InlineData("February 3, 2025", null, DateTimeDefault.Min, true),
-        InlineData("February 3, 2025", null, DateTimeDefault.Max, true),
-        InlineData("2024-02-03", "15:07:12 UTC", DateTimeDefault.Min, true),
-        InlineData("2024-02-03", "15:07:12 UTC", DateTimeDefault.Max, true),
-        InlineData("2/4/2025", "6:35 PM utc", DateTimeDefault.Min, true),
-        InlineData("2/4/2025", "6:35 PM utc", DateTimeDefault.Max, true),
+        InlineData(null, null, DateDefault.Min, false),
+        InlineData(null, "6:35 PM utc", DateDefault.Max, false),
+        InlineData(null, "6:35 PM utc", DateDefault.Min, false),
+        InlineData("February 3, 2025", null, DateDefault.Min, true),
+        InlineData("February 3, 2025", null, DateDefault.Max, true),
+        InlineData("2024-02-03", "15:07:12 UTC", DateDefault.Min, true),
+        InlineData("2024-02-03", "15:07:12 UTC", DateDefault.Max, true),
+        InlineData("2/4/2025", "6:35 PM utc", DateDefault.Min, true),
+        InlineData("2/4/2025", "6:35 PM utc", DateDefault.Max, true),
     ]
-    public void ConvertDateStrToDateTime(string? date, string? time, DateTimeDefault def, bool success)
+    public void ConvertDateStrToDateTime(string? date, string? time, DateDefault def, bool success)
     {
         DateTime result = ConvertPrimitive.ConvertDate(date, time, def);
 
@@ -179,14 +179,14 @@ public class ConvertPrimitiveTests
     #region ConvertDate(string? date, DateTimeDefault) 
     [
         Theory,
-        InlineData(null, DateTimeDefault.Min),
-        InlineData(null, DateTimeDefault.Max),
-        InlineData("February 3, 2025 15:07:12", DateTimeDefault.Min),
-        InlineData("February 3, 2025 15:07:12", DateTimeDefault.Max),
-        InlineData("2024-02-03, 2024 12:03:59", DateTimeDefault.Min),
-        InlineData("2024-02-03, 2024 12:03:59", DateTimeDefault.Max),
+        InlineData(null, DateDefault.Min),
+        InlineData(null, DateDefault.Max),
+        InlineData("February 3, 2025 15:07:12", DateDefault.Min),
+        InlineData("February 3, 2025 15:07:12", DateDefault.Max),
+        InlineData("2024-02-03, 2024 12:03:59", DateDefault.Min),
+        InlineData("2024-02-03, 2024 12:03:59", DateDefault.Max),
     ]
-    public void ConvertNullableStringToDateTime(string? input, DateTimeDefault def)
+    public void ConvertNullableStringToDateTime(string? input, DateDefault def)
     {
         DateTime actual = ConvertPrimitive.ConvertDate(input, def);
         DateTime expected = DateTime.TryParse(input, out DateTime d) ? d : def.DateTimeDefault();

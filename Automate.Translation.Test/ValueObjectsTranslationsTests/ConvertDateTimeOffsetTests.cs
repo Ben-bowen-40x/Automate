@@ -1,4 +1,4 @@
-﻿using Automate.Translation.ValueObjectsTranslations;
+﻿using Automate.Translation.ValueObjectTranslate;
 
 namespace Automate.Translation.Test.ValueObjectsTranslationsTests;
 
