@@ -9,212 +9,78 @@ namespace Automate.Translation.Test;
 
 public class MessageInterfaceTranslateTest
 {
-    #region IMsgDTONumberLongTranslationTest
+    #region VerifyNumber(string? source, string? stringNum)
     [
         Theory,
-        InlineData(
-        // Phone Number
-        9876543210,
-        // Date:: year, month, day, hour, minute, second
-        new int[] { 2024, 7, 12, 10, 45, 0 },
-        // Contents
-        "These are contents, with all kinds of \n weird stuff in it \n\"In fact, you might wonder why there are weird stuff in here.\" That is all.",
-        // Source
-        "z:This is the source")
+        InlineData(null, null, 0),
+        InlineData(null, "8015558142", 0),
+        InlineData("null", "8015558142", 8015558142),
     ]
-    public void IMsgDTONumberLongTranslationTest(long number, int[] dateInts, string? contents, string? source)
+    public void VerifyNumberTest(string? source, string? stringNum, long expected)
     {
-        // Arrange primitives
-        DateTimeOffset date = new(ConvertDateTimeOffsetTests.MakeDateFromIntArray(dateInts[0], dateInts[1], dateInts[2], dateInts[3], dateInts[4], dateInts[5]), TimeSpan.FromHours(0));
-        var contentsGood = MessageInterfaceTranslate.VerifyContents(contents);
-        var sourceGood = MessageInterfaceTranslate.VerifySource(source);
-        var phNumber = PhoneNumberTranslate.Translate(number);
-
-        // Arrange
-        IMsgDTONumberLong mock = Substitute.For<IMsgDTONumberLong>();
-        mock.Number.Returns(number);
-        mock.Date.Returns(date);
-        mock.Contents.Returns(contentsGood);
-        mock.Source.Returns(sourceGood);
-
-        // Arrange expected value
-        IMessage expected = Substitute.For<IMessage>();
-        expected.Number.Returns(phNumber);
-        expected.Date.Returns(date);
-        expected.Contents.Returns(contentsGood);
-        expected.Source.Returns(sourceGood);
+        // Assemble
+        PhoneNumber expectedPh = PhoneNumberTranslate.Translate(expected);
 
         // Act
-        var actual = mock.Translate();
+        PhoneNumber actual = MessageInterfaceTranslate.VerifyNumber(source, stringNum);
 
         // Assert
-        Assert.Equal(expected.Number.Number, actual.Number.Number);
-        Assert.Equal(expected.Date, actual.Date);
-        Assert.Equal(expected.Contents, actual.Contents);
-        Assert.Equal(expected.Source, actual.Source);
+        Assert.Equal(expectedPh.Number, actual.Number);
     }
     #endregion
 
-    #region IMsgStrDateTimeOffsetTranslationTest
+    #region VerifyContents(string? contents)
     [
         Theory,
-        InlineData(
-        // Phone Number
-        "9876543210",
-        // Date:: year, month, day, hour, minute, second
-        new int[] { 2024, 7, 12, 10, 45, 0 },
-        // Contents
-        "These are contents, with all kinds of\nweird stuff in it\n\"In fact, you might wonder why there are weird stuff in here.\" That is all.",
-        // Source
-        "z:This is the source")
+        InlineData(null, ""),
+        InlineData("null", "null"),
+        InlineData("This, is, \n,\ncontent", "This| is| content"),
     ]
-    public void IMsgStrDateTimeOffsetTranslationTest(string number, int[] dateInts, string? contents, string? source)
+    public void VerifyContentsTest(string? contents, string expected)
     {
-        // Arrange primitive conversion
-        PhoneNumber numberConverted = PhoneNumberTranslate.Translate(number);
-        DateTimeOffset date = new(ConvertDateTimeOffsetTests.MakeDateFromIntArray(dateInts[0], dateInts[1], dateInts[2], dateInts[3], dateInts[4], dateInts[5]));
-        string contentsGood = MessageInterfaceTranslate.VerifyContents(contents);
-        string sourceGood = MessageInterfaceTranslate.VerifySource(source);
-        PhoneNumber phNumber = PhoneNumberTranslate.Translate(number);
-
-        // Arrange
-        IMsgStrDateTimeOffset mock = Substitute.For<IMsgStrDateTimeOffset>();
-        mock.Number.Returns(number);
-        mock.Date.Returns(date);
-        mock.Contents.Returns(contentsGood);
-        mock.Source.Returns(sourceGood);
-
-        // Arrange expected
-        IMessage expected = Substitute.For<IMessage>();
-        expected.Number.Returns(numberConverted);
-        expected.Date.Returns(date);
-        expected.Contents.Returns(contentsGood);
-        expected.Source.Returns(sourceGood);
-
-        // Act
-        IMessage actual = mock.Translate();
+        // Assemble & Act
+        var actual = MessageInterfaceTranslate.VerifyContents(contents);
 
         // Assert
-        Assert.Equal(expected.Number.Number, actual.Number.Number);
-        Assert.Equal(expected.Date, actual.Date);
-        Assert.Equal(expected.Contents, actual.Contents);
-        Assert.Equal(expected.Source, actual.Source);
+        Assert.Equal(expected, actual);
     }
     #endregion
 
-    #region IMsgNoTimeStrUtcTranslationTest
+    #region VerifySource(string? source)
     [
         Theory,
-        InlineData(
-        // Phone Number
-        "9876543210",
-        // Date:: year, month, day, hour, minute, second
-        "2024-7-12 10:45:00",
-        // Contents
-        "These are contents, with all kinds of\nweird stuff in it\n\"In fact, you might wonder why there are weird stuff in here.\" That is all.",
-        // Source
-        "z:This is the source")
+        InlineData(null, ""),
+        InlineData("z:", ""),
+        InlineData("z:Thisisthesource", "Thisisthesource"),
+        InlineData("z:This,is,the\nsource", "Thisisthesource"),
     ]
-    public void IMsgNoTimeStrUtcTranslationTest(string numberStr, string dateTimeStr, string contents, string source)
+    public void VerifySourceTest_NoComponent(string? source, string expected)
     {
-        // Arrange Primitives
-        PhoneNumber number = PhoneNumberTranslate.Translate(numberStr);
-        DateTime interDate = ConvertPrimitive.ConvertDate(dateTimeStr, null, DateDefault.Min);
-        DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(interDate, TimeSpan.FromTicks(0)); // This type is already in UTC
-        string contentsGood = MessageInterfaceTranslate.VerifyContents(contents);
-        string sourceGood = MessageInterfaceTranslate.VerifySource(source);
-
-        // Arrange 
-        IMsgNoTimeStrUtc mock = Substitute.For<IMsgNoTimeStrUtc>();
-        mock.NumberStr.Returns(numberStr);
-        mock.DateTimeStr.Returns(dateTimeStr);
-        mock.Contents.Returns(contentsGood);
-        mock.Source.Returns(sourceGood);
-
-        // Arrange expected
-        IMessage expected = Substitute.For<IMessage>();
-        expected.Number.Returns(number);
-        expected.Date.Returns(date);
-        expected.Contents.Returns(contentsGood);
-        expected.Source = sourceGood;
-
-        // Act
-        var actual = mock.Translate();
+        // Assemble & Act
+        var actual = MessageInterfaceTranslate.VerifySource(source);
 
         // Assert
-        Assert.Equal(expected.Number.Number, actual.Number.Number);
-        Assert.Equal(expected.Date, actual.Date);
-        Assert.Equal(expected.Contents, actual.Contents);
-        Assert.Equal(expected.Source, actual.Source);
+        Assert.Equal(expected, actual);
     }
     #endregion
-
-    #region IMsgDTOStrTranslationTest
+    
+    #region VerifySource(string? source, SourceComponent component)
     [
         Theory,
-        InlineData(
-        // Phone Number
-        "9876543210",
-        // Date:: year, month, day, hour, minute, second
-        "2024-7-12 10:45:00",
-        // Contents
-        "These are contents, with all kinds of\nweird stuff in it\n\"In fact, you might wonder why there are weird stuff in here.\" That is all.",
-        // Source
-        "z:This is the source",
-        DateDefault.Min)
+        InlineData(null, SourceComponent.Gclid, ""),
+        InlineData(null, SourceComponent.Msclid, ""),
+        InlineData("https://thisisawebsite.com/thisisaurlthingy?msclid=thisisthemsclickid/stuff/things/stuffandthings", SourceComponent.Msclid, "thisisthemsclickid"),
+        InlineData("https://thisisawebsite.com/thisisaurlthingy?msclid=thisisthemsclickid", SourceComponent.Msclid, "thisisthemsclickid"),
+        InlineData("https://thisisawebsite.com/thisisaurlthingy?gclid=thisisthegclickid/stuff/things/stuffandthings", SourceComponent.Gclid, "thisisthegclickid"),
+        InlineData("https://thisisawebsite.com/thisisaurlthingy?gclid=thisisthegclickid", SourceComponent.Gclid, "thisisthegclickid"),
     ]
-    public void IMsgDTOStrTranslationTest(string numberStr, string dateTimeOffsetStr, string contents, string source, DateDefault dtDefault)
+    public void VerifySourceTest(string? source, SourceComponent component, string expected)
     {
-        // Arrange primitives
-        PhoneNumber number = PhoneNumberTranslate.Translate(numberStr);
-        DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(dateTimeOffsetStr, dtDefault);
-        string contentsGood = MessageInterfaceTranslate.VerifyContents(contents);
-        string sourceGood = MessageInterfaceTranslate.VerifySource(source);
-
-        // Arrange 
-        IMsgDTOStr mock = Substitute.For<IMsgDTOStr>();
-        mock.Number.Returns(numberStr);
-        mock.DateTimeOffsetStr.Returns(dateTimeOffsetStr);
-        mock.Contents.Returns(contentsGood);
-        mock.Source = sourceGood;
-
-        // Arrange expected
-        IMessage expected = Substitute.For<IMessage>();
-        expected.Number.Returns(number);
-        expected.Date.Returns(date);
-        expected.Contents.Returns(contentsGood);
-        expected.Source = sourceGood;
-
-        // Act
-        var actual = mock.Translate();
+        // Assemble & Act
+        var actual = MessageInterfaceTranslate.VerifySource(source, component);
 
         // Assert
-        Assert.Equal();
+        Assert.Equal(expected, actual);
     }
     #endregion
-
-    #region IMsgDTOStrIsolateSourceTranslationTest
-    [
-        Theory,
-        InlineData()
-    ]
-    public void IMsgDTOStrIsolateSourceTranslationTest() { }
-    #endregion
-
-    #region IMsgDTOStrNonEmptySourceTranslationTest
-    [
-        Theory,
-        InlineData()
-    ]
-    public void IMsgDTOStrNonEmptySourceTranslationTest() { }
-    #endregion
-
-    #region IMsgZoneEnumStrTranslationTest
-    [
-        Theory,
-        InlineData()
-    ]
-    public void IMsgZoneEnumStrTranslationTest() { }
-    #endregion
-
 }

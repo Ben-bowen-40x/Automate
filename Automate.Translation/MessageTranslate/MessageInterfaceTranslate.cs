@@ -2,6 +2,7 @@
 using Automate.Translation.PhoneNumTranslate;
 using Automate.Translation.ValueObjectsTranslations;
 using Automate.Translation.ValueObjectTranslate;
+using System.Text.RegularExpressions;
 
 namespace Automate.Translation.MessageTranslate;
 public static class MessageInterfaceTranslate
@@ -12,6 +13,7 @@ public static class MessageInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
+    // No need to test; all components are tested elsewhere
     public static IMessage Translate(this IMsgDTONumberLong entity)
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
@@ -27,6 +29,7 @@ public static class MessageInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
+    // No need to test; all components are tested elsewhere
     public static IMessage Translate(this IMsgStrDateTimeOffset entity)
     {
         PhoneNumber num = PhoneNumberTranslate.Translate(entity.Number);
@@ -42,6 +45,7 @@ public static class MessageInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
+    // No need to test; all components are tested elsewhere
     public static IMessage Translate(this IMsgNoTimeStrUtc entity)
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.NumberStr);
@@ -59,6 +63,7 @@ public static class MessageInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
+    // No need to test; all components are tested elsewhere
     public static IMessage Translate(this IMsgDTOStr entity)
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
@@ -74,6 +79,7 @@ public static class MessageInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
+    // No need to test; all components are tested elsewhere
     public static IMessage Translate(this IMsgDTOStrIsolateSource entity)
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.NumberStr);
@@ -89,10 +95,10 @@ public static class MessageInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
+    // No need to test; all components are tested elsewhere
     public static IMessage Translate(this IMsgDTOStrNonEmptySource entity)
     {
-        // This particular execution is uninterested in records without a source, hence the additional calculation here
-        PhoneNumber number = string.IsNullOrWhiteSpace(entity.Source) ? PhoneNumberTranslate.Default : PhoneNumberTranslate.Translate(entity.NumberStr);
+        PhoneNumber number = VerifyNumber(entity.Source, entity.NumberStr);
         DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.DateTimeOffsetStr, DateDefault.Min);
         string contents = VerifyContents(entity.Contents);
         string source = VerifySource(entity.Source, entity.Separator);
@@ -105,6 +111,7 @@ public static class MessageInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
+    // No need to test; all components are tested elsewhere
     public static IMessage Translate(this IMsgZoneEnumStr entity)
     {
         DateTimeOffset start = ConvertPrimitive.ConvertDateTimeOffset(entity.Date, entity.TimeZone, DateDefault.Min);
@@ -118,6 +125,10 @@ public static class MessageInterfaceTranslate
     #endregion
 
     #region Verifications
+    internal static PhoneNumber VerifyNumber(string? source, string? stringNum)
+    {
+        return string.IsNullOrWhiteSpace(source) ? PhoneNumberTranslate.Default : PhoneNumberTranslate.Translate(stringNum);
+    }
     internal static string VerifyContents(string? contents)
     {
         return string.IsNullOrWhiteSpace(contents)
@@ -126,24 +137,21 @@ public static class MessageInterfaceTranslate
     }
     internal static string VerifySource(string? source)
     {
-        var sourcer = string.IsNullOrWhiteSpace(source)
+        string sourcer = string.IsNullOrWhiteSpace(source)
             ? string.Empty
             : source;
-        var removal = "z:"; // If this gets to be a lot, it might be worth using REGEX instead 
-        return sourcer.ToLower().Replace(removal, string.Empty);
+        string removal = "z:";
+        string replaced = sourcer.Replace(removal, null); 
+        string result = TSH.ReplaceCsvAwkward(replaced, string.Empty);
+        return result;
     }
-    private static string VerifySource(string? source, SourceComponent component)
+    internal static string VerifySource(string? source, SourceComponent component)
     {
-        var separator = component switch
-        {
-            SourceComponent.Gclid => "gclid=",
-            SourceComponent.Msclid => "msclid=",
-            _ => throw new ArgumentException($"The {nameof(SourceComponent)} attribute has not been created for the following component separator:\n{component}")
-        };
-        var verified = VerifySource(source);
-        var result = verified.Contains(separator)
-            ? verified.Split(separator)[1].Split('/')[0]
-            : verified;
+        string separator = component.ToString().ToLower() + "=";
+        string verified = VerifySource(source);
+        bool hasComponent = verified.Contains(separator);
+        string isolation = hasComponent ? verified.Split(separator)[1] : verified;
+        string result = hasComponent ? isolation.Split('/')[0] : isolation;
         return result;
     }
     #endregion
