@@ -22,7 +22,6 @@ public class MessageService_Test(IDwhTestSettings settings)
         // NOT gettexts NOT querydb
         InlineData(false, false, MsgLeads),
 
-
         // Gettexts AND querydb
         InlineData(true, true, CctLeads),
         // Gettexts NOT querydb

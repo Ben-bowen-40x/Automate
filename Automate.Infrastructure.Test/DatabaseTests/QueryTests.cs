@@ -5,6 +5,7 @@ namespace Automate.Infrastructure.Test.DatabaseTests;
 
 public class QueryTests
 {
+    #region QueryClassProperlyParsesQueryStrings
     [
         Theory,
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings order by otherthings asc"),
@@ -38,6 +39,9 @@ public class QueryTests
             Assert.Contains(query, ex.Message); // Asserts that the query is contained in the exception message
         }
     }
+    #endregion
+
+    #region QueryClass_Setters_ProperlyAddComponents
     [
     Theory,
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one group by stuffandthings, thingsandstuff, andstuffthings order by otherthings asc", "where stuffandthings > 123456789 and otherstuffandthings < 123456789", Query.QueryType.Where, "select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings order by otherthings asc"),
@@ -64,4 +68,5 @@ public class QueryTests
         Assert.Contains(addition.ToLower(), q.QueryString.ToLower());
         Assert.Equal(expected.ToLower() + " ", q.QueryString.ToLower());
     }
+    #endregion
 }
