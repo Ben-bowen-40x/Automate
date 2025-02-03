@@ -2,7 +2,6 @@
 using Automate.Translation.PhoneNumTranslate;
 using Automate.Translation.ValueObjectsTranslations;
 using Automate.Translation.ValueObjectTranslate;
-using System.Text.RegularExpressions;
 
 namespace Automate.Translation.MessageTranslate;
 public static class MessageInterfaceTranslate
