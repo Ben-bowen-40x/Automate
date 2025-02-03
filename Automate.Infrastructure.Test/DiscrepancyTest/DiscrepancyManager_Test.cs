@@ -14,7 +14,10 @@ public class DiscrepancyManager_Test
         _settings = new InfraTestConfiguration().TestSettings;
     }
     private readonly IDwhTestSettings _settings;
-    [Fact(Skip = "This test is being deprecated")]
+    [
+        Fact
+        (Skip = "This test is being deprecated")
+    ]
     public void DiscrepancyManager_ExecutesProperly()
     {
         // Log this instance as a test
