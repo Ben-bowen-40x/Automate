@@ -18,7 +18,7 @@ public class MessageService_Test
     private const string CctLeads = "PNContactForms.csv";
     [
         Theory
-        (Skip = "This test is currently not passing")
+        (Skip = "This test is being deprecated")
         ,
         // Gettexts AND querydb
         InlineData(true, true, MsgLeads),
