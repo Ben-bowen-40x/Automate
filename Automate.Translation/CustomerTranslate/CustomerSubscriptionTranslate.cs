@@ -28,6 +28,7 @@ public static class CustomerSubscriptionTranslate
 
         // Retrieve customer info from the data
         ICustomerSubscription customer = new CustomerSubscription(entity.CustomerID, entity.SubId, entity.Date, new(subStartDate), number, PhoneNumberTranslate.Default, new(custCxlDate), new(subCancelDate), entity.SubIsActive, entity.SubIsActive, entity.CompletedInitial, entity.ContractValue, sellers);
+
         return customer;
     }
 
@@ -41,7 +42,8 @@ public static class CustomerSubscriptionTranslate
         PhoneNumber number = entity.Number.Translate();
         PhoneNumber number2 = entity.Number2.Translate();
         string sellers = VerifySeller(entity.Sellers);
-        return new CustomerSubscription(entity.CustomerId, entity.SubscriptionId, entity.Date, entity.SubscriptionStartDate, number, number2, entity.CustomerCancelDate, entity.SubscriptionCancelDate, entity.CustomerActive, entity.SubscriptionActive, entity.InitialCompleted, entity.DoubleValue, sellers);
+        CustomerSubscription result = new(entity.CustomerId, entity.SubscriptionId, entity.Date, entity.SubscriptionStartDate, number, number2, entity.CustomerCancelDate, entity.SubscriptionCancelDate, entity.CustomerActive, entity.SubscriptionActive, entity.InitialCompleted, entity.DoubleValue, sellers);
+        return result;
     }
 
     /// <summary>
@@ -114,6 +116,7 @@ public static class CustomerSubscriptionTranslate
         return new CustomerSubscription(entity.CustomerId, entity.SubscriptionId, date, subscriptionStartDate, number1, number2, customerCancelDate, subscriptionCancelDate, customerActive, subscriptionActive, initialCompleted, entity.ContractValue, sellers);
     }
 
+    #region Internal
     internal static string VerifySeller(params string?[] sellersArr)
     {
         string sellers;
@@ -125,4 +128,5 @@ public static class CustomerSubscriptionTranslate
             : string.Empty;
         return sellers;
     }
+    #endregion
 }

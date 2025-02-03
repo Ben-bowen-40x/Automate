@@ -12,6 +12,7 @@ public static class CallInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns><see cref="ICallRecord"/> with all the proper values, based on the given <paramref name="entity"/></returns>
+    // Tests are unnecessary because this method's components are tested elsewhere
     public static ICallRecord Translate(this ICallDateTimeInUTC entity)
     {
         bool billable = ConvertPrimitive.ConvertBool(entity.Billable);
@@ -26,6 +27,7 @@ public static class CallInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns><see cref="ICallRecord"/> with all the proper values, based on the given <paramref name="entity"/></returns>
+    // Tests are unnecessary because this method's components are tested elsewhere
     public static ICallRecord Translate(this ICallType entity)
     {
         PhoneNumber number = entity.Number.Translate();
@@ -38,6 +40,7 @@ public static class CallInterfaceTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns><see cref="ICallRecord"/> with all the proper values, based on the given <paramref name="entity"/></returns>
+    // Tests are unnecessary because this method's components are tested elsewhere
     public static ICallRecord Translate(this ICallBillableStrNumberType entity)
     {
         PhoneNumber number = entity.Number.Translate();

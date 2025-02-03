@@ -10,6 +10,7 @@ public static class ContactsTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
+    // Testing is unncessary because the components of this method are tested elsewhere
     public static Contact Translate(this IContactsEntity entity)
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Phone1);
