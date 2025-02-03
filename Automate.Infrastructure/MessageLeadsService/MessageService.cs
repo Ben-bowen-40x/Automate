@@ -76,13 +76,11 @@ public class MessageService(IDwhSettings settings) : IMessageService
         List<CallRecordJsonReader> localCalls = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
-        IEnumerable<ICallRecord> filteredCalls = localCalls
+        List<ICallRecord> filteredCalls = localCalls
             .Select(c => c.Translate())
-            .Where(c =>
-                msgNums
-                .Contains(c.Number.Number)
-             );
-        return filteredCalls.ToList();
+            .Where(c => msgNums.Contains(c.Number.Number))
+            .ToList();
+        return filteredCalls;
     }
 
     public List<ICallRecord> GetCallRecords(string callLoc)

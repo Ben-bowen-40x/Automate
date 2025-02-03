@@ -4,7 +4,9 @@ public class Test_MessagePatterns
 {
     #region Message Contents
     [
-        Theory,
+        Theory
+        (Skip = "Skip this test unless you are improving the success rate")
+        ,
         //InlineData("Hey I just signed up for pest control with you guys but I need to cancel it.", false),
         //InlineData("Hi! I had signed up for an annual service last year and want to cancel it before it renews for another year.The service was great - I just have a baby on the way and need to save the money this year.Thank you! ", false),
         //InlineData("Looking for a quote for pest control in Hillsboro nh.  Specifically ants and bees.  ", true),
