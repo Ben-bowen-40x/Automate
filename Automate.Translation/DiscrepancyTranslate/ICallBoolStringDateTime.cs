@@ -1,6 +1,6 @@
 ﻿namespace Automate.Translation.DiscrepancyTranslate;
 
-public interface IDiscrepancyEntity
+public interface ICallBoolStringDateTime
 {
     long Number { get; set; }
     DateTime? Date { get; set; }

@@ -189,6 +189,18 @@ public static class ConvertPrimitive
             : defaultDate.DateTimeDefault();
     }
 
+    /// <summary>
+    /// <para>Accepts <paramref name="entityDate"/> and <see cref="DateDefault"/> <paramref name="defaultValue"/></para>
+    /// </summary>
+    /// <param name="entityDate"></param>
+    /// <param name="defaultValue"></param>
+    /// <returns>
+    /// <see cref="DateTime"/> value representing the given <paramref name="entityDate"/>. If <paramref name="entityDate"/> is <see cref="null"/>, returns a <see cref="DateTime"/> represented by the <paramref name="defaultValue"/></returns>
+    internal static DateTime ConvertDate(DateTime? entityDate, DateDefault defaultValue)
+    {
+        return entityDate is not null ? (DateTime)entityDate! : defaultValue.DateTimeDefault();
+    }
+
     #region Private
     // This is internal because it's used in testing
     internal static DateTime DateTimeDefault(this DateDefault dateDefault) => dateDefault switch

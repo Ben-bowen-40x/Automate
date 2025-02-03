@@ -3,7 +3,7 @@ using Automate.Translation.PhoneNumTranslate;
 
 namespace Automate.Infrastructure.Retrieval;
 
-internal class DiscrepancyJson : IDiscrepancyJson
+internal class DiscrepancyJson : ICallDateTime
 {
     public IPhoneNumberTranslate? Number { get; set; }
     public bool Billable { get; set; }

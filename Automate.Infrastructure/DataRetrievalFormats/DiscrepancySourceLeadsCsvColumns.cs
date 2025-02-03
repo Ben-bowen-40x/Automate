@@ -3,7 +3,7 @@ using Automate.Translation.DiscrepancyTranslate;
 
 namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 
-public class DiscrepancySourceLeadsCsvColumns : IDiscrepancyCallTranslate
+public class DiscrepancySourceLeadsCsvColumns : IDiscrepancyBillable
 {
     // This class is used to retrieve discrepancy leads from a csv file
     // All leads from the discrepancy list MUST be billable because those are the only leads that are charged

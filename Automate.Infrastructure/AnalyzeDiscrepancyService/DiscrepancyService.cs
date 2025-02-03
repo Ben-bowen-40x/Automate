@@ -50,7 +50,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         Result<List<DiscrepancySourceLeadsCsvColumns>> result = CsvService.Parse<DiscrepancySourceLeadsCsvColumns>(fileLocation);
         List<DiscrepancyCall> calls = result.IsSuccess
             ? result.Value
-                .Select(c => c as IDiscrepancyCallTranslate)
+                .Select(c => c as IDiscrepancyBillable)
                 .Select(c => c.Translate()).ToList()
             : throw new Exception(result.Error);
 
@@ -129,7 +129,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
                 : throw new Exception(result.Error);
 
             calls = repo
-                .Select(r => r as IDiscrepancyJson)
+                .Select(r => r as ICallDateTime)
                 .Select(r => r.Translate()).ToList();
         }
         catch

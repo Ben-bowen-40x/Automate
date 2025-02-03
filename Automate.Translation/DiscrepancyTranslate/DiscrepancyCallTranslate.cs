@@ -1,52 +1,79 @@
 ﻿using Automate.Domain.ValueObjects;
+using Automate.Translation.PhoneNumTranslate;
 using Automate.Translation.ValueObjectsTranslations;
+using Automate.Translation.ValueObjectTranslate;
 
 namespace Automate.Translation.DiscrepancyTranslate;
 
 public static class DiscrepancyCallTranslate
 {
     /// <summary>
-    /// Translates <see cref="IDiscrepancyEntity"/> to <see cref="DiscrepancyCall"/>
+    /// Translates <see cref="ICallBoolStringDateTime"/> to <see cref="DiscrepancyCall"/>
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static DiscrepancyCall Translate(this IDiscrepancyEntity entity)
+    public static DiscrepancyCall Translate(this ICallBoolStringDateTime entity)
     {
-        PhoneNumber number = new(entity.Number);
-        bool billable = entity.Billable is not null && entity.Billable != string.Empty && entity.Billable == "billable";
-        DateTime date = entity.Date is not null ? (DateTime)entity.Date! : DateTime.MinValue;
-        string notes = entity.Notes is not null ? TSH.ContentsJoined(entity.Notes) : string.Empty;
-        TimeSpan duration = entity.Duration is null ? new(0) : TimeSpan.FromSeconds((double)entity.Duration!);
+        PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
+        bool billable = ConvertPrimitive.ConvertBool(entity.Billable);
+        DateTime date = ConvertPrimitive.ConvertDate(entity.Date, DateDefault.Min);
+        string notes = VerifyNotes(entity.Notes);
+        TimeSpan duration = GetDuration(entity.Duration);
+        DiscrepancyCall result = new(number, billable, date, duration, notes);
 
-        return new(number, billable, date, duration, notes);
+        return result;
     }
 
     /// <summary>
-    /// Translates <see cref="IDiscrepancyJson"/> to <see cref="DiscrepancyCall"/>
+    /// Translates <see cref="ICallDateTime"/> to <see cref="DiscrepancyCall"/>
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static DiscrepancyCall Translate(this IDiscrepancyJson entity)
+    public static DiscrepancyCall Translate(this ICallDateTime entity)
     {
-        PhoneNumber number = entity.Number is null ? new(0) : new(entity.Number.Number);
-        string notes = entity.Notes is not null ? TSH.ContentsJoined(entity.Notes) : string.Empty;
-        return new DiscrepancyCall(number, entity.Billable, entity.Date, entity.Duration, notes);
+        PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
+        string notes = VerifyNotes(entity.Notes);
+        DiscrepancyCall result = new(number, entity.Billable, entity.Date, entity.Duration, notes);
+        return result;
     }
 
     /// <summary>
-    /// Translates <see cref="IDiscrepancyCallTranslate"/> to <see cref="DiscrepancyCall"/>
+    /// Translates <see cref="IDiscrepancyBillable"/> to <see cref="DiscrepancyCall"/>
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static DiscrepancyCall Translate(this IDiscrepancyCallTranslate entity)
+    public static DiscrepancyCall Translate(this IDiscrepancyBillable entity)
     {
-        string notes = entity.Notes is null
-            ? string.Empty
-            : TSH.ContentsJoined(entity.Notes);
-        DateTime startDate = entity.Date is null | !DateTime.TryParse(entity.Date, out DateTime startResult) ? DateTime.MinValue : startResult;
-        TimeSpan duration = entity.Duration is null | !TimeSpan.TryParse(entity.Duration, out TimeSpan durationResult) ? new(0) : durationResult;
-        PhoneNumber number = entity.Number is null ? new(0) : new(entity.Number);
+        string notes = VerifyNotes(entity.Notes);
+        DateTime startDate = ConvertPrimitive.ConvertDate(entity.Date, DateDefault.Min);
+        TimeSpan duration = GetDuration(entity.Duration);
+        PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
+        DiscrepancyCall result = new(number, true, startDate, duration, notes); // Note that source leads are always billable
 
-        return new(number, true, startDate, duration, notes); // Note that source leads are always billable
+        return result;
     }
+
+    #region Internal
+    internal static string VerifyNotes(string? note)
+    {
+        return note is not null
+            ? TSH.ContentsJoined(note)
+            : string.Empty;
+    }
+
+    internal static TimeSpan GetDuration(string? duration)
+    {
+        int seconds = int.TryParse(duration, out int secondsValue) ? secondsValue : 0;
+        return duration is null || !TimeSpan.TryParse(duration, out TimeSpan durationResult) || seconds > 0
+            ? GetDuration(seconds)
+            : durationResult;
+    }
+
+    internal static TimeSpan GetDuration(int? duration)
+    {
+        return duration is null
+            ? new(0)
+            : TimeSpan.FromSeconds((double)duration!);
+    }
+    #endregion
 }

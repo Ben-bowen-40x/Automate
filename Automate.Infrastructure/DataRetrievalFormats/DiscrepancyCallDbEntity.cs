@@ -5,7 +5,7 @@ using Automate.Translation.DiscrepancyTranslate;
 namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 
 [Keyless]
-public class DiscrepancyCallDbEntity : IDiscrepancyEntity
+public class DiscrepancyCallDbEntity : ICallBoolStringDateTime
 {
     [Column("contact_number_clean")]
     public long Number { get; set; }

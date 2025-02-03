@@ -2,7 +2,7 @@
 
 namespace Automate.Translation.DiscrepancyTranslate;
 
-public interface IDiscrepancyJson
+public interface ICallDateTime
 {
     IPhoneNumberTranslate? Number { get; set; }
     bool Billable { get; set; }
