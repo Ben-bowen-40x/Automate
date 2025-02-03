@@ -11,7 +11,7 @@ public static class CallInterfaceTranslate
     /// Extension Method Translates from <see cref="ICallDateTimeInUTC"/> to <see cref="ICallRecord"/>
     /// </summary>
     /// <param name="entity"></param>
-    /// <returns></returns>
+    /// <returns><see cref="ICallRecord"/> with all the proper values, based on the given <paramref name="entity"/></returns>
     public static ICallRecord Translate(this ICallDateTimeInUTC entity)
     {
         bool billable = ConvertPrimitive.ConvertBool(entity.Billable);
@@ -25,7 +25,7 @@ public static class CallInterfaceTranslate
     /// Extension method translates from <see cref="ICallType"/> to <see cref="ICallRecord"/>
     /// </summary>
     /// <param name="entity"></param>
-    /// <returns></returns>
+    /// <returns><see cref="ICallRecord"/> with all the proper values, based on the given <paramref name="entity"/></returns>
     public static ICallRecord Translate(this ICallType entity)
     {
         PhoneNumber number = entity.Number.Translate();
@@ -37,7 +37,7 @@ public static class CallInterfaceTranslate
     /// Extension methods translates <see cref="ICallBillableStrNumberType"/> to <see cref="ICallRecord"/>
     /// </summary>
     /// <param name="entity"></param>
-    /// <returns></returns>
+    /// <returns><see cref="ICallRecord"/> with all the proper values, based on the given <paramref name="entity"/></returns>
     public static ICallRecord Translate(this ICallBillableStrNumberType entity)
     {
         PhoneNumber number = entity.Number.Translate();
