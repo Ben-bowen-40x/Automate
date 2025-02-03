@@ -15,7 +15,7 @@ internal class ReportServiceSingleton : IReportService
     private string? _folder;
     private string Folder => _folder ??= FolderFinder.GetLocalFolder(nameof(Infrastructure), @".info\Reports");
 
-    public bool GenerateContactsReport(List<List<Contacts>> contacts, out DirectoryInfo directory, string reportDirectory = "")
+    public bool GenerateContactsReport(List<List<Contact>> contacts, out DirectoryInfo directory, string reportDirectory = "")
     {
         // Validate input string
         string report = reportDirectory == string.Empty ? Folder + @"ContactUpdate\" : reportDirectory;
@@ -33,13 +33,13 @@ internal class ReportServiceSingleton : IReportService
             {
                 string path = directory.FullName + $"ContactFile{counter++}.csv";
                 File.WriteAllText(path, _errorMessage);
-                CsvService.Write<Contacts, ContactsMap>(path, contact);
+                CsvService.Write<Contact, ContactsMap>(path, contact);
             }
         }
         catch { return false; }
         return true;
     }
-    public Result<DirectoryInfo> GenerateContactsReport(List<List<Contacts>> contacts, string reportDirectory = "")
+    public Result<DirectoryInfo> GenerateContactsReport(List<List<Contact>> contacts, string reportDirectory = "")
     {
         // Validate input string
         string report = reportDirectory == string.Empty ? Folder + @"ContactUpdate\" : reportDirectory;
@@ -59,7 +59,7 @@ internal class ReportServiceSingleton : IReportService
                 File.WriteAllText(path, _errorMessage);
 
                 // TODO: Translate layer: Should it control the translation from Application/Domain objects to Infrastructure tasks?
-                CsvService.Write<Contacts, ContactsMap>(path, contact);
+                CsvService.Write<Contact, ContactsMap>(path, contact);
             }
             return directory;
         }
