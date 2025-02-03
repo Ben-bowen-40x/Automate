@@ -2,7 +2,6 @@
 using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.CsvManipulationService;
-using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.DataRetrievalFormats;
 using Automate.Infrastructure.JsonManipulationService;
 using Automate.Translation.CallTranslate;
@@ -12,17 +11,13 @@ using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.MessageLeadsReportService;
 
-public class ReportMessageService(IDwhSettings settings) : IReportMessageService
+public class ReportMessageService : IReportMessageService
 {
-    readonly RawQuery _rawQuery = new(settings);
-
     #region Pathing
     // Parent folder
     private const string _fileLoc = @".info\MessageAnalysis";
 
     // Csv File Names
-    private const string _customerRecordQuery = "MessageCustSubQuery.sql";
-    private const string _callRecordQuery = "MessageCallQuery.sql";
     private const string _messagesLocation = "MessagesToAnalyze.csv";
 
     // Json File Names
@@ -33,20 +28,6 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
     private string? loc;
     public string Loc => loc ??= FolderFinder.GetLocalFolder(nameof(Infrastructure), _fileLoc);
     private string Location(string file) => Loc + file;
-
-    #endregion
-
-    #region Query helpers
-    /// <summary>
-    /// This is for testing purposes only.
-    /// </summary>
-    internal bool QueryDbCalls { get; set; }
-    internal bool QueryDbCustomers { get; set; }
-    private DateTimeOffset _startDate = DateTimeOffset.Now - TimeSpan.FromDays(365);
-
-    // Lists for Local Repo
-    private List<ICallRecord>? _callRecordsFromRepo;
-    private List<ICustomerSubscription>? _customerRecordsFromRepo;
     #endregion
 
     #region Implementation
@@ -88,7 +69,8 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
 
         // Translate from column type to IMessage type...
         List<IMessage> msgs = messageCol
-            .Select(m => m.Convert<T, IMessage>()).ToList();
+            .Select(m => m.Convert<T, IMessage>())
+            .ToList();
 
         // Remove duplicates from message origin
         List<IMessage> uniqueMsgs = RemoveDuplicates(msgs);
@@ -164,10 +146,14 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
     /// <returns></returns>
     private static T FindFirst<T>(IList<T> items) where T : IDatedRecord
     {
-        var leastRecent = items[0];
-        foreach (var item in items)
+        T leastRecent = items[0];
+        foreach (T item in items)
         {
-            if (DateTimeOffset.Compare(item.Date, leastRecent.Date) < 0 && item.Date != DateTimeOffset.MinValue && DateTimeOffset.Compare(item.Date, Early) >= 0)
+            bool a = DateTimeOffset.Compare(item.Date, leastRecent.Date) < 0;
+            bool b = item.Date != DateTimeOffset.MinValue;
+            bool c = DateTimeOffset.Compare(item.Date, Early) >= 0;
+            bool d = a && b && c;
+            if (d)
                 leastRecent = item;
         }
         return leastRecent;
@@ -181,7 +167,7 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         List<long> numbers = msgs
             .Select(i => i.Number.Number)
             .Where(i => i != PhoneNumber.Default)
-            .Distinct() // Yes, this makes the time complexity O(N) x 3, but we'll ignore that for now
+            .Distinct() // Yes, this makes the time complexity O(3N), but it's really not that different than if we did the same thing in a loop
             .ToList(); // This must either be an array or a list because we want the Length/Count
 
         // Create a new list that contains the chronologically earliest text that matches each phone number
