@@ -128,7 +128,7 @@ public static class PathManipulation
             ".csv" => FileType.Csv,
             ".txt" => FileType.Txt,
             ".sql" => FileType.Sql,
-            _ => Result.Failure<FileType>($"The provided {nameof(FileType)} has a file extension that is unrecognized. This is the provided extension: \"{ext}\"")
+            _ => Result.Failure<FileType>($"The provided {nameof(FileType)} has a file extension that is unrecognized.\nThis is the provided extension: \"{ext}\"\nThis is the provided file:\n\"{location}\"")
         };
     }
 }
