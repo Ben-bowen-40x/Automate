@@ -21,15 +21,17 @@ public class MessageQualifier
         string name = GetFullName.GetMemberName(sender, member);
         StringLogger.AddLog($"Started {name}");
 
-        // Iterate through each message and qualify it based on the 
+        // Iterate through each message and qualify it
         List<QualifiedMessageRecord> result = new(msgs.Count);
+        LinkedList<ICallRecord> callList = new(callRecords);
+        LinkedList<ICustomerSubscription> customerList = new(customerRecords);
         foreach (IMessage msg in msgs)
         {
             // Match message with calls
-            List<ICallRecord> callMsgPhoneMatch = BillableCallsMatchingMsg(msg, callRecords);
+            List<ICallRecord> callMsgPhoneMatch = BillableCallsMatchingMsg(msg, callList);
 
             // Match message with customers to find a single matching customer record
-            List<ICustomerSubscription> matches = CustomerMatches(msg, customerRecords);
+            List<ICustomerSubscription> matches = CustomerMatches(msg, customerList);
             ICustomerSubscription match = CustomerAttributableToMsg(msg, matches, out bool couldBeBillable);
 
             // Use these lists to determine whether the message is billable and whether the message is a sales lead
@@ -66,7 +68,6 @@ public class MessageQualifier
     #endregion
 
     #region Can be tested
-    private readonly static LinkedList<int> _skip = [];
     /// <summary>
     /// <para>Finds one instance of type <see cref="ICallRecord"/> <paramref name="callRecords"/> such that it matches <paramref name="message"/></para>
     /// <para>  <see cref="ICallRecord.Billable"/> == <see cref="true"/> and <see cref="ICallRecord.Number"/> == <see cref="IMessage.Number"/></para>
@@ -76,32 +77,27 @@ public class MessageQualifier
     /// <returns>
     /// <see cref="List"/> of <see cref="ICallRecord"/>
     /// </returns>
-    internal static List<ICallRecord> BillableCallsMatchingMsg(IMessage message, List<ICallRecord> callRecords)
+    internal static List<ICallRecord> BillableCallsMatchingMsg(IMessage message, LinkedList<ICallRecord> callRecords)
     {
         // Iterate through the calls to find calls whose phone number matches the message
-        List<int> indices = [];
-        for (int i = callRecords.Count - 1; i >= 0; i--)
+        List<ICallRecord> result = new(callRecords.Count / 2); // This excessively high capacity ensures we never have an operation of O(n) complexity
+        List<ICallRecord> remove = new(callRecords.Count / 2);
+        foreach (ICallRecord record in callRecords)
         {
-            if (_skip.Contains(i))
-                continue;
-
             // If the numbers match and the call is billable, save the index of the callrecord
-            if (callRecords[i].Number.Number == message.Number.Number)
+            if (record.Number.Number == message.Number.Number)
             {
-                if (callRecords[i].Billable)
-                    indices.Add(i);
-
-                // In all cases where the numbers match, remove the call from the list of calls through which we're required to iterate
-                _skip.AddLast(i);
+                if (record.Billable)
+                    result.Add(record);
+                remove.Add(record);
             }
         }
 
-        // Use the saved indices to create the final list
-        ICallRecord[] result = new ICallRecord[indices.Count];
-        for (var i = indices.Count - 1; i >= 0; i--) // Iterate backward through the list, because the other one is also reversed
-            result[i] = callRecords[indices[i]];
+        // In all cases where the numbers match, remove the call from the list of calls through which we're required to iterate
+        foreach (var r in remove)
+            callRecords.Remove(r);
 
-        return result.ToList();
+        return result;
     }
 
     /// <summary>
@@ -112,24 +108,22 @@ public class MessageQualifier
     /// <returns>
     /// <see cref="List"/> of <see cref="ICustomerSubscription"/> that reasonably match the provided <paramref name="message"/>
     /// </returns>
-    internal static List<ICustomerSubscription> CustomerMatches(IMessage message, List<ICustomerSubscription> customerRecords)
+    internal static List<ICustomerSubscription> CustomerMatches(IMessage message, LinkedList<ICustomerSubscription> customerRecords)
     {
         // Iterate through the customer list to create a list of customers relevant to this specific message
         // Customer number must match AND customer must have become a customer before the message
         // Iterate backward through the list so that records that have been found can be removed
-        List<ICustomerSubscription> matches = [];
-        for (int i = customerRecords.Count - 1; i >= 0; i--)
+        List<ICustomerSubscription> matches = new(customerRecords.Count / 2);
+        foreach (var record in customerRecords)
         {
-            bool numberMatches = customerRecords[i].Number.Number == message.Number.Number || customerRecords[i].Number2.Number == message.Number.Number;
-            if (numberMatches)
-            {
-                // Add the matching customer to the result
-                matches.Add(customerRecords[i]);
-
-                // Remove the number of customers that have to be iterated through later
-                customerRecords.RemoveAt(i);
-            }
+            bool numberMatches = record.Number.Number == message.Number.Number || record.Number2.Number == message.Number.Number;
+            if (numberMatches) // Add the matching customer to the result
+                matches.Add(record);
         }
+
+        // Remove the number of customers that have to be iterated through later
+        foreach (var m in matches)
+            customerRecords.Remove(m);
 
         return matches;
     }
@@ -163,13 +157,13 @@ public class MessageQualifier
 
         // If there are no customer matches, then return null customer
         if (matches.Count == 0)
-            return (ICustomerSubscription)nullCustomer;
+            return nullCustomer;
 
         // At this point, we only care about customers with both dates before the message if there are no customers with at least one date after the message
         List<ICustomerSubscription> result = new(1);
         if (dAfter_sAfter.Count > 0 || dAfter_sBefore.Count > 0 || dBefore_sAfter.Count > 0)
         {
-            var firstCustAfterTxt = GetFirstCustomerAfterMsg((ICustomerSubscription)nullCustomer, dAfter_sAfter, dAfter_sBefore, dBefore_sAfter);
+            var firstCustAfterTxt = GetFirstCustomerAfterMsg(nullCustomer, dAfter_sAfter, dAfter_sBefore, dBefore_sAfter);
             result.Add(firstCustAfterTxt);
         }
         else
