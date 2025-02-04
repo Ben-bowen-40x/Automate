@@ -65,7 +65,8 @@ public class MessageQualifier
     internal static bool _test = false;
     #endregion
 
-    #region Private
+    #region Can be tested
+    private readonly static LinkedList<int> _skip = [];
     /// <summary>
     /// <para>Finds one instance of type <see cref="ICallRecord"/> <paramref name="callRecords"/> such that it matches <paramref name="message"/></para>
     /// <para>  <see cref="ICallRecord.Billable"/> == <see cref="true"/> and <see cref="ICallRecord.Number"/> == <see cref="IMessage.Number"/></para>
@@ -75,24 +76,32 @@ public class MessageQualifier
     /// <returns>
     /// <see cref="List"/> of <see cref="ICallRecord"/>
     /// </returns>
-    private static List<ICallRecord> BillableCallsMatchingMsg(IMessage message, List<ICallRecord> callRecords)
+    internal static List<ICallRecord> BillableCallsMatchingMsg(IMessage message, List<ICallRecord> callRecords)
     {
         // Iterate through the calls to find calls whose phone number matches the message
-        List<ICallRecord> result = [];
-        for (var i = callRecords.Count - 1; i >= 0; i--)
+        List<int> indices = [];
+        for (int i = callRecords.Count - 1; i >= 0; i--)
         {
-            // If the numbers match and the call is billable, Add the call to the result
+            if (_skip.Contains(i))
+                continue;
+
+            // If the numbers match and the call is billable, save the index of the callrecord
             if (callRecords[i].Number.Number == message.Number.Number)
             {
                 if (callRecords[i].Billable)
-                    result.Add(callRecords[i]);
+                    indices.Add(i);
 
                 // In all cases where the numbers match, remove the call from the list of calls through which we're required to iterate
-                callRecords.RemoveAt(i);
+                _skip.AddLast(i);
             }
         }
 
-        return result;
+        // Use the saved indices to create the final list
+        ICallRecord[] result = new ICallRecord[indices.Count];
+        for (var i = indices.Count - 1; i >= 0; i--) // Iterate backward through the list, because the other one is also reversed
+            result[i] = callRecords[indices[i]];
+
+        return result.ToList();
     }
 
     /// <summary>
@@ -103,7 +112,7 @@ public class MessageQualifier
     /// <returns>
     /// <see cref="List"/> of <see cref="ICustomerSubscription"/> that reasonably match the provided <paramref name="message"/>
     /// </returns>
-    private static List<ICustomerSubscription> CustomerMatches(IMessage message, List<ICustomerSubscription> customerRecords)
+    internal static List<ICustomerSubscription> CustomerMatches(IMessage message, List<ICustomerSubscription> customerRecords)
     {
         // Iterate through the customer list to create a list of customers relevant to this specific message
         // Customer number must match AND customer must have become a customer before the message
@@ -134,7 +143,7 @@ public class MessageQualifier
     /// <returns>
     /// <see cref="ICustomerSubscription"/>
     /// </returns>
-    private static ICustomerSubscription CustomerAttributableToMsg(IMessage message, List<ICustomerSubscription> matches, out bool possibleBillable)
+    internal static ICustomerSubscription CustomerAttributableToMsg(IMessage message, List<ICustomerSubscription> matches, out bool possibleBillable)
     {
         // We will use a null customer for a default
         var nullCustomer = NullCustomer;
@@ -255,7 +264,7 @@ public class MessageQualifier
         }
     }
 
-    private static bool DetermineBillability(IMessage message, List<ICallRecord> billedCalls, bool couldBeBillable, ICustomerSubscription match, out bool isSalesLead)
+    internal static bool DetermineBillability(IMessage message, List<ICallRecord> billedCalls, bool couldBeBillable, ICustomerSubscription match, out bool isSalesLead)
     {
         // Assume the message is billable, then prove that it is non billable
         bool billable = true;
