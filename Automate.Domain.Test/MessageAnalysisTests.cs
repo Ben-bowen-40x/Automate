@@ -76,9 +76,7 @@ public class MessageAnalysisTests
 
             // Assert
             foreach (var a in actual)
-            {
                 Assert.Equal(m.Number.Number, a.Number.Number);
-            }
         }
     }
     #endregion
@@ -157,9 +155,7 @@ public class MessageAnalysisTests
 
             // Assert
             foreach (var a in actual)
-            {
                 Assert.True(a.Number.Number == m.Number.Number || a.Number2.Number == m.Number.Number);
-            }
         }
     }
     #endregion
@@ -221,14 +217,13 @@ public class MessageAnalysisTests
     #region DetermineBillability
     [
         Theory,
-        // This means that a billed call happened 45 minutes before the msg, and the subscription started 45 minutes after the msg, AND the msg is NOT billable
-        InlineData(9876543210, new int[] { 2024, 01, 12, 13, 45, 02 }, -45, 45, false),
-        // This means that a billed call happened 20 minutes after the msg and BEFORE the subscription started, AND the msg is billable
-        InlineData(9876543210, new int[] { 2024, 01, 12, 13, 45, 02 }, 20, 45, true),
-        // This means that a billed call happened 50 minutes after the msg, and the subscription started 45 minutes after, AND the msg is NOT billable
-        InlineData(9876543210, new int[] { 2024, 01, 12, 13, 45, 02 }, 50, 45, true),
-        // This means that a billed call happened 45 minutes after the msg, and the subscription started 45 minutes before, AND the msg is NOT billable
-        InlineData(9876543210, new int[] { 2024, 01, 12, 13, 45, 02 }, 45, -45, false),
+        // The first number is the phone number, the int[] is year, month, day, hour, minute, second
+        // The first int is the number of minutes added to the call records, the second int is the number of minutes added to the customer, the expected billability
+        // The expected billability is false if either of the int values is negative
+        InlineData(9876543210, new int[] { 2024, 01, 12, 13, 45, 02 }, -45, 045, false),
+        InlineData(9876543210, new int[] { 2024, 01, 12, 13, 45, 02 }, 020, 045, true),
+        InlineData(9876543210, new int[] { 2024, 01, 12, 13, 45, 02 }, 050, 045, true),
+        InlineData(9876543210, new int[] { 2024, 01, 12, 13, 45, 02 }, 045, -45, false),
     ]
     public void DetermineBillabilityTest(long number, int[] dateints, int callDiffMinutes, int custSubDateDiffMinutes, bool expected)
     {
@@ -237,25 +232,25 @@ public class MessageAnalysisTests
         PhoneNumber num = new(number);
         DateTimeOffset date = new(new DateTime(dateints[0], dateints[1], dateints[2], dateints[3], dateints[4], dateints[5]), TimeSpan.FromHours(0));
 
-        // Message Assembly
+        // Assemble Message
         IMessage msg = Substitute.For<IMessage>();
         msg.Contents.Returns(contents);
         msg.Number.Returns(num);
         msg.Date.Returns(date);
 
-        // Call Assembly
+        // Assemble Call
         ICallRecord r1 = Substitute.For<ICallRecord>();
         r1.Date.Returns(date + TimeSpan.FromMinutes(callDiffMinutes));
         List<ICallRecord> callList = [r1];
 
-        // Customer Assembly
+        // Assemble Customer
         ICustomerSubscription cs = Substitute.For<ICustomerSubscription>();
         var custsubdate = date + TimeSpan.FromMinutes(custSubDateDiffMinutes);
         cs.Date.Returns(custsubdate);
         cs.SubscriptionStartDate.Returns(custsubdate);
         cs.SubscriptionId.Returns(1);
 
-        // Additional Assembly
+        // Assemble Additional
         bool couldBeBillable = custsubdate > date;
 
         // Act
