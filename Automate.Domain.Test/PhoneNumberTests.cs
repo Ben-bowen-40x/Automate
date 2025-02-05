@@ -2,7 +2,7 @@
 
 namespace Automate.Domain.Test;
 
-public class PhoneNumber_Tests
+public class PhoneNumberTests
 {
     private const string _skipMsg = "This test is being skipped for now";
 
