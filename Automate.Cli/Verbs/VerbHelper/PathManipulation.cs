@@ -105,14 +105,14 @@ public static class PathManipulation
         {
             pathInfo = new("./");
             return newLineTab
-                ? $"This was the literal input, which is not a valid path and therefore does not exist: \n\t\"{path}\""
-                : $"This was the literal input, which is not a valid path and therefore does not exist: \n\"{path}\"";
+                ? $"This was the literal input, which is not a valid path and therefore does not exist:\n\t\"{path}\""
+                : $"This was the literal input, which is not a valid path and therefore does not exist:  \n\"{path}\"";
         }
         pathInfo = new(path);
         return newLineTab
             // DO NOT change the weird spacing in the string, please. At the moment, it lines things up in a pleasing way
-            ? $"This was the literal input: \n\t{path}\nAnd this is the actual path, confirmed to exist by the system: \n\t{Path.GetFullPath(path)}"
-            : $"This was the literal input: \n{path}  \nAnd this is the actual path, confirmed to exist by the system:   \n{Path.GetFullPath(path)}";
+            ? $"This was the literal input:\n\t{path}\nAnd this is the actual path, confirmed to exist by the system:\n\t{Path.GetFullPath(path)}"
+            : $"This was the literal input:  \n{path}\nAnd this is the actual path, confirmed to exist by the system:  \n{Path.GetFullPath(path)}";
     }
 
     internal static Result<FileType> VerifyType(string location)
