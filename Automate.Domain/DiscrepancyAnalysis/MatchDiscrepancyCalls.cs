@@ -26,6 +26,8 @@ public class MatchDiscrepancyCalls
             // Find the lead that is chronologically soonest after the current lead. The comparison day necessarily must be equal to the billable lead
             List<DiscrepancyCall> dayMatches = phoneMatch.Where(p => MatchDates(p, billed)).ToList();
             List<DiscrepancyCall> input = dayMatches.Count == 0 ? phoneMatch : dayMatches;
+            
+            // Log irregularities
             if (dayMatches.Count == 0)
                 StringLogger.AddLog("Strange interaction in:", location, "Could not find any records matching the date of the current call. No calls could be found that match the year and day-of-the-year with the following billed call:", billed.ToString());
             else if (input.Count == 0)
@@ -53,8 +55,8 @@ public class MatchDiscrepancyCalls
     }
     #endregion
 
-    #region Private
-    private static DiscrepancyCall BestMatch(DiscrepancyCall billed, IList<DiscrepancyCall> phMatchesSameDay)
+    #region Internal
+    internal static DiscrepancyCall BestMatch(DiscrepancyCall billed, IList<DiscrepancyCall> phMatchesSameDay)
     {
         if (phMatchesSameDay.Count == 0)
             return new(new(0), false, DateTime.MinValue, TimeSpan.Zero, "");
@@ -95,7 +97,7 @@ public class MatchDiscrepancyCalls
             || match.Date.Minute == lead.Date.Minute;
     }
 
-    private static DiscrepancyCall ClosestDuration(DiscrepancyCall lead, DiscrepancyCall match, DiscrepancyCall compare) =>
+    internal static DiscrepancyCall ClosestDuration(DiscrepancyCall lead, DiscrepancyCall match, DiscrepancyCall compare) =>
         lead.Duration switch
         {
             // These are the most likely
@@ -133,7 +135,7 @@ public class MatchDiscrepancyCalls
             _ => PhoneDateDurMatch(lead, match, compare)
         };
 
-    private static DiscrepancyCall PhoneDateDurMatch(DiscrepancyCall lead, DiscrepancyCall match, DiscrepancyCall comp)
+    internal static DiscrepancyCall PhoneDateDurMatch(DiscrepancyCall lead, DiscrepancyCall match, DiscrepancyCall comp)
     {
         if (match.Billable && !comp.Billable)
             return match;

@@ -8,6 +8,13 @@ internal record ClassificationResult(string Matches, string Input, bool Result, 
 internal partial class MessagePatterns
 {
     #region Internal
+    internal const string Match = "Matched Pattern:";
+    internal readonly static string Customer1Name = nameof(Customer1);
+    internal readonly static string Customer2Name = nameof(Customer2);
+    internal readonly static string NotTreatedName = nameof(NotTreated);
+    internal readonly static string ReferralName = nameof(Referral);
+    internal readonly static string PossibleName = nameof(Possible);
+    internal readonly static string LikelyName = nameof(Likely);
     internal static ClassificationResult Billable(string input)
     {
         Match customerMatch =
@@ -25,20 +32,20 @@ internal partial class MessagePatterns
 
         List<string> message = new(6);
         if (customerMatch.Success)
-            message.Add($"Matched Pattern: {nameof(Customer1)} => ({customerMatch.Value})");
+            message.Add($"{Match} {Customer1Name} => ({customerMatch.Value})");
         if (customer2Match.Success)
-            message.Add($"Matched Pattern: {nameof(Customer2)} => ({customer2Match.Value})");
+            message.Add($"{Match} {Customer2Name} => ({customer2Match.Value})");
         if (notTreatedMatch.Success)
-            message.Add($"Matched Pattern: {nameof(NotTreated)} => ({notTreatedMatch.Value}");
+            message.Add($"{Match} {NotTreatedName} => ({notTreatedMatch.Value}");
         if (referralMatch.Success)
-            message.Add($"Matched Pattern: {nameof(Referral)} => ({referralMatch.Value})");
+            message.Add($"{Match} {ReferralName} => ({referralMatch.Value})");
         if (possibleMatch.Success)
-            message.Add($"Matched Pattern: {nameof(Possible)} => ({possibleMatch.Value})");
+            message.Add($"{Match} {PossibleName} => ({possibleMatch.Value})");
         if (likelyMatch.Success)
-            message.Add($"Matched Pattern: {nameof(Likely)} => ({likelyMatch.Value})");
+            message.Add($"{Match} {LikelyName} => ({likelyMatch.Value})");
 
         const string bar = " | ";
-        var matches = message.Count == 0 ? string.Empty : string.Join(bar, message);
+        string matches = message.Count == 0 ? string.Empty : string.Join(bar, message);
 
         /* I know what you're asking:
          * "Why are you using so many patterns when you seem to only care about two?"

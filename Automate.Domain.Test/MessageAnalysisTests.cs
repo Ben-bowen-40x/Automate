@@ -214,7 +214,7 @@ public class MessageAnalysisTests
     }
     #endregion
 
-    #region DetermineBillability
+    #region DetermineBillability 
     [
         Theory,
         // The first number is the phone number, the int[] is year, month, day, hour, minute, second
