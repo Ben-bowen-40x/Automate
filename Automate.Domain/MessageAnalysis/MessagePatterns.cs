@@ -102,11 +102,10 @@ internal partial class MessagePatterns
     private const string home = $"((home|house|place|resid){letters})";
     #endregion
 
-    #region Helper String Regions
     #region Bug String
     internal const string bug =
     "((" +
-    "ant|" +
+    $"{border}ant|" +
     "bug|" +
     "bee|" +
     "beetle|" +
@@ -119,7 +118,7 @@ internal partial class MessagePatterns
     "fle|" +
     "fly|" +
     "fli|" +
-    "(g)?nat|" +
+    $"{border}(g)?nat{border}|" +
     "hornet|" +
     "insect|" +
     $"lady{chr}{zeroFive}bug|" +
@@ -130,11 +129,11 @@ internal partial class MessagePatterns
     "moth|" +
     "mouse|" +
     $"{nest}|" +
-    $"pest{chars}(control)?|" +
-    "rat|" +
+    $"{border}pest{chars}(control)?|" +
+    $"{border}rat|" +
     "rodent|" +
     $"scorp{letters}n|" +
-    $"{service} request|" +
+    $"{service} request|request {service}|" +
     $"silver{chars}fish|" +
     "spider|" +
     "spray|" +
@@ -272,9 +271,7 @@ internal partial class MessagePatterns
     "uoec|uoce" + // end does not shave an or pipe "|"
     ")";
     #endregion
-    #endregion
 
-    #region Pattern Regions
     #region Customer 1
     private const string _customer1 =
     $"^{empty}(this is a )?test{letters}{empty}$|" +
@@ -395,7 +392,6 @@ internal partial class MessagePatterns
     $"exterminat{letters}";
     #endregion
 
-    #region Likely Lead
     #region Likely Helpers
     private const string zip = @"\d{5}";
     private const string name = PatternHelper.Name;
@@ -449,11 +445,9 @@ internal partial class MessagePatterns
     $"do{letters} {words}{service}|" +
     $"({want}|make|trying to see) {words}({appointment}|{service})|" //+
         ;
-    #endregion
 
     private const string _likely =
         l + li + lik +
     $"({want} )?{words}({service}|{appointment})";
-    #endregion
     #endregion
 }
