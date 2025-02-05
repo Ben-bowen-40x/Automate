@@ -403,7 +403,7 @@ public class MessagePatternTests
         Assert.Equal(expected, actual);
     }
 }
-/*
+/* Unassigned messages
 //InlineData("Hello| I was just wondering if you had cheaper options than the current plan I'm on.  ", ),
 //InlineData("please call this number or 203-918-7440", ),
 //InlineData("How save is your product", ),
