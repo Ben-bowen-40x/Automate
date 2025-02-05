@@ -165,32 +165,14 @@ public class MessageAnalysisTests
     #endregion
 
     #region CustomerAttributableToMsg
-    /// <summary>
-    /// <para>The <paramref name="dateints"/> parameter is used to create <see cref="DateTimeOffset"/> values. Set the values as follows:</para>
-    /// <para>Index 0: Year | Index 1: Month | Index 2: Day (of the month) | Index 3: Hour (of the day) | Index 4: Minutes | Index 5: Seconds. 
-    /// => Thus, the <paramref name="dateints"/> meets the following <see cref="DateTime"/> pattern: yyyy-MM-dd hh:mm:ss, where y is a four-digit year, M is a 1 or 2 digit month value, and so on</para>
-    /// <para>The <see cref="int"/> <paramref name="addMinutesForExpected"/> value must be smaller in magnitude than <paramref name="addMinutesForOther"/> OR positive when the <paramref name="addMinutesForOther"/> is negative OR <paramref name="addMinutesForOther"/> must be zero</para>
-    /// <para>For <paramref name="expectedBillable"/> :: When <see cref="true"/>, neither <paramref name="addMinutesForExpected"/> nor <paramref name="addMinutesForOther"/> are negative; When <see cref="false"/>, either <paramref name="addMinutesForExpected"/> or <paramref name="addMinutesForOther"/> is negative</para>
-    /// </summary>
-    /// <param name="dateints"></param>
-    /// <param name="addMinutesForExpected"></param>
-    /// <param name="addMinutesForOther"></param>
-    /// <param name="expectedBillable"></param>
-    private static void CustomerAttributableToMsg(int[] dateints, int addMinutesForExpected, int addMinutesForOther, bool expectedBillable)
-    {
-        bool value;
-        foreach (var date in dateints)
-            value = expectedBillable && (date + addMinutesForExpected + addMinutesForOther) == 0;
-    }
-
     [
         Theory,
-        // This won't pass because the test is not designed to FIND the expected value, and the expected value is given by the
-        //InlineData(new int[] { 2024, 1, 2, 13, 45, 02 }, -10, 011, false), 
+        // This won't pass because the test is not designed to FIND the expected value, and the expected value is given by the first int parameter
+        //InlineData(new int[] { 2024, 1, 2, 13, 45, 02 }, -11, 010, false), 
         InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }, 000, 000, true),
         InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }, 010, 000, true),
         InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }, 010, 011, true),
-        InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }, 010, -11, false),
+        InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }, 010, -11, false), // This is the equivalent of the commented out test
         InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }, -10, 000, false),
         InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }, -10, -11, false),
     ]
