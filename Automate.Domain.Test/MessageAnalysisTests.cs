@@ -163,4 +163,27 @@ public class MessageAnalysisTests
         }
     }
     #endregion
+
+    #region DetermineBillabilityTest
+    [
+        Theory,
+        InlineData(9876543210, new int[] { 2024, 01, 12, 13, 45, 02 }),
+        ]
+    public void DetermineBillabilityTest(long number, int[] dateints)
+    {
+        // Assemble
+        const string contents = "want quote for bees";
+        PhoneNumber num = new(number);
+        DateTimeOffset date = new(new DateTime(dateints[0], dateints[1], dateints[2], dateints[3], dateints[4], dateints[5]), TimeSpan.FromHours(0));
+
+        // Message setup
+        IMessage msg = Substitute.For<IMessage>();
+        msg.Contents.Returns(contents);
+        msg.Number.Returns(num);
+
+        //
+
+
+    }
+    #endregion
 }

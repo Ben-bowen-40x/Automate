@@ -18,7 +18,8 @@ public class MessageQualifier
         // Prepare logger
         object sender = new MessageQualifier();
         string member = nameof(Qualify);
-        string name = GetFullName.GetMemberName(sender, member);
+        string nam = GetFullName.GetMemberName(sender, member);
+        string name = _test ? nam + " Test" : nam;
         StringLogger.AddLog($"Started {name}");
 
         // Iterate through each message and qualify it
@@ -57,9 +58,9 @@ public class MessageQualifier
     /// <para><see cref="ICustomerSubscription.Date"/> == <see cref="DateTimeOffset.MaxValue"/></para> 
     /// <para><see cref="ICustomerSubscription.SubscriptionStartDate"/> == <see cref="DateTimeOffset.MaxValue"/></para>
     /// </returns>
-    internal static ICustomerSubscription NullCustomer => nullCustomer;
+    internal static ICustomerSubscription NullCustomer => _nullCustomer ??= new CustomerSubscription(0, 0, DateTimeOffset.MaxValue, DateTimeOffset.MaxValue, new(0), new(0), DateTimeOffset.MinValue, DateTimeOffset.MinValue, false, false, false, 0.0, "");
 
-    private readonly static ICustomerSubscription nullCustomer = new CustomerSubscription(0, 0, DateTimeOffset.MaxValue, DateTimeOffset.MaxValue, new(0), new(0), DateTimeOffset.MinValue, DateTimeOffset.MinValue, false, false, false, 0.0, "");
+    private static ICustomerSubscription? _nullCustomer;
 
     /// <summary>
     /// <para>Note that this <see cref="internal"/> item should never be changed outside of test situations</para> 
@@ -140,13 +141,13 @@ public class MessageQualifier
     internal static ICustomerSubscription CustomerAttributableToMsg(IMessage message, List<ICustomerSubscription> matches, out bool possibleBillable)
     {
         // We will use a null customer for a default
-        var nullCustomer = NullCustomer;
+        ICustomerSubscription nullCustomer = NullCustomer;
 
         // Create lists that split the matching customer records into categories based on when they occurred in relation to the message
-        var dAfter_sAfter = matches.Where(m => m.Date > message.Date && m.SubscriptionStartDate > message.Date).ToList();
-        var dAfter_sBefore = matches.Where(m => m.Date > message.Date && m.SubscriptionStartDate < message.Date).ToList();
-        var dBefore_sAfter = matches.Where(m => m.Date < message.Date && m.SubscriptionStartDate > message.Date).ToList();
-        var dBefore_sBefore = matches.Where(m => m.Date < message.Date && m.SubscriptionStartDate < message.Date).ToList();
+        List<ICustomerSubscription> dAfter_sAfter = matches.Where(c => c.Date > message.Date && c.SubscriptionStartDate > message.Date).ToList();
+        List<ICustomerSubscription> dAfter_sBefore = matches.Where(c => c.Date > message.Date && c.SubscriptionStartDate < message.Date).ToList();
+        List<ICustomerSubscription> dBefore_sAfter = matches.Where(c => c.Date < message.Date && c.SubscriptionStartDate > message.Date).ToList();
+        List<ICustomerSubscription> dBefore_sBefore = matches.Where(c => c.Date < message.Date && c.SubscriptionStartDate < message.Date).ToList();
 
         // Try to find out whether any of the matches occurred before the message
         bool occurredBefore = dAfter_sBefore.Count > 0 || dBefore_sAfter.Count > 0 || dBefore_sBefore.Count > 0;
@@ -160,26 +161,20 @@ public class MessageQualifier
             return nullCustomer;
 
         // At this point, we only care about customers with both dates before the message if there are no customers with at least one date after the message
-        List<ICustomerSubscription> result = new(1);
+        ICustomerSubscription result;
         if (dAfter_sAfter.Count > 0 || dAfter_sBefore.Count > 0 || dBefore_sAfter.Count > 0)
-        {
-            var firstCustAfterTxt = GetFirstCustomerAfterMsg(nullCustomer, dAfter_sAfter, dAfter_sBefore, dBefore_sAfter);
-            result.Add(firstCustAfterTxt);
-        }
+            result = GetFirstCustomerAfterMsg(nullCustomer, dAfter_sAfter, dAfter_sBefore, dBefore_sAfter);
         else
-        {
-            var firstCustBeforeTxt = GetMostRecentCustomerBeforeMsg(dBefore_sBefore);
-            result.Add(firstCustBeforeTxt);
-        }
+            result = GetMostRecentCustomerBeforeMsg(dBefore_sBefore);
 
         // Return result
-        return result[0];
+        return result;
 
         // Local functions
         static ICustomerSubscription GetFirstCustomerAfterMsg(ICustomerSubscription nullCustomer, List<ICustomerSubscription> dAfter_sAfter, List<ICustomerSubscription> dAfter_sBefore, List<ICustomerSubscription> dBefore_sAfter)
         {
             // Find the message that occurred after the message first, by whichever date
-            var afterAfter = nullCustomer;
+            ICustomerSubscription afterAfter = nullCustomer;
             foreach (var record in dAfter_sAfter)
             {
                 // Booleans of all combinations.
@@ -194,7 +189,7 @@ public class MessageQualifier
             }
 
             // Now we must find the customer record with the Date soonest after the message
-            var afterBefore = nullCustomer;
+            ICustomerSubscription afterBefore = nullCustomer;
             foreach (var record in dAfter_sBefore)
             {
                 // In these combinations, we can't care about the subscription because it's before the message
@@ -206,7 +201,7 @@ public class MessageQualifier
             }
 
             // Now we must find the record with the subscription date soonest after the message
-            var beforeAfter = nullCustomer;
+            ICustomerSubscription beforeAfter = nullCustomer;
             foreach (var record in dBefore_sAfter)
             {
                 // In these combinations, we can't use the customer start date because it's before the message
