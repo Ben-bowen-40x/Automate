@@ -7,7 +7,7 @@ internal record ClassificationResult(string Matches, string Input, bool Result, 
 
 internal partial class MessagePatterns
 {
-    #region Internal and Private Method Members
+    #region Internal
     internal static ClassificationResult Billable(string input)
     {
         Match customerMatch =
@@ -392,12 +392,9 @@ internal partial class MessagePatterns
     $"exterminat{letters}";
     #endregion
 
-    #region Likely Helpers
-    private const string zip = @"\d{5}";
-    private const string name = PatternHelper.Name;
-    #endregion
-
     #region Likely
+    private const string zip = @"\d{5}"
+        ;
     private const string l =
     $"^{empty}$|" +
     $"^est{letters} interesa{letters}$|" +
@@ -410,14 +407,14 @@ internal partial class MessagePatterns
     $"^{empty}need {word}{zeroFive}{service}{empty}$|" +
     $"^{empty}{quote}{empty}$|" +
     $"^{empty}{zip}{empty}$|" +
-    $"{name}|" //+
+    $"{PatternHelper.Name}|" //+
         ;
     private const string li =
     $"{toBe} {word}open .*(day|mor{chars}ow|week)|" +
     $"where (are you|is your) (locat|offic){letters}|" +
     $"{toBe} you{letters} (locat|offic){letters} {preposition}|" +
     $"do you serv{letters} {words}area|" +
-    $"{empty}service {empty}|" +
+    $"{empty}service{empty}|" +
     $"get{letters} {words}{home} {service}|" +
     $"hear{letters} {words}activity|" +
     $"contact (me|us|asap)|" +
