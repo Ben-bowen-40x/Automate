@@ -164,6 +164,78 @@ public class MessageAnalysisTests
     }
     #endregion
 
+    #region CustomerAttributableToMsg
+    /// <summary>
+    /// <para>The <paramref name="dateints"/> parameter is used to create <see cref="DateTimeOffset"/> values. Set the values as follows:</para>
+    /// <para>Index 0: Year | Index 1: Month | Index 2: Day (of the month) | Index 3: Hour (of the day) | Index 4: Minutes | Index 5: Seconds. 
+    /// => Thus, the <paramref name="dateints"/> meets the following <see cref="DateTime"/> pattern: yyyy-MM-dd hh:mm:ss, where y is a four-digit year, M is a 1 or 2 digit month value, and so on</para>
+    /// <para>The <see cref="int"/> <paramref name="addMinutesForExpected"/> value must be smaller in magnitude than <paramref name="addMinutesForOther"/> OR positive when the <paramref name="addMinutesForOther"/> is negative OR <paramref name="addMinutesForOther"/> must be zero</para>
+    /// <para>For <paramref name="expectedBillable"/> :: When <see cref="true"/>, neither <paramref name="addMinutesForExpected"/> nor <paramref name="addMinutesForOther"/> are negative; When <see cref="false"/>, either <paramref name="addMinutesForExpected"/> or <paramref name="addMinutesForOther"/> is negative</para>
+    /// </summary>
+    /// <param name="dateints"></param>
+    /// <param name="addMinutesForExpected"></param>
+    /// <param name="addMinutesForOther"></param>
+    /// <param name="expectedBillable"></param>
+    private static void CustomerAttributableToMsg(int[] dateints, int addMinutesForExpected, int addMinutesForOther, bool expectedBillable)
+    {
+        bool value;
+        foreach (var date in dateints)
+            value = expectedBillable && (date + addMinutesForExpected + addMinutesForOther) == 0;
+    }
+
+    [
+        Theory,
+        // This won't pass because the test is not designed to FIND the expected value, and the expected value is given by the
+        //InlineData(new int[] { 2024, 1, 2, 13, 45, 02 }, -10, 011, false), 
+        InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }, 000, 000, true),
+        InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }, 010, 000, true),
+        InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }, 010, 011, true),
+        InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }, 010, -11, false),
+        InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }, -10, 000, false),
+        InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }, -10, -11, false),
+    ]
+    public void CustomerAttributableToMsgTest(int[] dateints, int addMinutesForExpected, int addMinutesForOther, bool expectedBillable)
+    {
+        // Assemble Primitives
+        DateTimeOffset date = new(new DateTime(dateints[0], dateints[1], dateints[2], dateints[3], dateints[4], dateints[5]), TimeSpan.FromHours(0));
+
+        DateTimeOffset startDate1 = addMinutesForExpected == 0
+            ? DateTimeOffset.MaxValue
+            : date + TimeSpan.FromMinutes(addMinutesForExpected);
+        DateTimeOffset subDate1 = startDate1 == DateTimeOffset.MaxValue
+            ? DateTimeOffset.MaxValue
+            : startDate1 + TimeSpan.FromMinutes(2);
+
+        DateTimeOffset startDate2 = addMinutesForOther == 0
+            ? DateTimeOffset.MaxValue
+            : date + TimeSpan.FromMinutes(addMinutesForOther);
+        DateTimeOffset subDate2 = startDate2 == DateTimeOffset.MaxValue
+            ? DateTimeOffset.MaxValue
+            : startDate2 + TimeSpan.FromMinutes(2);
+
+        // Assemble Message
+        IMessage msg = Substitute.For<IMessage>();
+        msg.Date.Returns(date);
+
+        // Assemble Customers
+        ICustomerSubscription expected = Substitute.For<ICustomerSubscription>();
+        expected.Date.Returns(startDate1);
+        expected.SubscriptionStartDate.Returns(subDate1);
+
+        ICustomerSubscription cc = Substitute.For<ICustomerSubscription>();
+        cc.Date.Returns(startDate2);
+        cc.SubscriptionStartDate.Returns(subDate2);
+
+        // Act        
+        var actual = MessageQualifier.CustomerAttributableToMsg(msg, [expected, cc], out bool actualBillable);
+
+        // Assert
+        Assert.Equal(expectedBillable, actualBillable);
+        Assert.Equal(expected.Date, actual.Date);
+        Assert.Equal(expected.SubscriptionStartDate, actual.SubscriptionStartDate);
+    }
+    #endregion
+
     #region DetermineBillability
     [
         Theory,
@@ -212,19 +284,6 @@ public class MessageAnalysisTests
         Assert.NotEqual(cs.SubscriptionStartDate, MessageQualifier.NullCustomer.SubscriptionStartDate);
         Assert.True(salesActual); // Sales is always billable because the pattern is a billable pattern
         Assert.Equal(actual, expected);
-    }
-    #endregion
-
-    #region CustomerAttributableToMsg
-    [
-        Theory,
-        InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }),
-    ]
-    public void CustomerAttributableToMsgTest(int[] dateints)
-    {
-        // Assemble Primitives
-        DateTimeOffset date = new(new DateTime(dateints[0], dateints[1], dateints[2], dateints[3], dateints[4], dateints[5]), TimeSpan.FromHours(0));
-
     }
     #endregion
 }
