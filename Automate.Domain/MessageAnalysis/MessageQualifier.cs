@@ -130,13 +130,17 @@ public class MessageQualifier
     }
 
     /// <summary>
-    /// This attempts to find the single member of <paramref name="matches"/> that best match <paramref name="message"/> by date
+    /// Uses the <see cref="DateTimeOffset"/> attributes of each of the <paramref name="matches"/> and the <paramref name="message"/> to determine which of the <paramref name="matches"/> can be reasonably attributed to the <paramref name="message"/> based on when each of the <paramref name="matches"/> occurred.
     /// </summary>
     /// <param name="message"></param>
     /// <param name="matches"></param>
     /// <param name="possibleBillable"></param>
-    /// <returns>
-    /// <see cref="ICustomerSubscription"/>
+    /// <returns> 
+    /// <para>Out parameter <paramref name="possibleBillable"/> evaluates to <see cref="false"/> when any <see cref="ICustomerSubscription"/> occurs before the <paramref name="message"/>, otherwise <paramref name="possibleBillable"/> evaluates to <see cref="true"/>.</para>
+    /// The returned <see cref="ICustomerSubscription"/> value can be described in the following way:
+    /// <para>If there is at least one <see cref="ICustomerSubscription"/> after the <paramref name="message"/>, return the <see cref="ICustomerSubscription"/> that occurred first chronologically after the <paramref name="message"/></para>
+    /// <para>If there is no <see cref="ICustomerSubscription"/> after the <paramref name="message"/>, return the most recent <see cref="ICustomerSubscription"/> before the <paramref name="message"/></para>
+    /// <para>If there are no customers, return <see cref="NullCustomer"/>, which is an <see cref="ICustomerSubscription"/> with all values set to a specific <see cref="default"/></para>
     /// </returns>
     internal static ICustomerSubscription CustomerAttributableToMsg(IMessage message, List<ICustomerSubscription> matches, out bool possibleBillable)
     {
@@ -144,10 +148,18 @@ public class MessageQualifier
         ICustomerSubscription nullCustomer = NullCustomer;
 
         // Create lists that split the matching customer records into categories based on when they occurred in relation to the message
-        List<ICustomerSubscription> dAfter_sAfter = matches.Where(c => c.Date > message.Date && c.SubscriptionStartDate > message.Date).ToList();
-        List<ICustomerSubscription> dAfter_sBefore = matches.Where(c => c.Date > message.Date && c.SubscriptionStartDate < message.Date).ToList();
-        List<ICustomerSubscription> dBefore_sAfter = matches.Where(c => c.Date < message.Date && c.SubscriptionStartDate > message.Date).ToList();
-        List<ICustomerSubscription> dBefore_sBefore = matches.Where(c => c.Date < message.Date && c.SubscriptionStartDate < message.Date).ToList();
+        List<ICustomerSubscription> dAfter_sAfter = matches
+            .Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date > message.Date & c.SubscriptionStartDate > message.Date)
+            .ToList();
+        List<ICustomerSubscription> dAfter_sBefore = matches
+            .Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date > message.Date & c.SubscriptionStartDate < message.Date)
+            .ToList();
+        List<ICustomerSubscription> dBefore_sAfter = matches
+            .Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date < message.Date & c.SubscriptionStartDate > message.Date)
+            .ToList();
+        List<ICustomerSubscription> dBefore_sBefore = matches
+            .Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date < message.Date & c.SubscriptionStartDate < message.Date)
+            .ToList();
 
         // Try to find out whether any of the matches occurred before the message
         bool occurredBefore = dAfter_sBefore.Count > 0 || dBefore_sAfter.Count > 0 || dBefore_sBefore.Count > 0;
@@ -157,7 +169,7 @@ public class MessageQualifier
             possibleBillable = true;
 
         // If there are no customer matches, then return null customer
-        if (matches.Count == 0)
+        if (matches.Count == 0 || (dAfter_sAfter.Count == 0 && dAfter_sBefore.Count == 0 && dBefore_sAfter.Count == 0 && dBefore_sBefore.Count == 0))
             return nullCustomer;
 
         // At this point, we only care about customers with both dates before the message if there are no customers with at least one date after the message
