@@ -164,26 +164,54 @@ public class MessageAnalysisTests
     }
     #endregion
 
-    #region DetermineBillabilityTest
+    #region DetermineBillability
     [
         Theory,
-        InlineData(9876543210, new int[] { 2024, 01, 12, 13, 45, 02 }),
-        ]
-    public void DetermineBillabilityTest(long number, int[] dateints)
+        // This means that a billed call happened 45 minutes before the msg, and the subscription started 45 minutes after the msg, AND the msg is NOT billable
+        InlineData(9876543210, new int[] { 2024, 01, 12, 13, 45, 02 }, -45, 45, false),
+        // This means that a billed call happened 20 minutes after the msg and BEFORE the subscription started, AND the msg is billable
+        InlineData(9876543210, new int[] { 2024, 01, 12, 13, 45, 02 }, 20, 45, true),
+        // This means that a billed call happened 50 minutes after the msg, and the subscription started 45 minutes after, AND the msg is NOT billable
+        InlineData(9876543210, new int[] { 2024, 01, 12, 13, 45, 02 }, 50, 45, true),
+        // This means that a billed call happened 45 minutes after the msg, and the subscription started 45 minutes before, AND the msg is NOT billable
+        InlineData(9876543210, new int[] { 2024, 01, 12, 13, 45, 02 }, 45, -45, false),
+    ]
+    public void DetermineBillabilityTest(long number, int[] dateints, int callDiffMinutes, int custSubDateDiffMinutes, bool expected)
     {
-        // Assemble
-        const string contents = "want quote for bees";
+        // Assemble primitives
+        const string contents = "want quote";
         PhoneNumber num = new(number);
         DateTimeOffset date = new(new DateTime(dateints[0], dateints[1], dateints[2], dateints[3], dateints[4], dateints[5]), TimeSpan.FromHours(0));
 
-        // Message setup
+        // Message Assembly
         IMessage msg = Substitute.For<IMessage>();
         msg.Contents.Returns(contents);
         msg.Number.Returns(num);
+        msg.Date.Returns(date);
 
-        //
+        // Call Assembly
+        ICallRecord r1 = Substitute.For<ICallRecord>();
+        r1.Date.Returns(date + TimeSpan.FromMinutes(callDiffMinutes));
+        List<ICallRecord> callList = [r1];
 
+        // Customer Assembly
+        ICustomerSubscription cs = Substitute.For<ICustomerSubscription>();
+        var custsubdate = date + TimeSpan.FromMinutes(custSubDateDiffMinutes);
+        cs.Date.Returns(custsubdate);
+        cs.SubscriptionStartDate.Returns(custsubdate);
+        cs.SubscriptionId.Returns(1);
 
+        // Additional Assembly
+        bool couldBeBillable = custsubdate > date;
+
+        // Act
+        bool actual = MessageQualifier.DetermineBillability(msg, callList, couldBeBillable, cs, out bool salesActual);
+
+        // Assert
+        Assert.NotEqual(cs.SubscriptionId, MessageQualifier.NullCustomer.SubscriptionId);
+        Assert.NotEqual(cs.SubscriptionStartDate, MessageQualifier.NullCustomer.SubscriptionStartDate);
+        Assert.True(salesActual); // Sales is always billable because the pattern is a billable pattern
+        Assert.Equal(actual, expected);
     }
     #endregion
 }

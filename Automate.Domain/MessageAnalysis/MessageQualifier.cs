@@ -302,7 +302,7 @@ public class MessageQualifier
                 match.Date < match.SubscriptionStartDate
                 ? call.Date < match.SubscriptionStartDate
                 : call.Date < match.Date;
-            bool subIsNotDefault = match.SubscriptionStartDate != NullCustomer.SubscriptionStartDate | match.SubscriptionId != NullCustomer.SubscriptionId;
+            bool subIsNotDefault = match.SubscriptionStartDate != NullCustomer.SubscriptionStartDate & match.SubscriptionId != NullCustomer.SubscriptionId;
 
             if (messageIsAfterCust && callIsAfterTxt && callIsBeforeCust && subIsNotDefault)
                 StringLogger.AddLog("Message occurred before the call, and the call occurred before the customer start date or the subscription start date. This can cause an odd reporting situation because both the message and the call are attributable to either the new customer or new subscription. So, which gets the credit, the call, the message, or both?",
