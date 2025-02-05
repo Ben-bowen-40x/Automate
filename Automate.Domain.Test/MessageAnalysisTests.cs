@@ -214,4 +214,17 @@ public class MessageAnalysisTests
         Assert.Equal(actual, expected);
     }
     #endregion
+
+    #region CustomerAttributableToMsg
+    [
+        Theory,
+        InlineData(new int[] { 2024, 01, 12, 13, 45, 02 }),
+    ]
+    public void CustomerAttributableToMsgTest(int[] dateints)
+    {
+        // Assemble Primitives
+        DateTimeOffset date = new(new DateTime(dateints[0], dateints[1], dateints[2], dateints[3], dateints[4], dateints[5]), TimeSpan.FromHours(0));
+
+    }
+    #endregion
 }
