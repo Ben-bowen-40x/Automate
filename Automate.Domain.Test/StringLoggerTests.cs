@@ -3,8 +3,7 @@ using System.Text;
 
 namespace Automate.Domain.Test;
 
-public class TestStringLoggerHelper { }
-public class TestStringLogger
+public class StringLoggerTests
 {
     [Fact]
     public void StringLogger_LogsAsExpected()
