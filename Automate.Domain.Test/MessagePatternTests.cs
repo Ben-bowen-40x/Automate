@@ -364,16 +364,17 @@ public class MessagePatternTests
         //InlineData("Multiple dead bumblebees in basement.Saw them nesting on the outside of house last fall but unable to access...", false), // not treated
         //InlineData("Inside treatment", true), // wants treatment
         //InlineData("Estoy interesada por el trabajo", false), // wants work
-        //InlineData("Hola soy estrella", false), // names don't count as interest
+        //InlineData("Hola soy estrella", false), // wut
         //InlineData("Hello I’m looking for an exterminator asap.", true), // wants service
         //InlineData("How much would this charge", true), // wants service
         //InlineData("How much is a first time treatment for my home", true), // wants service
-        //InlineData("Elena Rodríguez", true), // names count
+        
+        InlineData("Elena Rodríguez", true), // names count
         //InlineData("What is your pricing like?", true), // wants service
         //InlineData("Hi how much for a small room", true), // wants service
-        //InlineData("Can you please email (nargue @vetcor.com) my Dec 2023 invoice for Nickel City Animal Hospital(568416)? | ", false), // Can't tell
-        //InlineData("Hey | Would you have anyone available today | I live in bartlett", true), // wants service
-        //InlineData("Do you have anyone that would come out today | ", true), // wants service
+        //InlineData("Can you please email (nargue @vetcor.com) my Dec 2023 invoice for Nickel City Animal Hospital(568416)? | ", false), // customer -- invoice
+        ///*Conflict*/InlineData("Hey | Would you have anyone available today | I live in bartlett", true), // wants service
+        ///*Conflict*/InlineData("Do you have anyone that would come out today | ", false), // wants service -- likely a customer
         //InlineData("I need someone to take care my roach problem", true), // wants service
         //InlineData("Bom dia estou entered ado no em trabalhar", false), // wants work
         //InlineData("Mire que están necesitando personas para Trabajo", false), // wants work
@@ -381,11 +382,11 @@ public class MessagePatternTests
         //InlineData("Can you tell me when a tech will be at my house today?  23 Canal St Winchester Ma", false), // current customer
         //InlineData("Need baiting of vacant house prior to demolition", true), // wants service
         //InlineData("Estoy interesado en el trabajo  | Vivo en East Haven CT", false), // wants work
-        InlineData("I have fixed the problem with my credit card. It should go through now if you re-submit it. Sorry about the inconvenience. | Eric Bello", false), // current customer
+        //InlineData("I have fixed the problem with my credit card. It should go through now if you re-submit it. Sorry about the inconvenience. | Eric Bello", false), // current customer
         //InlineData("I am looking for an exterminator for a commercial building.", true), // interested in service
         //InlineData("Sorry was so upset with you guys before for not being able to come todsy", false), // current customer
         //InlineData("My son says it will be fine till it’s taken care of", false), // don't know exactly what's going on, but it looks like this person is already in contact with us
-        //InlineData("Ocupo el empleo", true), // wants work
+        //InlineData("Ocupo el empleo", false), // wants work
         //InlineData("I didn’t see the contract yet.I’m not sure where to look for it.", false), // already in contact
     ]
     #endregion
