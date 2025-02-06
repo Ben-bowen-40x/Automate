@@ -5,10 +5,10 @@ namespace Automate.Domain.DiscrepancyAnalysis;
 
 public class MatchDiscrepancyCalls
 {
-    internal static DiscrepancyCall _defaultCall = new(new(0), default, DateTime.MaxValue, TimeSpan.FromMicroseconds(0), string.Empty);
+    internal static IDiscrepancyCall _defaultCall = new DiscrepancyCall(new(0), default, DateTime.MaxValue, TimeSpan.FromMicroseconds(0), string.Empty);
 
     #region Public
-    public static List<MatchingLeads> MatchLeads(List<DiscrepancyCall> billedLeads, List<DiscrepancyCall> comparisonLeads)
+    public static List<MatchingLeads> MatchLeads(List<IDiscrepancyCall> billedLeads, List<IDiscrepancyCall> comparisonLeads)
     {
         // Prepare the log for this execution
         string location = GetFullName.GetMemberName(new MatchDiscrepancyCalls(), nameof(MatchLeads));
@@ -21,25 +21,29 @@ public class MatchDiscrepancyCalls
         foreach (var billed in billedLeads)
         {
             // Create a list of comparison leads whose phone number matches the current lead
-            List<DiscrepancyCall> phoneMatch = comparisonLeads.Where(l => l.Number.Number == billed.Number.Number).ToList();
+            List<IDiscrepancyCall> phoneMatch = comparisonLeads
+                .Where(l => l.Number.Number == billed.Number.Number)
+                .ToList();
 
             // Find the lead that is chronologically soonest after the current lead. The comparison day necessarily must be equal to the billable lead
-            List<DiscrepancyCall> dayMatches = phoneMatch.Where(p => MatchDates(p, billed)).ToList();
-            List<DiscrepancyCall> input = dayMatches.Count == 0 ? phoneMatch : dayMatches;
-            
-            // Log irregularities
-            if (dayMatches.Count == 0)
-                StringLogger.AddLog("Strange interaction in:", location, "Could not find any records matching the date of the current call. No calls could be found that match the year and day-of-the-year with the following billed call:", billed.ToString());
-            else if (input.Count == 0)
-                StringLogger.AddLog("Strange interaction in:", location, "Could not find any records matching the current call by phone number. This is the call:", billed.ToString());
+            List<IDiscrepancyCall> dayMatches = phoneMatch
+                .Where(p => MatchDates(p, billed))
+                .ToList();
+            List<IDiscrepancyCall> input = dayMatches.Count == 0
+                ? phoneMatch
+                : dayMatches;
 
-            DiscrepancyCall match = BestMatch(billed, input);
+            IDiscrepancyCall match = BestMatch(billed, input);
 
             // Find out if there are billable calls with matching phone number before the lead
-            List<DiscrepancyCall> billableBefore = phoneMatch.Where(m => m.Billable && DateTime.Compare(m.Date, billed.Date) < 0).ToList();
+            List<IDiscrepancyCall> billableBefore = phoneMatch
+                .Where(m => m.Billable && DateTime.Compare(m.Date, billed.Date) < 0)
+                .ToList();
 
             // Add the result
             result.Add(new MatchingLeads(billed, match, billableBefore.Count > 0));
+
+            LogIrregularities(location, billed, dayMatches, input);
         }
 
         // Conclude log for this execution
@@ -50,19 +54,36 @@ public class MatchDiscrepancyCalls
         return result;
 
         // Local Functions
-        static bool MatchDates(DiscrepancyCall p, DiscrepancyCall lead) =>
+        static bool MatchDates(IDiscrepancyCall p, IDiscrepancyCall lead) =>
             p.Date.Year == lead.Date.Year && p.Date.Date.DayOfYear == lead.Date.Date.DayOfYear;
+        static void LogIrregularities(string location, IDiscrepancyCall billed, List<IDiscrepancyCall> dayMatches, List<IDiscrepancyCall> input)
+        {
+            // Log irregularities
+            if (dayMatches.Count == 0)
+                StringLogger.AddLog(
+                    "Strange interaction in:",
+                    location,
+                    "Could not find any records matching the date of the current call. No calls could be found that match the year and day-of-the-year with the following billed call:",
+                    billed.ToString());
+            else if (input.Count == 0)
+                StringLogger.AddLog(
+                    "Strange interaction in:",
+                    location,
+                    "Could not find any records matching the current call by phone number. This is the call:",
+                    billed.ToString());
+        }
     }
+
     #endregion
 
     #region Internal
-    internal static DiscrepancyCall BestMatch(DiscrepancyCall billed, IList<DiscrepancyCall> phMatchesSameDay)
+    internal static IDiscrepancyCall BestMatch(IDiscrepancyCall billed, IList<IDiscrepancyCall> phMatchesSameDay)
     {
         if (phMatchesSameDay.Count == 0)
-            return new(new(0), false, DateTime.MinValue, TimeSpan.Zero, "");
+            return new DiscrepancyCall(new(0), false, DateTime.MinValue, TimeSpan.Zero, "");
 
         // Iterate through each lead to find the one whose minute and day of the year match
-        List<DiscrepancyCall> result = phMatchesSameDay
+        List<IDiscrepancyCall> result = phMatchesSameDay
             .Where(match => MinuteMatches(billed, match))
             .ToList();
 
@@ -70,8 +91,8 @@ public class MatchDiscrepancyCalls
         if (result.Count != 1)
         {
             bool resultIsEmpty = result.Count == 0;
-            DiscrepancyCall closest = resultIsEmpty ? phMatchesSameDay[0] : result[0];
-            IList<DiscrepancyCall> iteration = resultIsEmpty ? phMatchesSameDay : result;
+            IDiscrepancyCall closest = resultIsEmpty ? phMatchesSameDay[0] : result[0];
+            IList<IDiscrepancyCall> iteration = resultIsEmpty ? phMatchesSameDay : result;
             foreach (var r in iteration)
             {
                 closest = ClosestDuration(billed, r, closest);
@@ -90,52 +111,52 @@ public class MatchDiscrepancyCalls
 
         // Return result
         return result[0];
-
-        static bool MinuteMatches(DiscrepancyCall lead, DiscrepancyCall match) =>
-            match.Date.Minute + 1 == lead.Date.Minute
-            || match.Date.Minute - 1 == lead.Date.Minute
-            || match.Date.Minute == lead.Date.Minute;
     }
 
-    internal static DiscrepancyCall ClosestDuration(DiscrepancyCall lead, DiscrepancyCall match, DiscrepancyCall compare) =>
-        lead.Duration switch
-        {
-            // These are the most likely
-            // Comparison is shorter , Match is longer
-            var l when compare.Duration < l && l < match.Duration => match,
-            // Match is shorter , Comparison is longer
-            var l when match.Duration < l && l < compare.Duration => compare,
-            // Lead is first, then Match, then Comparison
-            var l when l < match.Duration && l < compare.Duration && match.Duration < compare.Duration => match,
-            // Lead is first, then Comparison, then Match
-            var l when l < compare.Duration && l < match.Duration && compare.Duration < match.Duration => compare,
+    internal static bool MinuteMatches(IDiscrepancyCall lead, IDiscrepancyCall match) =>
+        match.Date + TimeSpan.FromMinutes(1) >= lead.Date && match.Date - TimeSpan.FromMinutes(1) <= lead.Date;
+        //match.Date.Minute + 1 == lead.Date.Minute
+        //|| match.Date.Minute - 1 == lead.Date.Minute
+        //|| match.Date.Minute == lead.Date.Minute;
 
-            // These are a bit less likely
-            // Comparison is shorter and Match equals Lead
-            var l when compare.Duration < l && l == match.Duration => match,
-            // Match is shorter and Comparison equals Lead
-            var l when match.Duration < l && l == compare.Duration => compare,
-            // Lead and Match is equal and Comparison is longer
-            var l when l == match.Duration && l < compare.Duration => match,
-            // Lead and Comparison is equal and Match is longer
-            var l when l == compare.Duration && l < match.Duration => compare,
+    internal static IDiscrepancyCall ClosestDuration(IDiscrepancyCall lead, IDiscrepancyCall match, IDiscrepancyCall compare) => lead.Duration switch
+    {
+        // These are the most likely
+        // Comparison is shorter , Match is longer
+        var l when compare.Duration < l && l < match.Duration => match,
+        // Match is shorter , Comparison is longer
+        var l when match.Duration < l && l < compare.Duration => compare,
+        // Lead is first, then Match, then Comparison
+        var l when l < match.Duration && l < compare.Duration && match.Duration < compare.Duration => match,
+        // Lead is first, then Comparison, then Match
+        var l when l < compare.Duration && l < match.Duration && compare.Duration < match.Duration => compare,
 
-            // This is where we get into must less common territory
-            // Comparison is first, then Match, then Lead
-            var l when compare.Duration < match.Duration && compare.Duration < l && match.Duration < l => match,
-            // Match is first, then Comparison, then lead
-            var l when match.Duration < compare.Duration && match.Duration < l && compare.Duration < l => compare,
-            // Lead is first, then Comparison and Match are equal
-            var l when compare.Duration == match.Duration && l < compare.Duration => PhoneDateDurMatch(lead, match, compare),
-            // Comparison and Match are equal and Lead is longest
-            var l when compare.Duration == match.Duration && l > match.Duration => PhoneDateDurMatch(lead, match, compare),
-            // Lead, Comparison, and Match are all equal
-            var l when l == match.Duration && l == compare.Duration => PhoneDateDurMatch(lead, match, compare),
-            // Default
-            _ => PhoneDateDurMatch(lead, match, compare)
-        };
+        // These are a bit less likely
+        // Comparison is shorter and Match equals Lead
+        var l when compare.Duration < l && l == match.Duration => match,
+        // Match is shorter and Comparison equals Lead
+        var l when match.Duration < l && l == compare.Duration => compare,
+        // Lead and Match is equal and Comparison is longer
+        var l when l == match.Duration && l < compare.Duration => match,
+        // Lead and Comparison is equal and Match is longer
+        var l when l == compare.Duration && l < match.Duration => compare,
 
-    internal static DiscrepancyCall PhoneDateDurMatch(DiscrepancyCall lead, DiscrepancyCall match, DiscrepancyCall comp)
+        // This is where we get into must less common territory
+        // Comparison is first, then Match, then Lead
+        var l when compare.Duration < match.Duration && compare.Duration < l && match.Duration < l => match,
+        // Match is first, then Comparison, then lead
+        var l when match.Duration < compare.Duration && match.Duration < l && compare.Duration < l => compare,
+        // Lead is first, then Comparison and Match are equal
+        var l when compare.Duration == match.Duration && l < compare.Duration => PhoneDateDurMatch(lead, match, compare),
+        // Comparison and Match are equal and Lead is longest
+        var l when compare.Duration == match.Duration && l > match.Duration => PhoneDateDurMatch(lead, match, compare),
+        // Lead, Comparison, and Match are all equal
+        var l when l == match.Duration && l == compare.Duration => PhoneDateDurMatch(lead, match, compare),
+        // Default
+        _ => PhoneDateDurMatch(lead, match, compare)
+    };
+
+    internal static IDiscrepancyCall PhoneDateDurMatch(IDiscrepancyCall lead, IDiscrepancyCall match, IDiscrepancyCall comp)
     {
         if (match.Billable && !comp.Billable)
             return match;
