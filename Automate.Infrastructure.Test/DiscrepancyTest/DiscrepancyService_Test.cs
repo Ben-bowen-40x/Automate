@@ -23,9 +23,9 @@ public class DiscrepancyService_Test
         DiscrepancyService service = new(_settings) { QueryDb = queryDb };
 
         // Act
-        List<DiscrepancyCall> billableCalls = service.GetBillableSourceCalls();
+        List<IDiscrepancyCall> billableCalls = service.GetBillableSourceCalls();
         service.QueryDb = queryDb; // This needs to be done because GetBillableSourceCalls will change this value
-        List<DiscrepancyCall> comparisonCalls = service.GetComparisonSourceCalls();
+        List<IDiscrepancyCall> comparisonCalls = service.GetComparisonSourceCalls();
 
         // Assert
         Assert.NotEmpty(billableCalls);

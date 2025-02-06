@@ -27,7 +27,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
 
     // Getting the comparison calls by query
     internal bool QueryDb;
-    List<DiscrepancyCall>? _comparisonLocalRepo;
+    List<IDiscrepancyCall>? _comparisonLocalRepo;
 
     // Parent Determinant
     static string? parent;
@@ -43,19 +43,19 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
     /// </summary>
     /// <param name="sourceCsv"></param>
     /// <returns></returns>
-    public List<DiscrepancyCall> GetBillableSourceCalls(string sourceCsv = "")
+    public List<IDiscrepancyCall> GetBillableSourceCalls(string sourceCsv = "")
     {
         // Extract the info from csv
         string fileLocation = ValidateFile(sourceCsv, _discrepancyDefaultFile);
         Result<List<DiscrepancySourceLeadsCsvColumns>> result = CsvService.Parse<DiscrepancySourceLeadsCsvColumns>(fileLocation);
-        List<DiscrepancyCall> calls = result.IsSuccess
+        List<IDiscrepancyCall> calls = result.IsSuccess
             ? result.Value
                 .Select(c => c as IDiscrepancyBillable)
                 .Select(c => c.Translate()).ToList()
             : throw new Exception(result.Error);
 
         // Check whether we need to update the local repo
-        DiscrepancyCall mostRecent = GetMostRecent(calls);
+        IDiscrepancyCall mostRecent = GetMostRecent(calls);
 
         // TODO: We should not be checking and updating the local repo here. We should be using an existing repo that is updated using the update repo verb
         QueryDb = CheckLocalRepo(mostRecent);
@@ -67,7 +67,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
     /// This implementation retrieves comparison calls either using a local sql file or retrieving it from local repo
     /// </summary>
     /// <returns></returns>
-    public List<DiscrepancyCall> GetComparisonSourceCalls(string comparisonFile = "")
+    public List<IDiscrepancyCall> GetComparisonSourceCalls(string comparisonFile = "")
     {
         string repo = Parent + _comparisonRepo;
         if (QueryDb)
@@ -103,7 +103,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         List<DiscrepancyJson> rp = r.IsSuccess
             ? r.Value
             : throw new Exception(r.Error);
-        List<DiscrepancyCall> result = rp.Select(r => r.Translate()).ToList();
+        List<IDiscrepancyCall> result = rp.Select(r => r.Translate()).ToList();
         return result;
     }
     #endregion
@@ -114,12 +114,12 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         return fileStr == string.Empty || fileStr == " " || !File.Exists(fileStr) ? Parent + substitute : fileStr;
     }
 
-    private bool CheckLocalRepo(DiscrepancyCall recentRecord)
+    private bool CheckLocalRepo(IDiscrepancyCall recentRecord)
     {
         // Retrieve the information from the local repository
         FileInfo localRepo = new(Parent + _comparisonRepo);
         if (!localRepo.Exists || localRepo.Length < 12) File.Create(localRepo.FullName);
-        List<DiscrepancyCall> calls = [];
+        List<IDiscrepancyCall> calls = [];
         try
         {
             // Translate info from file
@@ -136,7 +136,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         {
             return true;
         }
-        DiscrepancyCall recentRepo = GetMostRecent(calls);
+        IDiscrepancyCall recentRepo = GetMostRecent(calls);
 
         // Most recent date of the repo calls is before the most recent record date.
         TimeSpan dateDiff = (DateTime.Now - recentRepo.Date).Duration();
@@ -154,7 +154,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         return false;
     }
 
-    private static DiscrepancyCall GetMostRecent(List<DiscrepancyCall> records)
+    private static IDiscrepancyCall GetMostRecent(List<IDiscrepancyCall> records)
     {
         var last = records.Last();
         //records.ForEach(r => last = DateTime.Compare(r.DateName, last.DateName) > 0 ? r : last);

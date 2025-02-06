@@ -20,13 +20,13 @@ public class DiscrepancyManager(IDiscrepancyService discrepancyService, IReportS
     public Result<FileInfo> ManageDiscrepancyAnalysis(string sourceCsv, string reportLoc, string comparisonQuery)
     {
         // Retrieve billed leads via the infrastructure layer
-        List<DiscrepancyCall> billedCalls = _discrepancyService.GetBillableSourceCalls(sourceCsv);
+        List<IDiscrepancyCall> billedCalls = _discrepancyService.GetBillableSourceCalls(sourceCsv);
 
         // Retrieve comparison leads via the infrastructure layer
-        List<DiscrepancyCall> comparisonCalls = _discrepancyService.GetComparisonSourceCalls(comparisonQuery);
+        List<IDiscrepancyCall> comparisonCalls = _discrepancyService.GetComparisonSourceCalls(comparisonQuery);
 
         // Match up the calls
-        var matches = MatchDiscrepancyCalls.MatchLeads(billedCalls, comparisonCalls);
+        List<MatchingLeads> matches = MatchDiscrepancyCalls.MatchLeads(billedCalls, comparisonCalls);
 
         // Analyze the matches
         List<DiscrepancyMatch> analyzed = AnalyzeDiscrepancyWithNotePatterns.FindReasoning(matches);

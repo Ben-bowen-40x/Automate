@@ -12,7 +12,7 @@ public static class DiscrepancyCallTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static DiscrepancyCall Translate(this ICallBoolStringDateTime entity)
+    public static IDiscrepancyCall Translate(this ICallBoolStringDateTime entity)
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
         bool billable = ConvertPrimitive.ConvertBool(entity.Billable);
@@ -29,7 +29,7 @@ public static class DiscrepancyCallTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static DiscrepancyCall Translate(this ICallDateTime entity)
+    public static IDiscrepancyCall Translate(this ICallDateTime entity)
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
         string notes = VerifyNotes(entity.Notes);
@@ -42,7 +42,7 @@ public static class DiscrepancyCallTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static DiscrepancyCall Translate(this IDiscrepancyBillable entity)
+    public static IDiscrepancyCall Translate(this IDiscrepancyBillable entity)
     {
         string notes = VerifyNotes(entity.Notes);
         DateTime startDate = ConvertPrimitive.ConvertDate(entity.Date, DateDefault.Min);

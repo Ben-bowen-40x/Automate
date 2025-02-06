@@ -1,6 +1,6 @@
 ﻿namespace Automate.Domain.ValueObjects;
 
-public record DiscrepancyCall(PhoneNumber Number, bool Billable, DateTime Date, TimeSpan Duration, string Notes)
+public record DiscrepancyCall(PhoneNumber Number, bool Billable, DateTime Date, TimeSpan Duration, string Notes) : IDiscrepancyCall
 {
     public DateTime Date { get; set; } = Date;
 
