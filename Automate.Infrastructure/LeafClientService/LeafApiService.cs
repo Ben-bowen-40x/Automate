@@ -18,7 +18,6 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         var client = factory.CreateClient(settings.LeafName!);
         return client;
     }
-    internal static Uri LeafThreadUrl(ILeafApiSettings settings, int offset, int limit) => new($"{settings.LeafBase}{settings.LeafThreadsEndpoint}?offset={offset}&limit={limit}");
     internal Uri LeafThreadUrl(int offset, int limit) => new($"{settings.LeafBase}{settings.LeafThreadsEndpoint}?offset={offset}&limit={limit}");
     #endregion
 
