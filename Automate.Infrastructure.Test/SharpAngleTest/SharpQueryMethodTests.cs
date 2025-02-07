@@ -13,4 +13,10 @@ public class SharpQueryMethodTests
         var doit = _queryservice.SubmitForm_Guliagar();
         Assert.NotNull(doit);
     }
+    [Fact]
+    public async Task FormSubmits()
+    {
+        var doit = await _queryservice.Submit_Form_Guliagar();
+        Assert.True(doit.IsSuccess);
+    }
 }

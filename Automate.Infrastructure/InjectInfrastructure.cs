@@ -8,6 +8,7 @@ using Automate.Infrastructure.JsonToCsvService;
 using Automate.Infrastructure.MessageLeadsReportService;
 using Automate.Infrastructure.LeafClientService;
 using Automate.Infrastructure.DwhRepoUpdateService;
+using System.Net;
 
 namespace Automate.Infrastructure;
 
@@ -23,7 +24,7 @@ public static class InjectInfrastructure
         services.AddScoped<IJsonConversionService, JsonConversionService>();
         services.AddScoped<ILeafApiService, LeafApiService>();
         services.AddScoped<IDwhRepoUpdateService, DwhRepoService>();
-        
+
         services.AddHttpClient();
 
         // Add Leaf Client
@@ -33,6 +34,28 @@ public static class InjectInfrastructure
             c.DefaultRequestHeaders.Add("Accept", "application/json");
             c.DefaultRequestHeaders.Add("Authorization", settings.LeafTokenType);
         });
+
+        // Add client with cookies
+        services.AddHttpClient(settings.Cookie!)
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler()
+                {
+                    CookieContainer = new CookieContainer(),
+                    UseCookies = true, // Ensure that the handler uses the CookieContainer
+                };
+            });
+
+        // Add client without cookies
+        services.AddHttpClient(settings.NoCookie!)
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler()
+                {
+                    UseCookies = false,
+                };
+            });
+
         return services;
     }
 }

@@ -15,6 +15,10 @@ internal class Settings : IInfrastructureSettings, IDomainSettings
 
     #region IInfrastructureSettings
 
+    // IInfrastructureSettings
+    public string? Cookie { get; set; } = "cookie";
+    public string? NoCookie { get; set; } = "no-cookie";
+
     // IDwhSettings
     public string? CallsConnectionString { get; set; }
     public string? CustomersConnectionString { get; set; }
@@ -66,6 +70,7 @@ internal class Settings : IInfrastructureSettings, IDomainSettings
     public string? GuliagarNameElement { get; set; }
     public string? GuliagarKey { get; set; }
     public string? GuliagarKeyElement { get; set; }
+    public string? GuliagarBase { get; set; }
     public string? GuliagarUrl { get; set; }
     public string? GuliagarUrl2 { get; set; }
     public string? GuliagarBunny { get; set; }

@@ -6,6 +6,7 @@ using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.DataRetrievalFormats;
 using Automate.Infrastructure.JsonManipulationService;
 using CSharpFunctionalExtensions;
+using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace Automate.Infrastructure.LeafClientService;
@@ -15,7 +16,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
     #region Setup
     public HttpClient GetClient(IHttpClientFactory factory)
     {
-        var client = factory.CreateClient(settings.LeafName!);
+        HttpClient client = factory.CreateClient(settings.LeafName!);
         return client;
     }
     internal Uri LeafThreadUrl(int offset, int limit) => new($"{settings.LeafBase}{settings.LeafThreadsEndpoint}?offset={offset}&limit={limit}");

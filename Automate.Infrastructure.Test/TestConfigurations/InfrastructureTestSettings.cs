@@ -20,6 +20,7 @@ public class InfrastructureTestSettings : IInfrastructureTestSettings
     public string? GuliagarNameElement { get; set; }
     public string? GuliagarKey { get; set; }
     public string? GuliagarKeyElement { get; set; }
+    public string? GuliagarBase { get; set; }
     public string? GuliagarUrl { get; set; }
     public string? GuliagarUrl2 { get; set; }
     public string? GuliagarBunny { get; set; }
