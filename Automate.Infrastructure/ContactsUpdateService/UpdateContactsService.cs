@@ -8,6 +8,8 @@ namespace Automate.Infrastructure.ContactsUpdateService;
 
 internal class UpdateContactsService(IDwhSettings settings) : IUpdateContactsService
 {
+    private readonly IDwhSettings _settings = settings;
+
     #region Implementation
     public Result ExecuteContactUpdateAsync(List<List<Contact>> contacts)
     {
@@ -25,10 +27,10 @@ internal class UpdateContactsService(IDwhSettings settings) : IUpdateContactsSer
         for (uint i = MagicNum; i < magicNumber; i++)
         {
             // Generate the raw query
-            string query = new RawQuery(settings).ContactQuery(i);
+            string query = new RawQuery(_settings).ContactQuery(i);
 
             // Query the database
-            DwhContext<ContactsDbEntity> contactsContext = new(settings.CallsConnectionString!);
+            DwhContext<ContactsDbEntity> contactsContext = new(_settings.CallsConnectionString!);
             Task<IEnumerable<ContactsDbEntity>> task = DwhContextHelpers.GetItemsFromRawAsync(contactsContext, query);
             List<Contact> result = task.Result
                 .Select(c => c as IContactsEntity)
