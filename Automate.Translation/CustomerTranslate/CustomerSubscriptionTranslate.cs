@@ -16,18 +16,20 @@ public static class CustomerSubscriptionTranslate
     /// <returns></returns>
     public static ICustomerSubscription Translate(this ICustSubLongIdLongNumberStrSellers entity)
     {
-        PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
+        PhoneNumber number = PhoneNumberTranslate.Translate(entity.Phone1);
+        PhoneNumber number2 = PhoneNumberTranslate.Translate(entity.Phone2);
 
         // Translate sellers
         string sellers = VerifySeller(entity.Sellers);
 
         // Fix dates, which are in UTC already
-        DateTime subStartDate = new(entity.SubStartDate.Ticks, DateTimeKind.Utc);
-        DateTime custCxlDate = new(entity.CustomerCancelDate.Ticks, DateTimeKind.Utc);
-        DateTime subCancelDate = new(entity.SubCancelDate.Ticks, DateTimeKind.Utc);
+        DateTimeOffset customerStartDate = new(new DateTime(entity.CustomerStartDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
+        DateTimeOffset subStartDate = new(new DateTime(entity.SubStartDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
+        DateTimeOffset custCxlDate = new(new DateTime(entity.CustomerCancelDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
+        DateTimeOffset subCancelDate = new(new DateTime(entity.SubCancelDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
 
         // Retrieve customer info from the data
-        ICustomerSubscription customer = new CustomerSubscription(entity.CustomerID, entity.SubId, entity.Date, new(subStartDate), number, PhoneNumberTranslate.Default, new(custCxlDate), new(subCancelDate), entity.SubIsActive, entity.SubIsActive, entity.CompletedInitial, entity.ContractValue, sellers);
+        ICustomerSubscription customer = new CustomerSubscription(entity.CustomerID, entity.SubId, customerStartDate, subStartDate, number, number2, custCxlDate, subCancelDate, entity.SubIsActive, entity.SubIsActive, entity.CompletedInitial, entity.ContractValue, sellers);
 
         return customer;
     }

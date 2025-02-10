@@ -2,8 +2,10 @@
 
 namespace Automate.Translation.CustomerTranslate;
 
-public interface ICustSubLongIdLongNumberStrSellers : IMsgDTONumberLong
+public interface ICustSubLongIdLongNumberStrSellers
 {
+    long Phone1 { get; set; }
+    long Phone2 { get; set; }
     long CustomerID { get; set; }
     long SubId { get; set; }
     bool SubIsActive { get; set; }
