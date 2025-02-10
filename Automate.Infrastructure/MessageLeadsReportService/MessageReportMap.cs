@@ -101,7 +101,7 @@ internal class MessageReportMap : ClassMap<QualifiedMessageRecord>, IConvert
             : Sellers;
 
         // Fix dates, which are in UTC already
-        DateTimeOffset customerStartDate = new(new DateTime(CustomerStartDate.Ticks), TimeSpan.FromHours(0));
+        DateTimeOffset customerStartDate = new(new DateTime(CustomerStartDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
         DateTimeOffset subStartDate = new(new DateTime(SubStartDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
         DateTimeOffset custCxlDate = new(new DateTime(CustomerCancelDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
         DateTimeOffset subCancelDate = new(new DateTime(SubCancelDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
