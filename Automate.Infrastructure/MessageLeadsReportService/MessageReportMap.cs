@@ -76,13 +76,13 @@ internal class MessageReportMap : ClassMap<QualifiedMessageRecord>, IConvert
         DateTimeOffset date = Date;
 
         // Convert Contents
-        string content = Contents is null || Contents == string.Empty 
-            ? string.Empty 
+        string content = Contents is null || Contents == string.Empty
+            ? string.Empty
             : Contents;
 
         // Convert Source
-        string source = Source is null || Source == string.Empty 
-            ? string.Empty 
+        string source = Source is null || Source == string.Empty
+            ? string.Empty
             : Source;
 
         // Cast new message into IMessage
@@ -101,13 +101,14 @@ internal class MessageReportMap : ClassMap<QualifiedMessageRecord>, IConvert
             : Sellers;
 
         // Fix dates, which are in UTC already
-        DateTime subStartDate = new(SubStartDate.Ticks, DateTimeKind.Utc);
-        DateTime custCxlDate = new(CustomerCancelDate.Ticks, DateTimeKind.Utc);
-        DateTime subCancelDate = new(SubCancelDate.Ticks, DateTimeKind.Utc);
+        DateTimeOffset customerStartDate = new(new DateTime(CustomerStartDate.Ticks), TimeSpan.FromHours(0));
+        DateTimeOffset subStartDate = new(new DateTime(SubStartDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
+        DateTimeOffset custCxlDate = new(new DateTime(CustomerCancelDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
+        DateTimeOffset subCancelDate = new(new DateTime(SubCancelDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
 
 
         // Retrieve customer info from the data
-        ICustomerSubscription customer = new CustomerSubscription(CustomerID, SubId, Date, new(subStartDate), new(Number), new(0), new(custCxlDate), new(subCancelDate), SubIsActive, SubIsActive, CompletedInitial, ContractValue, sellers);
+        ICustomerSubscription customer = new CustomerSubscription(CustomerID, SubId, customerStartDate, subStartDate, new(Number), new(0), custCxlDate, subCancelDate, SubIsActive, SubIsActive, CompletedInitial, ContractValue, sellers);
 
         return new QualifiedMessageRecord(message, customer, ImLead, SalesLead);
     }
