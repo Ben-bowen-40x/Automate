@@ -74,6 +74,8 @@ public class QueryTests
     [
     Theory,
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one group by stuffandthings, thingsandstuff, andstuffthings order by otherthings asc", "where stuffandthings > 123456789 and otherstuffandthings < 123456789", Query.QueryType.Where),
+        InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where otherthings is not null group by stuffandthings, thingsandstuff, andstuffthings order by otherthings asc", "where stuffandthings > 123456789 and otherstuffandthings < 123456789", Query.QueryType.Where),
+        InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where otherthings is not null group by stuffandthings, thingsandstuff, andstuffthings order by otherthings asc", "and stuffandthings > 123456789 and otherstuffandthings < 123456789", Query.QueryType.Where),
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 order by otherthings asc", "group by stuffandthings, thingsandstuff, andstuffthings", Query.QueryType.GroupBy),
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings", "order by otherthings", Query.QueryType.OrderBy),
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings order by otherthings","theseotherthings, thisstuff", Query.QueryType.OrderBy),
@@ -95,7 +97,15 @@ public class QueryTests
             default:
                 throw new Exception();
         }
-        Assert.Contains(addition.ToLower(), q.QueryString.ToLower());
+        if (!q.QueryString.Contains(addition, StringComparison.CurrentCultureIgnoreCase))
+        {
+            var splittee = addition.Split(' ').ToList();
+            var split = splittee.Where(i => !string.IsNullOrWhiteSpace(i) && splittee.IndexOf(i) != 0);
+            var joined = string.Join(' ', split);
+            Assert.Contains(joined.ToLower(), q.QueryString.ToLower());
+        }
+        else
+            Assert.Contains(addition.ToLower(), q.QueryString.ToLower());
     }
     #endregion
 }
