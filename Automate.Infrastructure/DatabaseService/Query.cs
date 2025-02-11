@@ -121,9 +121,9 @@ public partial class Query : IQuery
         {
             case QueryType.Select: break;
             case QueryType.From: break;
-            case QueryType.Where: Where ??= addition; break;
-            case QueryType.GroupBy: GroupBy ??= addition; break;
-            case QueryType.OrderBy: OrderBy ??= addition; break;
+            case QueryType.Where: Where = addition; break;
+            case QueryType.GroupBy: GroupBy = addition; break;
+            case QueryType.OrderBy: OrderBy = addition; break;
             default: throw new NotImplementedException($"The following sql query keyword has not been implemented: {type}");
         };
         QueryString = string.Join(string.Empty, QueryStrings);
@@ -136,8 +136,32 @@ public partial class Query : IQuery
             case QueryType.Select: break;
             case QueryType.From: break;
             case QueryType.Where:
-                // TODO: ensure that Addition has an AND at the beginning
-                Where = Where is null ? WhereStr + addition : Where + " " + addition; break;
+                string addIt = WhereRgx().Replace(addition, string.Empty);
+                if (Where is null)
+                {
+                    Where = WhereStr + addIt;
+                }
+                else
+                {
+                    // Check whether the addition has the appropriate syntax
+                    string[] addArray = addIt.Split(" ").Where(i => !string.IsNullOrWhiteSpace(i)).ToArray();
+                    bool hasand = string.Equals(addArray[0], _and, StringComparison.InvariantCultureIgnoreCase);
+                    if (hasand)
+                    {
+                        if (Where[^1] == ' ')
+                            Where = Where + addIt;
+                        else
+                            Where = Where + " " + addIt;
+                    }
+                    else
+                    {
+                        if (Where[^1] == ' ')
+                            Where = Where + _and + " " + addIt;
+                        else
+                            Where = Where + " " + _and + " " + addIt;
+                    }
+                }
+                break;
             case QueryType.GroupBy:
                 string readdition = GroupByRgx().Replace(addition, string.Empty);
                 GroupBy = GroupBy is null
@@ -172,23 +196,29 @@ public partial class Query : IQuery
                 break;
             default: throw new NotImplementedException($"The following sql query keyword has not been implemented: {type}");
         }
-        QueryString = VerifyQuery(string.Join(string.Empty, QueryStrings), out _, out _, out _, out _, out _);
+        
+        var intermediate = VerifyQuery(string.Join(string.Empty, QueryStrings), out _, out _, out _, out _, out _);
+        QueryString = string.Join(' ', intermediate.Split(' ').Where(i => !string.IsNullOrWhiteSpace(i)));
         return QueryString;
     }
 
-    [GeneratedRegex(@" asc(ending)?\b", RegexOptions.IgnoreCase, "en-US")]
+    private const string _culture = "en-US";
+    private const string _and = "AND";
+    [GeneratedRegex(_and, RegexOptions.IgnoreCase, _culture)]
+    private static partial Regex And();
+    [GeneratedRegex(@"asc(ending)?\b", RegexOptions.IgnoreCase, _culture)]
     private static partial Regex AscRgx();
-    [GeneratedRegex(@" desc(ending)?\b", RegexOptions.IgnoreCase, "en-US")]
+    [GeneratedRegex(@"desc(ending)?\b", RegexOptions.IgnoreCase, _culture)]
     private static partial Regex DescRgx();
-    [GeneratedRegex(@" order\s*by ", RegexOptions.IgnoreCase, "en-US")]
+    [GeneratedRegex(@"order\s*by ", RegexOptions.IgnoreCase, _culture)]
     private static partial Regex OrderByRgx();
-    [GeneratedRegex(@" group\s*by ", RegexOptions.IgnoreCase, "en-US")]
+    [GeneratedRegex(@"group\s*by ", RegexOptions.IgnoreCase, _culture)]
     private static partial Regex GroupByRgx();
-    [GeneratedRegex(" where ", RegexOptions.IgnoreCase, "en-US")]
+    [GeneratedRegex(WhereStr, RegexOptions.IgnoreCase, _culture)]
     private static partial Regex WhereRgx();
-    [GeneratedRegex(" from ", RegexOptions.IgnoreCase, "en-US")]
+    [GeneratedRegex("from ", RegexOptions.IgnoreCase, _culture)]
     private static partial Regex FromRgx();
-    [GeneratedRegex(@"\bselect ", RegexOptions.IgnoreCase, "en-US")]
+    [GeneratedRegex(@"\bselect ", RegexOptions.IgnoreCase, _culture)]
     private static partial Regex SelectRgx();
     #endregion
 
@@ -274,11 +304,15 @@ public partial class Query : IQuery
             string? where;
             wherer = WhereRgx().Split(groupby[0]);
             int whereCt = WhereRgx().Count(query);
-            string where1 = whereCt == 0 ? string.Empty : wherer[1]; // There may or may not be a WHERE clause
-            string whery = where1.Contains(',') || whereCt > 1 || (whereCt == 0 && (where1.Contains('>') || where1.Contains('<') || where1.Contains("'<'")))
-                ? throw new ArgumentException(Error(QueryType.Where, query, whereCt == 0 ? wherer[0] : wherer[1], "It has commas in the WHERE clause, or there is more than one WHERE clause, or the WHERE clause is missing when it should not be missing."))
-                : whereCt == 0 ? wherer[0] : wherer[1];
-            where = whereCt == 0 ? null : "WHERE " + whery; // The WHERE string is nullable because not all queries need a WHERE statement
+            bool noWhereClause = whereCt == 0; // The query does not contain a WHERE clause
+            string where1 = noWhereClause ? string.Empty : wherer[1]; // There may or may not be a WHERE clause
+            bool containComma = where1.Contains(','); // The where clause should not contain commas
+            bool q = noWhereClause && // Even though there is no WHERE clause ...
+                (where1.Contains('>') || where1.Contains('<') || where1.Contains("'<'")); // ... the query contains greater than or less than operators
+            string whery = containComma || whereCt > 1 || q
+                ? throw new ArgumentException(Error(QueryType.Where, query, noWhereClause ? wherer[0] : wherer[1], "It has commas in the WHERE clause, or there is more than one WHERE clause, or the WHERE clause is missing when it should not be missing."))
+                : noWhereClause ? wherer[0] : wherer[1];
+            where = noWhereClause ? null : "WHERE " + whery; // The WHERE string is nullable because not all queries need a WHERE statement
             return where;
         }
 
