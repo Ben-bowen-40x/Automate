@@ -15,8 +15,8 @@ public interface IRawQuerySettings
     string? MessageCallQuery1 { get; set; }
     string? MessageCallQuery2 { get; set; }
     string? MessageCallQuery3 { get; set; }
+    string? MessageCustQuery1 { get; set; }
     string? MessageCustQuery2 { get; set; }
-    string? MessageCustQuery3 { get; set; }
 
     // Discrepancy
     string? Discrepancy { get; set; }

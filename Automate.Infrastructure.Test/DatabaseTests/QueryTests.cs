@@ -69,4 +69,33 @@ public class QueryTests
         Assert.Equal(expected.ToLower() + " ", q.QueryString.ToLower());
     }
     #endregion
+
+    #region QueryClass_Setters_ProperlyAppendComponents
+    [
+    Theory,
+        InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one group by stuffandthings, thingsandstuff, andstuffthings order by otherthings asc", "where stuffandthings > 123456789 and otherstuffandthings < 123456789", Query.QueryType.Where, "select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings order by otherthings asc"),
+        InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 order by otherthings asc", "group by stuffandthings, thingsandstuff, andstuffthings", Query.QueryType.GroupBy, "select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings order by otherthings asc"),
+        InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings", "order by otherthings", Query.QueryType.OrderBy, "select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings order by otherthings"),
+    ]
+    public void QueryClass_Setters_ProperlyAppendComponents(string query, string addition, Query.QueryType type, string expected)
+    {
+        Query q = new(DwhQueryType.Test, query);
+        switch (type)
+        {
+            case Query.QueryType.Where:
+                q.AppendWhere(addition);
+                break;
+            case Query.QueryType.GroupBy:
+                q.AppendGroupBy(addition);
+                break;
+            case Query.QueryType.OrderBy:
+                q.AppendOrderBy(addition);
+                break;
+            default:
+                throw new Exception();
+        }
+        Assert.Contains(addition.ToLower(), q.QueryString.ToLower());
+        Assert.Equal(expected.ToLower() + " ", q.QueryString.ToLower());
+    }
+    #endregion
 }

@@ -17,14 +17,14 @@
       }
     },
 
-    // Contact Update
+    /*/ Contact Update
     "Update Contacts - Defaults": {
       "commandName": "Project",
       "commandLineArgs": "updateContacts",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
-    },
+    },//*/
 
     // Json to Csv Conversion
     "Convert Json - Always Edit": {
@@ -251,6 +251,15 @@
     "Update Contact Forms Repo - Default Repo Locations - Soft update": {
       "commandName": "Project",
       "commandLineArgs": "updateRepo -t ContactForms -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LocalRepo\\ContactFormsRepo.json",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
+    // Update Contacts
+    "Update PHONE Contacts Repo -- Default repo location": {
+      "commandName": "Project",
+      "commandLineArgs": "updateRepo -t ContactUpdate",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

@@ -1,7 +1,9 @@
 ﻿using Automate.Application.InfrastructureValueObjects;
 using Automate.Application.RepoUpdate;
 using Automate.Application.TypedRepoUpdate;
+using Automate.Application.UpdateContacts;
 using Automate.Cli.Verbs.VerbHelper;
+using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.DataRetrievalFormats;
 using CommandLine;
 using CSharpFunctionalExtensions;
@@ -43,8 +45,8 @@ internal class UpdateRepoVerb : IVerb
         Console.WriteLine($"- Whether to perform a force update on the repositories (This will override the Hard Update option): {ForceUpdate}");
 
         // Validate Input
-        var valueCsv = PathManipulation.VerifyType(ValueRepositoryCsv);
-        var apiJson = PathManipulation.VerifyType(ApiRepositoryJson);
+        Result<FileType> valueCsv = PathManipulation.VerifyType(ValueRepositoryCsv);
+        Result<FileType> apiJson = PathManipulation.VerifyType(ApiRepositoryJson);
         string valueInfo = !File.Exists(ValueRepositoryCsv) || valueCsv.IsFailure || valueCsv.Value != FileType.Csv
             ? ""
             : ValueRepositoryCsv;
@@ -77,6 +79,19 @@ internal class UpdateRepoVerb : IVerb
                 var mana = service.GetRequiredService<ITypedRepoUpdateManager>();
                 Result res = mana.Manage<WebFormEntity>(DwhQueryType.ContactForms, DwhConnectionType.ContactForms, ApiRepositoryJson, ForceUpdate || Update);
                 code = DetermineReturnCode(res);
+                break;
+            case RepoType.ContactUpdate:
+                Console.WriteLine($"Default values were chosen for the following choice: {RepoType.ContactUpdate}");
+                var man = service.GetRequiredService<IContactUpdateManager>();
+                UpdateResult re = man.UpdateContacts("");
+                
+                // Inform the user what took place
+                var uploaded = re.UploadedContacts;
+                var contactLocation = re.ContactLocation;
+                _ = DetermineReturnCode(uploaded);
+                Console.WriteLine("Request: Contacts Upload");
+                code = DetermineReturnCode(contactLocation);
+                Console.WriteLine("Request: Contact generation");
                 break;
             default:
                 var m = service.GetRequiredService<IRepoUpdateManager>();

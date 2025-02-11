@@ -38,8 +38,8 @@ public class InfrastructureTestSettings : IInfrastructureTestSettings
     public string? MessageCallQuery1 { get; set; }
     public string? MessageCallQuery2 { get; set; }
     public string? MessageCallQuery3 { get; set; }
+    public string? MessageCustQuery1 { get; set; }
     public string? MessageCustQuery2 { get; set; }
-    public string? MessageCustQuery3 { get; set; }
     public string? Discrepancy { get; set; }
     public string? Discrepancy2 { get; set; }
     public string? OriginalDiscrepancy { get; set; }

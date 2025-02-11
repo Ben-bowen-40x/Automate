@@ -4,7 +4,6 @@ namespace Automate.Infrastructure.DatabaseService;
 public class RawQuery(IRawQuerySettings settings)
 {
     readonly IRawQuerySettings _s = settings;
-    private string QueryDateFormat => _s.QueryDateFormat!;
 
     #region Basic Queries
     // Public Basic
@@ -15,34 +14,20 @@ public class RawQuery(IRawQuerySettings settings)
     /// <param name="query"></param>
     /// <param name="values"></param>
     /// <returns></returns>
-    public string Filter(DwhQueryType type, IQuery query, List<long> values)
+    public IQuery Filter(DwhQueryType type, IQuery query, List<long> values)
     {
         string vals = string.Join(",", values);
-        if (query.Where is null)
+        string where = type switch
         {
-            string where = type switch
-            {
-                DwhQueryType.AllCalls => $"WHERE {CallBasicNumerical} in ({vals})",
-                DwhQueryType.AllCustomers => $"WHERE {CustomerBasicNumerical} in ({vals})",
-                _ => throw new Exception($"The type of query has not been set\nType: {type}\nQuery:\n{query}")
-            };
-            query.SetWhere(where);
-            return query.QueryString;
-        }
-        return type switch
-        {
-            DwhQueryType.AllCalls => $"{query.QueryString} and {CallBasicNumerical} in ({vals})",
-            DwhQueryType.AllCustomers => $"{query.QueryString} and {CustomerBasicNumerical} in ({vals})",
-            _ => query.QueryString
+            DwhQueryType.AllCalls => $"{_s.CallBasicNumerical!} in ({vals})",
+            DwhQueryType.AllCustomers => $"{_s.CustomerBasicNumerical!} in ({vals})",
+            _ => throw new Exception($"The type of query has not been set\nType: {type}\nQuery:\n{query}")
         };
+        query.AppendWhere(where);
+        return query;
     }
-    public IQuery CallBasicAddon => new Query(DwhQueryType.AllCalls, CallBasic + _s.CallBasicAddon);
+    public IQuery CallBasicAddon => new Query(DwhQueryType.AllCalls, _s.CallBasic! + _s.CallBasicAddon);
     public IQuery CustomerBasic => new Query(DwhQueryType.AllCustomers, _s.CustomerBasic!);
-
-    // Private Basic
-    private string CallBasicNumerical => _s.CallBasicNumerical!;
-    private string CustomerBasicNumerical => _s.CustomerBasicNumerical!;
-    private string CallBasic => _s.CallBasic!;
 
     #endregion
 
@@ -55,7 +40,8 @@ public class RawQuery(IRawQuerySettings settings)
     public string MessageCustomerQuery(List<long> numbers)
     {
         string nums = string.Join(',', numbers);
-        return $"{MessageCustSubQuery} {_messageCustSubQuery2} ({nums}) {_messageCustSubQuery3};";
+        string result = $"{CustomerBasic.QueryString} {_s.MessageCustQuery1!} ({nums}) {_s.MessageCustQuery2!};";
+        return result;
     }
 
     /// <summary>
@@ -63,7 +49,7 @@ public class RawQuery(IRawQuerySettings settings)
     /// </summary>
     public string MessageCustomerQuery()
     {
-        return MessageCustSubQuery;
+        return CustomerBasic.QueryString;
     }
 
     public readonly TimeSpan NinetyDays = TimeSpan.FromDays(90);
@@ -76,9 +62,9 @@ public class RawQuery(IRawQuerySettings settings)
     public string MessageCallQuery(DateTimeOffset startDate, List<long> numbers)
     {
         var threeMonths = startDate - NinetyDays;
-        var date = threeMonths.Date.ToString(QueryDateFormat);
+        var date = threeMonths.Date.ToString(_s.QueryDateFormat!);
         string nums = string.Join(',', numbers);
-        string query = $"{MessageCallQuery1} '{date}' {MessageCallQuery2} {MessageCallQuery3} ({nums});";
+        string query = $"{_s.CallBasic! + _s.MessageCallQuery1!} '{date}' {_s.MessageCallQuery2!} {_s.MessageCallQuery3!} ({nums});";
         return query;
     }
 
@@ -90,24 +76,10 @@ public class RawQuery(IRawQuerySettings settings)
     public string MessageCallQuery(DateTimeOffset startDate)
     {
         var threeMonths = startDate - NinetyDays;
-        var date = threeMonths.Date.ToString(QueryDateFormat);
-        string query = $"{MessageCallQuery1} '{date}' {MessageCallQuery2};";
+        var date = threeMonths.Date.ToString(_s.QueryDateFormat!);
+        string query = $"{_s.CallBasic! + _s.MessageCallQuery1!} '{date}' {_s.MessageCallQuery2!};";
         return query;
     }
-
-    // Private Call Query Members
-    private string MessageCallQuery1 => CallBasic + _s.MessageCallQuery1!;
-
-    private string MessageCallQuery2 => _s.MessageCallQuery2!;
-
-    private string MessageCallQuery3 => _s.MessageCallQuery3!;
-
-    // Private Customer Query Members
-    private string MessageCustSubQuery => CustomerBasic.QueryString;
-
-    private string _messageCustSubQuery2 => _s.MessageCustQuery2!;
-    private string _messageCustSubQuery3 => _s.MessageCustQuery3!;
-
     #endregion
 
     #region Discrepancy Query
@@ -131,9 +103,9 @@ public class RawQuery(IRawQuerySettings settings)
     /// <returns></returns>
     public string DiscrepancyQuery(DateTime start, DateTime end)
     {
-        string startString = start.ToString(QueryDateFormat);
-        string endString = end.ToString(QueryDateFormat);
-        string result = $"{Discrepancy} '{startString}' {and} '{endString}' {Discrepancy2}"; // Keep this here for debugging purposes
+        string startString = start.ToString(_s.QueryDateFormat!);
+        string endString = end.ToString(_s.QueryDateFormat!);
+        string result = $"{_s.Discrepancy!} '{startString}' AND '{endString}' {_s.Discrepancy2!}"; // Keep this here for debugging purposes
         return result;
     }
 
@@ -146,16 +118,6 @@ public class RawQuery(IRawQuerySettings settings)
     {
         return DiscrepancyQuery(start, DateTime.Now);
     }
-
-    // Private Discrepancy Query Members
-    private string Discrepancy => _s.Discrepancy!;
-
-    private const string and = "AND";
-
-    private string Discrepancy2 => _s.Discrepancy2!;
-
-    private string OriginalDiscrepancy => _s.OriginalDiscrepancy!;
-
     #endregion
 
     #region Contact Update Query
@@ -167,21 +129,16 @@ public class RawQuery(IRawQuerySettings settings)
     /// <returns></returns>
     public string ContactQuery(uint number)
     {
-        ulong num = ContactUpdateNumber * number;
-        ulong num2 = ContactUpdateNumber + num;
-        return ContactUpdate + $" {num} " + ContactUpdate2 + $" {num2} " + ContactUpdate3;
+        ulong num = _s.ContactUpdateNumber * number;
+        ulong num2 = _s.ContactUpdateNumber + num;
+        string result = _s.ContactUpdate1! + $" {num} " + _s.ContactUpdate2! + $" {num2} " + _s.ContactUpdate3!;
+        return result;
     }
 
-    // Private Contact Query members
-    private string ContactUpdate => _s.ContactUpdate1!;
-
-    private string ContactUpdate2 => _s.ContactUpdate2!;
-    private string ContactUpdate3 => _s.ContactUpdate3!;
-    private ulong ContactUpdateNumber => _s.ContactUpdateNumber;
     #endregion
 
     #region Web Forms Query
-    public IQuery WebFormQuery1 => new Query (DwhQueryType.ContactForms, _s.WebFormQuery1!);
+    public IQuery WebFormQuery1 => new Query(DwhQueryType.ContactForms, _s.WebFormQuery1!);
     public string WebFormQuery2 => _s.WebFormQuery2!;
     #endregion
 }

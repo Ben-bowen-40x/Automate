@@ -24,10 +24,11 @@ internal class UpdateContactsService(IDwhSettings settings) : IUpdateContactsSer
         List<List<Contact>> listOfContacts = new((int)magicNumber);
 
         // Generate a database query for each set of numbers and save the result
+        var q = new RawQuery(_settings);
         for (uint i = MagicNum; i < magicNumber; i++)
         {
             // Generate the raw query
-            string query = new RawQuery(_settings).ContactQuery(i);
+            string query = q.ContactQuery(i);
 
             // Query the database
             DwhContext<ContactsDbEntity> contactsContext = new(_settings.CallsConnectionString!);

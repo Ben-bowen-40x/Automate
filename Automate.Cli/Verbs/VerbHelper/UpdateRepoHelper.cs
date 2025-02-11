@@ -6,6 +6,7 @@ public enum RepoType
     Calls,
     Customers,
     ContactForms,
+    ContactUpdate,
 }
 
 internal enum RepoFileTypes

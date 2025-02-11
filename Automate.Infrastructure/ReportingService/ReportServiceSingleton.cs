@@ -31,7 +31,9 @@ internal class ReportServiceSingleton : IReportService
             int counter = UpdateContactsService.MagicNum;
             foreach (var contact in contacts)
             {
-                string path = directory.FullName + $"ContactFile{counter++}.csv";
+                // Remember, the unary operation "numericalVariableName++;" will use the value and THEN increment it. That's why this works
+                string path = directory.FullName + $"ContactFile{counter++}.csv"; 
+
                 File.WriteAllText(path, _errorMessage);
                 CsvService.Write<Contact, ContactsMap>(path, contact);
             }

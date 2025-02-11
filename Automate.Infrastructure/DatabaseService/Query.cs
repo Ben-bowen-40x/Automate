@@ -60,10 +60,13 @@ public partial class Query : IQuery
     public string From { get; }
     public string? Where { get; private set; }
     public string SetWhere(string where) => Set(QueryType.Where, where);
+    public string AppendWhere(string where) => Add(QueryType.Where, where);
     public string? GroupBy { get; private set; }
     public string SetGroupBy(string groupBy) => Set(QueryType.GroupBy, groupBy);
+    public string AppendGroupBy(string groupBy) => Add(QueryType.GroupBy, groupBy);
     public string? OrderBy { get; private set; }
     public string SetOrderBy(string groupBy) => Set(QueryType.OrderBy, groupBy);
+    public string AppendOrderBy(string groupBy) => Add(QueryType.OrderBy, groupBy);
     public string QueryString { get; private set; }
     public enum QueryType
     {
@@ -76,11 +79,11 @@ public partial class Query : IQuery
     #endregion
 
     #region Private
-    private string[]? _queryStrings;
     private string[] QueryStrings
     {
         get
         {
+            // This ensures that if there is no space at the end of each component, one will be added
             List<string> strs =
             [
                 Select[^1] == ' ' ? Select : Select + " ",
@@ -92,18 +95,19 @@ public partial class Query : IQuery
                 strs.Add(GroupBy[^1] == ' ' ? GroupBy : GroupBy + " ");
             if (OrderBy is not null)
                 strs.Add(OrderBy[^1] == ' ' ? OrderBy : OrderBy + " ");
-            return _queryStrings ??= [.. strs];
+            return [.. strs];
         }
     }
-    private static string AddSpaces(params string[] args)
+    private static string AddSpaces(params string?[] args)
     {
         List<string> list = new(args.Length);
         foreach (var arg in args)
         {
-            if (arg != string.Empty && arg is not null)
+            if (!string.IsNullOrWhiteSpace(arg))
                 list.Add(arg);
         }
-        return string.Join(' ', list);
+        var result = string.Join(' ', list);
+        return result;
     }
     private string Set(QueryType type, string addition)
     {
@@ -114,16 +118,58 @@ public partial class Query : IQuery
             case QueryType.Where: Where ??= addition; break;
             case QueryType.GroupBy: GroupBy ??= addition; break;
             case QueryType.OrderBy: OrderBy ??= addition; break;
-            default:
-                throw new NotImplementedException($"The following sql query keyword has not been implemented: {type}");
+            default: throw new NotImplementedException($"The following sql query keyword has not been implemented: {type}");
         };
         QueryString = string.Join(string.Empty, QueryStrings);
         return QueryString;
     }
+    private string Add(QueryType type, string addition)
+    {
+        switch (type)
+        {
+            case QueryType.Select: break;
+            case QueryType.From: break;
+            case QueryType.Where: 
+                // TODO: ensure that Addition has an AND at the beginning
+                Where = Where is null ? "WHERE " + addition : Where + " " + addition; break;
+            case QueryType.GroupBy: GroupBy = GroupBy is null ? "GROUP BY " + addition.ToLower().Split("group by ")[1] : GroupBy + ", " + addition; break;
+            case QueryType.OrderBy:
+                bool ascMatch = AscRgx().IsMatch(addition);
+                bool descMatch = DescRgx().IsMatch(addition);
+                if (OrderBy is null)
+                {
+                    if (!descMatch && !ascMatch)
+                    {
+                        OrderBy = "ORDER BY " + addition + " asc";
+                    }
+                    OrderBy = "ORDER BY " + addition;
+                }
+                else
+                {
+                    string[] arr = OrderBy.Split(' ');
 
-    [GeneratedRegex(@" asc", RegexOptions.IgnoreCase, "en-US")]
+                    // Remove the Asc or Desc keyword from the Order By statement
+                    List<string> items = arr.Where(c => !AscRgx().IsMatch(c) && !DescRgx().IsMatch(c)).ToList();
+
+                    // Ensure that the asc or desc keyword is in the addition
+                    string additional = addition;
+                    if (!descMatch && !ascMatch)
+                    {
+                        additional += arr[^1]; // Add the appropriate asc or desc keyword
+                    }
+                    items.Add(additional);
+                    OrderBy = AddSpaces([.. items]);
+                }
+                break;
+            default: throw new NotImplementedException($"The following sql query keyword has not been implemented: {type}");
+        }
+        string result = VerifyQuery(AddSpaces(QueryStrings), out _, out _, out _, out _, out _);
+        return result;
+    }
+
+    [GeneratedRegex(@" asc(ending)?\b", RegexOptions.IgnoreCase, "en-US")]
     private static partial Regex AscRgx();
-    [GeneratedRegex(@" desc", RegexOptions.IgnoreCase, "en-US")]
+    [GeneratedRegex(@" desc(ending)?\b", RegexOptions.IgnoreCase, "en-US")]
     private static partial Regex DescRgx();
     [GeneratedRegex(@" order\s*by ", RegexOptions.IgnoreCase, "en-US")]
     private static partial Regex OrderByRgx();
@@ -133,7 +179,7 @@ public partial class Query : IQuery
     private static partial Regex WhereRgx();
     [GeneratedRegex(" from ", RegexOptions.IgnoreCase, "en-US")]
     private static partial Regex FromRgx();
-    [GeneratedRegex("select ", RegexOptions.IgnoreCase, "en-US")]
+    [GeneratedRegex(@"\bselect ", RegexOptions.IgnoreCase, "en-US")]
     private static partial Regex SelectRgx();
     #endregion
 
@@ -153,7 +199,9 @@ public partial class Query : IQuery
 
         select = SelectIt(query, fromr);
 
-        return string.Join(string.Empty, select, from, where, groupBy, orderBy);
+        var result = AddSpaces(select, from, where, groupBy, orderBy);
+
+        return result;
 
         // Locals
         static string? OrderByIt(string query, out string[] orderby)

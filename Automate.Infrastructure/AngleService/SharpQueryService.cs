@@ -50,7 +50,7 @@ public class SharpQueryService
         _factory = factory;
     }
 
-    public async Task<Result> SubmitForm_Guliagar()
+    public Result SubmitForm_Guliagar()
     {
         IConfiguration config = Configuration.Default.WithDefaultLoader().WithDefaultCookies();
         IBrowsingContext context = BrowsingContext.New(config);

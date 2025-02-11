@@ -10,6 +10,9 @@ public interface IQuery
     string? OrderBy { get; }
     string QueryString { get; }
 
+    string AppendGroupBy(string groupBy);
+    string AppendOrderBy(string groupBy);
+    string AppendWhere(string where);
     string SetGroupBy(string groupBy);
     string SetOrderBy(string groupBy);
     string SetWhere(string where);
