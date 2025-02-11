@@ -57,14 +57,19 @@ public partial class Query : IQuery
     #region Public
     public DwhQueryType Type { get; }
     public string Select { get; }
+    private const string SelectStr = "SELECT ";
     public string From { get; }
+    private const string FromStr = "FROM ";
     public string? Where { get; private set; }
+    private const string WhereStr = "WHERE ";
     public string SetWhere(string where) => Set(QueryType.Where, where);
     public string AppendWhere(string where) => Add(QueryType.Where, where);
     public string? GroupBy { get; private set; }
+    private const string GroupbyStr = "GROUP BY ";
     public string SetGroupBy(string groupBy) => Set(QueryType.GroupBy, groupBy);
     public string AppendGroupBy(string groupBy) => Add(QueryType.GroupBy, groupBy);
     public string? OrderBy { get; private set; }
+    private const string OrderbyStr = "ORDER BY ";
     public string SetOrderBy(string groupBy) => Set(QueryType.OrderBy, groupBy);
     public string AppendOrderBy(string groupBy) => Add(QueryType.OrderBy, groupBy);
     public string QueryString { get; private set; }
@@ -84,6 +89,7 @@ public partial class Query : IQuery
         get
         {
             // This ensures that if there is no space at the end of each component, one will be added
+            // Do not save this value in a field
             List<string> strs =
             [
                 Select[^1] == ' ' ? Select : Select + " ",
@@ -129,10 +135,15 @@ public partial class Query : IQuery
         {
             case QueryType.Select: break;
             case QueryType.From: break;
-            case QueryType.Where: 
+            case QueryType.Where:
                 // TODO: ensure that Addition has an AND at the beginning
-                Where = Where is null ? "WHERE " + addition : Where + " " + addition; break;
-            case QueryType.GroupBy: GroupBy = GroupBy is null ? "GROUP BY " + addition.ToLower().Split("group by ")[1] : GroupBy + ", " + addition; break;
+                Where = Where is null ? WhereStr + addition : Where + " " + addition; break;
+            case QueryType.GroupBy:
+                string readdition = GroupByRgx().Replace(addition, string.Empty);
+                GroupBy = GroupBy is null
+                    ? GroupbyStr + readdition
+                    : GroupBy + ", " + readdition;
+                break;
             case QueryType.OrderBy:
                 bool ascMatch = AscRgx().IsMatch(addition);
                 bool descMatch = DescRgx().IsMatch(addition);
@@ -140,31 +151,29 @@ public partial class Query : IQuery
                 {
                     if (!descMatch && !ascMatch)
                     {
-                        OrderBy = "ORDER BY " + addition + " asc";
+                        string add = OrderByRgx().Replace(addition, string.Empty);
+                        OrderBy = OrderbyStr + add + " asc";
                     }
-                    OrderBy = "ORDER BY " + addition;
+                    else
+                        OrderBy = OrderbyStr + addition;
                 }
                 else
                 {
-                    string[] arr = OrderBy.Split(' ');
+                    Match asc = AscRgx().Match(OrderBy);
+                    Match desc = DescRgx().Match(OrderBy);
 
-                    // Remove the Asc or Desc keyword from the Order By statement
-                    List<string> items = arr.Where(c => !AscRgx().IsMatch(c) && !DescRgx().IsMatch(c)).ToList();
+                    // If asc, then use asc; if desc, then use desc; otherwise, default to asc, even though the default will likely never be used.
+                    string keyword = asc.Success ? asc.Value : desc.Success ? desc.Value : " asc";
+                    string inter = AscRgx().Replace(OrderBy, string.Empty);
+                    string intermed = DescRgx().Replace(inter, string.Empty);
 
-                    // Ensure that the asc or desc keyword is in the addition
-                    string additional = addition;
-                    if (!descMatch && !ascMatch)
-                    {
-                        additional += arr[^1]; // Add the appropriate asc or desc keyword
-                    }
-                    items.Add(additional);
-                    OrderBy = AddSpaces([.. items]);
+                    OrderBy = intermed + ", " + addition + " " + keyword;
                 }
                 break;
             default: throw new NotImplementedException($"The following sql query keyword has not been implemented: {type}");
         }
-        string result = VerifyQuery(AddSpaces(QueryStrings), out _, out _, out _, out _, out _);
-        return result;
+        QueryString = VerifyQuery(string.Join(string.Empty, QueryStrings), out _, out _, out _, out _, out _);
+        return QueryString;
     }
 
     [GeneratedRegex(@" asc(ending)?\b", RegexOptions.IgnoreCase, "en-US")]
@@ -199,7 +208,7 @@ public partial class Query : IQuery
 
         select = SelectIt(query, fromr);
 
-        var result = AddSpaces(select, from, where, groupBy, orderBy);
+        string result = AddSpaces(select, from, where, groupBy, orderBy);
 
         return result;
 
@@ -215,12 +224,34 @@ public partial class Query : IQuery
                 int desc = DescRgx().Count(orderby[1]);
                 int ascError = AscRgx().Count(orderby[0]) > 1 ? throw new ArgumentException(Error(QueryType.OrderBy, query, orderby[0], "The asc keyword occurs in the wrong place.")) : 0;
                 int descError = DescRgx().Count(orderby[0]) > 1 ? throw new ArgumentException(Error(QueryType.OrderBy, query, orderby[0], "The desc keywords occurs in the wrong place.")) : 0;
-                orderBy = (orderByCt > 0 && asc == 0 && desc == 0) // There is at least one instance of the ORDER BY keyword but no instances of the asc or desc keywords
-                        || (orderByCt == 0 && asc > 0) || (orderByCt == 0 && desc > 0) // There are no instances of the ORDER BY keyword but there is at least one asc or desc keyword
-                        || (asc > 0 && desc > 0) // There is an instance of both asc and desc keywords, but there should only be asc OR desc
-                        || asc > 1 || desc > 1 // Either asc or desc occurs more than once
-                     ? throw new ArgumentException(Error(QueryType.OrderBy, query, orderby[1], "It's missing the asc or desc keyword, or there is more than one ORDER BY keyword in the query, or there are too many asc/desc keywords"))
-                     : OrderByRgx().Count(query) == 1 ? "ORDER BY " + orderby[1] : null; // The OrderBy property is nullable because not all queries need one
+                string? intermediary = OrderByRgx().Count(query) == 1 ? "ORDER BY " + orderby[1] : null; // The OrderBy property is nullable because not all queries need one
+
+                if (orderByCt > 0 && asc == 0 && desc == 0) // There is at least one instance of the ORDER BY keyword but no instances of the asc or desc keywords
+                {
+                    // Add a default
+                    if (intermediary is not null)
+                        intermediary += " asc";
+                }
+                else if (orderByCt == 0 && (asc > 0 || desc > 0)) // There are no instances of the ORDER BY keyword but there is at least one asc or desc keyword
+                {
+                    throw new ArgumentException(Error(QueryType.OrderBy, query, orderby[1], "It has no instances of the \"Order By\" keyword, but there is at least one asc or desc keyword"));
+                }
+                else if (asc > 0 && desc > 0 || (asc > 1 || desc > 1)) // There is an instance of both asc and desc keywords, but there should only be asc OR desc // Either asc or desc occurs more than once
+                {
+                    // Set to default
+                    if (intermediary is not null)
+                    {
+                        string inter = AscRgx().Replace(intermediary, string.Empty);
+                        intermediary = DescRgx().Replace(inter, string.Empty);
+                    }
+                }
+                orderBy = intermediary;
+                //   orderBy = (orderByCt > 0 && asc == 0 && desc == 0) // There is at least one instance of the ORDER BY keyword but no instances of the asc or desc keywords
+                //   || (orderByCt == 0 && asc > 0) || (orderByCt == 0 && desc > 0) // There are no instances of the ORDER BY keyword but there is at least one asc or desc keyword
+                //   || (asc > 0 && desc > 0) // There is an instance of both asc and desc keywords, but there should only be asc OR desc
+                //   || asc > 1 || desc > 1 // Either asc or desc occurs more than once
+                //? throw new ArgumentException(Error(QueryType.OrderBy, query, OrderbyStr[1], "It's missing the asc or desc keyword, or there is more than one ORDER BY keyword in the query, or there are too many asc/desc keywords"))
+                //: OrderByRgx().Count(query) == 1 ? "ORDER BY " + OrderbyStr[1] : null; // The OrderBy property is nullable because not all queries need one
             }
             else if (AscRgx().Count(query) > 0 || DescRgx().Count(query) > 0) // If we've gotten to this line, there are no ORDER BY keywords in the query
                 throw new ArgumentException(Error(QueryType.OrderBy, query, query, "The asc or desc keywords appears in a query without an ORDER BY clause"));
