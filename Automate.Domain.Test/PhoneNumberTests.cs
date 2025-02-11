@@ -98,19 +98,22 @@ public class PhoneNumberTests
         Theory
         //(Skip = _skipMsg)
         ,
+        InlineData("(867) 638-4943", 8676384943),
+        InlineData("(223) 382-3138", 2233823138),
+        InlineData("(256) 116-1572", 2561161572),
+        InlineData("867) 638-4943", 8676384943),
+        InlineData("223) 382-3138", 2233823138),
+        InlineData("256) 116-1572", 2561161572),
+        InlineData("+1(929) 853-8563", 9298538563),
+        InlineData("+1(651) 160-0526", 6511600526),
+        InlineData("+1(260) 138-2691", 2601382691),
+        InlineData("+1(639) 161-7221", 6391617221),
         InlineData("10000000000", 0),
         InlineData("10000129911", 0),
         InlineData("10807110292", 0),
         InlineData("11000000000", 0),
         InlineData("11045003537", 0),
         InlineData("11432681874", 0),
-        InlineData("(867) 638-4943", 8676384943),
-        InlineData("(223) 382-3138", 2233823138),
-        InlineData("(256) 116-1572", 2561161572),
-        InlineData("+1(929) 853-8563", 9298538563),
-        InlineData("+1(651) 160-0526", 6511600526),
-        InlineData("+1(260) 138-2691", 2601382691),
-        InlineData("+1(639) 161-7221", 6391617221),
         InlineData("1100000000", 0),
         InlineData("1201207686", 0),
         InlineData("1201207735", 0),
@@ -122,7 +125,8 @@ public class PhoneNumberTests
         InlineData("+1(908) 355-333", 0),
         InlineData("+1(330) 219-274", 0),
         InlineData("+1(639) 161-722", 0),
-        InlineData(null, 0)
+        InlineData(null, 0),
+        InlineData("Jun 3, 2024 at 9:19 PM EDT", 0)
     ]
     #endregion
     public void PhoneNumber_TryParseWorksOnString(string? input, long expected)
