@@ -15,5 +15,4 @@ public class DiscrepancySourceLeadsCsvColumns : IDiscrepancyBillable
     public string? Duration { get; set; }
     [Name("Notes", "Name")]
     public string? Notes { get; set; }
-    public string? Billable { get; set; }
 }
