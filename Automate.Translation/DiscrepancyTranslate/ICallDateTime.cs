@@ -1,10 +1,10 @@
-﻿using Automate.Translation.PhoneNumTranslate;
+﻿using Automate.Translation.CallTranslate;
 
 namespace Automate.Translation.DiscrepancyTranslate;
 
 public interface ICallDateTime
 {
-    IPhoneNumberTranslate? Number { get; set; }
+    NumberType? Number { get; set; }
     bool Billable { get; set; }
     DateTime Date { get; set; }
     TimeSpan Duration { get; set; }
