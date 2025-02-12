@@ -89,7 +89,7 @@ internal class MessageAnalysisVerb : IVerb
             ? Path.GetFullPath(TruncatedReportLoc)
             : string.Empty;
         if (Truncate && truncatedReportLoc == string.Empty)
-            throw new Exception($"The user requested to truncate the report but did not specify a valid truncated report output location.");
+            throw new Exception($"The user requested to truncate the report but did not specify a valid truncated report output location. The truncated report output location must exist to continue.");
 
         // Customer Locations
         Result<FileType> customerLoc = PathManipulation.VerifyType(CustomerQueryLocation);
