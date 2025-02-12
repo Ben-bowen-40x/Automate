@@ -7,6 +7,7 @@ public enum RepoType
     Customers,
     ContactForms,
     ContactUpdate,
+    Discrepancy,
 }
 
 internal class UpdateRepoHelper
@@ -16,7 +17,9 @@ internal class UpdateRepoHelper
         Leaf,
         Calls,
         Customers,
-        ContactForms
+        ContactForms,
+        ContactUpdate,
+        Discrepancy,
         """;
 
 }
