@@ -50,8 +50,8 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
         Result<List<DiscrepancySourceLeadsCsvColumns>> result = CsvService.Parse<DiscrepancySourceLeadsCsvColumns>(fileLocation);
         List<IDiscrepancyCall> calls = result.IsSuccess
             ? result.Value
-                .Select(c => c as IDiscrepancyBillable)
-                .Select(c => c.Translate()).ToList()
+                .Select(c => c.Translate())
+                .ToList()
             : throw new Exception(result.Error);
 
         // Check whether we need to update the local repo
@@ -59,6 +59,19 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
 
         // TODO: We should not be checking and updating the local repo here. We should be using an existing repo that is updated using the update repo verb
         QueryDb = CheckLocalRepo(mostRecent);
+
+        return calls;
+    }
+    public List<IDiscrepancyCall> GetBillableSourceCalls_(string sourceCsv = "")
+    {
+        // Extract the info from csv
+        string fileLocation = ValidateFile(sourceCsv, _discrepancyDefaultFile);
+        Result<List<DiscrepancySourceLeadsCsvColumns>> result = CsvService.Parse<DiscrepancySourceLeadsCsvColumns>(fileLocation);
+        List<IDiscrepancyCall> calls = result.IsSuccess
+            ? result.Value
+                .Select(c => c.Translate())
+                .ToList()
+            : throw new Exception(result.Error);
 
         return calls;
     }
@@ -76,7 +89,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
             try
             {
                 DwhContext<DiscrepancyCallDbEntity> context = new(settings.CallsConnectionString!);
-                string q = _rawQuery.DiscrepancyQuery();
+                string q = _rawQuery.DiscrepancyQuery().QueryString;
                 Task<IEnumerable<DiscrepancyCallDbEntity>> task = DwhContextHelpers.GetItemsFromRawAsync(context, q);
                 List<DiscrepancyCallDbEntity> comparisonLeads = task.Result.ToList();
 
@@ -97,6 +110,19 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
             return _comparisonLocalRepo;
         }
 
+        // Retrieve info from the local repo
+        Result<List<DiscrepancyJson>> r = JsonService.ReadFile<DiscrepancyJson>(repo);
+        List<DiscrepancyJson> rp = r.IsSuccess
+            ? r.Value
+            : throw new Exception(r.Error);
+        List<IDiscrepancyCall> result = rp.Select(r => r.Translate()).ToList();
+        return result;
+    }
+
+    public List<IDiscrepancyCall> GetComparisonSourceCalls_(string comparisonFile = "")
+    {
+        string repo = Parent + _comparisonRepo;
+        
         // Retrieve info from the local repo
         Result<List<DiscrepancyJson>> r = JsonService.ReadFile<DiscrepancyJson>(repo);
         List<DiscrepancyJson> rp = r.IsSuccess
