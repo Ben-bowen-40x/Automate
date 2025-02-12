@@ -2,7 +2,7 @@
 
 public interface ICallBoolStringDateTime
 {
-    long Number { get; set; }
+    long NumberLong { get; set; }
     DateTime? Date { get; set; }
     string? Billable { get; set; }
     int? Duration { get; set; }

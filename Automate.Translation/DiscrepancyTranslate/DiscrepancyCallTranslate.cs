@@ -14,7 +14,7 @@ public static class DiscrepancyCallTranslate
     /// <returns></returns>
     public static IDiscrepancyCall Translate(this ICallBoolStringDateTime entity)
     {
-        PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
+        PhoneNumber number = PhoneNumberTranslate.Translate(entity.NumberLong);
         bool billable = ConvertPrimitive.ConvertBool(entity.Billable);
         DateTime date = ConvertPrimitive.ConvertDate(entity.Date, DateDefault.Min);
         string notes = VerifyNotes(entity.Notes);
