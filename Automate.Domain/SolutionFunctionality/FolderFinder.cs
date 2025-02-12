@@ -23,7 +23,7 @@ public static class FolderFinder
     /// <summary>
     /// <para>The goal of this method is to find a specific folder contained within the project folder of our solution. The file will be found if and only if it is a direct child of <paramref name="localFolderToFind"/>. The folder will not be found if it is not contained in the solution, or if the file structure does not follow the following pattern: /[SolutionName]/[SolutionName.ProjectName]/[Parent]/[Of]/[Dir]/[...]/[Folder]. Note that this pattern does not require the folder's parent if and only if the destination folder is a direct child of the folder with the name [SolutionName.ProjectName] in order to function properly</para>
     /// <para>The <paramref name="projectContainingLocalFolder"/> should be the nameof(projectname). For example: "nameof(<see cref="Domain"/>)"</para>
-    /// <para>The <paramref name="projectContainingLocalFolder"/> is malformed if the caller attempts to ref the project thus: nameof([SolutionName].[ProjectName])</para>
+    /// <para>The <paramref name="projectContainingLocalFolder"/> is malformed if the caller attempts to refer to the project like this: nameof([SolutionName].[ProjectName])</para>
     /// <para>The <paramref name="localFolderToFind"/> should be the actual name of the local folder that the caller wishes to find. The folder should be located inside of the folder of the [ProjectName]</para>
     /// <para>Thus, <paramref name="localFolderToFind"/> is properly formed if the full file path is formatted as follows:</para>
     /// <para>C:/Various/Folders[...]/[SolutionName]/[SolutionName].[ProjectName]/[FolderToFind]</para>
