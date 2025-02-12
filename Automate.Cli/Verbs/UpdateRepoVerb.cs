@@ -4,6 +4,7 @@ using Automate.Application.TypedRepoUpdate;
 using Automate.Application.UpdateContacts;
 using Automate.Cli.Verbs.VerbHelper;
 using Automate.Domain.ValueObjects;
+using Automate.Infrastructure.AnalyzeDiscrepancyService;
 using Automate.Infrastructure.DataRetrievalFormats;
 using CommandLine;
 using CSharpFunctionalExtensions;
@@ -48,10 +49,10 @@ internal class UpdateRepoVerb : IVerb
         Result<FileType> valueCsv = PathManipulation.VerifyType(ValueRepositoryCsv);
         Result<FileType> apiJson = PathManipulation.VerifyType(ApiRepositoryJson);
         string valueInfo = !File.Exists(ValueRepositoryCsv) || valueCsv.IsFailure || valueCsv.Value != FileType.Csv
-            ? ""
+            ? string.Empty
             : ValueRepositoryCsv;
         string repoInfo = !File.Exists(ApiRepositoryJson) || apiJson.IsFailure || apiJson.Value != FileType.Json
-            ? ""
+            ? string.Empty
             : ApiRepositoryJson;
 
         // Prepare result
@@ -93,10 +94,15 @@ internal class UpdateRepoVerb : IVerb
                 code = DetermineReturnCode(contactLocation);
                 Console.WriteLine("Request: Contact generation");
                 break;
+            case RepoType.Discrepancy:
+                var ma = service.GetRequiredService<ITypedRepoUpdateManager>();
+                Result r = ma.Manage<DiscrepancyCallDbEntity>(DwhQueryType.Discrepancy, DwhConnectionType.Calls, ApiRepositoryJson, ForceUpdate || Update);
+                code = DetermineReturnCode(r);
+                break;
             default:
                 var m = service.GetRequiredService<IRepoUpdateManager>();
-                var r = m.Manage(valueInfo, repoInfo, Update, ForceUpdate);
-                code = DetermineReturnCode(r);
+                var defaultresult = m.Manage(valueInfo, repoInfo, Update, ForceUpdate);
+                code = DetermineReturnCode(defaultresult);
                 break;
         };
 
