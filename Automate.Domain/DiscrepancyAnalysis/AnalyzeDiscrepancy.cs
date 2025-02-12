@@ -3,7 +3,7 @@ using Automate.Domain.ValueObjects;
 
 namespace Automate.Domain.DiscrepancyAnalysis;
 
-public class AnalyzeDiscrepancyWithNotePatterns
+public class AnalyzeDiscrepancy
 {
     #region Public
     /// <summary>
@@ -14,20 +14,23 @@ public class AnalyzeDiscrepancyWithNotePatterns
     /// <returns>
     /// <para><see cref="List{T}"/> where T is <see cref="DiscrepancyMatch"/></para>
     /// </returns>
-    public static List<DiscrepancyMatch> FindReasoning(List<MatchingLeads> matches)
+    public static List<DiscrepancyMatch> FindReasoning(List<IMatchingLeads> matches)
     {
-        // Start log
-        string location = GetFullName.GetMemberName(new AnalyzeDiscrepancyWithNotePatterns(), nameof(FindReasoning));
+        #region Start log
+        string location = GetFullName.GetMemberName(new AnalyzeDiscrepancy(), nameof(FindReasoning));
         StringLogger.AddLog($"Start log for {location}");
+        #endregion
 
         // Calculate reasoning for all matches
         List<DiscrepancyMatch> reasoned = CalculateReasoning(matches);
+
         // Only return those items that are discrepancies
         List<DiscrepancyMatch> discrepancies = RetrieveDiscrepancies(reasoned);
 
-        // Log
+        #region Log
         StringLogger.EndAlludeLog(true, "End log of lead contents that could not be reasoned.");
         StringLogger.AddLog($"End log for {location}");
+        #endregion
 
         // Return resulting discrepancies
         return discrepancies;
@@ -42,25 +45,25 @@ public class AnalyzeDiscrepancyWithNotePatterns
     /// <param name="matches"></param>
     /// <returns>
     /// <para><see cref="List{T}"/> where <see cref="T"/> is <see cref="DiscrepancyMatch"/></para></returns>
-    internal static List<DiscrepancyMatch> CalculateReasoning(List<MatchingLeads> matches)
+    internal static List<DiscrepancyMatch> CalculateReasoning(List<IMatchingLeads> matches)
     {
         // Calculate billability
         return matches
             .Select(c => new DiscrepancyMatch(c, CalculateReasoning(c)))
             .ToList();
+    }
 
-        // Local
-        static CallBillability CalculateReasoning(MatchingLeads matchingLeads)
-        {
-            string contents = matchingLeads.ComparisonLead.Notes;
+    internal static CallBillability CalculateReasoning(IMatchingLeads matchingLeads)
+    {
+        string contents = matchingLeads.ComparisonLead.Notes;
 
-            var result = NotesPatterns.MatchPatterns(contents);
-            var matches = result.MatchedPatterns;
-            
-            if (result.Billability == CallBillability.Unknown)
-                StringLogger.AlludeLog(true, $"{nameof(matchingLeads.ComparisonLead.Notes)} could not be reasoned", contents);
-            return result.Billability;
-        }
+        NotesPatternMatches result = NotesPatterns.MatchPatterns(contents);
+        string matches = result.MatchedPatterns;
+
+        if (result.Billability == CallBillability.Unknown)
+            StringLogger.AlludeLog(true, $"{nameof(matchingLeads.ComparisonLead.Notes)} could not be reasoned", contents);
+
+        return result.Billability;
     }
 
     /// <summary>

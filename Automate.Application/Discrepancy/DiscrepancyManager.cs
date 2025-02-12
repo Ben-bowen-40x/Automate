@@ -26,10 +26,10 @@ public class DiscrepancyManager(IDiscrepancyService discrepancyService, IReportS
         List<IDiscrepancyCall> comparisonCalls = _discrepancyService.GetComparisonSourceCalls(comparisonQuery);
 
         // Match up the calls
-        List<MatchingLeads> matches = MatchDiscrepancyCalls.MatchLeads(billedCalls, comparisonCalls);
+        List<IMatchingLeads> matches = MatchDiscrepancyCalls.MatchLeads(billedCalls, comparisonCalls);
 
         // Analyze the matches
-        List<DiscrepancyMatch> analyzed = AnalyzeDiscrepancyWithNotePatterns.FindReasoning(matches);
+        List<DiscrepancyMatch> analyzed = AnalyzeDiscrepancy.FindReasoning(matches);
 
         // Put the matches into a report
         Result<FileInfo> result = _reportService.GenerateDiscrepancyReport(analyzed, reportLoc);

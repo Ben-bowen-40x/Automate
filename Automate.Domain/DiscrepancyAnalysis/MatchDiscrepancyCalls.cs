@@ -8,14 +8,14 @@ public class MatchDiscrepancyCalls
     internal static IDiscrepancyCall _defaultCall = new DiscrepancyCall(new(0), default, DateTime.MaxValue, TimeSpan.FromMicroseconds(0), string.Empty);
 
     #region Public
-    public static List<MatchingLeads> MatchLeads(List<IDiscrepancyCall> billedLeads, List<IDiscrepancyCall> comparisonLeads)
+    public static List<IMatchingLeads> MatchLeads(List<IDiscrepancyCall> billedLeads, List<IDiscrepancyCall> comparisonLeads)
     {
         // Prepare the log for this execution
         string location = GetFullName.GetMemberName(new MatchDiscrepancyCalls(), nameof(MatchLeads));
         StringLogger.AddLog($"Started log for {location}");
 
         // Prepare result
-        List<MatchingLeads> result = new(billedLeads.Count);
+        List<IMatchingLeads> result = new(billedLeads.Count);
 
         // Iterate through billedLead to expose its values individually
         foreach (var billed in billedLeads)
