@@ -1,5 +1,5 @@
 ﻿using Automate.Domain.ValueObjects;
-using Automate.Translation.ContactTranslate;
+using Automate.Translation.ContactFormTranslate;
 using Automate.Translation.PhoneNumTranslate;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
