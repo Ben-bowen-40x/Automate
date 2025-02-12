@@ -5,14 +5,10 @@ namespace Automate.Infrastructure.Test.DiscrepancyTest;
 
 public class DiscrepancyService_Test
 {
-    public DiscrepancyService_Test()
-    {
-        _settings = new InfraTestConfiguration().TestSettings;
-    }
-    private readonly IDwhTestSettings _settings;
+    private readonly IDwhTestSettings _settings = new InfraTestConfiguration().TestSettings;
     [
         Theory
-        (Skip = "This is not working right now")
+        //(Skip = "This is being deprecated")
         ,
         InlineData(true),
         //InlineData(false),
