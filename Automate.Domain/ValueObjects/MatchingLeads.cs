@@ -1,6 +1,6 @@
 ﻿namespace Automate.Domain.ValueObjects;
 
-public class MatchingLeads(IDiscrepancyCall billedLead, IDiscrepancyCall comparisonLead, bool billableBeforeComparison)
+public class MatchingLeads(IDiscrepancyCall billedLead, IDiscrepancyCall comparisonLead, bool billableBeforeComparison) : IMatchingLeads
 {
     public bool BillableBefore { get; set; } = billableBeforeComparison;
     public IDiscrepancyCall BilledLead { get; set; } = billedLead;
