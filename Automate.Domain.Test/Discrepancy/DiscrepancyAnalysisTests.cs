@@ -2,7 +2,7 @@
 using Automate.Domain.ValueObjects;
 using NSubstitute;
 
-namespace Automate.Domain.Test;
+namespace Automate.Domain.Test.Discrepancy;
 
 public class DiscrepancyAnalysisTests
 {

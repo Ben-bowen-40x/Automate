@@ -1,7 +1,7 @@
 ﻿using Automate.Domain.DiscrepancyAnalysis;
 using Automate.Domain.ValueObjects;
 
-namespace Automate.Domain.Test;
+namespace Automate.Domain.Test.Discrepancy;
 
 public class NotesPatternsTest
 {
