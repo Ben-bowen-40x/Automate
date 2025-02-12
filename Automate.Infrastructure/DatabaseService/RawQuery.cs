@@ -73,24 +73,24 @@ public class RawQuery(IRawQuerySettings settings)
     /// </summary>
     /// <param name="startDate"></param>
     /// <returns></returns>
-    public string MessageCallQuery(DateTimeOffset startDate)
+    public IQuery MessageCallQuery(DateTimeOffset startDate)
     {
         var threeMonths = startDate - NinetyDays;
         var date = threeMonths.Date.ToString(_s.QueryDateFormat!);
-        string query = $"{_s.CallBasic! + _s.MessageCallQuery1!} '{date}' {_s.MessageCallQuery2!};";
+        string str = $"{_s.CallBasic! + _s.MessageCallQuery1!} '{date}' {_s.MessageCallQuery2!};";
+        IQuery query = new Query(DwhQueryType.MessageCall, str);
         return query;
     }
     #endregion
 
     #region Discrepancy Query
-    // Public Discrepancy Query Members
     /// <summary>
     /// Returns the Discrepancy Query as a raw string
     /// </summary>
     /// <returns>
     /// <para><see cref="string"/> that is the raw sql query</para>
     /// </returns>
-    public string DiscrepancyQuery()
+    public IQuery DiscrepancyQuery()
     {
         return DiscrepancyQuery(new DateTime(2023, 10, 1));
     }
@@ -101,11 +101,12 @@ public class RawQuery(IRawQuerySettings settings)
     /// <param name="start"></param>
     /// <param name="end"></param>
     /// <returns></returns>
-    public string DiscrepancyQuery(DateTime start, DateTime end)
+    public IQuery DiscrepancyQuery(DateTime start, DateTime end)
     {
         string startString = start.ToString(_s.QueryDateFormat!);
         string endString = end.ToString(_s.QueryDateFormat!);
-        string result = $"{_s.Discrepancy!} '{startString}' AND '{endString}' {_s.Discrepancy2!}"; // Keep this here for debugging purposes
+        string str = $"{_s.Discrepancy!} '{startString}' AND '{endString}' {_s.Discrepancy2!}"; // Keep this here for debugging purposes
+        IQuery result = new Query(DwhQueryType.Discrepancy, str);
         return result;
     }
 
@@ -114,7 +115,7 @@ public class RawQuery(IRawQuerySettings settings)
     /// </summary>
     /// <param name="start"></param>
     /// <returns></returns>
-    public string DiscrepancyQuery(DateTime start)
+    public IQuery DiscrepancyQuery(DateTime start)
     {
         return DiscrepancyQuery(start, DateTime.Now);
     }
