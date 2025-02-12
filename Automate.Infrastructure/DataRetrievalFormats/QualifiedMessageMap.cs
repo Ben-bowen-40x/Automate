@@ -30,7 +30,6 @@ internal class QualifiedMessageMap : ClassMap<QualifiedMessageRecord>, IQualifie
     public QualifiedMessageMap()
     {
         int index = 0;
-
         // Text Info
         Map(m => m.Message.Number.Number).Index(index++).Name(PhoneName);
         Map(m => m.Message.Date.UtcDateTime).Index(index++).Name(DateName);
