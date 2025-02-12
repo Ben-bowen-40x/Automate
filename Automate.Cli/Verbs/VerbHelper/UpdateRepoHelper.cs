@@ -9,13 +9,6 @@ public enum RepoType
     ContactUpdate,
 }
 
-internal enum RepoFileTypes
-{
-    Csv,
-    Json,
-    Default
-}
-
 internal class UpdateRepoHelper
 {
     public const string RepoTypeHelpText = """
