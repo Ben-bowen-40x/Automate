@@ -1,4 +1,4 @@
-﻿using Automate.Translation.ContactTranslate;
+﻿using Automate.Translation.ContactFormTranslate;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using System.Text.Json.Serialization;
