@@ -79,7 +79,6 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
                 string q = _rawQuery.DiscrepancyQuery();
                 Task<IEnumerable<DiscrepancyCallDbEntity>> task = DwhContextHelpers.GetItemsFromRawAsync(context, q);
                 List<DiscrepancyCallDbEntity> comparisonLeads = task.Result.ToList();
-                comparisonLeads.Sort();
 
                 // Save results to Json
                 _comparisonLocalRepo = comparisonLeads.Select(c => c.Translate()).ToList();
@@ -129,8 +128,8 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
                 : throw new Exception(result.Error);
 
             calls = repo
-                .Select(r => r as ICallDateTime)
-                .Select(r => r.Translate()).ToList();
+                .Select(r => r.Translate())
+                .ToList();
         }
         catch
         {
