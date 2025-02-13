@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Automate.Domain.ValueObjects;
 using Automate.Translation.CallTranslate;
 using Automate.Translation.PhoneNumTranslate;
+using Automate.Application.InfrastructureInterfaces;
 
 namespace Automate.Infrastructure.DataRetrievalFormats;
 
