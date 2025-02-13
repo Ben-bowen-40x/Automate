@@ -62,46 +62,46 @@ internal class UpdateRepoVerb : IVerb
         switch (Type)
         {
             case RepoType.Leaf:
-                var manager = service.GetRequiredService<IRepoUpdateManager>();
-                var result = manager.Manage(valueInfo, repoInfo, Update, ForceUpdate);
+                IRepoUpdateManager manager = service.GetRequiredService<IRepoUpdateManager>();
+                Result result = manager.Manage(valueInfo, repoInfo, Update, ForceUpdate);
                 code = DetermineReturnCode(result);
                 break;
             case RepoType.Calls:
-                var manage = service.GetRequiredService<ITypedRepoUpdateManager>();
+                ITypedRepoUpdateManager manage = service.GetRequiredService<ITypedRepoUpdateManager>();
                 Result resul = manage.Manage<CallDbEntity>(DwhQueryType.AllCalls, DwhConnectionType.Calls, ApiRepositoryJson, ForceUpdate || Update);
                 code = DetermineReturnCode(resul);
                 break;
             case RepoType.Customers:
-                var manag = service.GetRequiredService<ITypedRepoUpdateManager>();
+                ITypedRepoUpdateManager manag = service.GetRequiredService<ITypedRepoUpdateManager>();
                 Result resu = manag.Manage<CustSubDbEntity>(DwhQueryType.AllCustomers, DwhConnectionType.Customers, ApiRepositoryJson, ForceUpdate || Update);
                 code = DetermineReturnCode(resu);
                 break;
             case RepoType.ContactForms:
-                var mana = service.GetRequiredService<ITypedRepoUpdateManager>();
+                ITypedRepoUpdateManager mana = service.GetRequiredService<ITypedRepoUpdateManager>();
                 Result res = mana.Manage<WebFormEntity>(DwhQueryType.ContactForms, DwhConnectionType.ContactForms, ApiRepositoryJson, ForceUpdate || Update);
                 code = DetermineReturnCode(res);
                 break;
             case RepoType.ContactUpdate:
                 Console.WriteLine($"Default values were chosen for the following choice: {RepoType.ContactUpdate}");
-                var man = service.GetRequiredService<IContactUpdateManager>();
+                IContactUpdateManager man = service.GetRequiredService<IContactUpdateManager>();
                 UpdateResult re = man.UpdateContacts("");
-                
+
                 // Inform the user what took place
-                var uploaded = re.UploadedContacts;
-                var contactLocation = re.ContactLocation;
+                Result uploaded = re.UploadedContacts;
+                Result<DirectoryInfo> contactLocation = re.ContactLocation;
                 _ = DetermineReturnCode(uploaded);
                 Console.WriteLine("Request: Contacts Upload");
                 code = DetermineReturnCode(contactLocation);
                 Console.WriteLine("Request: Contact generation");
                 break;
             case RepoType.Discrepancy:
-                var ma = service.GetRequiredService<ITypedRepoUpdateManager>();
+                ITypedRepoUpdateManager ma = service.GetRequiredService<ITypedRepoUpdateManager>();
                 Result r = ma.Manage<DiscrepancyCallDbEntity>(DwhQueryType.Discrepancy, DwhConnectionType.Calls, ApiRepositoryJson, ForceUpdate || Update);
                 code = DetermineReturnCode(r);
                 break;
             default:
-                var m = service.GetRequiredService<IRepoUpdateManager>();
-                var defaultresult = m.Manage(valueInfo, repoInfo, Update, ForceUpdate);
+                IRepoUpdateManager m = service.GetRequiredService<IRepoUpdateManager>();
+                Result defaultresult = m.Manage(valueInfo, repoInfo, Update, ForceUpdate);
                 code = DetermineReturnCode(defaultresult);
                 break;
         };
