@@ -63,22 +63,22 @@ internal class UpdateRepoVerb : IVerb
         {
             case RepoType.Leaf:
                 IRepoUpdateManager manager = service.GetRequiredService<IRepoUpdateManager>();
-                Result result = manager.Manage(valueInfo, repoInfo, Update, ForceUpdate);
+                Result result = manager.Manage<LeafThread>(valueInfo, repoInfo, Update, ForceUpdate);
                 code = DetermineReturnCode(result);
                 break;
             case RepoType.Calls:
                 ITypedRepoUpdateManager manage = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result resul = manage.Manage<CallDbEntity>(DwhQueryType.AllCalls, DwhConnectionType.Calls, ApiRepositoryJson, ForceUpdate || Update);
+                Result resul = manage.Manage<CallDbEntity>(DwhQueryType.AllCalls, DwhConnectionType.Calls, repoInfo, ForceUpdate || Update);
                 code = DetermineReturnCode(resul);
                 break;
             case RepoType.Customers:
                 ITypedRepoUpdateManager manag = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result resu = manag.Manage<CustSubDbEntity>(DwhQueryType.AllCustomers, DwhConnectionType.Customers, ApiRepositoryJson, ForceUpdate || Update);
+                Result resu = manag.Manage<CustSubDbEntity>(DwhQueryType.AllCustomers, DwhConnectionType.Customers, repoInfo, ForceUpdate || Update);
                 code = DetermineReturnCode(resu);
                 break;
             case RepoType.ContactForms:
                 ITypedRepoUpdateManager mana = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result res = mana.Manage<WebFormEntity>(DwhQueryType.ContactForms, DwhConnectionType.ContactForms, ApiRepositoryJson, ForceUpdate || Update);
+                Result res = mana.Manage<WebFormEntity>(DwhQueryType.ContactForms, DwhConnectionType.ContactForms, repoInfo, ForceUpdate || Update);
                 code = DetermineReturnCode(res);
                 break;
             case RepoType.ContactUpdate:
@@ -96,13 +96,12 @@ internal class UpdateRepoVerb : IVerb
                 break;
             case RepoType.Discrepancy:
                 ITypedRepoUpdateManager ma = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result r = ma.Manage<DiscrepancyCallDbEntity>(DwhQueryType.Discrepancy, DwhConnectionType.Calls, ApiRepositoryJson, ForceUpdate || Update);
+                Result r = ma.Manage<DiscrepancyCallDbEntity>(DwhQueryType.Discrepancy, DwhConnectionType.Calls, repoInfo, ForceUpdate || Update);
                 code = DetermineReturnCode(r);
                 break;
             default:
-                IRepoUpdateManager m = service.GetRequiredService<IRepoUpdateManager>();
-                Result defaultresult = m.Manage(valueInfo, repoInfo, Update, ForceUpdate);
-                code = DetermineReturnCode(defaultresult);
+                Console.WriteLine($"No existing repository type was selected, so no execution will take place.\nEither choose an existing repository type or create a repository update functionality for the following repo selection: {Type}");
+                code = ProgramErrorCodes.Error;
                 break;
         };
 

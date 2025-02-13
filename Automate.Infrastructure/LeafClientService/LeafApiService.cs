@@ -103,7 +103,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         }
     }
 
-    internal static Result<List<ILeafThread>> RetrieveLeafRepo(string leafRepo = "")
+    internal static Result<List<TEntity>> RetrieveLeafRepo<TEntity>(string leafRepo = "") where TEntity : class, IConvert
     {
         // Check location string
         string repo = leafRepo == string.Empty || !File.Exists(leafRepo)
@@ -117,19 +117,17 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         try
         {
             // Retrieve contents
-            Result<List<LeafThread>> result = JsonService.ReadFile<LeafThread>(repo);
+            Result<List<TEntity>> result = JsonService.ReadFile<TEntity>(repo);
 
             // The train MUST stop here because this is very unexcpected behavior at this point
             // Plus, this point contains all of the necessary information that we need to see all the context;
             // JsonService does NOT have enough context for exceptions to be thrown there, either during debugging or during live executions
-            List<ILeafThread> content = result.IsSuccess
-                ? result.Value
-                    .Select(c => (ILeafThread)c)
-                    .ToList()
+            List<TEntity> content = result.IsSuccess
+                ? [.. result.Value]
                 : throw new Exception(result.Error); // Stop the train here -- this is the best place
             return content;
         }
-        catch (Exception ex) { return Result.Failure<List<ILeafThread>>(ex.Message); }
+        catch (Exception ex) { return Result.Failure<List<TEntity>>(ex.Message); }
 
     }
     #endregion
@@ -140,25 +138,25 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
     public static string MessageRepoLocation => _msgRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafMessages.csv");
     public static string LeafRepoLocation => _leafRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafThreads.json");
 
-    public async Task<Result<List<ILeafThread>>> GetLeafThreadsAsync(HttpClient client, int offset = 0, int errorLimit = 5, int sleepInterval = 500, int limit = 1000)
+    public async Task<Result<List<TEntity>>> GetLeafThreadsAsync<TEntity>(HttpClient client, int offset = 0, int errorLimit = 5, int sleepInterval = 500, int limit = 1000) where TEntity : class, IConvert
     {
         int errorCount = 0;
 
-        List<ILeafThread> master = [];
+        List<TEntity> master = [];
 
         bool resume = true;
         while (resume)
         {
             if (errorCount == errorLimit)
-                return Result.Failure<List<ILeafThread>>($"Reached error limit. Error limit: {errorLimit}");
+                return Result.Failure<List<TEntity>>($"Reached error limit. Error limit: {errorLimit}");
 
             try
             {
                 // Call the api
-                Result<List<ILeafThread>> result = await GetAsync<List<ILeafThread>>(LeafThreadUrl(offset, limit), client);
+                Result<List<TEntity>> result = await GetAsync<List<TEntity>>(LeafThreadUrl(offset, limit), client);
                 if (result.IsSuccess)
                 {
-                    List<ILeafThread> value = result.Value;
+                    List<TEntity> value = result.Value;
                     value.ForEach(v => master.Add(v));
                     resume = value.Count == limit;
                 }
@@ -171,15 +169,15 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         }
 
         if (master.Count == 0)
-            return Result.Failure<List<ILeafThread>>("Something went wrong and values were not retrieved.");
+            return Result.Failure<List<TEntity>>("Something went wrong and values were not retrieved.");
 
         return master;
     }
 
-    public Result<bool> ReposMatch(out List<IMessage> msgs, out List<ILeafThread> leaf, string msgRepo = "", string leafRepo = "")
+    public Result<bool> ReposMatch<TEntity>(out List<IMessage> msgs, out List<TEntity> leaf, string msgRepo = "", string leafRepo = "") where TEntity : class, IConvert
     {
         Result<List<IMessage>> imsgs = RetrieveMessageRepo(msgRepo);
-        Result<List<ILeafThread>> ileaf = RetrieveLeafRepo(leafRepo);
+        Result<List<TEntity>> ileaf = RetrieveLeafRepo<TEntity>(leafRepo);
         msgs = [];
         leaf = [];
 
@@ -199,19 +197,19 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
             return Result.Failure<bool>(imsgs + " " + ileaf.Error);
     }
 
-    public Result Update(List<ILeafThread> leafRepo, List<ILeafThread> apiResult, string leafRepoLoc = "")
+    public Result Update<TEntity>(List<TEntity> leafRepo, List<TEntity> apiResult, string leafRepoLoc = "") where TEntity: class, IConvert
     {
         string leafRepoLocation = leafRepoLoc == string.Empty || !File.Exists(leafRepoLoc)
             ? LeafRepoLocation
             : leafRepoLoc;
 
-        List<ILeafThread> combined = [.. leafRepo, .. apiResult];
+        List<TEntity> combined = [.. leafRepo, .. apiResult];
         var result = Update(combined, leafRepoLocation);
 
         return result;
     }
 
-    public Result Update(List<ILeafThread> leafRepo, string leafRepoLoc)
+    public Result Update<TEntity>(List<TEntity> leafRepo, string leafRepoLoc) where TEntity: class, IConvert
     {
         string leafRepoLocation = leafRepoLoc == string.Empty || !File.Exists(leafRepoLoc)
             ? LeafRepoLocation
@@ -219,7 +217,8 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
 
         try
         {
-            JsonService.WriteToFile(leafRepoLocation, leafRepo); return Result.Success();
+            JsonService.WriteToFile(leafRepoLocation, leafRepo); 
+            return Result.Success();
         }
         catch (Exception ex)
         {
