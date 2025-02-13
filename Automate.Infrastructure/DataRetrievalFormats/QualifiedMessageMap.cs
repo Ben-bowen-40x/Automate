@@ -112,13 +112,15 @@ internal class QualifiedMessageMap : ClassMap<QualifiedMessageRecord>, IQualifie
     /// <para>Please ensure this the <see cref="Phone1Name"/> and <see cref="Phone2Name"/> fill in the property values for their respective properties, this <see cref="_phone"/> is deleted, and <see cref="Phone1"/> and <see cref="Phon2"/> use default setters and getters</para>
     /// <para>At such time as these become attribute-decorated properties as described above, this summary comment will be unnecessary</para>
     /// </summary>
-    //[Name(Phone1Name)]
+    //[Name(Phone1Name)]/*
+    [Ignore]//*/
     public long Phone1 { get => _phone ??= Number; set => _phone = Number; }
 
     /// <summary>
     /// See comments to <see cref="Phone1"/>
     /// </summary>
-    //[Name(Phone2Name)]
+    //[Name(Phone2Name)]/*
+    [Ignore]//*/
     public long Phone2 { get => _phone ??= Number; set => _phone = Number; }
 
     public IMessage Convert<IMsgDTONumberLong, IMessage>()
