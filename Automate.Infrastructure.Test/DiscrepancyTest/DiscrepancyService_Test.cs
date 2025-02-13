@@ -8,19 +8,33 @@ public class DiscrepancyService_Test
     private readonly IDwhTestSettings _settings = new InfraTestConfiguration().TestSettings;
     [
         Theory
-        //(Skip = "This is being deprecated")
+        (Skip = "This has been deprecated")
         ,
         InlineData(true),
         //InlineData(false),
     ]
-    public void DiscrepancyService_RetrievesInfoProperly(bool queryDb)
+    public void DiscrepancyService_RetrievesInfoProperly_Deprecated(bool _)
     {
         // Assemble
-        DiscrepancyService service = new(_settings) { QueryDb = queryDb };
+        DiscrepancyService service = new(_settings) /*{ QueryDb = queryDb }*/;
 
         // Act
         List<IDiscrepancyCall> billableCalls = service.GetBillableSourceCalls();
-        service.QueryDb = queryDb; // This needs to be done because GetBillableSourceCalls will change this value
+        //service.QueryDb = queryDb; // This needs to be done because GetBillableSourceCalls will change this value
+        List<IDiscrepancyCall> comparisonCalls = service.GetComparisonSourceCalls();
+
+        // Assert
+        Assert.NotEmpty(billableCalls);
+        Assert.NotEmpty(comparisonCalls);
+    }
+    [Fact]
+    public void DiscrepancyService_RetrievesInfoProperly()
+    {
+        // Assemble
+        DiscrepancyService service = new(_settings);
+
+        // Act
+        List<IDiscrepancyCall> billableCalls = service.GetBillableSourceCalls();
         List<IDiscrepancyCall> comparisonCalls = service.GetComparisonSourceCalls();
 
         // Assert
