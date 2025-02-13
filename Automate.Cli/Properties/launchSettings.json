@@ -115,7 +115,7 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    /*
+    /*/
     "Analyze Messages - Truncated 180 days -- Append New WebForm": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ManualWebForms.csv -t ManualWebForm -xd 180 -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\ManualWebForms.csv -O ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\ManualWebForms_Truncated180.csv",
@@ -198,7 +198,7 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    /*
+    /*/
     "Update Leaf Api Repo - Default Repo Locations - Force update, Custom Repo Location": {
       "commandName": "Project",
       "commandLineArgs": "updateRepo -ft Leaf -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafTesting\\ForceUpdateTest.json",
@@ -206,7 +206,7 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
-    */
+    //*/
 
     // Update Call repo
     "Update Call Repo - Default Repo Locations - Hard/Force update": {
@@ -251,6 +251,15 @@
     "Update Contact Forms Repo - Default Repo Locations - Soft update": {
       "commandName": "Project",
       "commandLineArgs": "updateRepo -t ContactForms -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LocalRepo\\ContactFormsRepo.json",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+
+    // Update Discrepancy Repo
+    "Update Discrepancy Repo - Default Repo Locations - Hard/Forceupdate": {
+      "commandName": "Project",
+      "commandLineArgs": "updateRepo -ut Discrepancy -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Discrepancy\\LocalRepo\\Discrepancy.json",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
