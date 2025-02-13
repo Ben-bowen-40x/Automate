@@ -178,7 +178,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
 
     public Result<bool> ReposMatch(out List<IMessage> msgs, out List<ILeafThread> leaf, string msgRepo = "", string leafRepo = "")
     {
-        var imsgs = RetrieveMessageRepo(msgRepo);
+        Result<List<IMessage>> imsgs = RetrieveMessageRepo(msgRepo);
         Result<List<ILeafThread>> ileaf = RetrieveLeafRepo(leafRepo);
         msgs = [];
         leaf = [];
@@ -189,6 +189,8 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
             leaf = ileaf.Value;
             return msgs.Count == leaf.Count;
         }
+        else if (imsgs.IsFailure && ileaf.IsFailure)
+            return Result.Failure<bool>(imsgs + " " + ileaf.Error);
         else if (imsgs.IsFailure)
             return Result.Failure<bool>(imsgs.Error);
         else if (ileaf.IsFailure)
