@@ -90,10 +90,11 @@ public class RawQuery(IRawQuerySettings settings)
     /// <returns>
     /// <para><see cref="string"/> that is the raw sql query</para>
     /// </returns>
-    public IQuery DiscrepancyQuery()
+    public IQuery DiscrepancyQuery(int daysBeforeNow = 365)
     {
-        return DiscrepancyQuery(new DateTime(2023, 10, 1));
+        return DiscrepancyQuery(DateTime.Now - TimeSpan.FromDays(daysBeforeNow));
     }
+    private IQuery Discrepancy => new Query(DwhQueryType.Discrepancy, _s.Discrepancy!);
 
     /// <summary>
     /// Accepts a <see cref="DateTime"/> <paramref name="start"/>, which defines when the query should pull records, and <paramref name="end"/>, which is the most recent date
@@ -105,9 +106,11 @@ public class RawQuery(IRawQuerySettings settings)
     {
         string startString = start.ToString(_s.QueryDateFormat!);
         string endString = end.ToString(_s.QueryDateFormat!);
-        string str = $"{_s.Discrepancy!} '{startString}' AND '{endString}' {_s.Discrepancy2!}"; // Keep this here for debugging purposes
-        IQuery result = new Query(DwhQueryType.Discrepancy, str);
-        return result;
+
+        IQuery query = Discrepancy;
+        string str = $"{_s.Discrepancy2!} '{startString}' AND '{endString}'"; // Keep this here for debugging purposes
+        query.AppendWhere(str);
+        return query;
     }
 
     /// <summary>
