@@ -1,11 +1,13 @@
-﻿using Automate.Domain.ValueObjects;
+﻿using Automate.Application.InfrastructureValueObjects;
+using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.AnalyzeDiscrepancyService;
+using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.Test.TestConfigurations;
 namespace Automate.Infrastructure.Test.DiscrepancyTest;
 
 public class DiscrepancyService_Test
 {
-    private readonly IDwhTestSettings _settings = new InfraTestConfiguration().TestSettings;
+    private readonly IInfrastructureTestSettings _settings = new InfraTestConfiguration().TestSettings;
     [
         Theory
         (Skip = "This has been deprecated")
@@ -16,7 +18,7 @@ public class DiscrepancyService_Test
     public void DiscrepancyService_RetrievesInfoProperly_Deprecated(bool _)
     {
         // Assemble
-        DiscrepancyService service = new(_settings) /*{ QueryDb = queryDb }*/;
+        DiscrepancyService service = new(_settings as IDwhSettings) /*{ QueryDb = queryDb }*/;
 
         // Act
         List<IDiscrepancyCall> billableCalls = service.GetBillableSourceCalls();
@@ -31,7 +33,7 @@ public class DiscrepancyService_Test
     public void DiscrepancyService_RetrievesInfoProperly()
     {
         // Assemble
-        DiscrepancyService service = new(_settings);
+        DiscrepancyService service = new(_settings as IDwhSettings);
 
         // Act
         List<IDiscrepancyCall> billableCalls = service.GetBillableSourceCalls();
@@ -40,5 +42,18 @@ public class DiscrepancyService_Test
         // Assert
         Assert.NotEmpty(billableCalls);
         Assert.NotEmpty(comparisonCalls);
+    }
+    [Fact]
+    public void DiscrepancyQuery_RetrievesProperly()
+    {
+        // Assemble
+        var q = new RawQuery(_settings as IRawQuerySettings);
+
+        // Act
+        IQuery action = q.DiscrepancyQuery();
+        action.AppendWhere(_settings.Discrepancy2!);
+
+        // Assert
+        Assert.NotNull(action);
     }
 }
