@@ -27,6 +27,7 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
             DwhQueryType.AllCalls => _rawQuery.CallBasicAddon,
             DwhQueryType.AllCustomers => _rawQuery.CustomerBasic,
             DwhQueryType.ContactForms => _rawQuery.WebFormQuery1,
+            DwhQueryType.Discrepancy => _rawQuery.DiscrepancyQuery(),
             _ => _rawQuery.CustomerBasic
         };
 
