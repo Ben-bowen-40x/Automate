@@ -7,4 +7,5 @@ public interface ICallBoolStringDateTime
     string? Billable { get; set; }
     int? Duration { get; set; }
     string? Notes { get; set; }
+    string? Source { get; set; }
 }

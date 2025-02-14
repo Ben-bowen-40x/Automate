@@ -6,4 +6,5 @@ public interface IDiscrepancyBillable
     public string? Date { get; set; }
     public string? Duration { get; set; }
     public string? Notes { get; set; }
+    string? Source { get; set; }
 }

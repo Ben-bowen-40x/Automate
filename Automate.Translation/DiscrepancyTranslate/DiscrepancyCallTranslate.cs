@@ -18,8 +18,9 @@ public static class DiscrepancyCallTranslate
         bool billable = ConvertPrimitive.ConvertBool(entity.Billable);
         DateTime date = ConvertPrimitive.ConvertDate(entity.Date, DateDefault.Min);
         string notes = VerifyNotes(entity.Notes);
+        string source = VerifySource(entity.Source);
         TimeSpan duration = GetDuration(entity.Duration);
-        DiscrepancyCall result = new(number, billable, date, duration, notes);
+        DiscrepancyCall result = new(number, billable, date, duration, source, notes);
 
         return result;
     }
@@ -33,7 +34,8 @@ public static class DiscrepancyCallTranslate
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
         string notes = VerifyNotes(entity.Notes);
-        DiscrepancyCall result = new(number, entity.Billable, entity.Date, entity.Duration, notes);
+        string source = VerifySource(entity.Source);
+        DiscrepancyCall result = new(number, entity.Billable, entity.Date, entity.Duration, source, notes);
         return result;
     }
 
@@ -45,10 +47,11 @@ public static class DiscrepancyCallTranslate
     public static IDiscrepancyCall Translate(this IDiscrepancyBillable entity)
     {
         string notes = VerifyNotes(entity.Notes);
+        string source = VerifySource(entity.Source);
         DateTime startDate = ConvertPrimitive.ConvertDate(entity.Date, DateDefault.Min);
         TimeSpan duration = GetDuration(entity.Duration);
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
-        DiscrepancyCall result = new(number, true, startDate, duration, notes); // Note that source leads are always billable
+        DiscrepancyCall result = new(number, true, startDate, duration, source, notes); // Note that source leads are always billable
 
         return result;
     }
@@ -59,6 +62,11 @@ public static class DiscrepancyCallTranslate
         return note is not null
             ? TSH.ContentsJoined(note)
             : string.Empty;
+    }
+
+    internal static string VerifySource(string? source)
+    {
+        return string.IsNullOrWhiteSpace(source) ? string.Empty : source;
     }
 
     internal static TimeSpan GetDuration(string? duration)

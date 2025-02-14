@@ -9,4 +9,5 @@ public interface ICallDateTime
     DateTime Date { get; set; }
     TimeSpan Duration { get; set; }
     string? Notes { get; set; }
+    string? Source { get; set; }
 }
