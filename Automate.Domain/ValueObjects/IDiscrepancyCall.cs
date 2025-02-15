@@ -8,6 +8,6 @@ public interface IDiscrepancyCall
     TimeSpan Duration { get; init; }
     string Notes { get; init; }
     PhoneNumber Number { get; init; }
-    string Source { get; init; }
+    DiscrepancySource Source { get; init; }
     string ToString();
 }

@@ -5,7 +5,7 @@ namespace Automate.Domain.DiscrepancyAnalysis;
 
 public class MatchDiscrepancyCalls
 {
-    internal static IDiscrepancyCall _defaultCall = new DiscrepancyCall(new(0), default, DateTime.MaxValue, TimeSpan.FromMicroseconds(0), string.Empty);
+    internal static IDiscrepancyCall _defaultCall = new DiscrepancyCall(new(0), false, DateTime.MaxValue, TimeSpan.FromMicroseconds(0), DiscrepancySource.Null, string.Empty);
 
     #region Public
     public static List<IMatchingLeads> MatchLeads(List<IDiscrepancyCall> billedLeads, List<IDiscrepancyCall> comparisonLeads)
@@ -22,12 +22,12 @@ public class MatchDiscrepancyCalls
         {
             // Create a list of comparison leads whose phone number matches the current lead
             List<IDiscrepancyCall> phoneMatch = comparisonLeads
-                .Where(l => l.Number.Number == billed.Number.Number)
+                .Where(l => l.Number.Number == billed.Number.Number && l.Source.Equals(billed.Source) && !l.Source.Equals(DiscrepancySource.Null))
                 .ToList();
 
             // Find the lead that is chronologically soonest after the current lead. The comparison day necessarily must be equal to the billable lead
             List<IDiscrepancyCall> dayMatches = phoneMatch
-                .Where(p => MatchDates(p, billed))
+                .Where(p => p.Date.Year == billed.Date.Year && p.Date.Date.DayOfYear == billed.Date.Date.DayOfYear)
                 .ToList();
             List<IDiscrepancyCall> input = dayMatches.Count == 0
                 ? phoneMatch
@@ -54,8 +54,6 @@ public class MatchDiscrepancyCalls
         return result;
 
         // Local Functions
-        static bool MatchDates(IDiscrepancyCall p, IDiscrepancyCall lead) =>
-            p.Date.Year == lead.Date.Year && p.Date.Date.DayOfYear == lead.Date.Date.DayOfYear;
         static void LogIrregularities(string location, IDiscrepancyCall billed, List<IDiscrepancyCall> dayMatches, List<IDiscrepancyCall> input)
         {
             // Log irregularities
@@ -80,7 +78,7 @@ public class MatchDiscrepancyCalls
     internal static IDiscrepancyCall BestMatch(IDiscrepancyCall billed, IList<IDiscrepancyCall> phMatchesSameDay)
     {
         if (phMatchesSameDay.Count == 0)
-            return new DiscrepancyCall(new(0), false, DateTime.MinValue, TimeSpan.Zero, "");
+            return new DiscrepancyCall(new(0), false, DateTime.MinValue, TimeSpan.Zero, billed.Source, string.Empty);
 
         // Iterate through each lead to find the one whose minute and day of the year match
         List<IDiscrepancyCall> result = phMatchesSameDay
@@ -115,9 +113,9 @@ public class MatchDiscrepancyCalls
 
     internal static bool MinuteMatches(IDiscrepancyCall lead, IDiscrepancyCall match) =>
         match.Date + TimeSpan.FromMinutes(1) >= lead.Date && match.Date - TimeSpan.FromMinutes(1) <= lead.Date;
-        //match.Date.Minute + 1 == lead.Date.Minute
-        //|| match.Date.Minute - 1 == lead.Date.Minute
-        //|| match.Date.Minute == lead.Date.Minute;
+    //match.Date.Minute + 1 == lead.Date.Minute
+    //|| match.Date.Minute - 1 == lead.Date.Minute
+    //|| match.Date.Minute == lead.Date.Minute;
 
     internal static IDiscrepancyCall ClosestDuration(IDiscrepancyCall lead, IDiscrepancyCall match, IDiscrepancyCall compare) => lead.Duration switch
     {

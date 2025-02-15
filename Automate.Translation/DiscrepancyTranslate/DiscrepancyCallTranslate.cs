@@ -18,7 +18,7 @@ public static class DiscrepancyCallTranslate
         bool billable = ConvertPrimitive.ConvertBool(entity.Billable);
         DateTime date = ConvertPrimitive.ConvertDate(entity.Date, DateDefault.Min);
         string notes = VerifyNotes(entity.Notes);
-        string source = VerifySource(entity.Source);
+        DiscrepancySource source = VerifySource(entity.Source);
         TimeSpan duration = GetDuration(entity.Duration);
         DiscrepancyCall result = new(number, billable, date, duration, source, notes);
 
@@ -34,7 +34,7 @@ public static class DiscrepancyCallTranslate
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
         string notes = VerifyNotes(entity.Notes);
-        string source = VerifySource(entity.Source);
+        DiscrepancySource source = VerifySource(entity.Source);
         DiscrepancyCall result = new(number, entity.Billable, entity.Date, entity.Duration, source, notes);
         return result;
     }
@@ -47,7 +47,7 @@ public static class DiscrepancyCallTranslate
     public static IDiscrepancyCall Translate(this IDiscrepancyBillable entity)
     {
         string notes = VerifyNotes(entity.Notes);
-        string source = VerifySource(entity.Source);
+        DiscrepancySource source = VerifySource(entity.Source);
         DateTime startDate = ConvertPrimitive.ConvertDate(entity.Date, DateDefault.Min);
         TimeSpan duration = GetDuration(entity.Duration);
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
@@ -64,10 +64,15 @@ public static class DiscrepancyCallTranslate
             : string.Empty;
     }
 
-    internal static string VerifySource(string? source)
+    internal static DiscrepancySource VerifySource(string? source) => source switch
     {
-        return string.IsNullOrWhiteSpace(source) ? string.Empty : source;
-    }
+        // This case must be first and it must execute, because this expression will test every condition, and if this condition is true, then the other conditions will throw
+        string s when string.IsNullOrWhiteSpace(s) => DiscrepancySource.Null, 
+        string s when s!.Contains(DiscrepancySource.Libacion.ToString(), StringComparison.InvariantCultureIgnoreCase) => DiscrepancySource.Libacion,
+        string s when s!.Contains(DiscrepancySource.Guliagar.ToString(), StringComparison.InvariantCultureIgnoreCase) => DiscrepancySource.Guliagar,
+        string s when s!.Contains(DiscrepancySource.ElkHall.ToString(), StringComparison.InvariantCultureIgnoreCase) => DiscrepancySource.ElkHall,
+        _ => DiscrepancySource.Null,
+    };
 
     internal static TimeSpan GetDuration(string? duration)
     {

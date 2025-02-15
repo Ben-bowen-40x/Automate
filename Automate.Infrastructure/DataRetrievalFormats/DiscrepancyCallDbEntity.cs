@@ -21,7 +21,7 @@ public class DiscrepancyCallDbEntity : ICallBoolStringDateTime, IPhoneNumberComp
     [Column("note")]
     public string? Notes { get; set; }
     [Column("source")]
-    public string? Souce { get; set; }
+    public string? Source { get; set; }
     private PhoneNumber? _num;
     public PhoneNumber Number => _num ??= PhoneNumberTranslate.Translate(NumberLong);
 }
