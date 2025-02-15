@@ -8,27 +8,6 @@ namespace Automate.Infrastructure.Test.DiscrepancyTest;
 public class DiscrepancyService_Test
 {
     private readonly IInfrastructureTestSettings _settings = new InfraTestConfiguration().TestSettings;
-    [
-        Theory
-        (Skip = "This has been deprecated")
-        ,
-        InlineData(true),
-        //InlineData(false),
-    ]
-    public void DiscrepancyService_RetrievesInfoProperly_Deprecated(bool _)
-    {
-        // Assemble
-        DiscrepancyService service = new(_settings as IDwhSettings) /*{ QueryDb = queryDb }*/;
-
-        // Act
-        List<IDiscrepancyCall> billableCalls = service.GetBillableSourceCalls();
-        //service.QueryDb = queryDb; // This needs to be done because GetBillableSourceCalls will change this value
-        List<IDiscrepancyCall> comparisonCalls = service.GetComparisonSourceCalls();
-
-        // Assert
-        Assert.NotEmpty(billableCalls);
-        Assert.NotEmpty(comparisonCalls);
-    }
     [Fact]
     public void DiscrepancyService_RetrievesInfoProperly()
     {
