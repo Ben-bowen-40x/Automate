@@ -105,7 +105,7 @@ internal partial class MessagePatterns
     private const string service = $"((problem|remov|re{letters}c{letters}ur{letters} servic|treat|spray|bomb|(pest|yard|home) control|visit|servi(c|d)|exterminat|infest|inspect|fumiga|{quote}){letters})";
     private const string toBe = $"(is|are|was|were|be{letters})";
     private const string want = $"((busc|quier|{word}?want|need|{word}{zeroFive}interes{chars}{word}{zeroThree}|try{letters} to |lik{letters} ?{word}{zeroThree}|would like|look{letters} ?{word}{zeroThree}|request|provid|desir){letters}{border})";
-    private const string we = $"((we|us|i|{me}){letters})";
+    private const string we = $"((we|us|{me}){letters}|i)";
     private const string weAre = $"(i{chars}m ?{letters}|we({chars}re))";
     private const string work = $"((work|tra(b|v)a(j|l)|emple|hir|job|interview|employ){letters}{border})";
     #endregion
