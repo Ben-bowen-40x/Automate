@@ -15,7 +15,7 @@ public class DiscrepancyManager_Test
     private readonly IDwhTestSettings _settings;
     [
         Fact
-        (Skip = "This test is being deprecated")
+        //(Skip = "This test is being deprecated")
     ]
     public void DiscrepancyManager_ExecutesProperly()
     {
