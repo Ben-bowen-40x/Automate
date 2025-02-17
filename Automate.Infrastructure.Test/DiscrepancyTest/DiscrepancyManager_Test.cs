@@ -1,4 +1,5 @@
 ﻿using Automate.Application.Discrepancy;
+using Automate.Domain.SolutionFunctionality;
 using Automate.Infrastructure.AnalyzeDiscrepancyService;
 using Automate.Infrastructure.ReportingService;
 using Automate.Infrastructure.Test.TestConfigurations;
@@ -8,14 +9,12 @@ namespace Automate.Infrastructure.Test.DiscrepancyTest;
 
 public class DiscrepancyManager_Test
 {
-    public DiscrepancyManager_Test()
-    {
-        _settings = new InfraTestConfiguration().TestSettings;
-    }
-    private readonly IDwhTestSettings _settings;
+    private readonly IInfrastructureTestSettings _settings = new InfraTestConfiguration().TestSettings;
+
+    #region Deprecated
     [
         Fact
-        //(Skip = "This test is being deprecated")
+        (Skip = "This test is being deprecated")
     ]
     public void DiscrepancyManager_ExecutesProperly()
     {
@@ -28,4 +27,22 @@ public class DiscrepancyManager_Test
         // Assert
         Assert.True(result.IsSuccess);
     }
+    #endregion
+
+    #region TypedDiscrepancyManager
+    [Fact]
+    public void TypedDiscrepancyManager_Executes()
+    {
+        // Assemble
+        TypedDiscrepancyManager manger = new(new DiscrepancyService(_settings), new ReportServiceSingleton());
+        FileInfo billedCalls = FolderFinder.GetLocalFile(nameof(Infrastructure),@".info\Discrepancy", "Discrepancy.csv");
+        FileInfo comparison = FolderFinder.GetLocalFile(nameof(Infrastructure), @".info\Discrepancy\LocalRepo", "Discrepancy.json");
+
+        // Act
+        Result<FileInfo> result = manger.Manage<DiscrepancySourceLeadsCsvColumns>(billedCalls, comparison,"");
+        
+        // Assert
+        Assert.True(result.IsSuccess);
+    }
+    #endregion
 }

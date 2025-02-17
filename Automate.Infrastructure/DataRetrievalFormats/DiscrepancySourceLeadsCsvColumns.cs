@@ -1,9 +1,10 @@
 ﻿using CsvHelper.Configuration.Attributes;
 using Automate.Translation.DiscrepancyTranslate;
+using Automate.Domain.ValueObjects;
 
 namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 
-public class DiscrepancySourceLeadsCsvColumns : IDiscrepancyBillable
+public class DiscrepancySourceLeadsCsvColumns : IDiscrepancyBillable, IConvert
 {
     // This class is used to retrieve discrepancy leads from a csv file
     // All leads from the discrepancy list MUST be billable because those are the only leads that are charged
@@ -15,6 +16,10 @@ public class DiscrepancySourceLeadsCsvColumns : IDiscrepancyBillable
     public string? Duration { get; set; }
     [Name("Notes", "Name")]
     public string? Notes { get; set; }
-    [Name("Source")]
+    [Name("Source", "Market")]
     public string? Source { get; set; }
+    public IDiscrepancyCall Convert<IDiscrepancySourceLeadsCsvColumns, IDiscrepancyCall>()
+    {
+        return (IDiscrepancyCall)this.Translate();
+    }
 }
