@@ -28,9 +28,9 @@ public class MessageService(IDwhSettings settings) : IMessageService
     private const string _customerRecordRepo = @"LocalRepo\CustomerRepo.json";
 
     // File Locations
-    private string? loc;
-    public string Loc => loc ??= FolderFinder.GetLocalFolder(nameof(Infrastructure), _fileLoc);
-    private string Location(string file) => Loc + file;
+    private DirectoryInfo? loc;
+    public DirectoryInfo Loc => loc ??= FolderFinder.GetLocalFolder(nameof(Infrastructure), _fileLoc);
+    private FileInfo Location(string file) => new(Loc + file);
 
     #endregion
 
@@ -51,7 +51,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
     public List<IMessage> GetMessages<T>(string msgs) where T : IConvert
     {
         // Retrieve Messages
-        string msgLocStr = msgs == string.Empty ? Location(_messagesLocation) : msgs;
+        FileInfo msgLocStr = msgs == string.Empty ? Location(_messagesLocation) : new(msgs);
         Result<List<T>> result = CsvService.Parse<T>(msgLocStr);
         IEnumerable<T> messageCol = result.IsSuccess
             ? result.Value
@@ -70,7 +70,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
     {
         // Prepare the repo location
         FileInfo callLocation = callRepo == string.Empty || !File.Exists(callRepo)
-            ? new(Location(_callRecordRepo))
+            ? Location(_callRecordRepo)
             : new(callRepo);
 
         Result<List<CallRecordJsonReader>> result = JsonService.ReadFile<CallRecordJsonReader>(callLocation.FullName);
@@ -88,7 +88,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
     {
         // Prepare the repo location. This is the default location
         FileInfo customerLocation = customerRepo == string.Empty || !File.Exists(customerRepo)
-            ? new(Location(_customerRecordRepo))
+            ? Location(_customerRecordRepo)
             : new(customerRepo);
 
         var result = JsonService.ReadFile<CustSubJsonReader>(customerLocation.FullName);

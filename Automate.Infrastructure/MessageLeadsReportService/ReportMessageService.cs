@@ -25,20 +25,21 @@ public class ReportMessageService : IReportMessageService
     private const string _customerRecordRepo = @"LocalRepo\CustomerRepo.json";
 
     // File Locations
-    private string? loc;
-    public string Loc => loc ??= FolderFinder.GetLocalFolder(nameof(Infrastructure), _fileLoc);
-    private string Location(string file) => Loc + file;
+    private DirectoryInfo? loc;
+    public DirectoryInfo Loc => loc ??= FolderFinder.GetLocalFolder(nameof(Infrastructure), _fileLoc);
+    private FileInfo Location(string file) => new(Loc.FullName + file);
     #endregion
 
     #region Implementation
     public List<IMessage> RetrieveReportMessages(string reportLocation, out List<QualifiedMessageRecord> records)
     {
         // Check to see whether the report file actually exists. If not, create it
-        if (!File.Exists(reportLocation))
-            File.WriteAllText(reportLocation, string.Empty);
+        FileInfo reportLoc = new(reportLocation);
+        if (!File.Exists(reportLoc.FullName))
+            File.WriteAllText(reportLoc.FullName, string.Empty);
 
         // Retrieve messages from report
-        Result<List<QualifiedMessageMap>> result = CsvService.Parse<QualifiedMessageMap>(reportLocation);
+        Result<List<QualifiedMessageMap>> result = CsvService.Parse<QualifiedMessageMap>(reportLoc);
         IEnumerable<QualifiedMessageMap> reportColumns = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
@@ -59,9 +60,9 @@ public class ReportMessageService : IReportMessageService
     public List<IMessage> GetMessages<T>(string messageLocation) where T : IConvert
     {
         // Retrieve Messages
-        string msgLocStr = messageLocation == string.Empty
+        FileInfo msgLocStr = messageLocation == string.Empty
             ? Location(_messagesLocation)
-            : messageLocation;
+            : new(messageLocation);
         Result<List<T>> result = CsvService.Parse<T>(msgLocStr);
         IEnumerable<T> messageCol = result.IsSuccess
             ? result.Value
@@ -101,7 +102,7 @@ public class ReportMessageService : IReportMessageService
     {
         // Prepare the repo location
         FileInfo callLocation = callRepo == string.Empty || !File.Exists(callRepo)
-            ? new(Location(_callRecordRepo))
+            ? Location(_callRecordRepo)
             : new(callRepo);
 
         Result<List<CallRecordJsonReader>> result = JsonService.ReadFile<CallRecordJsonReader>(callLocation.FullName);
@@ -118,9 +119,9 @@ public class ReportMessageService : IReportMessageService
     public List<ICustomerSubscription> GetCustomerRecords(List<long> msgNums, string customerRepo)
     {
         // Prepare the repo location. This is the default location
-        string customerLocation = customerRepo == string.Empty || !File.Exists(customerRepo)
+        FileInfo customerLocation = customerRepo == string.Empty || !File.Exists(customerRepo)
             ? Location(_customerRecordRepo)
-            : customerRepo;
+            : new(customerRepo);
 
         Result<List<CustSubJsonReader>> result = JsonService.ReadFile<CustSubJsonReader>(customerLocation);
         List<CustSubJsonReader> localCustomers = result.IsSuccess

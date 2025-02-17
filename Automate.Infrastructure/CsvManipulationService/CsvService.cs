@@ -28,7 +28,8 @@ internal static class CsvService
     #endregion
 
     #region Internal
-    internal static Result<List<T>> Parse<T>(string path)
+    internal static Result<List<T>> Parse<T>(FileInfo path) => Parse<T>(path.FullName);
+    private static Result<List<T>> Parse<T>(string path)
     {
         try
         {
@@ -40,7 +41,8 @@ internal static class CsvService
         catch (Exception ex)
         { return Result.Failure<List<T>>(CsvException(path, ex, nameof(Parse))); }
     }
-    public static Result Write<TClass, TMap>(string path, IEnumerable<TClass> unparsedObject) where TMap : ClassMap
+    public static Result Write<TClass, TMap>(FileInfo path, IEnumerable<TClass> unparsedObject) where TMap : ClassMap => Write<TClass, TMap>(path.FullName, unparsedObject);
+    private static Result Write<TClass, TMap>(string path, IEnumerable<TClass> unparsedObject) where TMap : ClassMap
     {
         try
         {
@@ -53,7 +55,8 @@ internal static class CsvService
         catch (Exception ex)
         { return Result.Failure(CsvException(path, ex, nameof(Write))); }
     }
-    public static Result Append<TClass, TMap>(string path, IEnumerable<TClass> unparsed) where TMap : ClassMap
+    public static Result Append<TClass, TMap>(FileInfo path, IEnumerable<TClass> unparsedObject) where TMap : ClassMap => Append<TClass, TMap>(path.FullName, unparsedObject);
+    private static Result Append<TClass, TMap>(string path, IEnumerable<TClass> unparsed) where TMap : ClassMap
     {
         try
         {

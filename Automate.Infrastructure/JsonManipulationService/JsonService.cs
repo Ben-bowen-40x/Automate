@@ -6,6 +6,7 @@ namespace Automate.Infrastructure.JsonManipulationService;
 // All exceptions should be throw by the caller, because we don't have sufficient context in this class to understand WHY the error was thrown.
 internal static class JsonService
 {
+    internal static Result<List<T>> ReadFile<T>(FileInfo path) => ReadFile<T>(path.FullName);
     internal static Result<List<T>> ReadFile<T>(string path)
     {
         try
@@ -18,6 +19,7 @@ internal static class JsonService
             return Result.Failure<List<T>>(ex.Message);
         }
     }
+    internal static Result WriteToFile<T>(FileInfo path, List<T> items) => WriteToFile<T>(path.FullName, items);
     internal static Result WriteToFile<T>(string path, List<T> items)
     {
         try

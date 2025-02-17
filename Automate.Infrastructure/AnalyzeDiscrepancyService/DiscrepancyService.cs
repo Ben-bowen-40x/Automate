@@ -15,7 +15,7 @@ namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 /// <para>This implementation also requires that comparison calls be retrieved from a database call using raw sql from a file</para>
 /// <para>Note that source calls are always billable</para>
 /// </summary>
-internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
+internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService, ITypedDiscrepancyService
 {
     readonly RawQuery _rawQuery = new(settings);
 
@@ -37,8 +37,8 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
     //*/
 
     // Parent Determinant
-    static string? parent;
-    static string Parent => parent ??= FolderFinder.GetLocalFolder(nameof(Infrastructure), _parentFile);
+    static DirectoryInfo? parent;
+    static DirectoryInfo Parent => parent ??= FolderFinder.GetLocalFolder(nameof(Infrastructure), _parentFile);
     #endregion
 
     #region Implementations
@@ -79,12 +79,29 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService
             : new(sourceCsv);
 
         // Retrieve items
-        Result<List<DiscrepancySourceLeadsCsvColumns>> result = CsvService.Parse<DiscrepancySourceLeadsCsvColumns>(fileLocation.FullName);
+        Result<List<DiscrepancySourceLeadsCsvColumns>> result = CsvService.Parse<DiscrepancySourceLeadsCsvColumns>(fileLocation);
 
         // Translate
         List<IDiscrepancyCall> calls = result.IsSuccess
             ? result.Value
                 .Select(c => c.Translate())
+                .ToList()
+            : throw new Exception(result.Error);
+
+        return calls;
+    }
+    public List<IDiscrepancyCall> GetCalls<T>(FileInfo fileLocation) where T : IConvert
+    {
+        // Retrieve
+        Result<List<T>> isCsv = CsvService.Parse<T>(fileLocation);
+        Result<List<T>> isJson = JsonService.ReadFile<T>(fileLocation.FullName);
+        Result<List<T>> result = isCsv.IsSuccess? isCsv.Value : 
+            isJson.IsSuccess ? isJson.Value : Result.Failure<List<T>>($"This is the fileLocation: {fileLocation.FullName}\nThe following errors happened while trying to parse the given file as csv:\n\t{isCsv.Error}\nThe following error occurred while trying to parse the given file as json:\n\t{isJson.Error}");
+
+        // Convert
+        List<IDiscrepancyCall> calls = result.IsSuccess
+            ? result.Value
+                .Select(c => c.Convert<T, IDiscrepancyCall>())
                 .ToList()
             : throw new Exception(result.Error);
 

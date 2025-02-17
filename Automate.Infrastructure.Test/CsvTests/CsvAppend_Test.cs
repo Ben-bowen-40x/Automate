@@ -9,9 +9,9 @@ public class CsvAppend_Test
 {
     public CsvAppend_Test()
     {
-        TestFileLocation1 = new InfraTestConfiguration().TestSettings.CsvAppendTestFile!;
+        TestFileLocation1 = new(new InfraTestConfiguration().TestSettings.CsvAppendTestFile!);
     }
-    public string TestFileLocation1 { get; }
+    public FileInfo TestFileLocation1 { get; }
 
     #region CsvAppendDoesNotHaveStackOverflowIssues
     [
@@ -31,9 +31,9 @@ public class CsvAppend_Test
     public void CsvAppendDoesNotHaveStackOverflowIssues(string contentToAppend1, string contentToAppend2, string contentToAppend3)
     {
         // If the file doesn't exist, create it 
-        if (!File.Exists(TestFileLocation1))
+        if (!File.Exists(TestFileLocation1.FullName))
         {
-            File.WriteAllText(TestFileLocation1, $"{CsvAppendTestColumns.c1},{CsvAppendTestColumns.c2},{CsvAppendTestColumns.c3}\n");
+            File.WriteAllText(TestFileLocation1.FullName, $"{CsvAppendTestColumns.c1},{CsvAppendTestColumns.c2},{CsvAppendTestColumns.c3}\n");
         }
 
         // Translate input to objects
@@ -70,9 +70,9 @@ public class CsvAppend_Test
     public void CsvAppendDoesNotHaveStackOverflowIssues_IOErrortest(string contentToAppend1, string contentToAppend2, string contentToAppend3)
     {
         // If the file doesn't exist, create it 
-        if (!File.Exists(TestFileLocation1))
+        if (!File.Exists(TestFileLocation1.FullName))
         {
-            File.WriteAllText(TestFileLocation1, $"{CsvAppendTestColumns.c1},{CsvAppendTestColumns.c2},{CsvAppendTestColumns.c3}\n");
+            File.WriteAllText(TestFileLocation1.FullName, $"{CsvAppendTestColumns.c1},{CsvAppendTestColumns.c2},{CsvAppendTestColumns.c3}\n");
         }
 
         // Translate input to objects

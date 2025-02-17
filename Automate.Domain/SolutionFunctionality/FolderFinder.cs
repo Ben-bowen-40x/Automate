@@ -17,7 +17,7 @@ public static class FolderFinder
     /// <param name="projectContainingLocalFolder"></param>
     /// <param name="localFolderToFind"></param>
     /// <returns></returns>
-    public static string GetLocalFolder(string projectContainingLocalFolder, string localFolderToFind) =>
+    public static DirectoryInfo GetLocalFolder(string projectContainingLocalFolder, string localFolderToFind) =>
         GetLocalFolder(projectContainingLocalFolder, _relativePath, localFolderToFind);
 
     /// <summary>
@@ -33,15 +33,15 @@ public static class FolderFinder
     /// <param name="localFolderToFind"></param>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    public static string GetLocalFile(string projectContainingLocalFolder, string localFolderToFind, string fileName) =>
-        GetLocalFolder(projectContainingLocalFolder, _relativePath, localFolderToFind) + fileName;
+    public static FileInfo GetLocalFile(string projectContainingLocalFolder, string localFolderToFind, string fileName) =>
+        new (GetLocalFolder(projectContainingLocalFolder, _relativePath, localFolderToFind).FullName + fileName);
     #endregion
 
     #region Private members
     readonly static string _solution = nameof(Automate);
     const string _relativePath = @".\";
 
-    static string GetLocalFolder(string projectContainingLocalFolder, string relativePath, string localFolderToFind)
+    static DirectoryInfo GetLocalFolder(string projectContainingLocalFolder, string relativePath, string localFolderToFind)
     {
         const char slash = '\\';
         string fullPath = Path.GetFullPath(relativePath);
@@ -92,7 +92,7 @@ public static class FolderFinder
         string returnString = builder.ToString();
         builder.Clear();
 
-        return returnString;
+        return new(returnString);
     }
     #endregion
 }

@@ -79,13 +79,13 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
     internal static Result<List<IMessage>> RetrieveMessageRepo(string msgRepoLoc = "")
     {
         // Check loc string
-        string repo = msgRepoLoc == string.Empty || !File.Exists(msgRepoLoc)
+        FileInfo repo = msgRepoLoc == string.Empty || !File.Exists(msgRepoLoc)
             ? MessageRepoLocation
-            : msgRepoLoc;
+            : new(msgRepoLoc);
 
         // Check if location exists
-        if (!File.Exists(repo))
-            File.WriteAllText(repo, "");
+        if (!repo.Exists)
+            File.WriteAllText(repo.FullName, "");
 
         // Retrieve contents
         try
@@ -106,18 +106,18 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
     internal static Result<List<TEntity>> RetrieveLeafRepo<TEntity>(string leafRepo = "") where TEntity : class, IConvert
     {
         // Check location string
-        string repo = leafRepo == string.Empty || !File.Exists(leafRepo)
+        FileInfo repo = leafRepo == string.Empty || !File.Exists(leafRepo)
             ? LeafRepoLocation
-            : leafRepo;
+            : new(leafRepo);
 
         // Check if location exists
-        if (!File.Exists(repo))
-            File.WriteAllText(repo, "");
+        if (!repo.Exists)
+            File.WriteAllText(repo.FullName, "");
 
         try
         {
             // Retrieve contents
-            Result<List<TEntity>> result = JsonService.ReadFile<TEntity>(repo);
+            Result<List<TEntity>> result = JsonService.ReadFile<TEntity>(repo.FullName);
 
             // The train MUST stop here because this is very unexcpected behavior at this point
             // Plus, this point contains all of the necessary information that we need to see all the context;
@@ -133,10 +133,10 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
     #endregion
 
     #region Implementation
-    private static string? _msgRepoLoc;
-    private static string? _leafRepoLoc;
-    public static string MessageRepoLocation => _msgRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafMessages.csv");
-    public static string LeafRepoLocation => _leafRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafThreads.json");
+    private static FileInfo? _msgRepoLoc;
+    private static FileInfo? _leafRepoLoc;
+    public static FileInfo MessageRepoLocation => _msgRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafMessages.csv");
+    public static FileInfo LeafRepoLocation => _leafRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafThreads.json");
 
     public async Task<Result<List<TEntity>>> GetLeafThreadsAsync<TEntity>(HttpClient client, int offset = 0, int errorLimit = 5, int sleepInterval = 500, int limit = 1000) where TEntity : class, IConvert
     {
@@ -199,21 +199,21 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
 
     public Result Update<TEntity>(List<TEntity> leafRepo, List<TEntity> apiResult, string leafRepoLoc = "") where TEntity: class, IConvert
     {
-        string leafRepoLocation = leafRepoLoc == string.Empty || !File.Exists(leafRepoLoc)
+        FileInfo leafRepoLocation = leafRepoLoc == string.Empty || !File.Exists(leafRepoLoc)
             ? LeafRepoLocation
-            : leafRepoLoc;
+            : new(leafRepoLoc);
 
         List<TEntity> combined = [.. leafRepo, .. apiResult];
-        var result = Update(combined, leafRepoLocation);
+        var result = Update(combined, leafRepoLocation.FullName);
 
         return result;
     }
 
     public Result Update<TEntity>(List<TEntity> leafRepo, string leafRepoLoc) where TEntity: class, IConvert
     {
-        string leafRepoLocation = leafRepoLoc == string.Empty || !File.Exists(leafRepoLoc)
+        FileInfo leafRepoLocation = leafRepoLoc == string.Empty || !File.Exists(leafRepoLoc)
             ? LeafRepoLocation
-            : leafRepoLoc;
+            : new(leafRepoLoc);
 
         try
         {

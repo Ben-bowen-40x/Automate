@@ -6,12 +6,12 @@ namespace Automate.Infrastructure.Test.CsvTests;
 
 public class CsvDynamicTest
 {
-    private readonly string pathtofile = FolderFinder.GetLocalFile(nameof(Infrastructure), @".info\ApiRepos\LeafTesting\", "Messages_Test.csv");
+    private readonly FileInfo pathtofile = FolderFinder.GetLocalFile(nameof(Infrastructure), @".info\ApiRepos\LeafTesting\", "Messages_Test.csv");
     [Fact]
     public void ReadsCsvFilesDynamically()
     {
         // Act
-        using var reader = new StreamReader(pathtofile);
+        using var reader = new StreamReader(pathtofile.FullName);
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
         IEnumerable<dynamic> records = csv.GetRecords<dynamic>();
 
@@ -23,7 +23,7 @@ public class CsvDynamicTest
     public void ReadsCsvFilesAnonymously()
     {
         // Act
-        using var reader = new StringReader(pathtofile);
+        using var reader = new StringReader(pathtofile.FullName);
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
         var anonymous = new
         {
@@ -42,7 +42,7 @@ public class CsvDynamicTest
     public void ConvertsCsvFilesAnonymously()
     {
         // Assemble
-        using var reader = new StreamReader(pathtofile);
+        using var reader = new StreamReader(pathtofile.FullName);
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
         IEnumerable<dynamic> records = csv.GetRecords<dynamic>();
 

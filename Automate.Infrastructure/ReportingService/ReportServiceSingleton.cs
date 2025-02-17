@@ -12,8 +12,8 @@ namespace Automate.Infrastructure.ReportingService;
 internal class ReportServiceSingleton : IReportService
 {
     private const string _errorMessage = "If you're reading this, then writing to the CSV failed.";
-    private string? _folder;
-    private string Folder => _folder ??= FolderFinder.GetLocalFolder(nameof(Infrastructure), @".info\Reports");
+    private DirectoryInfo? _folder;
+    private DirectoryInfo Folder => _folder ??= FolderFinder.GetLocalFolder(nameof(Infrastructure), @".info\Reports");
 
     public Result<DirectoryInfo> GenerateContactsReport(List<List<Contact>> contacts, string reportDirectory = "")
     {
@@ -31,10 +31,10 @@ internal class ReportServiceSingleton : IReportService
             int counter = UpdateContactsService.MagicNum;
             foreach (var contact in contacts)
             {
-                string path = directory.FullName + $"ContactFile{counter++}.csv";
-                File.WriteAllText(path, _errorMessage);
+                FileInfo path = new(directory.FullName + $"ContactFile{counter++}.csv");
+                File.WriteAllText(path.FullName, _errorMessage);
 
-                // TODO: Translate layer: Should it control the translation from Application/Domain objects to Infrastructure tasks?
+                // Translate layer: Should it control the translation from Application/Domain objects to Infrastructure tasks?
                 CsvService.Write<Contact, ContactsMap>(path, contact);
             }
             return directory;
@@ -47,20 +47,19 @@ internal class ReportServiceSingleton : IReportService
 
     public Result<FileInfo> GenerateDiscrepancyReport(List<DiscrepancyMatch> matches, string reportLoc = "")
     {
-        var report =
+        FileInfo report =
             reportLoc == string.Empty || !reportLoc.Contains(".csv")
-            ? Folder + $"DiscrepancyReport{DateTime.Now.ToString(DateTimeStrings.FileDateTimeFormat)}.csv"
-            : reportLoc;
-        FileInfo file = new(report);
-        if (!File.Exists(report))
+            ? new(Folder + $"DiscrepancyReport{DateTime.Now.ToString(DateTimeStrings.FileDateTimeFormat)}.csv")
+            : new(reportLoc);
+        if (!File.Exists(report.FullName))
         {
-            File.WriteAllText(report, _errorMessage);
+            File.WriteAllText(report.FullName, _errorMessage);
         }
         try
         {
-            // TODO: Question: Are CSV write maps subject to the translation layer, as they are translations of domain objects into Infrastructure layer tasks?
+            // Question: Are CSV write maps subject to the translation layer, as they are translations of domain objects into Infrastructure layer tasks?
             CsvService.Write<DiscrepancyMatch, DiscrepancyAnalysisMatchMap>(report, matches);
-            return file;
+            return report;
         }
         catch (Exception ex)
         {
@@ -70,7 +69,7 @@ internal class ReportServiceSingleton : IReportService
 
     private string? _msgReportDefault;
     private string MsgReportDefault(string name) => _msgReportDefault ??= $"{name}{DateTime.Now.ToString(DateTimeStrings.FileDateTimeFormat)}.csv";
-    
+
     public Result<FileInfo> GenerateMessageLeadReport(string reportDefault, List<QualifiedMessageRecord> messages, string reportLocation = "")
     {
         // Create a default report name in case one is not provided
@@ -84,7 +83,7 @@ internal class ReportServiceSingleton : IReportService
             File.WriteAllText(file.FullName, _errorMessage);
         try
         {
-            CsvService.Write<QualifiedMessageRecord, QualifiedMessageMap>(file.FullName, messages);
+            CsvService.Write<QualifiedMessageRecord, QualifiedMessageMap>(file, messages);
             return file;
         }
         catch
@@ -106,7 +105,7 @@ internal class ReportServiceSingleton : IReportService
             File.WriteAllText(file.FullName, _errorMessage);
         try
         {
-            CsvService.Write<QualifiedMessageRecord, QualifiedMessageMap>(file.FullName, messages);
+            CsvService.Write<QualifiedMessageRecord, QualifiedMessageMap>(file, messages);
             return file;
         }
         catch (Exception ex)
@@ -123,7 +122,7 @@ internal class ReportServiceSingleton : IReportService
         // Attempt to APPEND the information to the file
         try
         {
-            CsvService.Append<QualifiedMessageRecord, QualifiedMessageMap>(file.FullName, messages);
+            CsvService.Append<QualifiedMessageRecord, QualifiedMessageMap>(file, messages);
             return file;
         }
         catch (Exception ex)
@@ -135,16 +134,15 @@ internal class ReportServiceSingleton : IReportService
     public Result<FileInfo> GenerateLeafMessages(List<IMessage> msgs, string location)
     {
         // Check for default
-        var loc = location == string.Empty
+        FileInfo loc = location == string.Empty
             ? LeafApiService.MessageRepoLocation
-            : location;
-        FileInfo file = new(loc);
+            : new(location);
 
         // Attempt to write the information to file
         try
         {
             CsvService.Write<IMessage, MessageMapRW>(loc, msgs);
-            return file;
+            return loc;
         }
         catch (Exception ex)
         {

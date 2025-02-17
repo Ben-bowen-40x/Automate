@@ -18,7 +18,7 @@ internal class JsonConversionService : IJsonConversionService
             if (entities.IsSuccess)
             {
                 List<T> values = entities.Value;
-                CsvService.Write<T, TMap>(csvFile.FullName, values);
+                CsvService.Write<T, TMap>(csvFile, values);
                 return csvFile;
             }
             StringLogger.AddLog(entities.Error);
