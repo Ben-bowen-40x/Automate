@@ -12,6 +12,7 @@ public class MessageReading_Test
     private FileInfo TestFile(string file) => FolderFinder.GetLocalFile(nameof(Infrastructure), @".info\MessageAnalysis\Test", file);
     [
         Theory,
+        // Skip = ""
         InlineData("LeasedMessagesTest.csv")
     ]
     public void SpecialMessageType_CanBeReadFromTest(string file)
