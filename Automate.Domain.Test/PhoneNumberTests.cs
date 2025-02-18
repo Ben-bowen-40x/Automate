@@ -126,6 +126,7 @@ public class PhoneNumberTests
         InlineData("+1(330) 219-274", 0),
         InlineData("+1(639) 161-722", 0),
         InlineData(null, 0),
+        InlineData("No Number", 0),
         InlineData("Jun 3, 2024 at 9:19 PM EDT", 0)
     ]
     #endregion
