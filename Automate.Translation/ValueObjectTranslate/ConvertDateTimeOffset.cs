@@ -119,11 +119,3 @@ internal static class ConvertDateTimeOffset
         => new() { { year, [Sunday(year, 03, 02, 2), Sunday(year, 11, 2, 1)] } };
     #endregion
 }
-public enum TimeZoneEnum
-{
-    Pacific,
-    Mountain,
-    Central,
-    Eastern,
-    Utc
-}

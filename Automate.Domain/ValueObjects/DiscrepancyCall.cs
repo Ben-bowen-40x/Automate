@@ -9,11 +9,3 @@ public record DiscrepancyCall(PhoneNumber Number, bool Billable, DateTime Date, 
         return $"{nameof(PhoneNumber)}: {Number}, {nameof(Billable)}: {Billable}, {nameof(Date)}: {Date}, {nameof(Duration)}: {Duration}, {nameof(Source)}: {Source}, {nameof(Notes)}: {Notes}";
     }
 }
-public enum DiscrepancySource
-{
-    Libacion, 
-    ElkHall,
-    Guliagar,
-
-    Null,
-}

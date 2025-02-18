@@ -217,4 +217,3 @@ public static class ConvertPrimitive
     };
     #endregion
 }
-

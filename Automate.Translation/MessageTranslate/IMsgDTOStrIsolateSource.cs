@@ -9,5 +9,4 @@ public interface IMsgDTOStrIsolateSource : IConvert
     public string? Contents { get; set; }
     public string? Source { get; set; }
     public SourceComponent Separator { get; }
-
 }

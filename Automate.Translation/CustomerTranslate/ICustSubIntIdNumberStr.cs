@@ -20,4 +20,3 @@ public interface ICustSubIntIdNumberStr : IPhoneNumberCompatible
     string? Seller2 { get; set; }
     string? Seller3 { get; set; }
 }
-

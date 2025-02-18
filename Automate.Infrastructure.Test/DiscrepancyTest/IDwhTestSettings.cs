@@ -2,6 +2,4 @@
 
 namespace Automate.Infrastructure.Test.DiscrepancyTest;
 
-public interface IDwhTestSettings : IDwhSettings
-{
-}
+public interface IDwhTestSettings : IDwhSettings { }

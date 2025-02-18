@@ -18,4 +18,3 @@ public interface ICustSubLongIdPhoneNumber : IDatedRecord
     public double DoubleValue { get; set; }
     public string? Sellers { get; set; }
 }
-

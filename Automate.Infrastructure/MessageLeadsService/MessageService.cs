@@ -14,6 +14,7 @@ namespace Automate.Infrastructure.MessageLeadsService;
 public class MessageService(IDwhSettings settings) : IMessageService
 {
     readonly RawQuery _rawQuery = new(settings);
+
     #region Pathing
     // Parent folder
     private const string _fileLoc = @".info\MessageAnalysis";

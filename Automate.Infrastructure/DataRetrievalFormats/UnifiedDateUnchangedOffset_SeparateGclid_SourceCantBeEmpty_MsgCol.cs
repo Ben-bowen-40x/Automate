@@ -19,4 +19,3 @@ public class UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol :
         return (IMessage)this.Translate();
     }
 }
-

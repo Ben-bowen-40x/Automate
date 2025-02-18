@@ -18,4 +18,3 @@ public interface ICustSubLongIdNumStrSellers
     string? Seller2 { get; set; }
     string? Seller3 { get; set; }
 }
-

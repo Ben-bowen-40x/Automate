@@ -1,10 +1,9 @@
-﻿namespace Automate.Domain.ValueObjects
+﻿namespace Automate.Domain.ValueObjects;
+
+public interface IMatchingLeads
 {
-    public interface IMatchingLeads
-    {
-        bool BillableBefore { get; set; }
-        IDiscrepancyCall BilledLead { get; set; }
-        bool BothBillable { get; }
-        IDiscrepancyCall ComparisonLead { get; set; }
-    }
+    bool BillableBefore { get; set; }
+    IDiscrepancyCall BilledLead { get; set; }
+    bool BothBillable { get; }
+    IDiscrepancyCall ComparisonLead { get; set; }
 }

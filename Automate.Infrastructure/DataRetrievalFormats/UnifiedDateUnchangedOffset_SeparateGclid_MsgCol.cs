@@ -21,4 +21,3 @@ public class UnifiedDateUnchangedOffset_SeparateGclid_MsgCol : IMsgDTOStrIsolate
         return (IMessage)this.Translate();
     }
 }
-

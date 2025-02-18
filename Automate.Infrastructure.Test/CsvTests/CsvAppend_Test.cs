@@ -94,7 +94,6 @@ public class CsvAppend_Test
     #endregion
 }
 
-
 #region Necessary objects -- Do Not separate into another file, please
 internal class CsvAppend_TestMap : ClassMap<CsvAppendTestColumns>
 {

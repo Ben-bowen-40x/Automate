@@ -14,4 +14,3 @@ public class ContactsDbEntity : IContactsEntity
     [Column("phone2")]
     public string? Phone2 { get; set; }
 }
-

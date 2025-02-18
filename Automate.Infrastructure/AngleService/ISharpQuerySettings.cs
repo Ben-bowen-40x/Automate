@@ -11,6 +11,4 @@ public interface ISharpQuerySettings
     string? GuliagarUrl { get; set; }
     string? GuliagarUrl2 { get; set; }
     string? GuliagarBunny { get; set; }
-
 }
-

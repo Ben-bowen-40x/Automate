@@ -5,4 +5,3 @@ public enum DateDefault
     Min,
     Max,
 }
-

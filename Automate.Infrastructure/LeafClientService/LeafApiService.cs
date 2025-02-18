@@ -1,12 +1,10 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
-using Automate.Application.InfrastructureValueObjects;
 using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.DataRetrievalFormats;
 using Automate.Infrastructure.JsonManipulationService;
 using CSharpFunctionalExtensions;
-using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace Automate.Infrastructure.LeafClientService;
