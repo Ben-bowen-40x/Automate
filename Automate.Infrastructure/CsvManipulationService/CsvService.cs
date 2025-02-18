@@ -32,8 +32,8 @@ internal static class CsvService
     {
         try
         {
-            using var reader = new StreamReader(path.FullName);
-            using var csv = new CsvReader(reader, _config);
+            using StreamReader reader = new(path.FullName);
+            using CsvReader csv = new(reader, _config);
             List<T> records = csv.GetRecords<T>().ToList();
             return records;
         }
@@ -44,8 +44,8 @@ internal static class CsvService
     {
         try
         {
-            using var writer = new StreamWriter(path.FullName);
-            using var csv = new CsvWriter(writer, _config);
+            using StreamWriter writer = new(path.FullName);
+            using CsvWriter csv = new(writer, _config);
             csv.Context.RegisterClassMap<TMap>();
             csv.WriteRecords(unparsedObject);
             return Result.Success();
@@ -57,9 +57,9 @@ internal static class CsvService
     {
         try
         {
-            using var stream = File.Open(path.FullName, FileMode.Append);
-            using var writer = new StreamWriter(stream);
-            using var csv = new CsvWriter(writer, _noHeader);
+            using FileStream stream = File.Open(path.FullName, FileMode.Append);
+            using StreamWriter writer = new(stream);
+            using CsvWriter csv = new(writer, _noHeader);
             csv.WriteRecords(unparsed);
             return Result.Success();
         }
