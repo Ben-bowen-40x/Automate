@@ -94,7 +94,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService, 
     {
         // Retrieve
         Result<List<T>> isCsv = CsvService.Parse<T>(fileLocation);
-        Result<List<T>> isJson = JsonService.ReadFile<T>(fileLocation.FullName);
+        Result<List<T>> isJson = JsonService.ReadFile<T>(fileLocation);
         Result<List<T>> result = isCsv.IsSuccess? isCsv.Value : 
             isJson.IsSuccess ? isJson.Value : Result.Failure<List<T>>($"This is the fileLocation: {fileLocation.FullName}\nThe following errors happened while trying to parse the given file as csv:\n\t{isCsv.Error}\nThe following error occurred while trying to parse the given file as json:\n\t{isJson.Error}");
 
@@ -159,7 +159,7 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService, 
             : DefaultRepo;
 
         // Retrieve info from the local repo
-        Result<List<DiscrepancyJson>> r = JsonService.ReadFile<DiscrepancyJson>(repo.FullName);
+        Result<List<DiscrepancyJson>> r = JsonService.ReadFile<DiscrepancyJson>(repo);
         List<IDiscrepancyCall> result = r.IsSuccess
             ? r.Value
                 .Select(r => r.Translate())
