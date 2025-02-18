@@ -24,7 +24,7 @@ public class MessageReading_Test
         Result<List<LeasedMessages>> result = CsvService.Parse<LeasedMessages>(f);
         List<IMessage> translation = result.IsSuccess
             ? result.Value.Select(c => c.Translate()).ToList()
-            : throw new Exception("This didn't work");
+            : throw new Exception(result.Error);
 
         // Assert
         Assert.True(result.IsSuccess);
