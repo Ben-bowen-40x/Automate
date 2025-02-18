@@ -84,7 +84,8 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
             if (!File.Exists(repoLocation))
                 File.WriteAllText(repoLocation, string.Empty);
 
-            JsonService.WriteToFile(repoLocation, list);
+            FileInfo repo = new(repoLocation);
+            JsonService.WriteToFile(repo, list);
             return Result.Success();
         }
         catch (Exception ex)

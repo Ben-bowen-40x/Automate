@@ -7,6 +7,33 @@ namespace Automate.Translation.MessageTranslate;
 public static class MessageInterfaceTranslate
 {
     #region Public
+    public static IMessage Translate(this IMsgStrsSpecialExtras entity)
+    {
+        PhoneNumber num = PhoneNumberTranslate.Translate(entity.PhoneNumStr);
+        DateTime d = DateTime.TryParse(entity.Date, out DateTime dtResult) ? dtResult : DateTime.MaxValue;
+        TimeZoneEnum e = !string.IsNullOrWhiteSpace(entity.TimeZoneInfo)
+            ? FindTimeZone(entity)
+            : TimeZoneEnum.Eastern;
+        DateTimeOffset date = ConvertDateTimeOffset.Convert(d, e);
+        string source = VerifySource(entity.Source);
+        bool islead = !string.IsNullOrWhiteSpace(entity.Lead) && entity.Lead.Contains("yes", StringComparison.CurrentCultureIgnoreCase);
+
+        IMessage result = islead
+            ? new Message(num, date, string.Empty, source)
+            : new Message(PhoneNumberTranslate.Default, DateTimeOffset.MaxValue, string.Empty, string.Empty);
+
+        return result;
+    }
+
+    private static TimeZoneEnum FindTimeZone(IMsgStrsSpecialExtras entity) => entity.TimeZoneInfo!.ToLower() switch
+    {
+        string t when t.Contains("est") || t.Contains("edt") => TimeZoneEnum.Eastern,
+        string t when t.Contains("cst") || t.Contains("cdt") => TimeZoneEnum.Central,
+        string t when t.Contains("mst") || t.Contains("mdt") => TimeZoneEnum.Mountain,
+        string t when t.Contains("pst") || t.Contains("pdt") => TimeZoneEnum.Pacific,
+        _ => TimeZoneEnum.Eastern
+    };
+
     /// <summary>
     /// Extension Method Translates <paramref name="entity"/> from <see cref="IMsgDTONumberLong"/> to <see cref="IMessage"/>
     /// </summary>
@@ -140,7 +167,7 @@ public static class MessageInterfaceTranslate
             ? string.Empty
             : source;
         string removal = "z:";
-        string replaced = sourcer.Replace(removal, null); 
+        string replaced = sourcer.Replace(removal, null);
         string result = TSH.ReplaceCsvAwkward(replaced, string.Empty);
         return result;
     }

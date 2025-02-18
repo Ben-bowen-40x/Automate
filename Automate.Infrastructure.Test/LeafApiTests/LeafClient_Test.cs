@@ -93,7 +93,7 @@ public class LeafClient_Test
             {
                 List<LeafThread> value = result.Value;
                 int ct = value.Count;
-                string repo = $"{Config.LeafApiTestRepo}/LeafTestRepo_{ct}_{now}.json";
+                FileInfo repo = new($"{Config.LeafApiTestRepo}/LeafTestRepo_{ct}_{now}.json");
                 List<IMessage> messages = value.Select(v => v.Convert<LeafThread, IMessage>()).ToList();
                 JsonService.WriteToFile(repo, messages);
                 resume = ct == limit;
@@ -121,8 +121,8 @@ public class LeafClient_Test
 
         // Create the new repo file name
         string now = DateTime.Now.ToString(DateTimeStrings.FileDateTimeFormat2);
-        string repoThread = $"{Config.LeafApiTestRepo}/LeafTestRepo_LeafThread_{now}.json";
-        string repoMessage = $"{Config.LeafApiTestRepo}/LeafTestRepo_LeafMessage_{now}.json";
+        FileInfo repoThread = new($"{Config.LeafApiTestRepo}/LeafTestRepo_LeafThread_{now}.json");
+        FileInfo repoMessage = new($"{Config.LeafApiTestRepo}/LeafTestRepo_LeafMessage_{now}.json");
 
         int c = limit * 10;
         List<LeafThread> masterList = new(c);
