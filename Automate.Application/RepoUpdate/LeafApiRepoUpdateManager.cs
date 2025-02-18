@@ -9,10 +9,10 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
     readonly ILeafApiService _service = service;
     readonly IReportService _reportService = report;
 
-    public Result Manage<TEntity>(string valueRepoCsv, string rawRepoJson, bool hardUpdate, bool forceUpdate) where TEntity : class, IConvert
+    public Result Manage<TEntity>(string valueRepoCsv, string rawRepo, bool hardUpdate, bool forceUpdate) where TEntity : class, IConvert
     {
         HttpClient client = _service.GetClient(factory);
-        Result<bool> _ = _service.ReposMatch(out List<IMessage> msgs, out List<TEntity> leaf, valueRepoCsv, rawRepoJson);
+        Result<bool> _ = _service.ReposMatch(out List<IMessage> msgs, out List<TEntity> leaf, valueRepoCsv, rawRepo);
         const string failure = "Call to the API failed";
 
         // Force Update
@@ -28,7 +28,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                 if (threadVals.IsSuccess)
                 {
                     var value = threadVals.Value;
-                    _service.Update(value, rawRepoJson);
+                    _service.Update(value, rawRepo);
 
                     List<IMessage> m = value.Select(v => v.Convert<TEntity, IMessage>()).ToList();
                     Result<FileInfo> file = _reportService.GenerateLeafMessages(m, valueRepoCsv);
@@ -53,7 +53,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                 if (threadVals.IsSuccess)
                 {
                     List<TEntity> value = threadVals.Value;
-                    _service.Update(leaf, value, rawRepoJson);
+                    _service.Update(leaf, value, rawRepo);
 
                     List<IMessage> mVal = value.Select(v => v.Convert<TEntity, IMessage>()).ToList();
                     List<IMessage> mLeaf = leaf.Select(v => v.Convert<TEntity, IMessage>()).ToList();
