@@ -7,7 +7,7 @@ namespace Automate.Infrastructure.JsonManipulationService;
 internal static class JsonService
 {
     internal static Result<List<T>> ReadFile<T>(FileInfo path) => ReadFile<T>(path.FullName);
-    internal static Result<List<T>> ReadFile<T>(string path)
+    private static Result<List<T>> ReadFile<T>(string path)
     {
         try
         {
@@ -19,7 +19,7 @@ internal static class JsonService
             return Result.Failure<List<T>>(ex.Message);
         }
     }
-    internal static Result WriteToFile<T>(FileInfo path, List<T> items) => WriteToFile<T>(path.FullName, items);
+    internal static Result WriteToFile<T>(FileInfo path, List<T> items) => WriteToFile(path.FullName, items);
     internal static Result WriteToFile<T>(string path, List<T> items)
     {
         try
