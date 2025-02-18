@@ -1,9 +1,6 @@
 ﻿using Automate.Domain.ValueObjects;
 using Automate.Translation.MessageTranslate;
 using Automate.Translation.PhoneNumTranslate;
-using Automate.Translation.Test.ValueObjectsTranslationsTests;
-using Automate.Translation.ValueObjectTranslate;
-using NSubstitute;
 
 namespace Automate.Translation.Test;
 
