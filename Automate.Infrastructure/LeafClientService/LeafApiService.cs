@@ -115,7 +115,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         try
         {
             // Retrieve contents
-            Result<List<TEntity>> result = JsonService.ReadFile<TEntity>(repo.FullName);
+            Result<List<TEntity>> result = JsonService.ReadFile<TEntity>(repo);
 
             // The train MUST stop here because this is very unexcpected behavior at this point
             // Plus, this point contains all of the necessary information that we need to see all the context;

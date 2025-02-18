@@ -9,7 +9,7 @@ namespace Automate.Infrastructure.JsonToCsvService;
 
 internal class JsonConversionService : IJsonConversionService
 {
-    public Result<List<T>> Extract<T>(FileInfo jsonFile) { return JsonService.ReadFile<T>(jsonFile.FullName); }
+    public Result<List<T>> Extract<T>(FileInfo jsonFile) => JsonService.ReadFile<T>(jsonFile);
 
     public Result<FileInfo> SaveToCsv<T, TMap>(Result<List<T>> entities, FileInfo csvFile) where TMap : ClassMap<T>
     {

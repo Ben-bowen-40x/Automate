@@ -41,11 +41,11 @@ public class MessageService(IDwhSettings settings) : IMessageService
     /// </summary>
     internal bool QueryDbCalls { get; set; }
     internal bool QueryDbCustomers { get; set; }
-    private DateTimeOffset _startDate = DateTimeOffset.Now - TimeSpan.FromDays(365);
+    //private DateTimeOffset _startDate = DateTimeOffset.Now - TimeSpan.FromDays(365);
 
     // Lists for Local Repo
-    private List<ICallRecord>? _callRecordsFromRepo;
-    private List<ICustomerSubscription>? _customerRecordsFromRepo;
+    //private List<ICallRecord>? _callRecordsFromRepo;
+    //private List<ICustomerSubscription>? _customerRecordsFromRepo;
     #endregion
 
     #region Implementation
@@ -74,7 +74,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
             ? Location(_callRecordRepo)
             : new(callRepo);
 
-        Result<List<CallRecordJsonReader>> result = JsonService.ReadFile<CallRecordJsonReader>(callLocation.FullName);
+        Result<List<CallRecordJsonReader>> result = JsonService.ReadFile<CallRecordJsonReader>(callLocation);
         List<CallRecordJsonReader> localCalls = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
@@ -92,7 +92,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
             ? Location(_customerRecordRepo)
             : new(customerRepo);
 
-        var result = JsonService.ReadFile<CustSubJsonReader>(customerLocation.FullName);
+        var result = JsonService.ReadFile<CustSubJsonReader>(customerLocation);
         List<CustSubJsonReader> localCustomers = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);

@@ -58,7 +58,8 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
     {
         try
         {
-            return JsonService.ReadFile<TEntity>(location);
+            FileInfo loc = new(location);
+            return JsonService.ReadFile<TEntity>(loc);
         }
         catch (Exception ex)
         {

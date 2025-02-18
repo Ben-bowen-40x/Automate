@@ -101,11 +101,11 @@ public class ReportMessageService : IReportMessageService
     public List<ICallRecord> GetCallRecords(List<long> msgNums, string callRepo)
     {
         // Prepare the repo location
-        FileInfo callLocation = callRepo == string.Empty || !File.Exists(callRepo)
+        FileInfo callLocation = string.IsNullOrWhiteSpace(callRepo) || !File.Exists(callRepo)
             ? Location(_callRecordRepo)
             : new(callRepo);
 
-        Result<List<CallRecordJsonReader>> result = JsonService.ReadFile<CallRecordJsonReader>(callLocation.FullName);
+        Result<List<CallRecordJsonReader>> result = JsonService.ReadFile<CallRecordJsonReader>(callLocation);
         List<CallRecordJsonReader> localCalls = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
