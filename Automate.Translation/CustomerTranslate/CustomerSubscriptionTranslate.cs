@@ -62,8 +62,8 @@ public static class CustomerSubscriptionTranslate
         // ConvertTimeSpan StartDates
         DateTime dateInter = entity.Date is null ? DateTime.MinValue : (DateTime)entity.Date;
         DateTime subStartInter = entity.SubscriptionStartDate is null ? DateTime.MinValue : (DateTime)entity.SubscriptionStartDate;
-        DateTimeOffset date = ConvertDateTimeOffset.ConvertLocalToDTOffset(dateInter, TimeZoneEnum.Pacific, out DateTimeOffset dateStartResult) ? dateStartResult : DateTimeOffset.MinValue;
-        DateTimeOffset subDate = ConvertDateTimeOffset.ConvertLocalToDTOffset(subStartInter, TimeZoneEnum.Pacific, out DateTimeOffset subDateResult) ? subDateResult : DateTimeOffset.MinValue;
+        DateTimeOffset date = ConvertDateTimeOffset.TryConvert(dateInter, TimeZoneEnum.Pacific, out DateTimeOffset dateStartResult) ? dateStartResult : DateTimeOffset.MinValue;
+        DateTimeOffset subDate = ConvertDateTimeOffset.TryConvert(subStartInter, TimeZoneEnum.Pacific, out DateTimeOffset subDateResult) ? subDateResult : DateTimeOffset.MinValue;
 
         // ConvertTimeSpan phone numbers
         PhoneNumber number1 = PhoneNumberTranslate.Translate(entity.Number1);
@@ -72,8 +72,8 @@ public static class CustomerSubscriptionTranslate
         // ConvertTimeSpan cancel date
         DateTime custCxlInter = entity.CustomerCancelDate is null ? DateTime.MinValue : (DateTime)entity.CustomerCancelDate;
         DateTime subCxlInter = entity.SubscriptionCancelDate is null ? DateTime.MinValue : (DateTime)entity.SubscriptionCancelDate;
-        DateTimeOffset custCxl = ConvertDateTimeOffset.ConvertLocalToDTOffset(custCxlInter, TimeZoneEnum.Pacific, out DateTimeOffset custResult) ? custResult : DateTimeOffset.MinValue;
-        DateTimeOffset subCxl = ConvertDateTimeOffset.ConvertLocalToDTOffset(subCxlInter, TimeZoneEnum.Pacific, out DateTimeOffset subResult) ? subResult : DateTimeOffset.MinValue;
+        DateTimeOffset custCxl = ConvertDateTimeOffset.TryConvert(custCxlInter, TimeZoneEnum.Pacific, out DateTimeOffset custResult) ? custResult : DateTimeOffset.MinValue;
+        DateTimeOffset subCxl = ConvertDateTimeOffset.TryConvert(subCxlInter, TimeZoneEnum.Pacific, out DateTimeOffset subResult) ? subResult : DateTimeOffset.MinValue;
 
         // ConvertTimeSpan boolean States
         bool custActive = ConvertPrimitive.ConvertBool(entity.CustomerActive);

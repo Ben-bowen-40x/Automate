@@ -21,7 +21,7 @@ public class ConvertDateTimeOffsetTests
     {
         DateTime newDate = MakeDateFromIntArray(dateInt[0], dateInt[1], dateInt[2], dateInt[3], dateInt[4], dateInt[5]);
         DateTimeOffset expected = GetExpectedDateTimeOffset(dateInt[6], newDate);
-        var actual = ConvertDateTimeOffset.ConvertLocalToDTOffset(newDate, zone);
+        var actual = ConvertDateTimeOffset.Convert(newDate, zone);
         Assert.Equal(expected, actual);
     }
 
@@ -44,7 +44,7 @@ public class ConvertDateTimeOffsetTests
     {
         DateTime newDate = MakeDateFromIntArray(dateInt[0], dateInt[1], dateInt[2], dateInt[3], dateInt[4], dateInt[5]);
         DateTimeOffset expectedDate = GetExpectedDateTimeOffset(dateInt[6], newDate);
-        var actual = ConvertDateTimeOffset.ConvertLocalToDTOffset(newDate, zone, out DateTimeOffset actualDate);
+        var actual = ConvertDateTimeOffset.TryConvert(newDate, zone, out DateTimeOffset actualDate);
         Assert.Equal(expectedDate, actualDate);
         Assert.Equal(expected, actual);
     }

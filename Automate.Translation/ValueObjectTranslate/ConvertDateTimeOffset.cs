@@ -3,7 +3,7 @@
 internal static class ConvertDateTimeOffset
 {
     #region Public
-    public static DateTimeOffset ConvertLocalToDTOffset(DateTime localTime, TimeZoneEnum zone)
+    public static DateTimeOffset Convert(DateTime localTime, TimeZoneEnum zone)
     {
         string timeZoneName = ConvertTimeZoneToTimeZoneId(zone);
 
@@ -12,7 +12,7 @@ internal static class ConvertDateTimeOffset
 
         return ConvertLocalToDTOffset(localTime, timeZone);
     }
-    public static bool ConvertLocalToDTOffset(DateTime localTime, TimeZoneEnum zone, out DateTimeOffset result)
+    public static bool TryConvert(DateTime localTime, TimeZoneEnum zone, out DateTimeOffset result)
     {
         // Find the TimeZoneInfo for the specified time zone name
         bool returnVal;
@@ -29,7 +29,7 @@ internal static class ConvertDateTimeOffset
     public static DateTimeOffset ConvertLocalToDTOffset(DateTime date, TimeSpan offset) => new(date, offset);
     #endregion
 
-    #region Internal
+    #region Private
     private static TimeZoneEnum StringToZone(string zoneStr) => zoneStr.ToLower().Split(" ")[0] switch
     {
         "pacific" => TimeZoneEnum.Pacific,
@@ -87,19 +87,15 @@ internal static class ConvertDateTimeOffset
 
         return DLSConversion(date, zone);
     }
-    private static TimeSpan ConvertToTimeSpan(TimeZoneEnum zone) =>
-        zone switch
-        {
-            TimeZoneEnum.Pacific => TimeSpan.FromHours(-8),
-            TimeZoneEnum.Mountain => TimeSpan.FromHours(-7),
-            TimeZoneEnum.Central => TimeSpan.FromHours(-6),
-            TimeZoneEnum.Eastern => TimeSpan.FromHours(-5),
-            TimeZoneEnum.Utc => TimeSpan.FromHours(0),
-            _ => throw new ArgumentException($"The {nameof(DLSConversion)} method only accepts the following time zones from the lower 48 states of the US: {nameof(TimeZoneEnum.Pacific)}, {nameof(TimeZoneEnum.Mountain)}, {nameof(TimeZoneEnum.Central)}, {nameof(TimeZoneEnum.Eastern)}, {nameof(TimeZoneEnum.Utc)}.")
-        };
-    #endregion
-
-    #region Private
+    private static TimeSpan ConvertToTimeSpan(TimeZoneEnum zone) => zone switch
+    {
+        TimeZoneEnum.Pacific => TimeSpan.FromHours(-8),
+        TimeZoneEnum.Mountain => TimeSpan.FromHours(-7),
+        TimeZoneEnum.Central => TimeSpan.FromHours(-6),
+        TimeZoneEnum.Eastern => TimeSpan.FromHours(-5),
+        TimeZoneEnum.Utc => TimeSpan.FromHours(0),
+        _ => throw new ArgumentException($"The {nameof(DLSConversion)} method only accepts the following time zones from the lower 48 states of the US: {nameof(TimeZoneEnum.Pacific)}, {nameof(TimeZoneEnum.Mountain)}, {nameof(TimeZoneEnum.Central)}, {nameof(TimeZoneEnum.Eastern)}, {nameof(TimeZoneEnum.Utc)}.")
+    };
     private static DateTime Sunday(int year, int month, int hour, int whichSunday)
     {
         if (whichSunday > 5)

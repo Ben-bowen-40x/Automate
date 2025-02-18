@@ -133,7 +133,7 @@ public static class ConvertPrimitive
     // Does not need tests because its components are already being tested
     internal static DateTimeOffset ConvertDateTimeOffset(DateTime startDate, TimeZoneEnum zone, DateDefault defaultDate)
     {
-        return ValueObjectTranslate.ConvertDateTimeOffset.ConvertLocalToDTOffset(startDate, zone, out DateTimeOffset resultOffset)
+        return ValueObjectTranslate.ConvertDateTimeOffset.TryConvert(startDate, zone, out DateTimeOffset resultOffset)
             ? resultOffset
             : defaultDate.DateTimeOffsetDefault();
     }
