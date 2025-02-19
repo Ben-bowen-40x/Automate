@@ -15,7 +15,7 @@ namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 /// <para>This implementation also requires that comparison calls be retrieved from a database call using raw sql from a file</para>
 /// <para>Note that source calls are always billable</para>
 /// </summary>
-internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService, ITypedDiscrepancyService
+public class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService, ITypedDiscrepancyService
 {
     readonly RawQuery _rawQuery = new(settings);
 
@@ -24,10 +24,10 @@ internal class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService, 
     const string _discrepancyDefaultFile = "Discrepancy.csv";
     const string _comparisonRepo = @"LocalRepo\Discrepancy.json";
 
-    static FileInfo? _defaultRepo;
-    public FileInfo DefaultRepo = _defaultRepo ??= new(Parent + _comparisonRepo);
-    static FileInfo? _defaultFile;
-    public FileInfo DefaultFile = _defaultFile ??= new(Parent + _discrepancyDefaultFile);
+    private static FileInfo? _defaultRepo;
+    public static FileInfo DefaultRepo = _defaultRepo ??= new(Parent + _comparisonRepo);
+    private static FileInfo? _defaultFile;
+    public static FileInfo DefaultFile = _defaultFile ??= new(Parent + _discrepancyDefaultFile);
 
     /*/ Deprecated
     //Getting the comparison calls by query
