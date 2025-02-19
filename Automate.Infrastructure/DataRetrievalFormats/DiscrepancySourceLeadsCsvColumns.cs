@@ -18,7 +18,7 @@ public class DiscrepancySourceLeadsCsvColumns : IDiscrepancyBillable, IConvert
     public string? Notes { get; set; }
     [Name("Source", "Market")]
     public string? Source { get; set; }
-    public IDiscrepancyCall Convert<IDiscrepancySourceLeadsCsvColumns, IDiscrepancyCall>()
+    public IDiscrepancyCall Convert<IDiscrepancyBillable, IDiscrepancyCall>()
     {
         return (IDiscrepancyCall)this.Translate();
     }
