@@ -1,9 +1,10 @@
-﻿using Automate.Translation.CallTranslate;
+﻿using Automate.Domain.ValueObjects;
+using Automate.Translation.CallTranslate;
 using Automate.Translation.DiscrepancyTranslate;
 
 namespace Automate.Infrastructure.Retrieval;
 
-internal class DiscrepancyJson : ICallDateTime
+public class DiscrepancyJson : ICallDateTime, IConvert
 {
     public NumberType? Number { get; set; }
     public bool Billable { get; set; }
@@ -11,4 +12,9 @@ internal class DiscrepancyJson : ICallDateTime
     public TimeSpan Duration { get; set; }
     public string? Source { get; set; }
     public string? Notes { get; set; }
+
+    public IDiscrepancyCall Convert<ICallDateTime, IDiscrepancyCall>()
+    {
+        return (IDiscrepancyCall)this.Translate();
+    }
 }
