@@ -95,6 +95,8 @@ public class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService, IT
         // Retrieve
         Result<List<T>> isCsv = CsvService.Parse<T>(fileLocation);
         Result<List<T>> isJson = JsonService.ReadFile<T>(fileLocation);
+        
+        // If csv reading is successful, return its value; if json reading is successful, return its value; Otherwise, produce a result in an error state
         Result<List<T>> result = isCsv.IsSuccess? isCsv.Value : 
             isJson.IsSuccess ? isJson.Value : Result.Failure<List<T>>($"This is the fileLocation: {fileLocation.FullName}\nThe following errors happened while trying to parse the given file as csv:\n\t{isCsv.Error}\nThe following error occurred while trying to parse the given file as json:\n\t{isJson.Error}");
 
