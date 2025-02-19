@@ -36,12 +36,13 @@ public class MatchDiscrepancyCalls
             IDiscrepancyCall match = BestMatch(billed, input);
 
             // Find out if there are billable calls with matching phone number before the lead
-            List<IDiscrepancyCall> billableBefore = phoneMatch
+            int billableBeforeCount = phoneMatch
                 .Where(m => m.Billable && DateTime.Compare(m.Date, billed.Date) < 0)
-                .ToList();
+                .ToList()
+                .Count;
 
             // Add the result
-            result.Add(new MatchingLeads(billed, match, billableBefore.Count > 0));
+            result.Add(new MatchingLeads(billed, match, billableBeforeCount > 0));
 
             LogIrregularities(location, billed, dayMatches, input);
         }
@@ -75,6 +76,14 @@ public class MatchDiscrepancyCalls
     #endregion
 
     #region Internal
+    /// <summary>
+    /// Uses the given <paramref name="billed"/> <see cref="IDiscrepancyCall"/> to find its best match in the given <see cref="IList{T}"/> of <see cref="IDiscrepancyCall"/>
+    /// <para>The <paramref name="phMatchesSameDay"/> is a list of calls that all occur on the same day as the <paramref name="billed"/></para>
+    /// <para></para>
+    /// </summary>
+    /// <param name="billed"></param>
+    /// <param name="phMatchesSameDay"></param>
+    /// <returns></returns>
     internal static IDiscrepancyCall BestMatch(IDiscrepancyCall billed, IList<IDiscrepancyCall> phMatchesSameDay)
     {
         if (phMatchesSameDay.Count == 0)
@@ -88,15 +97,17 @@ public class MatchDiscrepancyCalls
         // Check results for matches
         if (result.Count != 1)
         {
+            // It's possible that none of the given calls have a minute matching
             bool resultIsEmpty = result.Count == 0;
-            IDiscrepancyCall closest = resultIsEmpty ? phMatchesSameDay[0] : result[0];
-            IList<IDiscrepancyCall> iteration = resultIsEmpty ? phMatchesSameDay : result;
-            foreach (var r in iteration)
-            {
-                closest = ClosestDuration(billed, r, closest);
-            }
 
-            // Log which call was chosen, but only if there was a legitimate question as to whether the right one would be found and only if the correct record may not have been found
+            // Find the closest call to the given billed call
+            IDiscrepancyCall closest = resultIsEmpty ? phMatchesSameDay[0] : result[0];
+            IList<IDiscrepancyCall> listOfCalls = resultIsEmpty ? phMatchesSameDay : result;
+            foreach (var r in listOfCalls)
+                closest = ClosestDuration(billed, r, closest);
+
+            // Log which call was chosen, but only if there was a legitimate question as to whether the right one would be found
+            // and only if the correct record may not have been found
             bool foundCorrectCall =
                 billed.Number.Number != _defaultCall.Number.Number
                 && closest.Number.Number == billed.Number.Number
@@ -107,22 +118,31 @@ public class MatchDiscrepancyCalls
             result = [closest];
         }
 
-        // Return result
         return result[0];
     }
 
-    internal static bool MinuteMatches(IDiscrepancyCall lead, IDiscrepancyCall match) =>
-        match.Date + TimeSpan.FromMinutes(1) >= lead.Date && match.Date - TimeSpan.FromMinutes(1) <= lead.Date;
-    //match.Date.Minute + 1 == lead.Date.Minute
-    //|| match.Date.Minute - 1 == lead.Date.Minute
-    //|| match.Date.Minute == lead.Date.Minute;
+    /// <summary>
+    /// Iterate through each <paramref name="billed"/> to find the one that is within +-1 minute of the <paramref name="match"/>
+    /// </summary>
+    /// <param name="billed"></param>
+    /// <param name="match"></param>
+    /// <returns></returns>
+    internal static bool MinuteMatches(IDiscrepancyCall billed, IDiscrepancyCall match) =>
+        match.Date + TimeSpan.FromMinutes(1) >= billed.Date && match.Date - TimeSpan.FromMinutes(1) <= billed.Date;
 
+    /// <summary>
+    /// Returns the <see cref="IDiscrepancyCall"/> whose duration is most similar to the given <paramref name="lead"/>
+    /// </summary>
+    /// <param name="lead"></param>
+    /// <param name="match"></param>
+    /// <param name="compare"></param>
+    /// <returns></returns>
     internal static IDiscrepancyCall ClosestDuration(IDiscrepancyCall lead, IDiscrepancyCall match, IDiscrepancyCall compare) => lead.Duration switch
     {
         // These are the most likely
-        // Comparison is shorter , Match is longer
+        // Comparison is shorter, Match is longer
         var l when compare.Duration < l && l < match.Duration => match,
-        // Match is shorter , Comparison is longer
+        // Match is shorter, Comparison is longer
         var l when match.Duration < l && l < compare.Duration => compare,
         // Lead is first, then Match, then Comparison
         var l when l < match.Duration && l < compare.Duration && match.Duration < compare.Duration => match,
