@@ -19,8 +19,8 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         return success;
     }
 
-    public const int Days = 120;
-    public Result<FileInfo> Manage<T>(string reportDefault, string messages, string callsFile, string customersFile, string report, string truncatedReport, bool truncate, int days = Days) where T : IConvert
+    private const int _days = 120;
+    public Result<FileInfo> Manage<T>(string reportDefault, string messages, string callsFile, string customersFile, string report, string truncatedReport, bool truncate, int days = _days) where T : IConvert
     {
         List<QualifiedMessageRecord> reportRecords = Commond<T>(messages, callsFile, customersFile, report);
 
