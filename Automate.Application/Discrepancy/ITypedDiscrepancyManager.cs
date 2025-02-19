@@ -5,5 +5,5 @@ namespace Automate.Application.Discrepancy;
 
 public interface ITypedDiscrepancyManager
 {
-    Result<FileInfo> Manage<T>(FileInfo billedCalls, FileInfo comparisonCalls, string reportLoc) where T : IConvert;
+    Result<FileInfo> Manage<T, TComparison>(FileInfo billedCalls, FileInfo comparisonCalls, FileInfo reportLoc) where T : IConvert where TComparison : IConvert;
 }
