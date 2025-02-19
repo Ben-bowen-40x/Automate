@@ -14,7 +14,7 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         List<QualifiedMessageRecord> reportRecords = Commond<T>(messages, callsFile, customersFile, report);
 
         // Generate Report
-        var success = _reportService.GenerateMessageLeadReportAppend(reportDefault, reportRecords, report);
+        Result<FileInfo> success = _reportService.GenerateMessageLeadReportAppend(reportDefault, reportRecords, report);
 
         return success;
     }
