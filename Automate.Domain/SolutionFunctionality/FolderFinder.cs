@@ -34,7 +34,7 @@ public static class FolderFinder
     /// <param name="fileName"></param>
     /// <returns></returns>
     public static FileInfo GetLocalFile(string projectContainingLocalFolder, string localFolderToFind, string fileName) =>
-        new (GetLocalFolder(projectContainingLocalFolder, _relativePath, localFolderToFind).FullName + fileName);
+        new(GetLocalFolder(projectContainingLocalFolder, _relativePath, localFolderToFind).FullName + fileName);
     #endregion
 
     #region Private members
@@ -50,7 +50,7 @@ public static class FolderFinder
 
         // Iterate through the full path split by slashes
         // Find the first directory that contains the solution name
-        for (var i = pathSplit.Length - 1; i >= 0; --i)
+        for (int i = pathSplit.Length - 1; i >= 0; --i)
         {
             if (pathSplit[i].Equals(_solution))
             {
@@ -61,7 +61,7 @@ public static class FolderFinder
 
         // Use the index found above to rebuild the string path
         StringBuilder builder = new();
-        for (var i = 0; i < index + 1; ++i)
+        for (int i = 0; i < index + 1; ++i)
         {
             builder.Append(pathSplit[i]);
             builder.Append(slash);
@@ -90,9 +90,14 @@ public static class FolderFinder
             Directory.CreateDirectory(builder.ToString());
 
         string returnString = builder.ToString();
+        DirectoryInfo result = new(returnString);
         builder.Clear();
 
-        return new(returnString);
+        if (!result.Exists)
+        {
+            throw new Exception($"The following path could not be found: {returnString}\nThis resulted from the following relative path:\n\tProject: {projectContainingLocalFolder}\n\tPath in the project: {relativePath}\n\tFolder to be located: {localFolderToFind}");
+        }
+        return result;
     }
     #endregion
 }
