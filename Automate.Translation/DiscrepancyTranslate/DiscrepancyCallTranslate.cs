@@ -35,7 +35,10 @@ public static class DiscrepancyCallTranslate
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
         string notes = VerifyNotes(entity.Notes);
         DiscrepancySource source = VerifySource(entity.Source);
-        DiscrepancyCall result = new(number, entity.Billable, entity.Date, entity.Duration, source, notes);
+        bool billable = !string.IsNullOrWhiteSpace(entity.Billable) && !entity.Billable.Contains("non", StringComparison.InvariantCultureIgnoreCase);
+        TimeSpan duration = entity.Duration is not null ? TimeSpan.FromSeconds((double)entity.Duration!) : TimeSpan.FromSeconds(0);
+        DiscrepancyCall result = new(number, billable, entity.Date, duration, source, notes);
+
         return result;
     }
 
@@ -67,7 +70,7 @@ public static class DiscrepancyCallTranslate
     internal static DiscrepancySource VerifySource(string? source) => source switch
     {
         // This case must be first and it must execute, because this expression will test every condition, and if this condition is true, then the other conditions will throw
-        string s when string.IsNullOrWhiteSpace(s) => DiscrepancySource.Null, 
+        string s when string.IsNullOrWhiteSpace(s) => DiscrepancySource.Null,
         string s when s!.Contains(DiscrepancySource.Libacion.ToString(), StringComparison.InvariantCultureIgnoreCase) => DiscrepancySource.Libacion,
         string s when s!.Contains(DiscrepancySource.Guliagar.ToString(), StringComparison.InvariantCultureIgnoreCase) => DiscrepancySource.Guliagar,
         string s when s!.Contains(DiscrepancySource.ElkHall.ToString(), StringComparison.InvariantCultureIgnoreCase) => DiscrepancySource.ElkHall,

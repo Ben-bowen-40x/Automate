@@ -7,9 +7,9 @@ namespace Automate.Infrastructure.Retrieval;
 public class DiscrepancyJson : ICallDateTime, IConvert
 {
     public NumberType? Number { get; set; }
-    public bool Billable { get; set; }
+    public string? Billable { get; set; }
     public DateTime Date { get; set; }
-    public TimeSpan Duration { get; set; }
+    public int? Duration { get; set; }
     public string? Source { get; set; }
     public string? Notes { get; set; }
 
