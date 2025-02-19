@@ -8,7 +8,7 @@ using Automate.Translation.PhoneNumTranslate;
 namespace Automate.Infrastructure.AnalyzeDiscrepancyService;
 
 [Keyless]
-public class DiscrepancyCallDbEntity : ICallBoolStringDateTime, IPhoneNumberCompatible
+public class DiscrepancyCallDbEntity : ICallBoolStringDateTime, IPhoneNumberCompatible, IConvert
 {
     [Column("contact_number_clean")]
     public long NumberLong { get; set; }
@@ -24,4 +24,9 @@ public class DiscrepancyCallDbEntity : ICallBoolStringDateTime, IPhoneNumberComp
     public string? Source { get; set; }
     private PhoneNumber? _num;
     public PhoneNumber Number => _num ??= PhoneNumberTranslate.Translate(NumberLong);
+
+    public IDiscrepancyCall Convert<ICallBoolStringDateTime, IDiscrepancyCall>()
+    {
+        return (IDiscrepancyCall)this.Translate();
+    }
 }
