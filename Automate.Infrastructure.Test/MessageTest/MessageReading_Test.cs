@@ -14,6 +14,7 @@ public class MessageReading_Test
         Theory,
         // Skip = ""
         InlineData("LeasedMessagesTest.csv"),
+        InlineData("LeasedMessagesTest2.csv"),
     ]
     public void SpecialMessageType_CanBeReadFromTest(string file)
     {
