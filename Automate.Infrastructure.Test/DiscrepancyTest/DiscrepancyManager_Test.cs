@@ -2,6 +2,7 @@
 using Automate.Domain.SolutionFunctionality;
 using Automate.Infrastructure.AnalyzeDiscrepancyService;
 using Automate.Infrastructure.ReportingService;
+using Automate.Infrastructure.Retrieval;
 using Automate.Infrastructure.Test.TestConfigurations;
 using CSharpFunctionalExtensions;
 
@@ -35,12 +36,13 @@ public class DiscrepancyManager_Test
     {
         // Assemble
         TypedDiscrepancyManager manger = new(new DiscrepancyService(_settings), new ReportServiceSingleton());
-        FileInfo billedCalls = FolderFinder.GetLocalFile(nameof(Infrastructure),@".info\Discrepancy", "Discrepancy.csv");
+        FileInfo billedCalls = FolderFinder.GetLocalFile(nameof(Infrastructure), @".info\Discrepancy", "Discrepancy.csv");
         FileInfo comparison = FolderFinder.GetLocalFile(nameof(Infrastructure), @".info\Discrepancy\LocalRepo", "Discrepancy.json");
+        FileInfo report = FolderFinder.GetLocalFile(nameof(Infrastructure), @".info\Discrepancy\Test", "TestDiscrepancyReport.csv");
 
         // Act
-        Result<FileInfo> result = manger.Manage<DiscrepancySourceLeadsCsvColumns>(billedCalls, comparison,"");
-        
+        Result<FileInfo> result = manger.Manage<DiscrepancySourceLeadsCsvColumns, DiscrepancyJson>(billedCalls, comparison, report);
+
         // Assert
         Assert.True(result.IsSuccess);
     }
