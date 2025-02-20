@@ -3,6 +3,9 @@ using Automate.Domain.ValueObjects;
 
 namespace Automate.Domain.DiscrepancyAnalysis;
 
+/// <summary>
+/// No testing on these is necessary, as the essential components of the same are tested elsewhere in <see cref="NotesPatterns"/>
+/// </summary>
 public class AnalyzeDiscrepancy
 {
     #region Public
