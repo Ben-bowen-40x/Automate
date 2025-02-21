@@ -14,7 +14,7 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         List<QualifiedMessageRecord> reportRecords = Commond<T>(messages, callsFile, customersFile, report);
 
         // Generate Report
-        Result<FileInfo> success = _reportService.GenerateMessageLeadReportAppend(reportDefault, reportRecords, report);
+        Result<FileInfo> success = _reportService.GenerateMessageLeadReport(reportDefault, reportRecords, report);
 
         return success;
     }
@@ -30,7 +30,7 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
             DateTimeOffset past = DateTimeOffset.Now - TimeSpan.FromDays(days);
             List<QualifiedMessageRecord> truncatedRecords = reportRecords.Where(r => DateTimeOffset.Compare(past, r.Message.Date) <= 0).ToList();
             var result = _reportService.GenerateMessageLeadReport(reportDefault + "Truncated" + days, truncatedRecords, truncatedReport);
-            Result<FileInfo> appended = _reportService.GenerateMessageLeadReportAppend(reportDefault, reportRecords, report);
+            Result<FileInfo> appended = _reportService.GenerateMessageLeadReport(reportDefault, reportRecords, report);
             if (result.IsSuccess)
                 return result;
             if (result.IsFailure && appended.IsSuccess)
@@ -40,7 +40,7 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         }
 
         // Generate Report
-        Result<FileInfo> success = _reportService.GenerateMessageLeadReportAppend(reportDefault, reportRecords, report);
+        Result<FileInfo> success = _reportService.GenerateMessageLeadReport(reportDefault, reportRecords, report);
 
         return success;
     }
