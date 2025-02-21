@@ -27,7 +27,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                 Result<List<TEntity>> threadVals = threads.Result;
                 if (threadVals.IsSuccess)
                 {
-                    var value = threadVals.Value;
+                    List<TEntity> value = threadVals.Value;
                     _service.Update(value, rawRepo);
 
                     List<IMessage> m = value.Select(v => v.Convert<TEntity, IMessage>()).ToList();
@@ -70,7 +70,9 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
         }
         else
         {
-            List<IMessage> m = leaf.Select(l => l.Convert<TEntity, IMessage>()).ToList();
+            List<IMessage> m = leaf
+                .Select(l => l.Convert<TEntity, IMessage>())
+                .ToList();
             var result = _reportService.GenerateLeafMessages(m, valueRepoCsv);
             return result;
         }

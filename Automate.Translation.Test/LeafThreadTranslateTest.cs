@@ -20,19 +20,19 @@ public class LeafThreadTranslateTest
     public void GetFirstMessageTest(int[] dateInts)
     {
         // Assemble primitives
-        const string ingress = "ingress"; // Direction has to be ingress for the date to be accepted
+        const string i = "ingress"; // Direction has to be ingress for the date to be accepted
         DateTime thedate = new(dateInts[0], dateInts[1], dateInts[2], dateInts[3], dateInts[4], dateInts[5]);
 
         // Assemble types -- Msg arr
         Msg first = Substitute.For<Msg>();
         first.Creation = (thedate);
-        first.Direction = (ingress);
+        first.Direction = (i);
         Msg second = Substitute.For<Msg>();
         second.Creation = (thedate + TimeSpan.FromHours(48));
-        second.Direction = (ingress);
+        second.Direction = (i);
         Msg third = Substitute.For<Msg>();
         third.Creation = (thedate + TimeSpan.FromDays(4) + TimeSpan.FromHours(3) + TimeSpan.FromMinutes(4));
-        second.Direction = (ingress);
+        second.Direction = (i);
         List<Msg> mockArr = [first, second, third];
 
         // Act

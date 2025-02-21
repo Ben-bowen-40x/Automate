@@ -5,7 +5,7 @@ public interface ILeafThread : IConvert
 {
     public Msg[]? Messages { get; set; }
     public Prospect? Prospect { get; set; }
-    public DateTime Creation { get; set; }
+    public DateTimeOffset Creation { get; set; }
 }
 
 public class Prospect
@@ -14,8 +14,8 @@ public class Prospect
     public string? First_name { get; set; }
     public string? Last_name { get; set; }
     public string? Cellphone { get; set; }
-    public DateTime Creation { get; set; }
-    public DateTime Modification { get; set; }
+    public DateTimeOffset Creation { get; set; }
+    public DateTimeOffset Modification { get; set; }
     public bool HasConsented { get; set; }
     public bool Blocked { get; set; }
     public string? Customer { get; set; }
@@ -37,9 +37,9 @@ public class Msg
     public string? Direction { get; set; }
     public string? Type { get; set; }
     public bool Auto_reply { get; set; }
-    public DateTime Creation { get; set; }
-    public DateTime Modification { get; set; }
-    public DateTime Sent { get; set; }
+    public DateTimeOffset Creation { get; set; }
+    public DateTimeOffset Modification { get; set; }
+    public DateTimeOffset Sent { get; set; }
     public string? Profile { get; set; }
     public string? Thread { get; set; }
     public string? Source { get; set; }

@@ -14,10 +14,12 @@ public static class LeafThreadTranslate
         Msg first = GetFirstMessage(messages);
 
         // Extract the Phone Number
+        // Keep in mind that the messages all come from the same prospect,
+        // which means the phone number is in the prospect, not the messages
         PhoneNumber num = ExtractPhoneNumber(entity.Prospect);
 
         // Extract Date
-        DateTimeOffset dto = new(first.Creation);
+        DateTimeOffset dto = first.Creation;
 
         // Extract contents
         string contents = MessageInterfaceTranslate.VerifyContents(first.Message);
@@ -32,17 +34,22 @@ public static class LeafThreadTranslate
     }
 
     #region Internal -- For testing
-    internal static Msg GetFirstMessage(List<Msg> messages)
+    internal static Msg GetFirstMessage(IList<Msg> messages)
     {
-        Msg leastRecent = messages.Last();
-        foreach (var m in messages)
+        Msg leastRecent = messages[^1];
+        foreach (Msg msg in messages)
         {
-            if (DateTime.Compare(m.Creation, leastRecent.Creation) < 0 && m.Direction == "ingress")
-            {
-                leastRecent = m;
-            }
+            bool date = DateTimeOffset.Compare(msg.Creation, leastRecent.Creation) < 0;
+            bool type = Match(msg);
+            if (date && type)
+                leastRecent = msg;
         }
         return leastRecent;
+
+        static bool Match(Msg msg)
+        {
+            return msg.Direction is not null && msg.Direction.Equals("ingress", StringComparison.InvariantCultureIgnoreCase);
+        }
     }
 
     internal static List<Msg> VerifyMessages(Msg[]? msgs)
@@ -51,8 +58,8 @@ public static class LeafThreadTranslate
             ? [.. msgs!]
             : DefaultMsgArr();
     }
-    
-    internal static List<Msg> DefaultMsgArr() => [new() { Message = "This is an empty message", Auto_reply = false, Creation = DateTime.MinValue }];
+
+    internal static List<Msg> DefaultMsgArr() => [new() { Message = "This is an empty message", Auto_reply = false, Creation = DateTimeOffset.MaxValue }];
 
     internal static PhoneNumber ExtractPhoneNumber(Prospect? prospect)
     {

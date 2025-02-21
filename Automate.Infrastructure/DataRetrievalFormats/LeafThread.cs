@@ -12,8 +12,8 @@ public class LeafThread : ILeafThread
     public bool Spam { get; set; }
     public string? State { get; set; }
     public string[]? Channels { get; set; }
-    public DateTime Creation { get; set; }
-    public DateTime Modification { get; set; }
+    public DateTimeOffset Creation { get; set; }
+    public DateTimeOffset Modification { get; set; }
     public bool IsCallRequest { get; set; }
     public object[]? Tags { get; set; }
     public Prospect? Prospect { get; set; }

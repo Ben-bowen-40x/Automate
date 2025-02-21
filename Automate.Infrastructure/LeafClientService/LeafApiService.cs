@@ -155,7 +155,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
                 if (result.IsSuccess)
                 {
                     List<TEntity> value = result.Value;
-                    value.ForEach(v => master.Add(v));
+                    value.ForEach(master.Add);
                     resume = value.Count == limit;
                 }
                 else
@@ -215,8 +215,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
 
         try
         {
-            JsonService.WriteToFile(leafRepoLocation, leafRepo); 
-            return Result.Success();
+            return JsonService.WriteToFile(leafRepoLocation, leafRepo); 
         }
         catch (Exception ex)
         {
