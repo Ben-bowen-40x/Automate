@@ -23,10 +23,10 @@ public static class CustomerSubscriptionTranslate
         string sellers = VerifySeller(entity.Sellers);
 
         // Fix dates, which are in UTC already
-        DateTimeOffset customerStartDate = new(new DateTime(entity.CustomerStartDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
-        DateTimeOffset subStartDate = new(new DateTime(entity.SubStartDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
-        DateTimeOffset custCxlDate = new(new DateTime(entity.CustomerCancelDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
-        DateTimeOffset subCancelDate = new(new DateTime(entity.SubCancelDate.Ticks, DateTimeKind.Utc), TimeSpan.FromHours(0));
+        DateTimeOffset customerStartDate = entity.CustomerStartDate;
+        DateTimeOffset subStartDate = entity.SubStartDate;
+        DateTimeOffset custCxlDate = entity.CustomerCancelDate;
+        DateTimeOffset subCancelDate = entity.SubCancelDate;
 
         // Retrieve customer info from the data
         ICustomerSubscription customer = new CustomerSubscription(entity.CustomerID, entity.SubId, customerStartDate, subStartDate, number, number2, custCxlDate, subCancelDate, entity.SubIsActive, entity.SubIsActive, entity.CompletedInitial, entity.ContractValue, sellers);

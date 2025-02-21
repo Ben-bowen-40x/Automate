@@ -1,6 +1,4 @@
-﻿using Automate.Translation.MessageTranslate;
-
-namespace Automate.Translation.CustomerTranslate;
+﻿namespace Automate.Translation.CustomerTranslate;
 
 public interface ICustSubLongIdLongNumberStrSellers
 {
@@ -9,11 +7,11 @@ public interface ICustSubLongIdLongNumberStrSellers
     long CustomerID { get; set; }
     long SubId { get; set; }
     bool SubIsActive { get; set; }
-    DateTime CustomerStartDate { get; set; }
-    DateTime CustomerCancelDate { get; set; }
+    DateTimeOffset CustomerStartDate { get; set; }
+    DateTimeOffset CustomerCancelDate { get; set; }
     bool CompletedInitial { get; set; }
     double ContractValue { get; set; }
-    DateTime SubStartDate { get; set; }
-    DateTime SubCancelDate { get; set; }
+    DateTimeOffset SubStartDate { get; set; }
+    DateTimeOffset SubCancelDate { get; set; }
     string? Sellers { get; set; }
 }

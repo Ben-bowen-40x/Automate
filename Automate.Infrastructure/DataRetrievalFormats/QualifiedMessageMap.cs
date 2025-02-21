@@ -32,7 +32,7 @@ internal class QualifiedMessageMap : ClassMap<QualifiedMessageRecord>, IQualifie
         int index = 0;
         // Text Info
         Map(m => m.Message.Number.Number).Index(index++).Name(PhoneName);
-        Map(m => m.Message.Date.UtcDateTime).Index(index++).Name(DateName);
+        Map(m => m.Message.Date).Index(index++).Name(DateName);
         Map(m => m.Message.Contents).Index(index++).Name(ContentsName);
         Map(m => m.Message.Source).Index(index++).Name(SourceName);
 
@@ -45,15 +45,15 @@ internal class QualifiedMessageMap : ClassMap<QualifiedMessageRecord>, IQualifie
         //Map(m => m.Customer.Number.Number).Index(index++).Name(Phone1Name); // Ready for when we wish to add phone numbers to the reports
         //Map(m => m.Customer.Number2.Number).Index(index++).Name(Phone2Name); // Readon for when we wish to add phone numbers to the reports
         Map(m => m.Customer.SubscriptionActive).Index(index++).Name(SubscriptionActiveName);
-        Map(m => m.Customer.Date.UtcDateTime).Index(index++).Name(CustomerStartName);
-        Map(m => m.Customer.CustomerCancelDate.UtcDateTime).Index(index++).Name(CustomerCancelName);
+        Map(m => m.Customer.Date).Index(index++).Name(CustomerStartName);
+        Map(m => m.Customer.CustomerCancelDate).Index(index++).Name(CustomerCancelName);
 
         // Subscription info
         Map(m => m.Customer.SubscriptionId).Index(index++).Name(SubscriptionIdName);
         Map(m => m.Customer.InitialCompleted).Index(index++).Name(SubCompletedInitialName);
         Map(m => m.Customer.ContractValue).Index(index++).Name(ContractValueName);
-        Map(m => m.Customer.SubscriptionStartDate.UtcDateTime).Index(index++).Name(SubStartDateName);
-        Map(m => m.Customer.SubscriptionCancelDate.UtcDateTime).Index(index++).Name(SubCancelDateName);
+        Map(m => m.Customer.SubscriptionStartDate).Index(index++).Name(SubStartDateName);
+        Map(m => m.Customer.SubscriptionCancelDate).Index(index++).Name(SubCancelDateName);
         Map(m => m.Customer.Sellers).Index(index++).Name(SellersName);
     }
     [Name(PhoneName)]
@@ -81,10 +81,10 @@ internal class QualifiedMessageMap : ClassMap<QualifiedMessageRecord>, IQualifie
     public bool SubIsActive { get; set; }
 
     [Name(CustomerStartName)]
-    public DateTime CustomerStartDate { get; set; }
+    public DateTimeOffset CustomerStartDate { get; set; }
 
     [Name(CustomerCancelName)]
-    public DateTime CustomerCancelDate { get; set; }
+    public DateTimeOffset CustomerCancelDate { get; set; }
 
     [Name(SubscriptionIdName)]
     public long SubId { get; set; }
@@ -96,10 +96,10 @@ internal class QualifiedMessageMap : ClassMap<QualifiedMessageRecord>, IQualifie
     public double ContractValue { get; set; }
 
     [Name(SubStartDateName)]
-    public DateTime SubStartDate { get; set; }
+    public DateTimeOffset SubStartDate { get; set; }
 
     [Name(SubCancelDateName)]
-    public DateTime SubCancelDate { get; set; }
+    public DateTimeOffset SubCancelDate { get; set; }
 
     [Name(SellersName)]
     public string? Sellers { get; set; }
