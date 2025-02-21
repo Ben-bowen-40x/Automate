@@ -20,7 +20,33 @@ public class InfrastructureTestSettings : IInfrastructureTestSettings
     public string? GuliagarNameElement { get; set; }
     public string? GuliagarKey { get; set; }
     public string? GuliagarKeyElement { get; set; }
+    public string? GuliagarBase { get; set; }
     public string? GuliagarUrl { get; set; }
     public string? GuliagarUrl2 { get; set; }
     public string? GuliagarBunny { get; set; }
+
+    // IDwhTestSettings
+    public string? CallsConnectionString { get; set; }
+    public string? CustomersConnectionString { get; set; }
+    public string? ContactFormsConnectionString { get; set; }
+    public string? QueryDateFormat { get; set; }
+    public string? CallBasicNumerical { get; set; }
+    public string? CustomerBasicNumerical { get; set; }
+    public string? CallBasic { get; set; }
+    public string? CallBasicAddon { get; set; }
+    public string? CustomerBasic { get; set; }
+    public string? MessageCallQuery1 { get; set; }
+    public string? MessageCallQuery2 { get; set; }
+    public string? MessageCallQuery3 { get; set; }
+    public string? MessageCustQuery1 { get; set; }
+    public string? MessageCustQuery2 { get; set; }
+    public string? Discrepancy { get; set; }
+    public string? Discrepancy2 { get; set; }
+    public string? OriginalDiscrepancy { get; set; }
+    public string? ContactUpdate1 { get; set; }
+    public string? ContactUpdate2 { get; set; }
+    public string? ContactUpdate3 { get; set; }
+    public ulong ContactUpdateNumber { get; set; }
+    public string? WebFormQuery1 { get; set; }
+    public string? WebFormQuery2 { get; set; }
 }

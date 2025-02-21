@@ -1,19 +1,19 @@
 ﻿namespace Automate.Domain.ValueObjects;
 
-public class DiscrepancyMatch(MatchingLeads matchingLeads, CallBillability reasoning)
+public class DiscrepancyMatch(IMatchingLeads matchingLeads, CallBillability reasoning)
 {
-    public MatchingLeads MatchingLeads { get; set; } = matchingLeads;
+    public IMatchingLeads MatchingLeads { get; set; } = matchingLeads;
     public CallBillability Reasoning { get; set; } = reasoning;
-    private string? reason;
+    private string? _reason;
     public string ReasoningStr
     {
         get
         {
-            if (reason is null)
+            if (_reason is null)
             {
                 string localReason = Reasoning.ToString();
 
-                // Iterate through each character, except the first, and add a space before it
+                // Iterate through each character, except the first, and add a space before it if it's capitalized
                 List<char> chars = [];
                 for (var i = 0; i < localReason.Length; i++)
                 {
@@ -25,9 +25,9 @@ public class DiscrepancyMatch(MatchingLeads matchingLeads, CallBillability reaso
                 }
 
                 // Reassemble the item into a string
-                reason = string.Join("", chars);
+                _reason = string.Join(string.Empty, chars);
             }
-            return reason;
+            return _reason;
         }
     }
 

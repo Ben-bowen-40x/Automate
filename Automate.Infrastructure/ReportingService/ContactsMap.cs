@@ -1,9 +1,9 @@
-﻿using Automate.Application.UpdateContacts;
+﻿using Automate.Domain.ValueObjects;
 using CsvHelper.Configuration;
 
 namespace Automate.Infrastructure.ReportingService;
 
-public class ContactsMap : ClassMap<Contacts>
+public class ContactsMap : ClassMap<Contact>
 {
     public ContactsMap()
     {

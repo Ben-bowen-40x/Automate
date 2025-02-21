@@ -4,6 +4,6 @@ namespace Automate.Application.InfrastructureInterfaces;
 
 public interface IDiscrepancyService
 {
-    List<DiscrepancyCall> GetBillableSourceCalls(string fileLocation);
-    List<DiscrepancyCall> GetComparisonSourceCalls(string fileLocation);
+    List<IDiscrepancyCall> GetBillableSourceCalls(string fileLocation);
+    List<IDiscrepancyCall> GetComparisonSourceCalls(string fileLocation);
 }

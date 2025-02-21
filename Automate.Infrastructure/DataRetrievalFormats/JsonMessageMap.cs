@@ -1,0 +1,68 @@
+﻿using Automate.Translation.ContactFormTranslate;
+using CsvHelper.Configuration;
+using CsvHelper.Configuration.Attributes;
+using System.Text.Json.Serialization;
+
+namespace Automate.Infrastructure.DataRetrievalFormats;
+
+public class JsonMessageMap : ClassMap<JsonMessageMap>, IContactFormString
+{
+    public JsonMessageMap()
+    {
+        int index = 0;
+        Map(m => m.Date).Index(index++).Name(WebFormEntity.DateStr);
+        Map(m => m.FirstName).Index(index++).Name(WebFormEntity.FName);
+        Map(m => m.LastName).Index(index++).Name(WebFormEntity.LName);
+        Map(m => m.Phone).Index(index++).Name(WebFormEntity.Ph);
+        Map(m => m.Email).Index(index++).Name(WebFormEntity.Eml);
+        Map(m => m.Problem).Index(index++).Name(WebFormEntity.Prob);
+        Map(m => m.Branch).Index(index++).Name(WebFormEntity.Brnch);
+        Map(m => m.ReferringUrl).Index(index++).Name(WebFormEntity.Refer);
+        Map(m => m.FormPageUrl).Index(index++).Name(WebFormEntity.Form);
+        Map(m => m.CurrentCustomer).Index(index++).Name(WebFormEntity.Cust);
+        Map(m => m.Zip).Index(index++).Name(WebFormEntity.ZCode);
+    }
+    [JsonPropertyName(WebFormEntity.DateStr)]
+    [Name(WebFormEntity.DateStr)]
+    public string? Date { get; set; }
+
+    [JsonPropertyName(WebFormEntity.FName)]
+    [Name(WebFormEntity.FName)]
+    public string? FirstName { get; set; }
+
+    [JsonPropertyName(WebFormEntity.LName)]
+    [Name(WebFormEntity.LName)]
+    public string? LastName { get; set; }
+
+    [JsonPropertyName(WebFormEntity.Ph)]
+    [Name(WebFormEntity.Ph)]
+    public string? Phone { get; set; }
+
+    [JsonPropertyName(WebFormEntity.Eml)]
+    [Name(WebFormEntity.Eml)]
+    public string? Email { get; set; }
+
+    [JsonPropertyName(WebFormEntity.Prob)]
+    [Name(WebFormEntity.Prob)]
+    public string? Problem { get; set; }
+
+    [JsonPropertyName(WebFormEntity.Brnch)]
+    [Name(WebFormEntity.Brnch)]
+    public string? Branch { get; set; }
+
+    [JsonPropertyName(WebFormEntity.Refer)]
+    [Name(WebFormEntity.Refer)]
+    public string? ReferringUrl { get; set; }
+
+    [JsonPropertyName(WebFormEntity.Form)]
+    [Name(WebFormEntity.Form)]
+    public string? FormPageUrl { get; set; }
+
+    [JsonPropertyName(WebFormEntity.Cust)]
+    [Name(WebFormEntity.Cust)]
+    public string? CurrentCustomer { get; set; }
+
+    [JsonPropertyName(WebFormEntity.ZCode)]
+    [Name(WebFormEntity.ZCode)]
+    public string? Zip { get; set; }
+}

@@ -1,6 +1,6 @@
-﻿using Automate.Application.InfrastructureValueObjects;
-using Automate.Domain.ValueObjects;
-using Automate.Infrastructure.JsonService;
+﻿using Automate.Domain.ValueObjects;
+using Automate.Infrastructure.DataRetrievalFormats;
+using Automate.Infrastructure.JsonManipulationService;
 using Automate.Infrastructure.LeafClientService;
 using Automate.Infrastructure.Test.TestConfigurations;
 using CSharpFunctionalExtensions;
@@ -33,7 +33,7 @@ public class LeafClient_Test
         ,
         InlineData(0, 10)
     ]
-    public async void TestHttpClientAsync(int offset, int limit)
+    public async Task TestHttpClientAsync(int offset, int limit)
     {
         Uri url = Config.LeafThreadsEp($"?offset={offset}&limit={limit}")!;
         HttpResponseMessage response = await Client.GetAsync(url);
@@ -52,7 +52,7 @@ public class LeafClient_Test
         ,
         InlineData(0, 1)
     ]
-    public async void TestLeafApiService_GetAsync(int offset, int limit)
+    public async Task TestLeafApiService_GetAsync(int offset, int limit)
     {
         await LeafApiService.GetAsync<List<LeafThread>>(Url(offset, limit), Client);
     }
@@ -65,7 +65,7 @@ public class LeafClient_Test
         ,
         InlineData(0, 1)
     ]
-    public async void TestLeafApiService_GetStringAsync(int offset, int limit)
+    public async Task TestLeafApiService_GetStringAsync(int offset, int limit)
     {
         await LeafApiService.GetAsync(Url(offset, limit), Client);
     }
@@ -79,7 +79,7 @@ public class LeafClient_Test
         InlineData(0, 1000),
     //InlineData(5000,1000)
     ]
-    public async void TestLeaf_RefreshRepoFully_PaginationMakesSense(int offset, int limit)
+    public async Task TestLeaf_RefreshRepoFully_PaginationMakesSense(int offset, int limit)
     {
         bool resume = true;
         while (resume)
@@ -93,9 +93,9 @@ public class LeafClient_Test
             {
                 List<LeafThread> value = result.Value;
                 int ct = value.Count;
-                string repo = $"{Config.LeafApiTestRepo}/LeafTestRepo_{ct}_{now}.json";
+                FileInfo repo = new($"{Config.LeafApiTestRepo}/LeafTestRepo_{ct}_{now}.json");
                 List<IMessage> messages = value.Select(v => v.Convert<LeafThread, IMessage>()).ToList();
-                JsonRW.SerializeToFile(repo, messages);
+                JsonService.WriteToFile(repo, messages);
                 resume = ct == limit;
             }
             else
@@ -116,13 +116,13 @@ public class LeafClient_Test
         InlineData(0, 1000),
     //InlineData(5000,1000)
     ]
-    public async void TestLeaf_RefreshRepoFully_PaginationMakesSense_V2(int offset, int limit)
+    public async Task TestLeaf_RefreshRepoFully_PaginationMakesSense_V2(int offset, int limit)
     {
 
         // Create the new repo file name
         string now = DateTime.Now.ToString(DateTimeStrings.FileDateTimeFormat2);
-        string repoThread = $"{Config.LeafApiTestRepo}/LeafTestRepo_LeafThread_{now}.json";
-        string repoMessage = $"{Config.LeafApiTestRepo}/LeafTestRepo_LeafMessage_{now}.json";
+        FileInfo repoThread = new($"{Config.LeafApiTestRepo}/LeafTestRepo_LeafThread_{now}.json");
+        FileInfo repoMessage = new($"{Config.LeafApiTestRepo}/LeafTestRepo_LeafMessage_{now}.json");
 
         int c = limit * 10;
         List<LeafThread> masterList = new(c);
@@ -151,8 +151,8 @@ public class LeafClient_Test
             Thread.Sleep(10000);
         }
 
-        JsonRW.SerializeToFile(repoThread, masterList);
-        JsonRW.SerializeToFile(repoMessage, messageList);
+        JsonService.WriteToFile(repoThread, masterList);
+        JsonService.WriteToFile(repoMessage, messageList);
     }
     #endregion
 }

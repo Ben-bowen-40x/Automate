@@ -18,18 +18,21 @@ public class MessageQualifier
         // Prepare logger
         object sender = new MessageQualifier();
         string member = nameof(Qualify);
-        string name = GetFullName.GetMemberName(sender, member);
+        string nam = GetFullName.GetMemberName(sender, member);
+        string name = _test ? nam + " Test" : nam;
         StringLogger.AddLog($"Started {name}");
 
-        // Iterate through each message and qualify it based on the 
+        // Iterate through each message and qualify it
         List<QualifiedMessageRecord> result = new(msgs.Count);
+        LinkedList<ICallRecord> callList = new(callRecords);
+        LinkedList<ICustomerSubscription> customerList = new(customerRecords);
         foreach (IMessage msg in msgs)
         {
             // Match message with calls
-            List<ICallRecord> callMsgPhoneMatch = BillableCallsMatchingMsg(msg, callRecords);
+            List<ICallRecord> callMsgPhoneMatch = BillableCallsMatchingMsg(msg, callList);
 
             // Match message with customers to find a single matching customer record
-            List<ICustomerSubscription> matches = CustomerMatches(msg, customerRecords);
+            List<ICustomerSubscription> matches = CustomerMatches(msg, customerList);
             ICustomerSubscription match = CustomerAttributableToMsg(msg, matches, out bool couldBeBillable);
 
             // Use these lists to determine whether the message is billable and whether the message is a sales lead
@@ -55,9 +58,9 @@ public class MessageQualifier
     /// <para><see cref="ICustomerSubscription.Date"/> == <see cref="DateTimeOffset.MaxValue"/></para> 
     /// <para><see cref="ICustomerSubscription.SubscriptionStartDate"/> == <see cref="DateTimeOffset.MaxValue"/></para>
     /// </returns>
-    internal static ICustomerSubscription NullCustomer => nullCustomer;
+    internal static ICustomerSubscription NullCustomer => _nullCustomer ??= new CustomerSubscription(0, 0, DateTimeOffset.MaxValue, DateTimeOffset.MaxValue, new(0), new(0), DateTimeOffset.MinValue, DateTimeOffset.MinValue, false, false, false, 0.0, "");
 
-    private readonly static ICustomerSubscription nullCustomer = new CustomerSubscription(0, 0, DateTimeOffset.MaxValue, DateTimeOffset.MaxValue, new(0), new(0), DateTimeOffset.MinValue, DateTimeOffset.MinValue, false, false, false, 0.0, "");
+    private static ICustomerSubscription? _nullCustomer;
 
     /// <summary>
     /// <para>Note that this <see cref="internal"/> item should never be changed outside of test situations</para> 
@@ -65,7 +68,7 @@ public class MessageQualifier
     internal static bool _test = false;
     #endregion
 
-    #region Private
+    #region Can be tested
     /// <summary>
     /// <para>Finds one instance of type <see cref="ICallRecord"/> <paramref name="callRecords"/> such that it matches <paramref name="message"/></para>
     /// <para>  <see cref="ICallRecord.Billable"/> == <see cref="true"/> and <see cref="ICallRecord.Number"/> == <see cref="IMessage.Number"/></para>
@@ -75,22 +78,25 @@ public class MessageQualifier
     /// <returns>
     /// <see cref="List"/> of <see cref="ICallRecord"/>
     /// </returns>
-    private static List<ICallRecord> BillableCallsMatchingMsg(IMessage message, List<ICallRecord> callRecords)
+    internal static List<ICallRecord> BillableCallsMatchingMsg(IMessage message, LinkedList<ICallRecord> callRecords)
     {
         // Iterate through the calls to find calls whose phone number matches the message
-        List<ICallRecord> result = [];
-        for (var i = callRecords.Count - 1; i >= 0; i--)
+        List<ICallRecord> result = new(callRecords.Count / 2); // This excessively high capacity ensures we never have an operation of O(n) complexity
+        List<ICallRecord> remove = new(callRecords.Count / 2);
+        foreach (ICallRecord record in callRecords)
         {
-            // If the numbers match and the call is billable, Add the call to the result
-            if (callRecords[i].Number.Number == message.Number.Number)
+            // If the numbers match and the call is billable, save the index of the callrecord
+            if (record.Number.Number == message.Number.Number)
             {
-                if (callRecords[i].Billable)
-                    result.Add(callRecords[i]);
-
-                // In all cases where the numbers match, remove the call from the list of calls through which we're required to iterate
-                callRecords.RemoveAt(i);
+                if (record.Billable)
+                    result.Add(record);
+                remove.Add(record);
             }
         }
+
+        // In all cases where the numbers match, remove the call from the list of calls through which we're required to iterate
+        foreach (var r in remove)
+            callRecords.Remove(r);
 
         return result;
     }
@@ -103,47 +109,57 @@ public class MessageQualifier
     /// <returns>
     /// <see cref="List"/> of <see cref="ICustomerSubscription"/> that reasonably match the provided <paramref name="message"/>
     /// </returns>
-    private static List<ICustomerSubscription> CustomerMatches(IMessage message, List<ICustomerSubscription> customerRecords)
+    internal static List<ICustomerSubscription> CustomerMatches(IMessage message, LinkedList<ICustomerSubscription> customerRecords)
     {
         // Iterate through the customer list to create a list of customers relevant to this specific message
         // Customer number must match AND customer must have become a customer before the message
         // Iterate backward through the list so that records that have been found can be removed
-        List<ICustomerSubscription> matches = [];
-        for (int i = customerRecords.Count - 1; i >= 0; i--)
+        List<ICustomerSubscription> matches = new(customerRecords.Count / 2);
+        foreach (var record in customerRecords)
         {
-            bool numberMatches = customerRecords[i].Number.Number == message.Number.Number || customerRecords[i].Number2.Number == message.Number.Number;
-            if (numberMatches)
-            {
-                // Add the matching customer to the result
-                matches.Add(customerRecords[i]);
-
-                // Remove the number of customers that have to be iterated through later
-                customerRecords.RemoveAt(i);
-            }
+            bool numberMatches = record.Number.Number == message.Number.Number || record.Number2.Number == message.Number.Number;
+            if (numberMatches) // Add the matching customer to the result
+                matches.Add(record);
         }
+
+        // Remove the number of customers that have to be iterated through later
+        foreach (var m in matches)
+            customerRecords.Remove(m);
 
         return matches;
     }
 
     /// <summary>
-    /// This attempts to find the single member of <paramref name="matches"/> that best match <paramref name="message"/> by date
+    /// Uses the <see cref="DateTimeOffset"/> attributes of each of the <paramref name="matches"/> and the <paramref name="message"/> to determine which of the <paramref name="matches"/> can be reasonably attributed to the <paramref name="message"/> based on when each of the <paramref name="matches"/> occurred.
     /// </summary>
     /// <param name="message"></param>
     /// <param name="matches"></param>
     /// <param name="possibleBillable"></param>
-    /// <returns>
-    /// <see cref="ICustomerSubscription"/>
+    /// <returns> 
+    /// <para>Out parameter <paramref name="possibleBillable"/> evaluates to <see cref="false"/> when any <see cref="ICustomerSubscription"/> occurs before the <paramref name="message"/>, otherwise <paramref name="possibleBillable"/> evaluates to <see cref="true"/>.</para>
+    /// The returned <see cref="ICustomerSubscription"/> value can be described in the following way:
+    /// <para>If there is at least one <see cref="ICustomerSubscription"/> after the <paramref name="message"/>, return the <see cref="ICustomerSubscription"/> that occurred first chronologically after the <paramref name="message"/></para>
+    /// <para>If there is no <see cref="ICustomerSubscription"/> after the <paramref name="message"/>, return the most recent <see cref="ICustomerSubscription"/> before the <paramref name="message"/></para>
+    /// <para>If there are no customers, return <see cref="NullCustomer"/>, which is an <see cref="ICustomerSubscription"/> with all values set to a specific <see cref="default"/></para>
     /// </returns>
-    private static ICustomerSubscription CustomerAttributableToMsg(IMessage message, List<ICustomerSubscription> matches, out bool possibleBillable)
+    internal static ICustomerSubscription CustomerAttributableToMsg(IMessage message, List<ICustomerSubscription> matches, out bool possibleBillable)
     {
         // We will use a null customer for a default
-        var nullCustomer = NullCustomer;
+        ICustomerSubscription nullCustomer = NullCustomer;
 
         // Create lists that split the matching customer records into categories based on when they occurred in relation to the message
-        var dAfter_sAfter = matches.Where(m => m.Date > message.Date && m.SubscriptionStartDate > message.Date).ToList();
-        var dAfter_sBefore = matches.Where(m => m.Date > message.Date && m.SubscriptionStartDate < message.Date).ToList();
-        var dBefore_sAfter = matches.Where(m => m.Date < message.Date && m.SubscriptionStartDate > message.Date).ToList();
-        var dBefore_sBefore = matches.Where(m => m.Date < message.Date && m.SubscriptionStartDate < message.Date).ToList();
+        List<ICustomerSubscription> dAfter_sAfter = matches
+            .Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date > message.Date & c.SubscriptionStartDate > message.Date)
+            .ToList();
+        List<ICustomerSubscription> dAfter_sBefore = matches
+            .Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date > message.Date & c.SubscriptionStartDate < message.Date)
+            .ToList();
+        List<ICustomerSubscription> dBefore_sAfter = matches
+            .Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date < message.Date & c.SubscriptionStartDate > message.Date)
+            .ToList();
+        List<ICustomerSubscription> dBefore_sBefore = matches
+            .Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date < message.Date & c.SubscriptionStartDate < message.Date)
+            .ToList();
 
         // Try to find out whether any of the matches occurred before the message
         bool occurredBefore = dAfter_sBefore.Count > 0 || dBefore_sAfter.Count > 0 || dBefore_sBefore.Count > 0;
@@ -153,30 +169,24 @@ public class MessageQualifier
             possibleBillable = true;
 
         // If there are no customer matches, then return null customer
-        if (matches.Count == 0)
-            return (ICustomerSubscription)nullCustomer;
+        if (matches.Count == 0 || (dAfter_sAfter.Count == 0 && dAfter_sBefore.Count == 0 && dBefore_sAfter.Count == 0 && dBefore_sBefore.Count == 0))
+            return nullCustomer;
 
         // At this point, we only care about customers with both dates before the message if there are no customers with at least one date after the message
-        List<ICustomerSubscription> result = new(1);
+        ICustomerSubscription result;
         if (dAfter_sAfter.Count > 0 || dAfter_sBefore.Count > 0 || dBefore_sAfter.Count > 0)
-        {
-            var firstCustAfterTxt = GetFirstCustomerAfterMsg((ICustomerSubscription)nullCustomer, dAfter_sAfter, dAfter_sBefore, dBefore_sAfter);
-            result.Add(firstCustAfterTxt);
-        }
+            result = GetFirstCustomerAfterMsg(nullCustomer, dAfter_sAfter, dAfter_sBefore, dBefore_sAfter);
         else
-        {
-            var firstCustBeforeTxt = GetMostRecentCustomerBeforeMsg(dBefore_sBefore);
-            result.Add(firstCustBeforeTxt);
-        }
+            result = GetMostRecentCustomerBeforeMsg(dBefore_sBefore);
 
         // Return result
-        return result[0];
+        return result;
 
         // Local functions
         static ICustomerSubscription GetFirstCustomerAfterMsg(ICustomerSubscription nullCustomer, List<ICustomerSubscription> dAfter_sAfter, List<ICustomerSubscription> dAfter_sBefore, List<ICustomerSubscription> dBefore_sAfter)
         {
             // Find the message that occurred after the message first, by whichever date
-            var afterAfter = nullCustomer;
+            ICustomerSubscription afterAfter = nullCustomer;
             foreach (var record in dAfter_sAfter)
             {
                 // Booleans of all combinations.
@@ -191,7 +201,7 @@ public class MessageQualifier
             }
 
             // Now we must find the customer record with the Date soonest after the message
-            var afterBefore = nullCustomer;
+            ICustomerSubscription afterBefore = nullCustomer;
             foreach (var record in dAfter_sBefore)
             {
                 // In these combinations, we can't care about the subscription because it's before the message
@@ -203,7 +213,7 @@ public class MessageQualifier
             }
 
             // Now we must find the record with the subscription date soonest after the message
-            var beforeAfter = nullCustomer;
+            ICustomerSubscription beforeAfter = nullCustomer;
             foreach (var record in dBefore_sAfter)
             {
                 // In these combinations, we can't use the customer start date because it's before the message
@@ -255,7 +265,7 @@ public class MessageQualifier
         }
     }
 
-    private static bool DetermineBillability(IMessage message, List<ICallRecord> billedCalls, bool couldBeBillable, ICustomerSubscription match, out bool isSalesLead)
+    internal static bool DetermineBillability(IMessage message, List<ICallRecord> billedCalls, bool couldBeBillable, ICustomerSubscription match, out bool isSalesLead)
     {
         // Assume the message is billable, then prove that it is non billable
         bool billable = true;
@@ -304,7 +314,7 @@ public class MessageQualifier
                 match.Date < match.SubscriptionStartDate
                 ? call.Date < match.SubscriptionStartDate
                 : call.Date < match.Date;
-            bool subIsNotDefault = match.SubscriptionStartDate != NullCustomer.SubscriptionStartDate | match.SubscriptionId != NullCustomer.SubscriptionId;
+            bool subIsNotDefault = match.SubscriptionStartDate != NullCustomer.SubscriptionStartDate & match.SubscriptionId != NullCustomer.SubscriptionId;
 
             if (messageIsAfterCust && callIsAfterTxt && callIsBeforeCust && subIsNotDefault)
                 StringLogger.AddLog("Message occurred before the call, and the call occurred before the customer start date or the subscription start date. This can cause an odd reporting situation because both the message and the call are attributable to either the new customer or new subscription. So, which gets the credit, the call, the message, or both?",

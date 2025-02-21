@@ -1,4 +1,6 @@
-﻿namespace Automate.Application.UpdateContacts;
+﻿using Automate.Domain.ValueObjects;
+
+namespace Automate.Application.UpdateContacts;
 
 public interface IContactUpdateManager
 {

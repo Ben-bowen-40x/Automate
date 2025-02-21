@@ -26,20 +26,20 @@ internal class DiscrepancyAnalysisVerb : IVerb
         string parent = PathManipulation.RetrieveParentDir(ReportLocation);
 
         // Verify command line input
-        VerifyUserInput(parent, out string fileName, out string report, out string query);
+        VerifyUserInput(parent, out string fileName, out string report, out string comparisonLoc);
 
         // Inform user of the input
-        InformUser(fileName, report, query);
+        InformUser(fileName, report, comparisonLoc);
 
         // Prepare the result
         var callManager = service.GetRequiredService<IDiscrepancyManager>();
-        Result<FileInfo> result = callManager.ManageDiscrepancyAnalysis(fileName, report, query);
+        Result<FileInfo> result = callManager.ManageDiscrepancyAnalysis(fileName, report, comparisonLoc);
 
         // Name log 
         StringLogger.NameLog(DateTime.Now, AnalyzeDiscrepancy);
 
         // Return code 
-        return DetermineReturnCode(fileName, report, query, result);
+        return DetermineReturnCode(fileName, report, comparisonLoc, result);
     }
 
     #region Private Members

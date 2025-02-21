@@ -6,13 +6,8 @@ public enum RepoType
     Calls,
     Customers,
     ContactForms,
-}
-
-internal enum RepoFileTypes
-{
-    Csv,
-    Json,
-    Default
+    ContactUpdate,
+    Discrepancy,
 }
 
 internal class UpdateRepoHelper
@@ -22,7 +17,9 @@ internal class UpdateRepoHelper
         Leaf,
         Calls,
         Customers,
-        ContactForms
+        ContactForms,
+        ContactUpdate,
+        Discrepancy,
         """;
 
 }

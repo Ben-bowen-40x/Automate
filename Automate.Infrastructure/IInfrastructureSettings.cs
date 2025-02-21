@@ -6,4 +6,6 @@ namespace Automate.Infrastructure;
 
 public interface IInfrastructureSettings : IDwhSettings, ILeafApiSettings, ISharpQuerySettings
 {
+    string? Cookie { get; set; }
+    string? NoCookie { get; set; }
 }

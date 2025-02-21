@@ -10,16 +10,19 @@ public partial class PhoneNumber
         return $"Phone Number: {Number}";
     }
 
-    public bool IsDefault { get; private set; }
+    private bool? _isDefault;
+    public bool IsDefault
+    {
+        get { return _isDefault ??= Number == Default || Number == 1111111111 || Number > 9999999999; }
+    }
 
-    public static long Default => 0;
+    public static readonly long Default = 0;
 
-    public long Number { get; set; }
+    public long Number { get; }
 
     public PhoneNumber(PhoneNumber number)
     {
         Number = number.Number;
-        IsDefault = number.IsDefault;
     }
 
     public PhoneNumber(long number)
@@ -27,80 +30,49 @@ public partial class PhoneNumber
         Number = ValidateNumericalInput(number);
     }
 
-    public PhoneNumber(string number)
+    public PhoneNumber(string? number)
     {
-        Number = NullCheck(number);
+        Number = ValidateStringInput(number);
     }
 
     public static bool TryParse(string? number, out PhoneNumber result)
     {
-        if (number is null)
-        {
-            result = new(0);
-            return false;
-        }
         try
         {
-            result = new(number!);
+            result = new(number);
             return true;
         }
-        catch
-        {
-            result = new(0);
-            return false;
-        }
+        catch { }
+        result = new(Default);
+        return false;
     }
     #endregion
 
     #region Internal
-    internal long NullCheck(string number)
+    long ValidateStringInput(string? number)
     {
-        if (number is null || number == string.Empty)
+        if (string.IsNullOrWhiteSpace(number))
             return Default;
-        else
-            return ValidateStringInput(number);
+        string clean = NonDigitChar().Replace(number, string.Empty);
+        long result = StrToLong(clean);
+        return result;
     }
 
-    internal long ValidateStringInput(string number)
+    long ValidateNumericalInput(long number)
     {
-        // Place intermediate variables here for debugging purposes
-        if (long.TryParse(number, out long conversion))
-        {
-            long result = ValidateNumericalInput(conversion);
-            return result;
-        }
-        else
-        {
-            string split = RemoveNondigitChars(number);
-            long noCountry = StrToLong(split);
-            long result = ValidateNumericalInput(noCountry);
-            return result;
-        }
+        return StrToLong(number.ToString());
     }
 
-    internal static string RemoveNondigitChars(string number)
+    static readonly char[] _unacceptable = { '0', '1' };
+    static long StrToLong(string number)
     {
-        string split = string.Join(string.Empty, NonDigitChar().Split(number));
-        return split;
-    }
+        bool small = number.Length < 10;
+        if (small) return Default;
 
-    internal long ValidateNumericalInput(long number)
-    {
-        IsDefault = number == 0 || number == 1111111111;
-        return number switch
-        {
-            // Remove the country code, if necessary
-            long n when $"{n}".Length > 10 => StrToLong($"{number}"),
-            _ => number
-        };
-    }
+        bool unacceptable = _unacceptable.Contains(number[^10]);
+        bool parses = long.TryParse(number[^10..], out long result);
 
-    internal static long StrToLong(string number)
-    {
-        if (number.Length < 10)
-            return Default;
-        if (long.TryParse(number[^10..], out long result))
-            return result;
+        if (parses && !unacceptable) return result;
         return Default;
     }
 

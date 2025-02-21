@@ -1,7 +1,7 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Application.InfrastructureValueObjects;
 using Automate.Infrastructure.DatabaseService;
-using Automate.Infrastructure.JsonService;
+using Automate.Infrastructure.JsonManipulationService;
 using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.DwhRepoUpdateService;
@@ -21,21 +21,22 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
             _ => _settings.CallsConnectionString!
         };
 
-    public string GetQuery(DwhQueryType type)
+    public IQuery GetQuery(DwhQueryType type)
         => type switch
         {
             DwhQueryType.AllCalls => _rawQuery.CallBasicAddon,
             DwhQueryType.AllCustomers => _rawQuery.CustomerBasic,
             DwhQueryType.ContactForms => _rawQuery.WebFormQuery1,
+            DwhQueryType.Discrepancy => _rawQuery.DiscrepancyQuery(),
             _ => _rawQuery.CustomerBasic
         };
 
-    public Result<List<TEntity>> GetEntitiesList<TEntity>(string connectionString, string query) where TEntity : class, IPhoneNumberCompatible
+    public Result<List<TEntity>> GetEntitiesList<TEntity>(string connectionString, IQuery query) where TEntity : class, IPhoneNumberCompatible
     {
         try
         {
             DwhContext<TEntity> context = new(connectionString);
-            Task<IEnumerable<TEntity>> values = DwhContextHelpers.GetItemsFromRawAsync(context, query);
+            Task<IEnumerable<TEntity>> values = DwhContextHelpers.GetItemsFromRawAsync(context, query.QueryString);
             if (!values.IsFaulted)
                 return values.Result.ToList();
             return Result.Failure<List<TEntity>>($"Failed to get values from Dwh. Fault/Exception message: {values.Exception.Message}");
@@ -46,10 +47,10 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
         }
     }
 
-    public Result<List<TEntity>> GetEntitiesParition<TEntity>(DwhQueryType type, List<TEntity> existing, string connectionString, string query) where TEntity : class, IPhoneNumberCompatible
+    public Result<List<TEntity>> GetEntitiesParition<TEntity>(DwhQueryType type, List<TEntity> existing, string connectionString, IQuery query) where TEntity : class, IPhoneNumberCompatible
     {
         // Filter the connection string
-        string newQuery = _rawQuery.Filter(type, query, existing.Select(e => e.Number.Number).ToList());
+        IQuery newQuery = _rawQuery.Filter(type, query, existing.Select(e => e.Number.Number).ToList());
         return GetEntitiesList<TEntity>(connectionString, newQuery);
     }
 
@@ -57,7 +58,8 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
     {
         try
         {
-            return JsonRW.DeserializeFile<TEntity>(location);
+            FileInfo loc = new(location);
+            return JsonService.ReadFile<TEntity>(loc);
         }
         catch (Exception ex)
         {
@@ -82,8 +84,8 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
             if (!File.Exists(repoLocation))
                 File.WriteAllText(repoLocation, string.Empty);
 
-            JsonRW.SerializeToFile(repoLocation, list);
-            return Result.Success();
+            FileInfo repo = new(repoLocation);
+            return JsonService.WriteToFile(repo, list);
         }
         catch (Exception ex)
         {

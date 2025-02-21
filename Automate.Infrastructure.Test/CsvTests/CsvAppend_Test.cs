@@ -1,4 +1,4 @@
-﻿using Automate.Infrastructure.CsvService;
+﻿using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.Test.TestConfigurations;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
@@ -9,9 +9,11 @@ public class CsvAppend_Test
 {
     public CsvAppend_Test()
     {
-        TestFileLocation1 = new InfraTestConfiguration().TestSettings.CsvAppendTestFile!;
+        TestFileLocation1 = new(new InfraTestConfiguration().TestSettings.CsvAppendTestFile!);
     }
-    public string TestFileLocation1 { get; }
+    public FileInfo TestFileLocation1 { get; }
+
+    #region CsvAppendDoesNotHaveStackOverflowIssues
     [
         Theory,
         InlineData("This is column 1", "This is Colmn 2", "This is column 3"),
@@ -29,12 +31,12 @@ public class CsvAppend_Test
     public void CsvAppendDoesNotHaveStackOverflowIssues(string contentToAppend1, string contentToAppend2, string contentToAppend3)
     {
         // If the file doesn't exist, create it 
-        if (!File.Exists(TestFileLocation1))
+        if (!File.Exists(TestFileLocation1.FullName))
         {
-            File.WriteAllText(TestFileLocation1, $"{CsvAppendTestColumns.c1},{CsvAppendTestColumns.c2},{CsvAppendTestColumns.c3}\n");
+            File.WriteAllText(TestFileLocation1.FullName, $"{CsvAppendTestColumns.c1},{CsvAppendTestColumns.c2},{CsvAppendTestColumns.c3}\n");
         }
 
-        // Convert input to objects
+        // Translate input to objects
         List<CsvAppendTestColumns> unparsed =
         [
             new()
@@ -46,9 +48,11 @@ public class CsvAppend_Test
         ];
 
         // Append to the file
-        CsvRW.AppendToCsv<CsvAppendTestColumns, CsvAppend_TestMap>(TestFileLocation1, unparsed);
+        CsvService.Append<CsvAppendTestColumns, CsvAppend_TestMap>(TestFileLocation1, unparsed);
     }
+    #endregion
 
+    #region CsvAppendDoesNotHaveStackOverflowIssues_IOErrortest
     [
             Theory,
             InlineData("This is column 1", "This is Column 2", "This is column 3"),
@@ -62,16 +66,16 @@ public class CsvAppend_Test
             InlineData("This is column 1", "his is Column 2", "This is column 3"),
             InlineData("This is column 1", "Ths is Column 2", "This is column 3"),
             InlineData("This is column 1", "Thisis Column 2", "This is column 3"),
-        ]
+    ]
     public void CsvAppendDoesNotHaveStackOverflowIssues_IOErrortest(string contentToAppend1, string contentToAppend2, string contentToAppend3)
     {
         // If the file doesn't exist, create it 
-        if (!File.Exists(TestFileLocation1))
+        if (!File.Exists(TestFileLocation1.FullName))
         {
-            File.WriteAllText(TestFileLocation1, $"{CsvAppendTestColumns.c1},{CsvAppendTestColumns.c2},{CsvAppendTestColumns.c3}\n");
+            File.WriteAllText(TestFileLocation1.FullName, $"{CsvAppendTestColumns.c1},{CsvAppendTestColumns.c2},{CsvAppendTestColumns.c3}\n");
         }
 
-        // Convert input to objects
+        // Translate input to objects
         List<CsvAppendTestColumns> unparsed =
         [
             new()
@@ -82,13 +86,13 @@ public class CsvAppend_Test
             }
         ];
         // Read from the file
-        var contents = CsvRW.ParseFromCsv<CsvAppendTestColumns>(TestFileLocation1);
+        var contents = CsvService.Parse<CsvAppendTestColumns>(TestFileLocation1);
 
         // Append to the file
-        CsvRW.AppendToCsv<CsvAppendTestColumns, CsvAppend_TestMap>(TestFileLocation1, unparsed);
+        CsvService.Append<CsvAppendTestColumns, CsvAppend_TestMap>(TestFileLocation1, unparsed);
     }
+    #endregion
 }
-
 
 #region Necessary objects -- Do Not separate into another file, please
 internal class CsvAppend_TestMap : ClassMap<CsvAppendTestColumns>

@@ -9,7 +9,6 @@
 **/.info**/
 
 #m
-/Automate.Cli/Verbs/VerbHelper/MessageCsvType.cs
 /Automate.Domain/ValueObjects/PatternHelper.cs
 
 #o
