@@ -4,27 +4,30 @@ namespace Automate.Infrastructure.DatabaseService;
 public class RawQuery(IRawQuerySettings settings)
 {
     readonly IRawQuerySettings _s = settings;
-    private string QueryDateFormat => _s.QueryDateFormat!;
 
     #region Basic Queries
     // Public Basic
-    public string Filter(DwhQueryType type, string query, List<long> values)
+    /// <summary>
+    /// Filters the given <paramref name="query"/> based on its <paramref name="type"/> using <see cref="long"/> <paramref name="values"/>
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="query"></param>
+    /// <param name="values"></param>
+    /// <returns></returns>
+    public IQuery Filter(DwhQueryType type, IQuery query, List<long> values)
     {
         string vals = string.Join(",", values);
-        return type switch
+        string where = type switch
         {
-            DwhQueryType.AllCalls => $"{query} and {CallBasicNumerical} in ({vals})",
-            DwhQueryType.AllCustomers => $"{query} and {CustomerBasicNumerical} in ({vals})",
-            _ => query
+            DwhQueryType.AllCalls => $"{_s.CallBasicNumerical!} in ({vals})",
+            DwhQueryType.AllCustomers => $"{_s.CustomerBasicNumerical!} in ({vals})",
+            _ => throw new Exception($"The type of query has not been set\nType: {type}\nQuery:\n{query}")
         };
+        query.AppendWhere(where);
+        return query;
     }
-    public string CallBasicAddon => CallBasic + _s.CallBasicAddon;
-    public string CustomerBasic => _s.CustomerBasic!;
-
-    // Private Basic
-    private string CallBasicNumerical => _s.CallBasicNumerical!;
-    private string CustomerBasicNumerical => _s.CustomerBasicNumerical!;
-    private string CallBasic => _s.CallBasic!;
+    public IQuery CallBasicAddon => new Query(DwhQueryType.AllCalls, _s.CallBasic! + _s.CallBasicAddon);
+    public IQuery CustomerBasic => new Query(DwhQueryType.AllCustomers, _s.CustomerBasic!);
 
     #endregion
 
@@ -37,7 +40,8 @@ public class RawQuery(IRawQuerySettings settings)
     public string MessageCustomerQuery(List<long> numbers)
     {
         string nums = string.Join(',', numbers);
-        return $"{MessageCustSubQuery} {_messageCustSubQuery2} ({nums}) {_messageCustSubQuery3};";
+        string result = $"{CustomerBasic.QueryString} {_s.MessageCustQuery1!} ({nums}) {_s.MessageCustQuery2!};";
+        return result;
     }
 
     /// <summary>
@@ -45,7 +49,7 @@ public class RawQuery(IRawQuerySettings settings)
     /// </summary>
     public string MessageCustomerQuery()
     {
-        return MessageCustSubQuery;
+        return CustomerBasic.QueryString;
     }
 
     public readonly TimeSpan NinetyDays = TimeSpan.FromDays(90);
@@ -58,9 +62,9 @@ public class RawQuery(IRawQuerySettings settings)
     public string MessageCallQuery(DateTimeOffset startDate, List<long> numbers)
     {
         var threeMonths = startDate - NinetyDays;
-        var date = threeMonths.Date.ToString(QueryDateFormat);
+        var date = threeMonths.Date.ToString(_s.QueryDateFormat!);
         string nums = string.Join(',', numbers);
-        string query = $"{MessageCallQuery1} '{date}' {MessageCallQuery2} {MessageCallQuery3} ({nums});";
+        string query = $"{_s.CallBasic! + _s.MessageCallQuery1!} '{date}' {_s.MessageCallQuery2!} {_s.MessageCallQuery3!} ({nums});";
         return query;
     }
 
@@ -69,41 +73,28 @@ public class RawQuery(IRawQuerySettings settings)
     /// </summary>
     /// <param name="startDate"></param>
     /// <returns></returns>
-    public string MessageCallQuery(DateTimeOffset startDate)
+    public IQuery MessageCallQuery(DateTimeOffset startDate)
     {
         var threeMonths = startDate - NinetyDays;
-        var date = threeMonths.Date.ToString(QueryDateFormat);
-        string query = $"{MessageCallQuery1} '{date}' {MessageCallQuery2};";
+        var date = threeMonths.Date.ToString(_s.QueryDateFormat!);
+        string str = $"{_s.CallBasic! + _s.MessageCallQuery1!} '{date}' {_s.MessageCallQuery2!};";
+        IQuery query = new Query(DwhQueryType.MessageCall, str);
         return query;
     }
-
-    // Private Call Query Members
-    private string MessageCallQuery1 => CallBasic + _s.MessageCallQuery1!;
-
-    private string MessageCallQuery2 => _s.MessageCallQuery2!;
-
-    private string MessageCallQuery3 => _s.MessageCallQuery3!;
-
-    // Private Customer Query Members
-    private string MessageCustSubQuery => CustomerBasic;
-
-    private string _messageCustSubQuery2 => _s.MessageCustQuery2!;
-    private string _messageCustSubQuery3 => _s.MessageCustQuery3!;
-
     #endregion
 
     #region Discrepancy Query
-    // Public Discrepancy Query Members
     /// <summary>
     /// Returns the Discrepancy Query as a raw string
     /// </summary>
     /// <returns>
     /// <para><see cref="string"/> that is the raw sql query</para>
     /// </returns>
-    public string DiscrepancyQuery()
+    public IQuery DiscrepancyQuery(int daysBeforeNow = 365)
     {
-        return DiscrepancyQuery(new DateTime(2023, 10, 1));
+        return DiscrepancyQuery(DateTime.Now - TimeSpan.FromDays(daysBeforeNow));
     }
+    private IQuery Discrepancy => new Query(DwhQueryType.Discrepancy, _s.Discrepancy!);
 
     /// <summary>
     /// Accepts a <see cref="DateTime"/> <paramref name="start"/>, which defines when the query should pull records, and <paramref name="end"/>, which is the most recent date
@@ -111,12 +102,15 @@ public class RawQuery(IRawQuerySettings settings)
     /// <param name="start"></param>
     /// <param name="end"></param>
     /// <returns></returns>
-    public string DiscrepancyQuery(DateTime start, DateTime end)
+    public IQuery DiscrepancyQuery(DateTime start, DateTime end)
     {
-        string startString = start.ToString(QueryDateFormat);
-        string endString = end.ToString(QueryDateFormat);
-        string result = $"{Discrepancy} '{startString}' {and} '{endString}' {Discrepancy2}"; // Keep this here for debugging purposes
-        return result;
+        string startString = start.ToString(_s.QueryDateFormat!);
+        string endString = end.ToString(_s.QueryDateFormat!);
+
+        IQuery query = Discrepancy;
+        string str = $"{_s.Discrepancy2!} '{startString}' AND '{endString}'"; // Keep this here for debugging purposes
+        query.AppendWhere(str);
+        return query;
     }
 
     /// <summary>
@@ -124,20 +118,10 @@ public class RawQuery(IRawQuerySettings settings)
     /// </summary>
     /// <param name="start"></param>
     /// <returns></returns>
-    public string DiscrepancyQuery(DateTime start)
+    public IQuery DiscrepancyQuery(DateTime start)
     {
         return DiscrepancyQuery(start, DateTime.Now);
     }
-
-    // Private Discrepancy Query Members
-    private string Discrepancy => _s.Discrepancy!;
-
-    private const string and = "AND";
-
-    private string Discrepancy2 => _s.Discrepancy2!;
-
-    private string OriginalDiscrepancy => _s.OriginalDiscrepancy!;
-
     #endregion
 
     #region Contact Update Query
@@ -149,21 +133,16 @@ public class RawQuery(IRawQuerySettings settings)
     /// <returns></returns>
     public string ContactQuery(uint number)
     {
-        ulong num = ContactUpdateNumber * number;
-        ulong num2 = ContactUpdateNumber + num;
-        return ContactUpdate + $" {num} " + ContactUpdate2 + $" {num2} " + ContactUpdate3;
+        ulong num = _s.ContactUpdateNumber * number;
+        ulong num2 = _s.ContactUpdateNumber + num;
+        string result = _s.ContactUpdate1! + $" {num} " + _s.ContactUpdate2! + $" {num2} " + _s.ContactUpdate3!;
+        return result;
     }
 
-    // Private Contact Query members
-    private string ContactUpdate => _s.ContactUpdate1!;
-
-    private string ContactUpdate2 => _s.ContactUpdate2!;
-    private string ContactUpdate3 => _s.ContactUpdate3!;
-    private ulong ContactUpdateNumber => _s.ContactUpdateNumber;
     #endregion
 
     #region Web Forms Query
-    public string WebFormQuery1 => _s.WebFormQuery1!;
+    public IQuery WebFormQuery1 => new Query(DwhQueryType.ContactForms, _s.WebFormQuery1!);
     public string WebFormQuery2 => _s.WebFormQuery2!;
     #endregion
 }

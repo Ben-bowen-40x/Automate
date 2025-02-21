@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Automate.Infrastructure.MessageLeadsService.CsvMaps;
 using Automate.Application.MessageReportAnalysis;
 using Automate.Application.MessageAnalysis;
 using CSharpFunctionalExtensions;
+using Automate.Infrastructure.DataRetrievalFormats;
 
 namespace Automate.Cli.Verbs.VerbHelper;
 
@@ -74,10 +74,10 @@ public class MessageVerbHelper
             (MessageCsvType.LeafRepo, false, false) => generator.Manage<MessageClass>(MessageCsvType.LeafRepo.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation),
 
             // Meta
-            (MessageCsvType.MetaForm, true, true) => appender.Manage<UnifiedDate_SplitPhone>(MessageCsvType.MetaForm.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation, truncateReport, truncate, days),
-            (MessageCsvType.MetaForm, true, false) => appender.Manage<UnifiedDate_SplitPhone>(MessageCsvType.MetaForm.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation),
-            (MessageCsvType.MetaForm, false, true) => generator.Manage<UnifiedDate_SplitPhone>(MessageCsvType.MetaForm.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation, truncate, days),
-            (MessageCsvType.MetaForm, false, false) => generator.Manage<UnifiedDate_SplitPhone>(MessageCsvType.MetaForm.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation),
+            (MessageCsvType.MetaForm, true, true) => appender.Manage<UnifiedDateUtc_SplitPhone>(MessageCsvType.MetaForm.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation, truncateReport, truncate, days),
+            (MessageCsvType.MetaForm, true, false) => appender.Manage<UnifiedDateUtc_SplitPhone>(MessageCsvType.MetaForm.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation),
+            (MessageCsvType.MetaForm, false, true) => generator.Manage<UnifiedDateUtc_SplitPhone>(MessageCsvType.MetaForm.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation, truncate, days),
+            (MessageCsvType.MetaForm, false, false) => generator.Manage<UnifiedDateUtc_SplitPhone>(MessageCsvType.MetaForm.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation),
 
             // Libacion
             (MessageCsvType.Libacion, true, true) => appender.Manage<SplitDateUTCOffsetMsgCol>(MessageCsvType.Libacion.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation, truncateReport, truncate, days),

@@ -1,25 +1,23 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
-using Automate.Infrastructure.CsvService;
-using Automate.Infrastructure.DatabaseService;
-using Automate.Infrastructure.JsonService;
-using Automate.Infrastructure.MessageLeadsService.DbMaps;
-using Automate.Infrastructure.MessageLeadsService.JsonMaps;
+using Automate.Infrastructure.CsvManipulationService;
+using Automate.Infrastructure.DataRetrievalFormats;
+using Automate.Infrastructure.JsonManipulationService;
+using Automate.Translation.CallTranslate;
+using Automate.Translation.CustomerTranslate;
+using Automate.Translation.QualifiedMessageTranslate;
+using CSharpFunctionalExtensions;
 
 namespace Automate.Infrastructure.MessageLeadsReportService;
 
-public class ReportMessageService(IDwhSettings settings) : IReportMessageService
+public class ReportMessageService : IReportMessageService
 {
-    readonly RawQuery _rawQuery = new(settings);
-
     #region Pathing
     // Parent folder
     private const string _fileLoc = @".info\MessageAnalysis";
 
     // Csv File Names
-    private const string _customerRecordQuery = "MessageCustSubQuery.sql";
-    private const string _callRecordQuery = "MessageCallQuery.sql";
     private const string _messagesLocation = "MessagesToAnalyze.csv";
 
     // Json File Names
@@ -27,40 +25,34 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
     private const string _customerRecordRepo = @"LocalRepo\CustomerRepo.json";
 
     // File Locations
-    private string? loc;
-    public string Loc => loc ??= FolderFinder.GetLocalFolder(nameof(Infrastructure), _fileLoc);
-    private string Location(string file) => Loc + file;
-
-    #endregion
-
-    #region Query helpers
-    /// <summary>
-    /// This is for testing purposes only.
-    /// </summary>
-    internal bool QueryDbCalls { get; set; }
-    internal bool QueryDbCustomers { get; set; }
-    private DateTimeOffset _startDate = DateTimeOffset.Now - TimeSpan.FromDays(365);
-
-    // Lists for Local Repo
-    private List<ICallRecord>? _callRecordsFromRepo;
-    private List<ICustomerSubscription>? _customerRecordsFromRepo;
+    private DirectoryInfo? loc;
+    public DirectoryInfo Loc => loc ??= FolderFinder.GetLocalFolder(nameof(Infrastructure), _fileLoc);
+    private FileInfo Location(string file) => new(Loc.FullName + file);
     #endregion
 
     #region Implementation
     public List<IMessage> RetrieveReportMessages(string reportLocation, out List<QualifiedMessageRecord> records)
     {
         // Check to see whether the report file actually exists. If not, create it
-        if (!File.Exists(reportLocation))
-            File.WriteAllText(reportLocation, string.Empty);
+        FileInfo reportLoc = new(reportLocation);
+        if (!File.Exists(reportLoc.FullName))
+            File.WriteAllText(reportLoc.FullName, string.Empty);
 
         // Retrieve messages from report
-        IEnumerable<MessageReportMap> reportColumns = CsvRW.ParseFromCsv<MessageReportMap>(reportLocation);
+        Result<List<QualifiedMessageMap>> result = CsvService.Parse<QualifiedMessageMap>(reportLoc);
+        IEnumerable<QualifiedMessageMap> reportColumns = result.IsSuccess
+            ? result.Value
+            : throw new Exception(result.Error);
 
-        // Convert report columns to IMessage
-        List<IMessage> reportRecords = reportColumns.Select(m => m.Convert<MessageReportMap, IMessage>()).ToList();
+        // Translate report columns to IMessage
+        List<IMessage> reportRecords = reportColumns
+            .Select(m => m.Convert<QualifiedMessageMap, IMessage>())
+            .ToList();
 
-        // Convert report columns to qualified messages
-        records = reportColumns.Select(m => m.ConvertToQualifiedRecord()).ToList();
+        // Translate report columns to qualified messages
+        records = reportColumns
+            .Select(m => m.Translate())
+            .ToList();
 
         return reportRecords;
     }
@@ -68,14 +60,18 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
     public List<IMessage> GetMessages<T>(string messageLocation) where T : IConvert
     {
         // Retrieve Messages
-        string msgLocStr = messageLocation == string.Empty
+        FileInfo msgLocStr = messageLocation == string.Empty
             ? Location(_messagesLocation)
-            : messageLocation;
-        IEnumerable<T> messageCol = CsvRW.ParseFromCsv<T>(msgLocStr);
+            : new(messageLocation);
+        Result<List<T>> result = CsvService.Parse<T>(msgLocStr);
+        IEnumerable<T> messageCol = result.IsSuccess
+            ? result.Value
+            : throw new Exception(result.Error);
 
-        // Convert from column type to IMessage type...
+        // Translate from column type to IMessage type...
         List<IMessage> msgs = messageCol
-            .Select(m => m.Convert<T, IMessage>()).ToList();
+            .Select(m => m.Convert<T, IMessage>())
+            .ToList();
 
         // Remove duplicates from message origin
         List<IMessage> uniqueMsgs = RemoveDuplicates(msgs);
@@ -102,223 +98,47 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         }
     }
 
-    private bool WhetherToQueryDB(List<IMessage> uniqueMsgs, out bool queryCustomers)
-    {
-        // Use the most recent message from the list of messages to determine whether the local repos need to be updated
-        IMessage recentMsg = FindMostRecent(uniqueMsgs);
-        IMessage firstMsg = FindFirst(uniqueMsgs);
-        _startDate = firstMsg.Date;
-        queryCustomers = CustomerRepoNeedsUpdate(recentMsg, Location(_customerRecordRepo));
-        bool result = CallRepoNeedsUpdate(recentMsg, firstMsg, Location(_callRecordRepo));
-        return result;
-    }
-
     public List<ICallRecord> GetCallRecords(List<long> msgNums, string callRepo)
     {
         // Prepare the repo location
-        FileInfo callLocation = callRepo == string.Empty || !File.Exists(callRepo)
-            ? new(Location(_callRecordRepo))
+        FileInfo callLocation = string.IsNullOrWhiteSpace(callRepo) || !File.Exists(callRepo)
+            ? Location(_callRecordRepo)
             : new(callRepo);
 
-        List<CallRecordJsonReader> localCalls = JsonRW.DeserializeFile<CallRecordJsonReader>(callLocation.FullName);
-        IEnumerable<ICallRecord> filteredCalls = localCalls
-            .Select(c => c.Convert())
-            .Where(c =>
-                msgNums
-                .Contains(c.Number.Number)
-             );
-        return filteredCalls.ToList();
-    }
-
-    public List<ICallRecord> GetCallRecords(string callLoc)
-    {
-        string callLocRepo = Location(_callRecordRepo);
-        if (QueryDbCalls)
-        {
-            // Retrieve Calls using Db
-            DwhContext<CallDbEntity> callContext = new(settings.CallsConnectionString!);
-            FileInfo callLocation = callLoc == string.Empty || !File.Exists(callLoc)
-                ? new(Location(_callRecordQuery))
-                : new(callLoc);
-            string query = _rawQuery.MessageCallQuery(_startDate);
-            try
-            {
-                Task<IEnumerable<CallDbEntity>> callTask =
-                    callLoc == string.Empty
-                    ? DwhContextHelpers.GetItemsFromRawAsync(callContext, query)
-                    : DwhContextHelpers.GetItemsFromFileAsync(callContext, callLocation);
-                IEnumerable<CallDbEntity> calls = callTask.Result;
-                IEnumerable<ICallRecord> callResult = calls.Select(c => c.Convert());
-                List<ICallRecord> resultList = callResult.ToList();
-
-                // Save results to local repo
-                JsonRW.SerializeToFile(callLocRepo, resultList);
-                return resultList;
-            }
-            catch (Exception ex)
-            {
-                string member = nameof(GetCallRecords);
-                StringLogger.AddLog($"Failed to query DB in: {GetFullName.GetMemberName(new ReportMessageService(settings), member)}", "An exception arose while attempting to query the database. Exception:", ex.ToString());
-            }
-        }
-        else if (_callRecordsFromRepo != null && _callRecordsFromRepo.Count != 0)
-            return _callRecordsFromRepo;
-
-        // Default behavior is to retrieve information from the local repo
-        List<CallRecordJsonReader> localCalls = JsonRW.DeserializeFile<CallRecordJsonReader>(callLocRepo);
-        IEnumerable<ICallRecord> result = localCalls.Select(c => c.Convert());
-        return result.ToList();
+        Result<List<CallRecordJsonReader>> result = JsonService.ReadFile<CallRecordJsonReader>(callLocation);
+        List<CallRecordJsonReader> localCalls = result.IsSuccess
+            ? result.Value
+            : throw new Exception(result.Error);
+        List<ICallRecord> filteredCalls = localCalls
+            .Select(c => c.Translate())
+            .Where(c => msgNums.Contains(c.Number.Number))
+            .ToList();
+        return filteredCalls;
     }
 
     public List<ICustomerSubscription> GetCustomerRecords(List<long> msgNums, string customerRepo)
     {
         // Prepare the repo location. This is the default location
-        string customerLocation = customerRepo == string.Empty || !File.Exists(customerRepo)
+        FileInfo customerLocation = customerRepo == string.Empty || !File.Exists(customerRepo)
             ? Location(_customerRecordRepo)
-            : customerRepo;
+            : new(customerRepo);
 
-        List<CustSubJsonReader> localCustomers = JsonRW.DeserializeFile<CustSubJsonReader>(customerLocation);
-        IEnumerable<ICustomerSubscription> filteredCustomers = localCustomers
-            .Select(c => c.Convert())
-            .Where(c =>
-                msgNums
-                .Contains(c.Number.Number)
-            );
-        return filteredCustomers.ToList();
-
-    }
-    
-    public List<ICustomerSubscription> GetCustomerRecords(string customerLocation)
-    {
-        string customerLocRepo = Location(_customerRecordRepo);
-        if (QueryDbCustomers)
-        {
-            // Retrieve Customers
-            DwhContext<CustSubDbEntity> customerContext = new(settings.CustomersConnectionString!);
-            FileInfo custStr =
-                customerLocation == string.Empty || !File.Exists(customerLocation)
-                ? new(Location(_customerRecordQuery))
-                : new(customerLocation);
-            string query = _rawQuery.MessageCustomerQuery();
-            try
-            {
-                Task<IEnumerable<CustSubDbEntity>> customerTask =
-                    customerLocation == string.Empty
-                    ? DwhContextHelpers.GetItemsFromRawAsync(customerContext, query)
-                    : DwhContextHelpers.GetItemsFromFileAsync(customerContext, custStr);
-                IEnumerable<CustSubDbEntity> customers = customerTask.Result;
-                IEnumerable<ICustomerSubscription> records = customers.Select(c => c.Convert());
-                List<ICustomerSubscription> resultList = records.ToList();
-
-                // Save results to local repo
-                JsonRW.SerializeToFile(customerLocRepo, resultList);
-                return resultList;
-            }
-            catch (Exception ex)
-            {
-                string member = nameof(GetCustomerRecords);
-                StringLogger.AddLog($"Failed to query DB in: {GetFullName.GetMemberName(new ReportMessageService(settings), member)}", "An exception arose while attempting to query the database. Exception:", ex.ToString());
-            }
-        }
-        else if (_customerRecordsFromRepo != null && _customerRecordsFromRepo.Count != 0)
-            return _customerRecordsFromRepo;
-
-        // Exceptions default to local repo retrieval
-        List<CustSubJson> localCustomers = JsonRW.DeserializeFile<CustSubJson>(customerLocRepo);
-        IEnumerable<ICustomerSubscription> result = localCustomers.Select(c => c.Convert());
-        return result.ToList();
+        Result<List<CustSubJsonReader>> result = JsonService.ReadFile<CustSubJsonReader>(customerLocation);
+        List<CustSubJsonReader> localCustomers = result.IsSuccess
+            ? result.Value
+            : throw new Exception(result.Error);
+        List<ICustomerSubscription> filteredCustomers = localCustomers
+            .Select(c => c.Translate())
+            .Where(c => msgNums.Contains(c.Number.Number))
+            .ToList();
+        return filteredCustomers;
     }
     #endregion
 
     #region Private Members
-    private bool CallRepoNeedsUpdate(IMessage recentMsg, IMessage firstMsg, string repoLocation)
-    {
-        // Find out whether the local repository contains records up to the most recent text message
-        // Ensure the local file repos exist and are not empty
-        if (!File.Exists(repoLocation) || File.ReadAllText(repoLocation) == string.Empty)
-            return true;
-
-        // Prepare extraction of calls and customers from local repo
-        List<CallRecordJson> localCalls = [];
-        try
-        {
-            // Extract the local repo of calls
-            localCalls = JsonRW.DeserializeFile<CallRecordJson>(repoLocation);
-        }
-        catch
-        {
-            return true;
-        }
-
-        // If the most recent msg occurred before the most recent call AND the first msg occurred after the first call, set the local field to the list of call records
-        CallRecordJson recentCall = FindMostRecent(localCalls);
-        CallRecordJson firstCall = FindFirst(localCalls);
-        if (DateTimeOffset.Compare(firstMsg.Date - _rawQuery.NinetyDays, firstCall.Date) > 0 && DateTimeOffset.Compare(recentMsg.Date, recentCall.Date) < 0)
-        {
-            IEnumerable<ICallRecord> convertedCalls = ConvertCallsFromRepo(localCalls);
-            _callRecordsFromRepo = convertedCalls.ToList();
-        }
-        // Recent msgs are not covered by the repo, so it must be renewed by the Db, further calculations are unnecessary, so we can return here
-        else
-            return true;
-
-        // Return
-        return false;
-
-        // Local
-        static IEnumerable<ICallRecord> ConvertCallsFromRepo(List<CallRecordJson> localCalls)
-        {
-            return localCalls.Select(m => m.Convert());
-        }
-    }
-
-    private bool CustomerRepoNeedsUpdate(IMessage recentMsg, string repoLocation)
-    {
-        // Find out whether the local repository contains records up to the most recent text message
-        // Ensure the local file repos exist and are not empty
-        if (!File.Exists(repoLocation) || File.ReadAllText(repoLocation) == string.Empty)
-            return true;
-
-        // Prepare extraction of calls and customers from local repo
-        List<CustSubJson> localCalls = [];
-        try
-        {
-            // Extract the local repo of calls
-            localCalls = JsonRW.DeserializeFile<CustSubJson>(repoLocation);
-        }
-        catch
-        {
-            return true;
-        }
-
-        // If the most recent text occurred before the most recent call, set the local field to the list of call records
-        CustSubJson recentCall = FindMostRecent(localCalls);
-        if (DateTimeOffset.Compare(recentMsg.Date, recentCall.Date) < 0)
-        {
-            IEnumerable<ICustomerSubscription> convertedCalls = localCalls.Select(m => m.Convert());
-            _customerRecordsFromRepo = convertedCalls.ToList();
-        }
-        // Recent texts are not covered by the repo, so it must be renewed by the Db
-        // Further calculations are unnecessary, so we can return here
-        else
-            return true;
-
-        return false;
-    }
-
-    private static T FindMostRecent<T>(IEnumerable<T> items) where T : IDatedRecord
-    {
-        var mostRecent = items.Last();
-        foreach (var item in items)
-        {
-            if (item.Date > mostRecent.Date)
-                mostRecent = item;
-        }
-        return mostRecent;
-    }
-
     private static DateTimeOffset? _twelve;
-    private static DateTimeOffset Early => _twelve ??= new(new DateTime(2012, 1, 1)); // This is a sufficient amount of time in the past 
+    private static DateTimeOffset Early => _twelve ??= new(new DateTime(2012, 1, 1)); // This is a sufficient amount of time in the past
+
     /// <summary>
     /// <paramref name="items"/> must be of type <see cref="IList{T}"/> because we will be using the indices of <paramref name="items"/>
     /// </summary>
@@ -327,10 +147,14 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
     /// <returns></returns>
     private static T FindFirst<T>(IList<T> items) where T : IDatedRecord
     {
-        var leastRecent = items[0];
-        foreach (var item in items)
+        T leastRecent = items[0];
+        foreach (T item in items)
         {
-            if (DateTimeOffset.Compare(item.Date, leastRecent.Date) < 0 && item.Date != DateTimeOffset.MinValue && DateTimeOffset.Compare(item.Date, Early) >= 0)
+            bool a = DateTimeOffset.Compare(item.Date, leastRecent.Date) < 0;
+            bool b = item.Date != DateTimeOffset.MinValue;
+            bool c = DateTimeOffset.Compare(item.Date, Early) >= 0;
+            bool d = a && b && c;
+            if (d)
                 leastRecent = item;
         }
         return leastRecent;
@@ -344,24 +168,21 @@ public class ReportMessageService(IDwhSettings settings) : IReportMessageService
         List<long> numbers = msgs
             .Select(i => i.Number.Number)
             .Where(i => i != PhoneNumber.Default)
-            .Distinct()
+            .Distinct() // Yes, this makes the time complexity O(3N), but it's really not that different than if we did the same thing in a loop
             .ToList(); // This must either be an array or a list because we want the Length/Count
 
-        // Create a new list that contains the earliest text that matches each unique phone number
+        // Create a new list that contains the chronologically earliest text that matches each phone number
         List<IMessage> result = new(numbers.Count);
         foreach (long num in numbers)
         {
-            result.Add(
-                FindFirst(
-                    msgs
-                    .Where(i => i.Number.Number == num)
-                    .ToList()
-                ));
+            List<IMessage> shortList = msgs
+                .Where(i => i.Number.Number == num)
+                .ToList();
+            IMessage first = FindFirst(shortList);
+            result.Add(first);
         }
 
-        // Return
         return result;
     }
-
     #endregion
 }

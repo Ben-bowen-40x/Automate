@@ -2,6 +2,4 @@
 
 namespace Automate.Infrastructure.Test.CatmanTest;
 
-public interface ISharpQueryTestSettings : ISharpQuerySettings
-{
-}
+public interface ISharpQueryTestSettings : ISharpQuerySettings { }

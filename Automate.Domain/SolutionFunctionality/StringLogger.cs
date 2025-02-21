@@ -153,10 +153,10 @@ public class StringLogger
         Append(args);
         _builder.Append('\n');
     }
-    internal static string InfoFolder => _infoFolder ??= FolderFinder.GetLocalFolder(nameof(Domain), @".info");
+    internal static DirectoryInfo InfoFolder => _infoFolder ??= FolderFinder.GetLocalFolder(nameof(Domain), @".info");
 
     // Members
-    internal static string? _infoFolder;
+    internal static DirectoryInfo? _infoFolder;
     internal const long max = 10000;
 
     // Members that should be null at the beginning of a log

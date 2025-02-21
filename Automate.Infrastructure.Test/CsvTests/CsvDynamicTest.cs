@@ -1,0 +1,68 @@
+﻿using Automate.Domain.SolutionFunctionality;
+using CsvHelper;
+using System.Globalization;
+
+namespace Automate.Infrastructure.Test.CsvTests;
+
+public class CsvDynamicTest
+{
+    private readonly FileInfo pathtofile = FolderFinder.GetLocalFile(nameof(Infrastructure), @".info\ApiRepos\LeafTesting\", "Messages_Test.csv");
+    [Fact]
+    public void ReadsCsvFilesDynamically()
+    {
+        // Act
+        using var reader = new StreamReader(pathtofile.FullName);
+        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        IEnumerable<dynamic> records = csv.GetRecords<dynamic>();
+
+        // Assert
+        Assert.NotNull(records);
+    }
+
+    [Fact]
+    public void ReadsCsvFilesAnonymously()
+    {
+        // Act
+        using var reader = new StringReader(pathtofile.FullName);
+        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        var anonymous = new
+        {
+            Contents = string.Empty,
+            Date = default(DateTimeOffset),
+            Number = default(long),
+            Source = string.Empty
+        };
+        var records = csv.GetRecords(anonymous);
+
+        // Assert
+        Assert.NotNull(records);
+    }
+
+    [Fact]
+    public void ConvertsCsvFilesAnonymously()
+    {
+        // Assemble
+        using var reader = new StreamReader(pathtofile.FullName);
+        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        IEnumerable<dynamic> records = csv.GetRecords<dynamic>();
+
+        // Act
+        var result = records.Select(r => ConvertDynamic.Convert(r)).ToList();
+
+        // Assert
+        Assert.NotNull(records);
+    }
+}
+
+#region Necessary local objects. Please do not move to a new file
+public static class ConvertDynamic
+{
+    public static Items Convert(dynamic item)
+    {
+        var date = DateTimeOffset.Parse(item.Date);
+        var num = long.Parse(item.Number);
+        return new(item.Contents, date, num, item.Source);
+    }
+}
+public record Items(string Contents, DateTimeOffset Date, long Number, string Source);
+#endregion

@@ -8,13 +8,10 @@ public class ContactUpdateManager(IUpdateContactsService updateService, IReportS
 {
     public UpdateResult UpdateContacts(string reportDirectory)
     {
-        List<List<Contacts>> contacts = updateService.GenerateContactLists();
+        List<List<Contact>> contacts = updateService.GenerateContactLists();
         Result success = updateService.ExecuteContactUpdateAsync(contacts);
-        bool resultResult = success.IsSuccess;
         Result<DirectoryInfo> report = reportService.GenerateContactsReport(contacts, reportDirectory);
         
-        return new(resultResult, report);
+        return new(success, report);
     }
 }
-public record UpdateResult(bool UploadedContacts, Result<DirectoryInfo> ContactLocation);
-public record Contacts(PhoneNumber Number, PhoneNumber Phone2);

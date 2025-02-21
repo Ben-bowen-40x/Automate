@@ -14,13 +14,13 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         List<QualifiedMessageRecord> reportRecords = Commond<T>(messages, callsFile, customersFile, report);
 
         // Generate Report
-        var success = _reportService.GenerateMessageLeadReportAppend(reportDefault, reportRecords, report);
+        Result<FileInfo> success = _reportService.GenerateMessageLeadReport(reportDefault, reportRecords, report);
 
         return success;
     }
 
-    public const int Days = 120;
-    public Result<FileInfo> Manage<T>(string reportDefault, string messages, string callsFile, string customersFile, string report, string truncatedReport, bool truncate, int days = Days) where T : IConvert
+    private const int _days = 120;
+    public Result<FileInfo> Manage<T>(string reportDefault, string messages, string callsFile, string customersFile, string report, string truncatedReport, bool truncate, int days = _days) where T : IConvert
     {
         List<QualifiedMessageRecord> reportRecords = Commond<T>(messages, callsFile, customersFile, report);
 
@@ -30,17 +30,17 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
             DateTimeOffset past = DateTimeOffset.Now - TimeSpan.FromDays(days);
             List<QualifiedMessageRecord> truncatedRecords = reportRecords.Where(r => DateTimeOffset.Compare(past, r.Message.Date) <= 0).ToList();
             var result = _reportService.GenerateMessageLeadReport(reportDefault + "Truncated" + days, truncatedRecords, truncatedReport);
-            var appended = _reportService.GenerateMessageLeadReportAppend(reportDefault, reportRecords, report);
-            if(result.IsSuccess)
+            Result<FileInfo> appended = _reportService.GenerateMessageLeadReport(reportDefault, reportRecords, report);
+            if (result.IsSuccess)
                 return result;
-            if(result.IsFailure && appended.IsSuccess)
+            if (result.IsFailure && appended.IsSuccess)
                 return appended;
             if (result.IsFailure && appended.IsFailure)
-                return result;
+                return Result.Failure<FileInfo>(result.Error + "\n" + appended.Error);
         }
 
         // Generate Report
-        var success = _reportService.GenerateMessageLeadReportAppend(reportDefault, reportRecords, report);
+        Result<FileInfo> success = _reportService.GenerateMessageLeadReport(reportDefault, reportRecords, report);
 
         return success;
     }

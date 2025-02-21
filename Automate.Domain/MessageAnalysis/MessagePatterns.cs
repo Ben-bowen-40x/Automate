@@ -7,7 +7,14 @@ internal record ClassificationResult(string Matches, string Input, bool Result, 
 
 internal partial class MessagePatterns
 {
-    #region Internal and Private Method Members
+    #region Internal
+    internal const string Match = "Matched Pattern:";
+    internal readonly static string Customer1Name = nameof(Customer1);
+    internal readonly static string Customer2Name = nameof(Customer2);
+    internal readonly static string NotTreatedName = nameof(NotTreated);
+    internal readonly static string ReferralName = nameof(Referral);
+    internal readonly static string PossibleName = nameof(Possible);
+    internal readonly static string LikelyName = nameof(Likely);
     internal static ClassificationResult Billable(string input)
     {
         Match customerMatch =
@@ -25,20 +32,20 @@ internal partial class MessagePatterns
 
         List<string> message = new(6);
         if (customerMatch.Success)
-            message.Add($"Matched Pattern: {nameof(Customer1)} => ({customerMatch.Value})");
+            message.Add($"{Match} {Customer1Name} => ({customerMatch.Value})");
         if (customer2Match.Success)
-            message.Add($"Matched Pattern: {nameof(Customer2)} => ({customer2Match.Value})");
+            message.Add($"{Match} {Customer2Name} => ({customer2Match.Value})");
         if (notTreatedMatch.Success)
-            message.Add($"Matched Pattern: {nameof(NotTreated)} => ({notTreatedMatch.Value}");
+            message.Add($"{Match} {NotTreatedName} => ({notTreatedMatch.Value}");
         if (referralMatch.Success)
-            message.Add($"Matched Pattern: {nameof(Referral)} => ({referralMatch.Value})");
+            message.Add($"{Match} {ReferralName} => ({referralMatch.Value})");
         if (possibleMatch.Success)
-            message.Add($"Matched Pattern: {nameof(Possible)} => ({possibleMatch.Value})");
+            message.Add($"{Match} {PossibleName} => ({possibleMatch.Value})");
         if (likelyMatch.Success)
-            message.Add($"Matched Pattern: {nameof(Likely)} => ({likelyMatch.Value})");
+            message.Add($"{Match} {LikelyName} => ({likelyMatch.Value})");
 
         const string bar = " | ";
-        var matches = message.Count == 0 ? string.Empty : string.Join(bar, message);
+        string matches = message.Count == 0 ? string.Empty : string.Join(bar, message);
 
         /* I know what you're asking:
          * "Why are you using so many patterns when you seem to only care about two?"
@@ -71,42 +78,42 @@ internal partial class MessagePatterns
     #endregion
 
     #region Generalized Strings
-    private const string ltr = @"(\w)";
     private const string border = @"\b";
-    private const string orPipe = @"\|";
-    private const string empty = @"(\s|\n\r|\r\n|\n|" + orPipe + @"|\r)*";
-    private const string letters = $"({ltr})*";
-    private const string qMark = @"\?";
     private const string chr = ".";
     private const string chars = $"({chr})*";
+    private const string empty = @"(\s|\n\r|\r\n|\n|" + orPipe + @"|\r)*";
+    private const string letters = $"({ltr})*";
+    private const string ltr = @"(\w)";
+    private const string orPipe = @"\|";
+    private const string qMark = @"\?";
     private const string word = $"({ltr}+ )";
     private const string words = $"({ltr}+ )*";
     private const string zeroThree = "{0,3}";
     private const string zeroFive = "{0,5}";
-    private const string weAre = $"(i{chars}m ?{letters}|we({chars}re))";
-    private const string service = $"((problem|remov|re{letters}c{letters}ur{letters} servic|treat|spray|bomb|(pest|yard|home) control|visit|servi(c|d)|exterminat|infest|inspect|fumiga|{quote}){letters})";
-    private const string quote = $"((pric|{qote}|estimat|eval|cost){letters})";
-    private const string product = $"((product|chemical|spray){letters})";
-    private const string want = $"((busc|quier|{word}?want|need|{word}{zeroFive}interes{chars}{word}{zeroThree}|how much|try{letters} to |lik{letters} ?{word}{zeroThree}|would like|look{letters} ?{word}{zeroThree}|request|provid|desir){letters}{border})";
+
     private const string appointment = $"((ap{letters}t){letters})";
-    private const string work = $"((work|tra(b|v)aj|emple|hir|job|interview|employ){letters}{border})";
-    private const string companyName = PatternHelper.Company;
-    private const string nest = $"((nest){letters})";
-    private const string my = $"((mine|my|our|{me}){letters})";
-    private const string we = $"((we|us|i|{me}){letters})";
-    private const string me = $"(me|my)";
-    private const string preposition = $"(in|around|near|beside|between|by){letters}";
     private const string cancel = $"(end|stop|cancel{letters})";
+    private const string companyName = PatternHelper.Company;
     private const string customerService = $"({customer} service)";
-    private const string toBe = $"(is|are|was|were|be{letters})";
     private const string home = $"((home|house|place|resid){letters})";
+    private const string nest = $"((nest){letters})";
+    private const string me = $"(me|my)";
+    private const string my = $"((mine|my|our|{me}){letters})";
+    private const string product = $"((product|chemical|spray){letters})";
+    private const string preposition = $"(in|around|near|beside|between|by){letters}";
+    private const string quote = $"((pric|{qote}|estimat|how much|eval|cost){letters})";
+    private const string service = $"((problem|remov|re{letters}c{letters}ur{letters} servic|treat|spray|bomb|(pest|yard|home) control|visit|servi(c|d)|exterminat|infest|inspect|fumiga|{quote}){letters})";
+    private const string toBe = $"(is|are|was|were|be{letters})";
+    private const string want = $"((busc|quier|{word}?want|need|{word}{zeroFive}interes{chars}{word}{zeroThree}|try{letters} to |lik{letters} ?{word}{zeroThree}|would like|look{letters} ?{word}{zeroThree}|request|provid|desir){letters}{border})";
+    private const string we = $"((we|us|{me}){letters}|i)";
+    private const string weAre = $"(i{chars}m ?{letters}|we({chars}re))";
+    private const string work = $"((work|tra(b|v)a(j|l)|emple|hir|job|interview|employ){letters}{border})";
     #endregion
 
-    #region Helper String Regions
     #region Bug String
     internal const string bug =
     "((" +
-    "ant|" +
+    $"{border}ant|" +
     "bug|" +
     "bee|" +
     "beetle|" +
@@ -119,7 +126,7 @@ internal partial class MessagePatterns
     "fle|" +
     "fly|" +
     "fli|" +
-    "(g)?nat|" +
+    $"{border}(g)?nat{border}|" +
     "hornet|" +
     "insect|" +
     $"lady{chr}{zeroFive}bug|" +
@@ -130,11 +137,11 @@ internal partial class MessagePatterns
     "moth|" +
     "mouse|" +
     $"{nest}|" +
-    $"pest{chars}(control)?|" +
-    "rat|" +
+    $"{border}pest{chars}(control)?|" +
+    $"{border}rat|" +
     "rodent|" +
     $"scorp{letters}n|" +
-    $"{service} request|" +
+    $"{service} request|request {service}|" +
     $"silver{chars}fish|" +
     "spider|" +
     "spray|" +
@@ -272,9 +279,7 @@ internal partial class MessagePatterns
     "uoec|uoce" + // end does not shave an or pipe "|"
     ")";
     #endregion
-    #endregion
 
-    #region Pattern Regions
     #region Customer 1
     private const string _customer1 =
     $"^{empty}(this is a )?test{letters}{empty}$|" +
@@ -289,7 +294,7 @@ internal partial class MessagePatterns
     $"(you|{companyName}|your) (are|will|have) {service}|" +
     $"{customer} portal|" +
     $"update{letters} {words}(on|concern|about){letters} {words}{service}|" +
-    $"(they|s?he){letters} (is|work|represent){letters} (employed by|for|with|on behalf of) (you|{companyName})|" +
+    $"(they|s?he){letters} (is|work|represent){letters} (employed by|for|with|{word} behalf of) (you|{companyName})|" +
     $"sign{chars}up {word}{zeroFive}({service}|you|you guys|{companyName})|" +
     $"prepar{letters}|" +
     $"{weAre} {word}{zeroFive}contract|" +
@@ -314,7 +319,7 @@ internal partial class MessagePatterns
     $"(you{letters}|{my}|the) call{letters}{border}|" +
     $"{service} (in|out){letters}|" +
     // end
-    "(bill|statement)";
+    "(bill|statement|invoice)";
     #endregion
 
     #region Customer 2
@@ -329,13 +334,13 @@ internal partial class MessagePatterns
     $"(regular{letters}|another) {words}(schedul|servic|treat|tech|visit){letters}|" +
     $"(is|are) {word}{zeroFive}(com|cam){letters}|" +
     $"still {word}{word}{zeroThree}{bug}|" +
-    $"({service}|tech{letters}) (was|were)|" +
+    $"({border}{service}|tech{letters}) (was|were)|" +
     $"still {words}schedul{letters}|" +
     $"sign{letters} {words}(contract|you|{service}|company|{companyName})|" +
     $"call{letters} {words}(you|him|her|them|{companyName})|" +
     $"renew{letters} {words}({service}|plan|treat){letters}|" +
     $"tech{letters} {words}(said|rec{letters}o{letters}mend|{want}|treat|driv|drove|did|was|suppose){letters}|" +
-    $"{service} {word}already|" +
+    $"{border}{service} {word}already|" +
     $"set up (more traps?|{service})|" +
     $"next pay{letters}|" +
     $"(your|{companyName}|this) {words}company|" +
@@ -343,7 +348,7 @@ internal partial class MessagePatterns
     $"(pay|make) {word}{zeroThree}bill((.pay|charg){letters})?|" +
     $"(send|have) ?{word}{zeroThree}(some|tech){letters}|" +
     $"in {words}system|" +
-    $"({my}|{companyName}) (acc(oun)?t|plan|{service}|appoint|tech|system){letters}|" +
+    $"({border}{my}|{companyName}) (acc(oun)?t|plan|{service}|appoint|tech|system){letters}|" +
     $"(your|{companyName}) {words}system|" +
     // end
     $"cancel{letters} ?{words}{service}?";
@@ -388,6 +393,7 @@ internal partial class MessagePatterns
     $"{bug}( {service}| {nest})?|" +
     $"remov{letters}|" +
     $"{service}|" +
+    $"{want} bait|" +
     $"{quote}|" +
     $"({service}|{nest}) request{letters}|" +
     $"bit{letters} mark{letters}|" +
@@ -395,13 +401,9 @@ internal partial class MessagePatterns
     $"exterminat{letters}";
     #endregion
 
-    #region Likely Lead
-    #region Likely Helpers
-    private const string zip = @"\d{5}";
-    private const string name = PatternHelper.Name;
-    #endregion
-
     #region Likely
+    private const string zip = @"\d{5}"
+        ;
     private const string l =
     $"^{empty}$|" +
     $"^est{letters} interesa{letters}$|" +
@@ -414,14 +416,14 @@ internal partial class MessagePatterns
     $"^{empty}need {word}{zeroFive}{service}{empty}$|" +
     $"^{empty}{quote}{empty}$|" +
     $"^{empty}{zip}{empty}$|" +
-    $"{name}|" //+
+    $"{PatternHelper.Name}|" //+
         ;
     private const string li =
     $"{toBe} {word}open .*(day|mor{chars}ow|week)|" +
     $"where (are you|is your) (locat|offic){letters}|" +
     $"{toBe} you{letters} (locat|offic){letters} {preposition}|" +
     $"do you serv{letters} {words}area|" +
-    $"{empty}service {empty}|" +
+    $"{empty}service{empty}|" +
     $"get{letters} {words}{home} {service}|" +
     $"hear{letters} {words}activity|" +
     $"contact (me|us|asap)|" +
@@ -449,11 +451,9 @@ internal partial class MessagePatterns
     $"do{letters} {words}{service}|" +
     $"({want}|make|trying to see) {words}({appointment}|{service})|" //+
         ;
-    #endregion
 
     private const string _likely =
         l + li + lik +
     $"({want} )?{words}({service}|{appointment})";
-    #endregion
     #endregion
 }

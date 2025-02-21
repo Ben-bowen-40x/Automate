@@ -1,8 +1,11 @@
 ﻿using Automate.Application.InfrastructureValueObjects;
 using Automate.Application.RepoUpdate;
 using Automate.Application.TypedRepoUpdate;
+using Automate.Application.UpdateContacts;
 using Automate.Cli.Verbs.VerbHelper;
-using Automate.Infrastructure.MessageLeadsService.DbMaps;
+using Automate.Domain.ValueObjects;
+using Automate.Infrastructure.AnalyzeDiscrepancyService;
+using Automate.Infrastructure.DataRetrievalFormats;
 using CommandLine;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,13 +46,13 @@ internal class UpdateRepoVerb : IVerb
         Console.WriteLine($"- Whether to perform a force update on the repositories (This will override the Hard Update option): {ForceUpdate}");
 
         // Validate Input
-        var valueCsv = PathManipulation.VerifyType(ValueRepositoryCsv);
-        var apiJson = PathManipulation.VerifyType(ApiRepositoryJson);
+        Result<FileType> valueCsv = PathManipulation.VerifyType(ValueRepositoryCsv);
+        Result<FileType> apiJson = PathManipulation.VerifyType(ApiRepositoryJson);
         string valueInfo = !File.Exists(ValueRepositoryCsv) || valueCsv.IsFailure || valueCsv.Value != FileType.Csv
-            ? ""
+            ? string.Empty
             : ValueRepositoryCsv;
         string repoInfo = !File.Exists(ApiRepositoryJson) || apiJson.IsFailure || apiJson.Value != FileType.Json
-            ? ""
+            ? string.Empty
             : ApiRepositoryJson;
 
         // Prepare result
@@ -59,29 +62,46 @@ internal class UpdateRepoVerb : IVerb
         switch (Type)
         {
             case RepoType.Leaf:
-                var manager = service.GetRequiredService<IRepoUpdateManager>();
-                var result = manager.Manage(valueInfo, repoInfo, Update, ForceUpdate);
+                IRepoUpdateManager manager = service.GetRequiredService<IRepoUpdateManager>();
+                Result result = manager.Manage<LeafThread>(valueInfo, repoInfo, Update, ForceUpdate);
                 code = DetermineReturnCode(result);
                 break;
             case RepoType.Calls:
-                var manage = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result resul = manage.Manage<CallDbEntity>(DwhQueryType.AllCalls, DwhConnectionType.Calls, ApiRepositoryJson, ForceUpdate || Update);
+                ITypedRepoUpdateManager manage = service.GetRequiredService<ITypedRepoUpdateManager>();
+                Result resul = manage.Manage<CallDbEntity>(DwhQueryType.AllCalls, DwhConnectionType.Calls, repoInfo, ForceUpdate || Update);
                 code = DetermineReturnCode(resul);
                 break;
             case RepoType.Customers:
-                var manag = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result resu = manag.Manage<CustSubDbEntity>(DwhQueryType.AllCustomers, DwhConnectionType.Customers, ApiRepositoryJson, ForceUpdate || Update);
+                ITypedRepoUpdateManager manag = service.GetRequiredService<ITypedRepoUpdateManager>();
+                Result resu = manag.Manage<CustSubDbEntity>(DwhQueryType.AllCustomers, DwhConnectionType.Customers, repoInfo, ForceUpdate || Update);
                 code = DetermineReturnCode(resu);
                 break;
             case RepoType.ContactForms:
-                var mana = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result res = mana.Manage<WebFormCsvDbEntity>(DwhQueryType.ContactForms, DwhConnectionType.ContactForms, ApiRepositoryJson, ForceUpdate || Update);
+                ITypedRepoUpdateManager mana = service.GetRequiredService<ITypedRepoUpdateManager>();
+                Result res = mana.Manage<WebFormEntity>(DwhQueryType.ContactForms, DwhConnectionType.ContactForms, repoInfo, ForceUpdate || Update);
                 code = DetermineReturnCode(res);
                 break;
-            default:
-                var m = service.GetRequiredService<IRepoUpdateManager>();
-                var r = m.Manage(valueInfo, repoInfo, Update, ForceUpdate);
+            case RepoType.ContactUpdate:
+                Console.WriteLine($"Default values were chosen for the following choice: {RepoType.ContactUpdate}");
+                IContactUpdateManager man = service.GetRequiredService<IContactUpdateManager>();
+                UpdateResult re = man.UpdateContacts("");
+
+                // Inform the user what took place
+                Result uploaded = re.UploadedContacts;
+                Result<DirectoryInfo> contactLocation = re.ContactLocation;
+                _ = DetermineReturnCode(uploaded);
+                Console.WriteLine("Request: Contacts Upload");
+                code = DetermineReturnCode(contactLocation);
+                Console.WriteLine("Request: Contact generation");
+                break;
+            case RepoType.Discrepancy:
+                ITypedRepoUpdateManager ma = service.GetRequiredService<ITypedRepoUpdateManager>();
+                Result r = ma.Manage<DiscrepancyCallDbEntity>(DwhQueryType.Discrepancy, DwhConnectionType.Calls, repoInfo, ForceUpdate || Update);
                 code = DetermineReturnCode(r);
+                break;
+            default:
+                Console.WriteLine($"No existing repository type was selected, so no execution will take place.\nEither choose an existing repository type or create a repository update functionality for the following repo selection: {Type}");
+                code = ProgramErrorCodes.Error;
                 break;
         };
 

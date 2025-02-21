@@ -17,13 +17,13 @@ public static class FolderFinder
     /// <param name="projectContainingLocalFolder"></param>
     /// <param name="localFolderToFind"></param>
     /// <returns></returns>
-    public static string GetLocalFolder(string projectContainingLocalFolder, string localFolderToFind) =>
+    public static DirectoryInfo GetLocalFolder(string projectContainingLocalFolder, string localFolderToFind) =>
         GetLocalFolder(projectContainingLocalFolder, _relativePath, localFolderToFind);
 
     /// <summary>
     /// <para>The goal of this method is to find a specific folder contained within the project folder of our solution. The file will be found if and only if it is a direct child of <paramref name="localFolderToFind"/>. The folder will not be found if it is not contained in the solution, or if the file structure does not follow the following pattern: /[SolutionName]/[SolutionName.ProjectName]/[Parent]/[Of]/[Dir]/[...]/[Folder]. Note that this pattern does not require the folder's parent if and only if the destination folder is a direct child of the folder with the name [SolutionName.ProjectName] in order to function properly</para>
     /// <para>The <paramref name="projectContainingLocalFolder"/> should be the nameof(projectname). For example: "nameof(<see cref="Domain"/>)"</para>
-    /// <para>The <paramref name="projectContainingLocalFolder"/> is malformed if the caller attempts to ref the project thus: nameof([SolutionName].[ProjectName])</para>
+    /// <para>The <paramref name="projectContainingLocalFolder"/> is malformed if the caller attempts to refer to the project like this: nameof([SolutionName].[ProjectName])</para>
     /// <para>The <paramref name="localFolderToFind"/> should be the actual name of the local folder that the caller wishes to find. The folder should be located inside of the folder of the [ProjectName]</para>
     /// <para>Thus, <paramref name="localFolderToFind"/> is properly formed if the full file path is formatted as follows:</para>
     /// <para>C:/Various/Folders[...]/[SolutionName]/[SolutionName].[ProjectName]/[FolderToFind]</para>
@@ -33,15 +33,15 @@ public static class FolderFinder
     /// <param name="localFolderToFind"></param>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    public static string GetLocalFile(string projectContainingLocalFolder, string localFolderToFind, string fileName) =>
-        GetLocalFolder(projectContainingLocalFolder, _relativePath, localFolderToFind) + fileName;
+    public static FileInfo GetLocalFile(string projectContainingLocalFolder, string localFolderToFind, string fileName) =>
+        new(GetLocalFolder(projectContainingLocalFolder, _relativePath, localFolderToFind).FullName + fileName);
     #endregion
 
     #region Private members
     readonly static string _solution = nameof(Automate);
     const string _relativePath = @".\";
 
-    static string GetLocalFolder(string projectContainingLocalFolder, string relativePath, string localFolderToFind)
+    static DirectoryInfo GetLocalFolder(string projectContainingLocalFolder, string relativePath, string localFolderToFind)
     {
         const char slash = '\\';
         string fullPath = Path.GetFullPath(relativePath);
@@ -50,7 +50,7 @@ public static class FolderFinder
 
         // Iterate through the full path split by slashes
         // Find the first directory that contains the solution name
-        for (var i = pathSplit.Length - 1; i >= 0; --i)
+        for (int i = pathSplit.Length - 1; i >= 0; --i)
         {
             if (pathSplit[i].Equals(_solution))
             {
@@ -61,7 +61,7 @@ public static class FolderFinder
 
         // Use the index found above to rebuild the string path
         StringBuilder builder = new();
-        for (var i = 0; i < index + 1; ++i)
+        for (int i = 0; i < index + 1; ++i)
         {
             builder.Append(pathSplit[i]);
             builder.Append(slash);
@@ -90,9 +90,14 @@ public static class FolderFinder
             Directory.CreateDirectory(builder.ToString());
 
         string returnString = builder.ToString();
+        DirectoryInfo result = new(returnString);
         builder.Clear();
 
-        return returnString;
+        if (!result.Exists)
+        {
+            throw new Exception($"The following path could not be found: {returnString}\nThis resulted from the following relative path:\n\tProject: {projectContainingLocalFolder}\n\tPath in the project: {relativePath}\n\tFolder to be located: {localFolderToFind}");
+        }
+        return result;
     }
     #endregion
 }
