@@ -81,6 +81,4 @@ public class LeafThreadTranslateTest
         Assert.Equal(expected.Number, actual.Number);
     }
     #endregion
-
-    
 }
