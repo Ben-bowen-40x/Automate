@@ -28,7 +28,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                 if (threadVals.IsSuccess)
                 {
                     List<TEntity> value = threadVals.Value;
-                    _service.Update(value, rawRepo);
+                    Result update = _service.Update(value, rawRepo);
 
                     List<IMessage> m = value.Select(v => v.Convert<TEntity, IMessage>()).ToList();
                     Result<FileInfo> file = _reportService.GenerateLeafMessages(m, valueRepoCsv);
