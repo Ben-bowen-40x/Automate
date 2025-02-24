@@ -98,7 +98,7 @@ internal partial class MessagePatterns
     private const string home = $"((home|house|place|resid){letters})";
     private const string nest = $"((nest){letters})";
     private const string me = $"(me|my)";
-    private const string my = $"((mine|my|our|{me}){letters})";
+    private const string my = $"((mine|our|{me}){letters})";
     private const string product = $"((product|chemical|spray){letters})";
     private const string preposition = $"(in|around|near|beside|between|by){letters}";
     private const string quote = $"((pric|{qote}|estimat|how much|eval|cost){letters})";
@@ -297,7 +297,7 @@ internal partial class MessagePatterns
     $"(they|s?he){letters} (is|work|represent){letters} (employed by|for|with|{word} behalf of) (you|{companyName})|" +
     $"sign{chars}up {word}{zeroFive}({service}|you|you guys|{companyName})|" +
     $"prepar{letters}|" +
-    $"{weAre} {word}{zeroFive}contract|" +
+    $"{weAre} {word}{zeroFive}{my} contract|" +
     $"(contract|{service}){chars}{cancel}|" +
     $"{cancel}{chars}(contract|{service})|" +
     $"(resum|continu){letters} {word}{zeroThree}{service}|" +
