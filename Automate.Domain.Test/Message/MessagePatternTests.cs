@@ -368,8 +368,9 @@ public class MessagePatternTests
         InlineData("Hola soy estrella", false), // wut
         InlineData("Hello I’m looking for an exterminator asap.", true), // wants service
         */
-        InlineData("How much would this charge", true), // wants service
+        InlineData("I'm in need of a one-time treatment to satisfy the requirements of a sales contract of our residential home. I am a real estate agent in Mendon and selling our home. I can give much more information during a phone call.", true) // wants service
         /*
+        InlineData("How much would this charge", true), // wants service
         InlineData("How much is a first time treatment for my home", true), // wants service
         InlineData("Elena Rodríguez", true), // names count
         InlineData("What is your pricing like?", true), // wants service
