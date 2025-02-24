@@ -147,7 +147,7 @@ internal partial class MessagePatterns
     "spray|" +
     $"stink{chars}bug|" +
     "termite|" +
-    "tic|" +
+    $"{border}tic|" +
     "wasp|" +
     $"yello{chars}jacket{chars}|" +
     // end
@@ -373,6 +373,7 @@ internal partial class MessagePatterns
     $"bee{chr}keep|" +
     $"gopher|" +
     $"opossum|" +
+    $"bumble{chr}?bee|" +
     $"possum|" +
     $"squirrel|" +
     $"snake|" +
