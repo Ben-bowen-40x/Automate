@@ -58,7 +58,7 @@ internal partial class MessagePatterns
         else if (likelyMatch.Success || possibleMatch.Success)
             result = true;
 
-        return new(matches, input, result, matches == string.Empty);
+        return new(matches, input, result, string.IsNullOrWhiteSpace(matches));
     }
     #endregion
 
