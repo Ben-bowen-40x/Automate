@@ -92,7 +92,7 @@ internal partial class MessagePatterns
     private const string zeroFive = "{0,5}";
 
     private const string appointment = $"((ap{letters}t){letters})";
-    private const string cancel = $"(end|stop|cancel{letters})";
+    private const string cancel = $"{border}(end|stop|cancel{letters})";
     private const string companyName = PatternHelper.Company;
     private const string customerService = $"({customer} service)";
     private const string home = $"((home|house|place|resid){letters})";
@@ -298,7 +298,7 @@ internal partial class MessagePatterns
     $"sign{chars}up {word}{zeroFive}({service}|you|you guys|{companyName})|" +
     $"prepar{letters}|" +
     $"{weAre} {word}{zeroFive}{my} contract|" +
-    $"(contract|{service}){chars}{cancel}|" +
+    $"(contract|{service}){word}{zeroFive}{cancel}|" +
     $"{cancel}{chars}(contract|{service})|" +
     $"(resum|continu){letters} {word}{zeroThree}{service}|" +
     $"{cancel}{letters}|" +
@@ -317,7 +317,7 @@ internal partial class MessagePatterns
     $"{service} schedul{letters}|" +
     $"(send|call|talk to|get a hold of|when) {words}tech{letters}{border}|" +
     $"(you{letters}|{my}|the) call{letters}{border}|" +
-    $"{service} (in|out){letters}|" +
+    $"{service} (in|out)side|" +
     // end
     "(bill|statement|invoice)";
     #endregion
