@@ -85,8 +85,8 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
                 File.WriteAllText(repoLocation, string.Empty);
 
             FileInfo repo = new(repoLocation);
-            var write = JsonService.WriteToFile(repo, list);
-            return write;
+            Result result = JsonService.WriteToFile(repo, list);
+            return result;
         }
         catch (Exception ex)
         {
