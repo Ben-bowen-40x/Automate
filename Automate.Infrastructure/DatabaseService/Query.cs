@@ -46,9 +46,9 @@ public partial class Query : IQuery
             (
                 Select,
                 From,
-                Where is null ? string.Empty : Where,
-                GroupBy is null ? string.Empty : GroupBy,
-                OrderBy is null ? string.Empty : OrderBy
+                string.IsNullOrWhiteSpace(Where) ? string.Empty : Where,
+                string.IsNullOrWhiteSpace(GroupBy) ? string.Empty : GroupBy,
+                string.IsNullOrWhiteSpace(OrderBy) ? string.Empty : OrderBy
             )
             : string.Join(string.Empty, QueryStrings);
     }
@@ -196,7 +196,7 @@ public partial class Query : IQuery
                 break;
             default: throw new NotImplementedException($"The following sql query keyword has not been implemented: {type}");
         }
-        
+
         var intermediate = VerifyQuery(string.Join(string.Empty, QueryStrings), out _, out _, out _, out _, out _);
         QueryString = string.Join(' ', intermediate.Split(' ').Where(i => !string.IsNullOrWhiteSpace(i)));
         return QueryString;
@@ -220,6 +220,8 @@ public partial class Query : IQuery
     private static partial Regex FromRgx();
     [GeneratedRegex(@"\bselect ", RegexOptions.IgnoreCase, _culture)]
     private static partial Regex SelectRgx();
+    [GeneratedRegex(@"if\(.*,.*,.*\)")]
+    private static partial Regex IfRgx();
     #endregion
 
     #region Internal
@@ -306,7 +308,7 @@ public partial class Query : IQuery
             int whereCt = WhereRgx().Count(query);
             bool noWhereClause = whereCt == 0; // The query does not contain a WHERE clause
             string where1 = noWhereClause ? string.Empty : wherer[1]; // There may or may not be a WHERE clause
-            bool containComma = where1.Contains(','); // The where clause should not contain commas
+            bool containComma = where1.Contains(',') && !IfRgx().IsMatch(where1); // The where clause should not contain commas unless it has an if expression
             bool q = noWhereClause && // Even though there is no WHERE clause ...
                 (where1.Contains('>') || where1.Contains('<') || where1.Contains("'<'")); // ... the query contains greater than or less than operators
             string whery = containComma || whereCt > 1 || q
