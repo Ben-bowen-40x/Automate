@@ -278,12 +278,6 @@ public partial class Query : IQuery
                     }
                 }
                 orderBy = intermediary;
-                //   orderBy = (orderByCt > 0 && asc == 0 && desc == 0) // There is at least one instance of the ORDER BY keyword but no instances of the asc or desc keywords
-                //   || (orderByCt == 0 && asc > 0) || (orderByCt == 0 && desc > 0) // There are no instances of the ORDER BY keyword but there is at least one asc or desc keyword
-                //   || (asc > 0 && desc > 0) // There is an instance of both asc and desc keywords, but there should only be asc OR desc
-                //   || asc > 1 || desc > 1 // Either asc or desc occurs more than once
-                //? throw new ArgumentException(Error(QueryType.OrderBy, query, OrderbyStr[1], "It's missing the asc or desc keyword, or there is more than one ORDER BY keyword in the query, or there are too many asc/desc keywords"))
-                //: OrderByRgx().Count(query) == 1 ? "ORDER BY " + OrderbyStr[1] : null; // The OrderBy property is nullable because not all queries need one
             }
             else if (AscRgx().Count(query) > 0 || DescRgx().Count(query) > 0) // If we've gotten to this line, there are no ORDER BY keywords in the query
                 throw new ArgumentException(Error(QueryType.OrderBy, query, query, "The asc or desc keywords appears in a query without an ORDER BY clause"));
