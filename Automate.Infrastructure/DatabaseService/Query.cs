@@ -347,8 +347,7 @@ public partial class Query : IQuery
         string errstr = error is not null ? error : string.Empty;
         return $"{err} {QueryTypeString(type)} {err1}. {errstr}\n\nBAD SECTION:\n{QueryTypeString(type)} {badQuerySection}\nQUERY:\n{query}";
     }
-    internal static string QueryTypeString(QueryType type)
-    => type switch
+    internal static string QueryTypeString(QueryType type) => type switch
     {
         QueryType.Select => "SELECT",
         QueryType.From => "FROM",
