@@ -50,8 +50,10 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
     public Result<List<TEntity>> GetEntitiesParition<TEntity>(DwhQueryType type, List<TEntity> existing, string connectionString, IQuery query) where TEntity : class, IPhoneNumberCompatible
     {
         // Filter the connection string
-        IQuery newQuery = _rawQuery.Filter(type, query, existing.Select(e => e.Number.Number).ToList());
-        return GetEntitiesList<TEntity>(connectionString, newQuery);
+        List<long> numbers = existing.Select(e => e.Number.Number).ToList();
+        IQuery newQuery = _rawQuery.Filter(type, query, numbers);
+        Result<List<TEntity>> entities = GetEntitiesList<TEntity>(connectionString, newQuery);
+        return entities;
     }
 
     public Result<List<TEntity>> GetRepo<TEntity>(string location)
@@ -59,7 +61,8 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
         try
         {
             FileInfo loc = new(location);
-            return JsonService.ReadFile<TEntity>(loc);
+            Result<List<TEntity>> result = JsonService.ReadFile<TEntity>(loc);
+            return result;
         }
         catch (Exception ex)
         {
