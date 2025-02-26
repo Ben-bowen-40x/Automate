@@ -352,43 +352,43 @@ public class MessagePatternTests
         //InlineData("Need a help to control small crakroches  in the kitchen", true), // interested in services for crakroches
         //InlineData("How much would a 550 sq foot one bedroom apt be", true), // interested in service
         //InlineData("Hi| how much do you charge to bomb a basement?", true), // interested in service
-        //InlineData("Hi hope all is well| I had an appointment scheduled for 11/28/2023 and no has shown up yet", false), // current customer
     #endregion
-        InlineData("Hello.We have a gnawing sound coming from the attic above our garage from some kind of critter.Is this something you can address for us?", true), // interested in service
+        InlineData("Hi hope all is well| I had an appointment scheduled for 11/28/2023 and no has shown up yet", false), // current customer
     #region Below
-    //InlineData("I got a message that I have a balance due but can’t find how to log in to get that resolved", false), // current customer
-    //Conflict InlineData("Can you please let me know if you come to Calverton thank you", true), // interested in service
-    //InlineData("Would like to rent a heater", false), // service not provided
-    //InlineData("I would like to send a positive review today I’ve already written it but besides Google or Yelp or Listen 360 can I have your email address and do it that way otherwise I’ll try to do Yelp | Thank You", false), // current customer
-    //InlineData("I cannot address this ti after the new year.I have a very horrendous problem.Please let me know what your fee is. Thank you.", true), // interested in service
-    //InlineData("We found a dead cockroach in our living room.", true), // interested in service
-    //InlineData("Multiple dead bumblebees in basement.Saw them nesting on the outside of house last fall but unable to access...", false), // not treated
-    //InlineData("Inside treatment", true), // wants treatment
-    //InlineData("Estoy interesada por el trabajo", false), // wants work
-    //InlineData("Hola soy estrella", false), // wut
-    //InlineData("Hello I’m looking for an exterminator asap.", true), // wants service
-    //InlineData("I'm in need of a one-time treatment to satisfy the requirements of a sales contract of our residential home. I am a real estate agent in Mendon and selling our home. I can give much more information during a phone call.", true) // wants service
-    //InlineData("How much would this charge", true), // wants service
-    //InlineData("How much is a first time treatment for my home", true), // wants service
-    //InlineData("Elena Rodríguez", true), // names count
-    //InlineData("What is your pricing like?", true), // wants service
-    //InlineData("Hi how much for a small room", true), // wants service
-    //InlineData("Can you please email (nargue @vetcor.com) my Dec 2023 invoice for Nickel City Animal Hospital(568416)? | ", false), // customer -- invoice
-    //Conflict InlineData("Hey | Would you have anyone available today | I live in bartlett", true), // wants service
-    //InlineData("Do you have anyone that would come out today | ", false), // wants service -- likely a customer
-    //InlineData("I need someone to take care my roach problem", true), // wants service
-    //InlineData("Bom dia estou entered ado no em trabalhar", false), // wants work
-    //InlineData("Mire que están necesitando personas para Trabajo", false), // wants work
-    //InlineData("please call.  I'm trying to make payment and your numbers don't work", false), // current customer
-    //InlineData("Can you tell me when a tech will be at my house today?  23 Canal St Winchester Ma", false), // current customer
-    //InlineData("Need baiting of vacant house prior to demolition", true), // wants service
-    //InlineData("Estoy interesado en el trabajo  | Vivo en East Haven CT", false), // wants work
-    //InlineData("I have fixed the problem with my credit card. It should go through now if you re-submit it. Sorry about the inconvenience. | Eric Bello", false), // current customer
-    //InlineData("I am looking for an exterminator for a commercial building.", true), // interested in service
-    //InlineData("Sorry was so upset with you guys before for not being able to come todsy", false), // current customer
-    //InlineData("My son says it will be fine till it’s taken care of", false), // don't know exactly what's going on, but it looks like this person is already in contact with us
-    //InlineData("Ocupo el empleo", false), // wants work
-    //InlineData("I didn’t see the contract yet.I’m not sure where to look for it.", false), // already in contact
+        //InlineData("Hello.We have a gnawing sound coming from the attic above our garage from some kind of critter.Is this something you can address for us?", true), // interested in service
+        //InlineData("I got a message that I have a balance due but can’t find how to log in to get that resolved", false), // current customer
+        //Conflict InlineData("Can you please let me know if you come to Calverton thank you", true), // interested in service
+        //InlineData("Would like to rent a heater", false), // service not provided
+        //InlineData("I would like to send a positive review today I’ve already written it but besides Google or Yelp or Listen 360 can I have your email address and do it that way otherwise I’ll try to do Yelp | Thank You", false), // current customer
+        //InlineData("I cannot address this ti after the new year.I have a very horrendous problem.Please let me know what your fee is. Thank you.", true), // interested in service
+        //InlineData("We found a dead cockroach in our living room.", true), // interested in service
+        //InlineData("Multiple dead bumblebees in basement.Saw them nesting on the outside of house last fall but unable to access...", false), // not treated
+        //InlineData("Inside treatment", true), // wants treatment
+        //InlineData("Estoy interesada por el trabajo", false), // wants work
+        //InlineData("Hola soy estrella", false), // wut
+        //InlineData("Hello I’m looking for an exterminator asap.", true), // wants service
+        //InlineData("I'm in need of a one-time treatment to satisfy the requirements of a sales contract of our residential home. I am a real estate agent in Mendon and selling our home. I can give much more information during a phone call.", true) // wants service
+        //InlineData("How much would this charge", true), // wants service
+        //InlineData("How much is a first time treatment for my home", true), // wants service
+        //InlineData("Elena Rodríguez", true), // names count
+        //InlineData("What is your pricing like?", true), // wants service
+        //InlineData("Hi how much for a small room", true), // wants service
+        //InlineData("Can you please email (nargue @vetcor.com) my Dec 2023 invoice for Nickel City Animal Hospital(568416)? | ", false), // customer -- invoice
+        //Conflict InlineData("Hey | Would you have anyone available today | I live in bartlett", true), // wants service
+        //InlineData("Do you have anyone that would come out today | ", false), // wants service -- likely a customer
+        //InlineData("I need someone to take care my roach problem", true), // wants service
+        //InlineData("Bom dia estou entered ado no em trabalhar", false), // wants work
+        //InlineData("Mire que están necesitando personas para Trabajo", false), // wants work
+        //InlineData("please call.  I'm trying to make payment and your numbers don't work", false), // current customer
+        //InlineData("Can you tell me when a tech will be at my house today?  23 Canal St Winchester Ma", false), // current customer
+        //InlineData("Need baiting of vacant house prior to demolition", true), // wants service
+        //InlineData("Estoy interesado en el trabajo  | Vivo en East Haven CT", false), // wants work
+        //InlineData("I have fixed the problem with my credit card. It should go through now if you re-submit it. Sorry about the inconvenience. | Eric Bello", false), // current customer
+        //InlineData("I am looking for an exterminator for a commercial building.", true), // interested in service
+        //InlineData("Sorry was so upset with you guys before for not being able to come todsy", false), // current customer
+        //InlineData("My son says it will be fine till it’s taken care of", false), // don't know exactly what's going on, but it looks like this person is already in contact with us
+        //InlineData("Ocupo el empleo", false), // wants work
+        //InlineData("I didn’t see the contract yet.I’m not sure where to look for it.", false), // already in contact
     #endregion
     ]
     #endregion
@@ -409,6 +409,8 @@ public class MessagePatternTests
         Assert.Equal(string.IsNullOrWhiteSpace(matches), noMatch);
     }
 }
+
+#region Unassigned
 // Unassigned
 //InlineData("Hello| I was just wondering if you had cheaper options than the current plan I'm on.  ", ),
 //InlineData("please call this number or 203-918-7440", ),
@@ -615,3 +617,4 @@ public class MessagePatternTests
 //InlineData("Tom | I’m stuck out between lobby of halls & rooms I’m under the clock you bought recently.", ),
 //InlineData("Hi I am interested to build my credit.By the way I am deaf so using text is good.Thanks 🙏", ),
 //InlineData("Hi can you tell me the name of the sales employee that was working yesterday in the jagow road / lake mead area? Thank you", ),
+#endregion
