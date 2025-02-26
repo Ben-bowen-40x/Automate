@@ -96,7 +96,7 @@ internal partial class MessagePatterns
     private const string companyName = PatternHelper.Company;
     private const string customerService = $"({customer} service)";
     private const string home = $"((home|house|place|resid){letters})";
-    private const string nest = $"((nest){letters})";
+    private const string nest = $"((nest|gnaw){letters})";
     private const string me = $"(me|my)";
     private const string my = $"((mine|our|{me}){letters})";
     private const string product = $"((product|chemical|spray){letters})";
@@ -303,9 +303,10 @@ internal partial class MessagePatterns
     $"(resum|continu){letters} {word}{zeroThree}{service}|" +
     $"{cancel}{letters}|" +
     $"{we} {words}(charg|debit){letters}|" +
+    $"{we} {words}(had|have|got|schedul|check{letters} {words}{my}){letters} {words}{appointment}|" +
     $"be{letters} (in|on) (hold|the phone|a call) with|" +
     $"you{letters} (com|cam|visit){letters}|" +
-    $"(you|tech|s?he|they){chars} (cam|com){letters}|" +
+    $"(you|tech|s?he|they){letters} (cam|com){letters}|" +
     $"(change|{my}) {word}{zeroThree}(pay{letters}|credit card|cc|card)|" +
     $"pay{letters} {word}(bill|bil|contract|charge)|" +
     $"(we|i) {word}{zeroThree}(a tech|sign{letters}{chr}up|have {word}acc(oun)?t|have {word}({service}|contract))|" +
@@ -390,7 +391,7 @@ internal partial class MessagePatterns
 
     #region Possible Lead
     private const string _possible =
-    $"(larg|hug|vast|enorm){chars}{nest}|" +
+    $"(larg|hug|vast|enorm){letters} {nest}|" +
     $"{bug}( {service}| {nest})?|" +
     $"remov{letters}|" +
     $"{service}|" +
