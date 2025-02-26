@@ -16,12 +16,11 @@ public class RawQuery(IRawQuerySettings settings)
     /// <returns></returns>
     public IQuery Filter(DwhQueryType type, IQuery query, List<long> values)
     {
-        string vals = string.Join(",", values);
         string where = type switch
         {
-            DwhQueryType.AllCalls => $"{_s.CallBasicNumerical!} in ({vals})",
-            DwhQueryType.AllCustomers => $"{_s.CustomerBasicNumerical!} in ({vals})",
-            _ => throw new Exception($"The type of query has not been set\nType: {type}\nQuery:\n{query}")
+            DwhQueryType.AllCalls => $"{_s.CallBasicNumerical!} in ({string.Join(",", values)})",
+            DwhQueryType.AllCustomers => $"{_s.CustomerBasicNumerical!} in ({string.Join(",", values)})",
+            _ => string.Empty
         };
         query.AppendWhere(where);
         return query;

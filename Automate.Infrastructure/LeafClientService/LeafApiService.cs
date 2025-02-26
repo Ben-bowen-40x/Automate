@@ -77,7 +77,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
     internal static Result<List<IMessage>> RetrieveMessageRepo(string msgRepoLoc = "")
     {
         // Check loc string
-        FileInfo repo = msgRepoLoc == string.Empty || !File.Exists(msgRepoLoc)
+        FileInfo repo = string.IsNullOrWhiteSpace(msgRepoLoc) || !File.Exists(msgRepoLoc)
             ? MessageRepoLocation
             : new(msgRepoLoc);
 
@@ -104,7 +104,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
     internal static Result<List<TEntity>> RetrieveLeafRepo<TEntity>(string leafRepo = "") where TEntity : class, IConvert
     {
         // Check location string
-        FileInfo repo = leafRepo == string.Empty || !File.Exists(leafRepo)
+        FileInfo repo = string.IsNullOrWhiteSpace(leafRepo) || !File.Exists(leafRepo)
             ? LeafRepoLocation
             : new(leafRepo);
 
@@ -172,32 +172,27 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         return master;
     }
 
-    public Result<bool> ReposMatch<TEntity>(out List<IMessage> msgs, out List<TEntity> leaf, string msgRepo = "", string leafRepo = "") where TEntity : class, IConvert
+    public Result ReposMatch<TEntity>(out List<IMessage> msgs, out List<TEntity> leaf, string msgRepo = "", string leafRepo = "") where TEntity : class, IConvert
     {
         Result<List<IMessage>> imsgs = RetrieveMessageRepo(msgRepo);
         Result<List<TEntity>> ileaf = RetrieveLeafRepo<TEntity>(leafRepo);
-        msgs = [];
-        leaf = [];
+        msgs = imsgs.IsSuccess ? imsgs.Value : [];
+        leaf = ileaf.IsSuccess ? ileaf.Value : [];
 
-        if (imsgs.IsSuccess && ileaf.IsSuccess)
+        // Please allow the debugger to see the value of this variable, and don't return it in-line, please
+        Result result = (imsgs.IsSuccess, ileaf.IsSuccess) switch
         {
-            msgs = imsgs.Value;
-            leaf = ileaf.Value;
-            return msgs.Count == leaf.Count;
-        }
-        else if (imsgs.IsFailure && ileaf.IsFailure)
-            return Result.Failure<bool>(imsgs + " " + ileaf.Error);
-        else if (imsgs.IsFailure)
-            return Result.Failure<bool>(imsgs.Error);
-        else if (ileaf.IsFailure)
-            return Result.Failure<bool>(ileaf.Error);
-        else
-            return Result.Failure<bool>(imsgs + " " + ileaf.Error);
+            (true, true) => Result.Success(),
+            (true, false) => Result.Failure<bool>(ileaf.Error),
+            (false, true) => Result.Failure<bool>(imsgs.Error),
+            _ => Result.Failure<bool>(imsgs.Error + " " + ileaf.Error)
+        };
+        return result;
     }
 
-    public Result Update<TEntity>(List<TEntity> leafRepo, List<TEntity> apiResult, string leafRepoLoc = "") where TEntity: class, IConvert
+    public Result Update<TEntity>(List<TEntity> leafRepo, List<TEntity> apiResult, string leafRepoLoc = "") where TEntity : class, IConvert
     {
-        FileInfo leafRepoLocation = leafRepoLoc == string.Empty || !File.Exists(leafRepoLoc)
+        FileInfo leafRepoLocation = string.IsNullOrWhiteSpace(leafRepoLoc) || !File.Exists(leafRepoLoc)
             ? LeafRepoLocation
             : new(leafRepoLoc);
 
@@ -207,7 +202,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         return result;
     }
 
-    public Result Update<TEntity>(List<TEntity> leafRepo, string leafRepoLoc) where TEntity: class, IConvert
+    public Result Update<TEntity>(List<TEntity> leafRepo, string leafRepoLoc) where TEntity : class, IConvert
     {
         FileInfo leafRepoLocation = leafRepoLoc == string.Empty || !File.Exists(leafRepoLoc)
             ? LeafRepoLocation
@@ -215,7 +210,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
 
         try
         {
-            return JsonService.WriteToFile(leafRepoLocation, leafRepo); 
+            return JsonService.WriteToFile(leafRepoLocation, leafRepo);
         }
         catch (Exception ex)
         {

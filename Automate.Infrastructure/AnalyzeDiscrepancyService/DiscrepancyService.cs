@@ -25,9 +25,9 @@ public class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService, IT
     const string _comparisonRepo = @"LocalRepo\Discrepancy.json";
 
     private static FileInfo? _defaultRepo;
-    public static FileInfo DefaultRepo = _defaultRepo ??= new(Parent + _comparisonRepo);
+    public static FileInfo DefaultRepo => _defaultRepo ??= new(Parent + _comparisonRepo);
     private static FileInfo? _defaultFile;
-    public static FileInfo DefaultFile = _defaultFile ??= new(Parent + _discrepancyDefaultFile);
+    public static FileInfo DefaultFile => _defaultFile ??= new(Parent + _discrepancyDefaultFile);
 
     /*/ Deprecated
     //Getting the comparison calls by query
@@ -42,26 +42,6 @@ public class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService, IT
     #endregion
 
     #region Implementations
-    /*/ Deprecated
-    public List<IDiscrepancyCall> GetBillableSourceCalls_(string sourceCsv = "")
-    {
-        // Extract the info from csv
-        string fileLocation = ValidateFile(sourceCsv, _discrepancyDefaultFile);
-        Result<List<DiscrepancySourceLeadsCsvColumns>> result = CsvService.Parse<DiscrepancySourceLeadsCsvColumns>(fileLocation);
-        List<IDiscrepancyCall> calls = result.IsSuccess
-            ? result.Value
-                .Select(c => c.Translate())
-                .ToList()
-            : throw new Exception(result.Error);
-
-        // Check whether we need to update the local repo
-        IDiscrepancyCall mostRecent = GetMostRecent(calls);
-
-        // TODO: We should not be checking and updating the local repo here. We should be using an existing repo that is updated using the update repo verb
-        QueryDb = CheckLocalRepo(mostRecent);
-
-        return calls;
-    }//*/
 
     /// <summary>
     /// <para>If <paramref name="sourceCsv"/> is equal to <see cref="string.Empty"/>, then a default will be used</para>
@@ -90,14 +70,35 @@ public class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService, IT
 
         return calls;
     }
+    /// <summary>
+    /// This implementation retrieves comparison calls either using a local sql file or retrieving it from local repo
+    /// </summary>
+    /// <returns></returns>
+    public List<IDiscrepancyCall> GetComparisonSourceCalls(string comparisonJsonRepo = "")
+    {
+        FileInfo repo = !string.IsNullOrWhiteSpace(comparisonJsonRepo) && File.Exists(comparisonJsonRepo)
+            ? new(comparisonJsonRepo)
+            : DefaultRepo;
+
+        // Retrieve info from the local repo
+        Result<List<DiscrepancyJson>> r = JsonService.ReadFile<DiscrepancyJson>(repo);
+        List<IDiscrepancyCall> result = r.IsSuccess
+            ? r.Value
+                .Select(r => r.Translate())
+                .ToList()
+            : throw new Exception(r.Error);
+
+        return result;
+    }
+
     public List<IDiscrepancyCall> GetCalls<T>(FileInfo fileLocation) where T : IConvert
     {
         // Retrieve
         Result<List<T>> isCsv = CsvService.Parse<T>(fileLocation);
         Result<List<T>> isJson = JsonService.ReadFile<T>(fileLocation);
-        
+
         // If csv reading is successful, return its value; if json reading is successful, return its value; Otherwise, produce a result in an error state
-        Result<List<T>> result = isCsv.IsSuccess? isCsv.Value : 
+        Result<List<T>> result = isCsv.IsSuccess ? isCsv.Value :
             isJson.IsSuccess ? isJson.Value : Result.Failure<List<T>>($"This is the fileLocation: {fileLocation.FullName}\nThe following errors happened while trying to parse the given file as csv:\n\t{isCsv.Error}\nThe following error occurred while trying to parse the given file as json:\n\t{isJson.Error}");
 
         // Convert
@@ -109,8 +110,38 @@ public class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService, IT
 
         return calls;
     }
+    #endregion
 
-    /*/ Deprecated
+    #region Private Methods
+    private static string ValidateFile(string fileStr, string substitute)
+    {
+        return string.IsNullOrWhiteSpace(fileStr) || !File.Exists(fileStr) // This must be a file, not just a path
+            ? Parent + substitute
+            : fileStr;
+    }
+
+    #region Deprecated
+    /*
+    public List<IDiscrepancyCall> GetBillableSourceCalls_(string sourceCsv = "")
+    {
+        // Extract the info from csv
+        string fileLocation = ValidateFile(sourceCsv, _discrepancyDefaultFile);
+        Result<List<DiscrepancySourceLeadsCsvColumns>> result = CsvService.Parse<DiscrepancySourceLeadsCsvColumns>(fileLocation);
+        List<IDiscrepancyCall> calls = result.IsSuccess
+            ? result.Value
+                .Select(c => c.Translate())
+                .ToList()
+            : throw new Exception(result.Error);
+
+        // Check whether we need to update the local repo
+        IDiscrepancyCall mostRecent = GetMostRecent(calls);
+
+        // TODO: We should not be checking and updating the local repo here. We should be using an existing repo that is updated using the update repo verb
+        QueryDb = CheckLocalRepo(mostRecent);
+
+        return calls;
+    }
+
     public List<IDiscrepancyCall> GetComparisonSourceCalls_(string comparisonFile = "")
     {
         string repo = Parent + _comparisonRepo;
@@ -148,39 +179,8 @@ public class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService, IT
             : throw new Exception(r.Error);
         List<IDiscrepancyCall> result = rp.Select(r => r.Translate()).ToList();
         return result;
-    }//*/
-
-    /// <summary>
-    /// This implementation retrieves comparison calls either using a local sql file or retrieving it from local repo
-    /// </summary>
-    /// <returns></returns>
-    public List<IDiscrepancyCall> GetComparisonSourceCalls(string comparisonJsonRepo = "")
-    {
-        FileInfo repo = !string.IsNullOrWhiteSpace(comparisonJsonRepo) && File.Exists(comparisonJsonRepo)
-            ? new(comparisonJsonRepo)
-            : DefaultRepo;
-
-        // Retrieve info from the local repo
-        Result<List<DiscrepancyJson>> r = JsonService.ReadFile<DiscrepancyJson>(repo);
-        List<IDiscrepancyCall> result = r.IsSuccess
-            ? r.Value
-                .Select(r => r.Translate())
-                .ToList()
-            : throw new Exception(r.Error);
-
-        return result;
     }
-    #endregion
-
-    #region Private Methods
-    private static string ValidateFile(string fileStr, string substitute)
-    {
-        return string.IsNullOrWhiteSpace(fileStr) || !File.Exists(fileStr) // This must be a file, not just a path
-            ? Parent + substitute
-            : fileStr;
-    }
-
-    /*/ Deprecated
+    
     private bool CheckLocalRepo(IDiscrepancyCall recentRecord)
     {
         // Retrieve the information from the local repository
@@ -231,7 +231,8 @@ public class DiscrepancyService(IDwhSettings settings) : IDiscrepancyService, IT
             }
             return last;
         }
-    }//*/
-
+    }*/
+    #endregion
+    
     #endregion
 }

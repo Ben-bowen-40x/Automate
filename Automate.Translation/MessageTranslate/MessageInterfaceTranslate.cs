@@ -25,15 +25,6 @@ public static class MessageInterfaceTranslate
         return result;
     }
 
-    private static TimeZoneEnum FindTimeZone(IMsgStrsSpecialExtras entity) => entity.TimeZoneInfo!.ToLower() switch
-    {
-        string t when t.Contains("est") || t.Contains("edt") => TimeZoneEnum.Eastern,
-        string t when t.Contains("cst") || t.Contains("cdt") => TimeZoneEnum.Central,
-        string t when t.Contains("mst") || t.Contains("mdt") => TimeZoneEnum.Mountain,
-        string t when t.Contains("pst") || t.Contains("pdt") => TimeZoneEnum.Pacific,
-        _ => TimeZoneEnum.Eastern
-    };
-
     /// <summary>
     /// Extension Method Translates <paramref name="entity"/> from <see cref="IMsgDTONumberLong"/> to <see cref="IMessage"/>
     /// </summary>
@@ -180,5 +171,13 @@ public static class MessageInterfaceTranslate
         string result = hasComponent ? isolation.Split('/')[0] : isolation;
         return result;
     }
+    private static TimeZoneEnum FindTimeZone(IMsgStrsSpecialExtras entity) => entity.TimeZoneInfo!.ToLower() switch
+    {
+        string t when t.Contains("est") || t.Contains("edt") => TimeZoneEnum.Eastern,
+        string t when t.Contains("cst") || t.Contains("cdt") => TimeZoneEnum.Central,
+        string t when t.Contains("mst") || t.Contains("mdt") => TimeZoneEnum.Mountain,
+        string t when t.Contains("pst") || t.Contains("pdt") => TimeZoneEnum.Pacific,
+        _ => TimeZoneEnum.Eastern
+    };
     #endregion
 }

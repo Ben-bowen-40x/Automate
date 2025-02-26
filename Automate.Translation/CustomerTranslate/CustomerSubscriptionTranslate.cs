@@ -121,12 +121,8 @@ public static class CustomerSubscriptionTranslate
     #region Internal
     internal static string VerifySeller(params string?[] sellersArr)
     {
-        string sellers;
-        List<string> resultarr = new(sellersArr.Length);
-        foreach (var seller in sellersArr)
-            if (!string.IsNullOrWhiteSpace(seller)) resultarr.Add(seller);
-        sellers = resultarr.Count > 0
-            ? string.Join(" | ", sellersArr)
+        string sellers = sellersArr.Length > 0
+            ? string.Join(" | ", sellersArr.Where(s => !string.IsNullOrWhiteSpace(s)))
             : string.Empty;
         return sellers;
     }

@@ -46,9 +46,9 @@ public partial class Query : IQuery
             (
                 Select,
                 From,
-                Where is null ? string.Empty : Where,
-                GroupBy is null ? string.Empty : GroupBy,
-                OrderBy is null ? string.Empty : OrderBy
+                string.IsNullOrWhiteSpace(Where) ? string.Empty : Where,
+                string.IsNullOrWhiteSpace(GroupBy) ? string.Empty : GroupBy,
+                string.IsNullOrWhiteSpace(OrderBy) ? string.Empty : OrderBy
             )
             : string.Join(string.Empty, QueryStrings);
     }
@@ -196,7 +196,7 @@ public partial class Query : IQuery
                 break;
             default: throw new NotImplementedException($"The following sql query keyword has not been implemented: {type}");
         }
-        
+
         var intermediate = VerifyQuery(string.Join(string.Empty, QueryStrings), out _, out _, out _, out _, out _);
         QueryString = string.Join(' ', intermediate.Split(' ').Where(i => !string.IsNullOrWhiteSpace(i)));
         return QueryString;
@@ -220,6 +220,8 @@ public partial class Query : IQuery
     private static partial Regex FromRgx();
     [GeneratedRegex(@"\bselect ", RegexOptions.IgnoreCase, _culture)]
     private static partial Regex SelectRgx();
+    [GeneratedRegex(@"if\(.*,.*,.*\)")]
+    private static partial Regex IfRgx();
     #endregion
 
     #region Internal
@@ -276,12 +278,6 @@ public partial class Query : IQuery
                     }
                 }
                 orderBy = intermediary;
-                //   orderBy = (orderByCt > 0 && asc == 0 && desc == 0) // There is at least one instance of the ORDER BY keyword but no instances of the asc or desc keywords
-                //   || (orderByCt == 0 && asc > 0) || (orderByCt == 0 && desc > 0) // There are no instances of the ORDER BY keyword but there is at least one asc or desc keyword
-                //   || (asc > 0 && desc > 0) // There is an instance of both asc and desc keywords, but there should only be asc OR desc
-                //   || asc > 1 || desc > 1 // Either asc or desc occurs more than once
-                //? throw new ArgumentException(Error(QueryType.OrderBy, query, OrderbyStr[1], "It's missing the asc or desc keyword, or there is more than one ORDER BY keyword in the query, or there are too many asc/desc keywords"))
-                //: OrderByRgx().Count(query) == 1 ? "ORDER BY " + OrderbyStr[1] : null; // The OrderBy property is nullable because not all queries need one
             }
             else if (AscRgx().Count(query) > 0 || DescRgx().Count(query) > 0) // If we've gotten to this line, there are no ORDER BY keywords in the query
                 throw new ArgumentException(Error(QueryType.OrderBy, query, query, "The asc or desc keywords appears in a query without an ORDER BY clause"));
@@ -306,7 +302,7 @@ public partial class Query : IQuery
             int whereCt = WhereRgx().Count(query);
             bool noWhereClause = whereCt == 0; // The query does not contain a WHERE clause
             string where1 = noWhereClause ? string.Empty : wherer[1]; // There may or may not be a WHERE clause
-            bool containComma = where1.Contains(','); // The where clause should not contain commas
+            bool containComma = where1.Contains(',') && !IfRgx().IsMatch(where1); // The where clause should not contain commas unless it has an if expression
             bool q = noWhereClause && // Even though there is no WHERE clause ...
                 (where1.Contains('>') || where1.Contains('<') || where1.Contains("'<'")); // ... the query contains greater than or less than operators
             string whery = containComma || whereCt > 1 || q
@@ -351,8 +347,7 @@ public partial class Query : IQuery
         string errstr = error is not null ? error : string.Empty;
         return $"{err} {QueryTypeString(type)} {err1}. {errstr}\n\nBAD SECTION:\n{QueryTypeString(type)} {badQuerySection}\nQUERY:\n{query}";
     }
-    internal static string QueryTypeString(QueryType type)
-    => type switch
+    internal static string QueryTypeString(QueryType type) => type switch
     {
         QueryType.Select => "SELECT",
         QueryType.From => "FROM",
