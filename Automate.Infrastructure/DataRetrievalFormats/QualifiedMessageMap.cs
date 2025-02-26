@@ -104,7 +104,6 @@ internal class QualifiedMessageMap : ClassMap<QualifiedMessageRecord>, IQualifie
     [Name(SellersName)]
     public string? Sellers { get; set; }
 
-    private long? _phone;
     /// <summary>
     /// Currently, this map does not read the phone numbers because it doesn't save phone numbers from the customer
     /// <para>For this reason, the phone numbers are defaulting to <see cref="Number"/></para>
@@ -122,6 +121,7 @@ internal class QualifiedMessageMap : ClassMap<QualifiedMessageRecord>, IQualifie
     //[Name(Phone2Name)]/*
     [Ignore]//*/
     public long Phone2 { get => _phone ??= Number; set => _phone = Number; }
+    private long? _phone;
 
     public IMessage Convert<IMsgDTONumberLong, IMessage>()
     {

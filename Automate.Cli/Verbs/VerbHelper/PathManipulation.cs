@@ -18,7 +18,7 @@ public static class PathManipulation
     {
         // Strip the file name from the path
         List<string> separated = [.. fileLoc.Split('\\')];
-        separated.RemoveAt(separated.Count - 1);
+        separated.RemoveAt(separated.Count - 1);// O(n) complexity but Omega(1) execution, because it's the last element
 
         // Reform the path, but this time the parent directory only
         string parent = string.Join('\\', separated);

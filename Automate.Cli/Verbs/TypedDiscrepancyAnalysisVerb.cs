@@ -28,29 +28,37 @@ internal class TypedDiscrepancyAnalysisVerb : IVerb
 
     public int Run(IServiceProvider service)
     {
-        string parent = PathManipulation.RetrieveParentDir(ReportLocation);
-
-        // Verify command line input
-        VerifyUserInput(parent, out FileInfo fileName, out FileInfo report, out FileInfo comparisonLoc);
+        #region Verify command line input
+        FileInfo fileName = string.IsNullOrWhiteSpace(BillableCallCsvLoc) || !File.Exists(BillableCallCsvLoc) || !new FileInfo(BillableCallCsvLoc).Extension.Equals(".csv")
+            ? DiscrepancyService.DefaultFile
+            : new(BillableCallCsvLoc);
+        FileInfo report = string.IsNullOrWhiteSpace(ReportLocation) || !File.Exists(ReportLocation) || !new FileInfo(ReportLocation).Extension.Equals(".csv")
+            ? DiscrepancyService.DefaultFile
+            : new(ReportLocation);
+        FileInfo query = string.IsNullOrWhiteSpace(ComparisonCallQueryLoc) || !File.Exists(ComparisonCallQueryLoc) || !new FileInfo(ComparisonCallQueryLoc).Extension.Equals(".csv")
+            ? DiscrepancyService.DefaultFile
+            : new(ComparisonCallQueryLoc);
+        File.WriteAllText(report.FullName, "");
+        #endregion
 
         // Inform user of the input
-        InformUser(fileName.FullName, report.FullName, comparisonLoc.FullName);
+        InformUser(fileName.FullName, report.FullName, query.FullName);
 
         // Prepare the result
         ITypedDiscrepancyManager callManager = service.GetRequiredService<ITypedDiscrepancyManager>();
         Result<FileInfo> result = Source switch
         {
-            DiscrepancySource.Libacion => callManager.Manage<DiscrepancySourceLeadsCsvColumns, DiscrepancyJson>(fileName, report, comparisonLoc),
-            DiscrepancySource.Guliagar => callManager.Manage<DiscrepancySourceLeadsCsvColumns, DiscrepancyJson>(fileName, report, comparisonLoc),
-            DiscrepancySource.ElkHall => callManager.Manage<DiscrepancySourceLeadsCsvColumns, DiscrepancyJson>(fileName, report, comparisonLoc),
-            _ => callManager.Manage<DiscrepancySourceLeadsCsvColumns, DiscrepancyJson>(fileName, report, comparisonLoc)
+            DiscrepancySource.Libacion => callManager.Manage<DiscrepancySourceLeadsCsvColumns, DiscrepancyJson>(fileName, report, query),
+            DiscrepancySource.Guliagar => callManager.Manage<DiscrepancySourceLeadsCsvColumns, DiscrepancyJson>(fileName, report, query),
+            DiscrepancySource.ElkHall => callManager.Manage<DiscrepancySourceLeadsCsvColumns, DiscrepancyJson>(fileName, report, query),
+            _ => callManager.Manage<DiscrepancySourceLeadsCsvColumns, DiscrepancyJson>(fileName, report, query)
         };
 
         // Name log 
         StringLogger.NameLog(DateTime.Now, AnalyzeDiscrepancy);
 
         // Return code 
-        return DetermineReturnCode(fileName.FullName, report.FullName, comparisonLoc.FullName, result);
+        return DetermineReturnCode(fileName.FullName, report.FullName, query.FullName, result);
     }
 
     #region Private Members
@@ -59,20 +67,6 @@ internal class TypedDiscrepancyAnalysisVerb : IVerb
         Console.WriteLine($"For the following option, \"{nameof(BillableCallCsvLoc)}\" -- {PathManipulation.LocationInformation(fileName)}");
         Console.WriteLine($"\nFor the following option, \"{nameof(ReportLocation)}\" -- {PathManipulation.LocationInformation(report)}");
         Console.WriteLine($"\nFor the following option, \"{nameof(ComparisonCallQueryLoc)}\" -- {PathManipulation.LocationInformation(query)}");
-    }
-
-    private void VerifyUserInput(string parent, out FileInfo fileName, out FileInfo report, out FileInfo query)
-    {
-        fileName = string.IsNullOrWhiteSpace(BillableCallCsvLoc) || !File.Exists(BillableCallCsvLoc) || !new FileInfo(BillableCallCsvLoc).Extension.Equals(".csv")
-            ? DiscrepancyService.DefaultFile
-            : new(BillableCallCsvLoc);
-        report = string.IsNullOrWhiteSpace(ReportLocation) || !File.Exists(ReportLocation) || !new FileInfo(ReportLocation).Extension.Equals(".csv")
-            ? DiscrepancyService.DefaultFile
-            : new(ReportLocation);
-        query = string.IsNullOrWhiteSpace(ComparisonCallQueryLoc) || !File.Exists(ComparisonCallQueryLoc) || !new FileInfo(ComparisonCallQueryLoc).Extension.Equals(".csv")
-            ? DiscrepancyService.DefaultFile
-            : new(ComparisonCallQueryLoc);
-        File.WriteAllText(report.FullName, "");
     }
 
     static int DetermineReturnCode(string fileName, string report, string query, Result<FileInfo> result)
