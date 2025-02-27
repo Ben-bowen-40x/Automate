@@ -14,7 +14,7 @@ public class SharpQueryMethodTests
     public void TestCatmanGuliagar()
     {
         var doit = _queryservice.SubmitForm_Guliagar();
-        Assert.NotNull(doit);
+        Assert.True(doit.IsSuccess);
     }
     [
         Fact
