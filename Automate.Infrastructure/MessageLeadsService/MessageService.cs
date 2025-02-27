@@ -52,7 +52,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
     public List<IMessage> GetMessages<T>(string msgs) where T : IConvert
     {
         // Retrieve Messages
-        FileInfo msgLocStr = msgs == string.Empty ? Location(_messagesLocation) : new(msgs);
+        FileInfo msgLocStr = string.IsNullOrWhiteSpace(msgs) ? Location(_messagesLocation) : new(msgs);
         Result<List<T>> result = CsvService.Parse<T>(msgLocStr);
         IEnumerable<T> messageCol = result.IsSuccess
             ? result.Value
@@ -67,10 +67,10 @@ public class MessageService(IDwhSettings settings) : IMessageService
         return uniqueMsgs;
     }
 
-    public List<ICallRecord> GetCallRecords(List<long> msgNums, string callRepo)
+    public List<ICallRecord> GetCallRecords(IEnumerable<long> msgNums, string callRepo)
     {
         // Prepare the repo location
-        FileInfo callLocation = callRepo == string.Empty || !File.Exists(callRepo)
+        FileInfo callLocation = string.IsNullOrWhiteSpace(callRepo) || !File.Exists(callRepo)
             ? Location(_callRecordRepo)
             : new(callRepo);
 
@@ -85,10 +85,10 @@ public class MessageService(IDwhSettings settings) : IMessageService
         return filteredCalls;
     }
 
-    public List<ICustomerSubscription> GetCustomerRecords(List<long> msgNums, string customerRepo)
+    public List<ICustomerSubscription> GetCustomerRecords(IEnumerable<long> msgNums, string customerRepo)
     {
         // Prepare the repo location. This is the default location
-        FileInfo customerLocation = customerRepo == string.Empty || !File.Exists(customerRepo)
+        FileInfo customerLocation = string.IsNullOrWhiteSpace(customerRepo) || !File.Exists(customerRepo)
             ? Location(_customerRecordRepo)
             : new(customerRepo);
 
@@ -96,13 +96,11 @@ public class MessageService(IDwhSettings settings) : IMessageService
         List<CustSubJsonReader> localCustomers = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
-        IEnumerable<ICustomerSubscription> filteredCustomers = localCustomers
+        List<ICustomerSubscription> filteredCustomers = localCustomers
             .Select(c => c.Translate())
-            .Where(c =>
-                msgNums
-                .Contains(c.Number.Number)
-            );
-        return filteredCustomers.ToList();
+            .Where(c => msgNums.Contains(c.Number.Number))
+            .ToList();
+        return filteredCustomers;
     }
     #endregion
 
