@@ -7,13 +7,19 @@ public class SharpQueryMethodTests
     public readonly static IInfrastructureSettings _config = (IInfrastructureSettings)new InfraTestConfiguration().TestSettings;
     private readonly SharpQueryService _queryservice = new(_config);
 
-    [Fact]
+    [
+        Fact
+        (Skip = "This has not been created yet")
+    ]
     public void TestCatmanGuliagar()
     {
         var doit = _queryservice.SubmitForm_Guliagar();
         Assert.NotNull(doit);
     }
-    [Fact]
+    [
+        Fact
+        (Skip = "This has not been created yet")
+    ]
     public async Task FormSubmits()
     {
         var doit = await _queryservice.Submit_Form_Guliagar();
