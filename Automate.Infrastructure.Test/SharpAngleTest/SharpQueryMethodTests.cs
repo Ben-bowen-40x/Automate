@@ -6,10 +6,10 @@ public class SharpQueryMethodTests
 {
     public readonly static IInfrastructureSettings _config = (IInfrastructureSettings)new InfraTestConfiguration().TestSettings;
     private readonly SharpQueryService _queryservice = new(_config);
-
+    const string _undev = "This method has not been created and cannot be tested";
     [
         Fact
-        (Skip = "This has not been created yet")
+        (Skip = _undev)
     ]
     public void TestCatmanGuliagar()
     {
@@ -18,7 +18,7 @@ public class SharpQueryMethodTests
     }
     [
         Fact
-        (Skip = "This has not been created yet")
+        (Skip = _undev)
     ]
     public async Task FormSubmits()
     {
