@@ -13,7 +13,7 @@ public class MessageAnalysisManager(IMessageService textService, IReportService 
     {
         // Retrieve Items
         List<IMessage> msgs = _textService.GetMessages<T>(messages);
-        List<long> nums = msgs.Select(t => t.Number.Number).ToList();
+        IEnumerable<long> nums = msgs.Select(t => t.Number.Number);
         List<ICallRecord> calls = _textService.GetCallRecords(nums, callQuery);
         List<ICustomerSubscription> customers = _textService.GetCustomerRecords(nums, customerQuery);
 
@@ -30,7 +30,7 @@ public class MessageAnalysisManager(IMessageService textService, IReportService 
     {
         // Retrieve Items
         List<IMessage> msgs = _textService.GetMessages<T>(messages);
-        List<long> nums = msgs.Select(t => t.Number.Number).ToList();
+        IEnumerable<long> nums = msgs.Select(t => t.Number.Number);
         List<ICallRecord> calls = _textService.GetCallRecords(nums, callQuery);
         List<ICustomerSubscription> customers = _textService.GetCustomerRecords(nums, customerQuery);
 
