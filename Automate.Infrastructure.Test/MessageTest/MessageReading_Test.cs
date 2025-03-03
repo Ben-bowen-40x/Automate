@@ -28,7 +28,7 @@ public class MessageReading_Test
         FileInfo f = TestFile(@".info\MessageAnalysis\Test", file);
 
         // Act
-        Result<List<LeasedMessages>> result = CsvService.Parse<LeasedMessages>(f);
+        Result<List<LeasedMessage>> result = CsvService.Parse<LeasedMessage>(f);
         List<IMessage> translation = result.IsSuccess
             ? result.Value.Select(c => c.Translate()).ToList()
             : throw new Exception(result.Error);
