@@ -1,9 +1,10 @@
-﻿using Automate.Translation.MessageTranslate;
+﻿using Automate.Domain.ValueObjects;
+using Automate.Translation.MessageTranslate;
 using CsvHelper.Configuration.Attributes;
 
 namespace Automate.Infrastructure.DataRetrievalFormats;
 
-public class LeasedMessages : IMsgStrsSpecialExtras
+public class LeasedMessage : IMsgStrsSpecialExtras, IConvert
 {
     [Name("Date Received")]
     public string? Date { get; set; }
@@ -17,4 +18,10 @@ public class LeasedMessages : IMsgStrsSpecialExtras
     public string? Source { get; set; }
     [Name("Was it a Lead?")]
     public string? Lead { get; set; }
+
+    public IMessage Convert<IMsgStrsSpecialExtras, IMessage>()
+    {
+        Translation.MessageTranslate.IMsgStrsSpecialExtras @this = this;
+        return (IMessage)@this.Translate();
+    }
 }
