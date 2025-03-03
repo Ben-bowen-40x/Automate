@@ -94,7 +94,7 @@ public class MessageVerbHelper
             (MessageCsvType.Leased, false, false) => generator.Manage<LeasedMessage>(MessageCsvType.Leased.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation),
 
             // Default
-            _ => appender.Manage<UnifiedDateUnchangedOffset_SeparateGclid_MsgCol>(MessageCsvType.Leaf.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation)
+            _ => throw new Exception($"There is no case where the input can be executed. Here is the input:\n{nameof(append)}: {append}\n{nameof(service)}: {service}\n{nameof(messageLocation)}: {messageLocation}\n{nameof(callQueryLocation)}: {callQueryLocation}\n{nameof(customerQueryLocation)}: {customerQueryLocation}\n{nameof(reportLocation)}: {reportLocation}\n{nameof(messageType)}: {messageType}\n{nameof(truncateReport)}: {truncateReport}\n{nameof(truncate)}: {truncate}\n{nameof(days)}: {days}")
         };
     }
 }
