@@ -14,7 +14,7 @@ public class LeasedMessage : IMsgStrsSpecialExtras, IConvert
     public string? PhoneNumStr { get; set; }
     [Name("Message Chain")]
     public string? Contents { get; set; }
-    [Name("Branch")]
+    [Name("BranchData")]
     public string? Source { get; set; }
     [Name("Was it a Lead?")]
     public string? Lead { get; set; }
