@@ -16,6 +16,7 @@ enum MessageCsvType
     GAdsLeafRepo,
     MetaForm,
     Libacion,
+    Leased,
 }
 
 public class MessageVerbHelper
@@ -30,6 +31,7 @@ public class MessageVerbHelper
         GAdsLeafRepo,
         MetaForm,
         Libacion,
+        Leased,
         """;
     internal static Result<FileInfo> Execute(bool append, IServiceProvider service, string messageLocation, string callQueryLocation, string customerQueryLocation, string reportLocation, MessageCsvType messageType, string truncateReport, bool truncate, int days)
     {
@@ -84,6 +86,12 @@ public class MessageVerbHelper
             (MessageCsvType.Libacion, true, false) => appender.Manage<SplitDateUTCOffsetMsgCol>(MessageCsvType.Libacion.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation),
             (MessageCsvType.Libacion, false, true) => generator.Manage<SplitDateUTCOffsetMsgCol>(MessageCsvType.Libacion.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation, truncate, days),
             (MessageCsvType.Libacion, false, false) => generator.Manage<SplitDateUTCOffsetMsgCol>(MessageCsvType.Libacion.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation),
+
+            // Leased
+            (MessageCsvType.Leased, true, true) => appender.Manage<LeasedMessage>(MessageCsvType.Leased.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation, truncateReport, truncate, days),
+            (MessageCsvType.Leased, true, false) => appender.Manage<LeasedMessage>(MessageCsvType.Leased.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation),
+            (MessageCsvType.Leased, false, true) => generator.Manage<LeasedMessage>(MessageCsvType.Leased.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation, truncate, days),
+            (MessageCsvType.Leased, false, false) => generator.Manage<LeasedMessage>(MessageCsvType.Leased.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation),
 
             // Default
             _ => appender.Manage<UnifiedDateUnchangedOffset_SeparateGclid_MsgCol>(MessageCsvType.Leaf.ToString(), messageLocation, callQueryLocation, customerQueryLocation, reportLocation)
