@@ -106,6 +106,13 @@
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
+    "Analyze Messages - Produce New Leased": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LeasedMessages2025.csv -t Leased",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
 
     // Append / Truncated reports
     "Analyze Messages - Truncated 180 days -- Append New Leaf - LeafRepo": {
@@ -171,6 +178,13 @@
     "Analyze Messages - Append Libacion to Power Bi": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LibacionForm.csv -t Libacion -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LibacionForm.csv",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    },
+    "Analyze Messages - Append Leased to Power Bi": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LeasedMessages2025.csv -t Leased -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LeasedMessages.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
