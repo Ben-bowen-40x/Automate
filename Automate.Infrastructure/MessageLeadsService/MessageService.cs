@@ -98,7 +98,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
             : throw new Exception(result.Error);
         List<ICustomerSubscription> filteredCustomers = localCustomers
             .Select(c => c.Translate())
-            .Where(c => msgNums.Contains(c.Number.Number))
+            .Where(c => msgNums.Contains(c.Number.Number) || msgNums.Contains(c.Number2.Number))
             .ToList();
         return filteredCustomers;
     }
