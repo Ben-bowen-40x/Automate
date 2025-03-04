@@ -2,22 +2,31 @@
 using Automate.Translation.PhoneNumTranslate;
 using Automate.Translation.ValueObjectsTranslations;
 using Automate.Translation.ValueObjectTranslate;
+using System.Text.RegularExpressions;
 
 namespace Automate.Translation.MessageTranslate;
-public static class MessageInterfaceTranslate
+public static partial class MessageInterfaceTranslate
 {
     #region Public
     public static IMessage Translate(this IMsgStrsSpecialExtras entity)
     {
         PhoneNumber num = PhoneNumberTranslate.Translate(entity.PhoneNumStr);
-        DateTime d = DateTime.TryParse(entity.Date, out DateTime dtResult) ? dtResult : DateTime.MaxValue;
-        TimeZoneEnum e = !string.IsNullOrWhiteSpace(entity.TimeZoneInfo)
+
+        // Date Translation
+        string cleanDate = string.IsNullOrWhiteSpace(entity.Date)
+            ? string.Empty
+            : AtRgx().Replace(entity.Date, string.Empty);
+        DateTime d = DateTime.TryParse(cleanDate, out DateTime dtResult) ? dtResult : DateTime.MaxValue;
+        TimeZoneEnum z = !string.IsNullOrWhiteSpace(entity.TimeZoneInfo)
             ? FindTimeZone(entity)
             : TimeZoneEnum.Eastern;
-        DateTimeOffset date = ConvertDateTimeOffset.Convert(d, e);
+        DateTimeOffset date = ConvertDateTimeOffset.Convert(d, z);
+        
+        // Source
         string source = VerifySource(entity.Source);
+        
+        // Determine lead status
         bool islead = !string.IsNullOrWhiteSpace(entity.Lead) && entity.Lead.Contains("yes", StringComparison.CurrentCultureIgnoreCase);
-
         IMessage result = islead
             ? new Message(num, date, string.Empty, source)
             : new Message(PhoneNumberTranslate.Default, DateTimeOffset.MaxValue, string.Empty, string.Empty);
@@ -179,5 +188,10 @@ public static class MessageInterfaceTranslate
         string t when t.Contains("pst") || t.Contains("pdt") => TimeZoneEnum.Pacific,
         _ => TimeZoneEnum.Eastern
     };
+    #endregion
+
+    #region GeneratedRegex
+    [GeneratedRegex("at", RegexOptions.Compiled)]
+    private static partial Regex AtRgx();
     #endregion
 }
