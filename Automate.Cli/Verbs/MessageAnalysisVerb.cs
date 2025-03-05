@@ -88,7 +88,7 @@ internal class MessageAnalysisVerb : IVerb
         truncatedReportLoc = Path.Exists(TruncatedReportLoc) && truncatedLoc.IsSuccess && truncatedLoc.Value == FileType.Csv
             ? Path.GetFullPath(TruncatedReportLoc)
             : string.Empty;
-        if (Truncate && truncatedReportLoc == string.Empty)
+        if (Truncate && string.IsNullOrWhiteSpace(truncatedReportLoc))
             throw new Exception($"The user requested to truncate the report but did not specify a valid truncated report output location. The truncated report output location must exist to continue.");
 
         // Customer Locations
