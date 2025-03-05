@@ -2,6 +2,7 @@
 using Automate.Cli.Verbs.VerbHelper;
 using Automate.Domain.SolutionFunctionality;
 using CSharpFunctionalExtensions;
+using Automate.Domain.ValueObjects;
 
 namespace Automate.Cli.Verbs;
 
@@ -17,7 +18,7 @@ internal class MessageAnalysisVerb : IVerb
     [Option('o', "output", Required = false, HelpText = "Enter the location where you would like the report file to be output." + fileDefault + "In any case, the program will print to screen the location where the report file is generated. Also, remember that you are providing the full file path, not a relative path.")]
     public string ReportLocation { get; set; } = string.Empty;
     [Option('t', "csvType", Required = true, HelpText = MessageVerbHelper.HelpText)]
-    public MessageCsvType MessageType { get; set; }
+    public MessageType MessageType { get; set; }
 
     // Essentially required options
     [Option('a', "appendToReport", Default = false, HelpText = "This option allows the user to append the results of the analysis to the report, rather than generating an entirely new report.")]

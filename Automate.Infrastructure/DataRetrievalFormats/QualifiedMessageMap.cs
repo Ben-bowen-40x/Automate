@@ -55,6 +55,10 @@ internal class QualifiedMessageMap : ClassMap<QualifiedMessageRecord>, IQualifie
         Map(m => m.Customer.SubscriptionStartDate).Index(index++).Name(SubStartDateName);
         Map(m => m.Customer.SubscriptionCancelDate).Index(index++).Name(SubCancelDateName);
         Map(m => m.Customer.Sellers).Index(index++).Name(SellersName);
+
+        // Additional info
+        Map(m => m.Type).Index(index++).Name("Type");
+        Map(m => m.Id).Index(index++).Name("ID");
     }
     [Name(PhoneName)]
     public long Number { get; set; }

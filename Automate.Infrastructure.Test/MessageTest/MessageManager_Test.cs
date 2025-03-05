@@ -1,5 +1,6 @@
 ﻿using Automate.Application.MessageAnalysis;
 using Automate.Domain.SolutionFunctionality;
+using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.DataRetrievalFormats;
 using Automate.Infrastructure.MessageLeadsService;
 using Automate.Infrastructure.ReportingService;
@@ -32,13 +33,13 @@ public class MessageManager_Test
 
         // Assemble
         MessageAnalysisManager manager = new(new MessageService(_settings), new ReportServiceSingleton());
-
+        
         // Act
         var result = fileName switch
         {
-            MsgLeads => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>("", "", "", "", ""),
-            CctLeads => manager.Manage<SplitDateMountainOffsetMsgCol>("", "", "", "", ""),
-            _ => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>("", "", "", "", "")
+            MsgLeads => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>("", "", "", "", "", MessageType.Leaf),
+            CctLeads => manager.Manage<SplitDateMountainOffsetMsgCol>("", "", "", "", "", MessageType.Leaf),
+            _ => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>("", "", "", "", "", MessageType.Leaf)
         };
         StringLogger.ProduceLog(DateTime.Now, sender, member, $"End Test");
 

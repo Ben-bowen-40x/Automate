@@ -9,7 +9,7 @@ public class MessageAnalysisManager(IMessageService textService, IReportService 
     private readonly IMessageService _textService = textService;
     private readonly IReportService _reportService = reportService;
 
-    public Result<FileInfo> Manage<T>(string reportDefault, string messages, string callQuery, string customerQuery, string report) where T : IConvert
+    public Result<FileInfo> Manage<T>(string reportDefault, string messages, string callQuery, string customerQuery, string report, MessageType type) where T : IConvert
     {
         // Retrieve Items
         List<IMessage> msgs = _textService.GetMessages<T>(messages);
@@ -18,7 +18,7 @@ public class MessageAnalysisManager(IMessageService textService, IReportService 
         List<ICustomerSubscription> customers = _textService.GetCustomerRecords(nums, customerQuery);
 
         // Process Items
-        List<QualifiedMessageRecord> qualified = MessageQualifier.Qualify(msgs, calls, customers);
+        List<QualifiedMessageRecord> qualified = MessageQualifier.Qualify(msgs, calls, customers, type);
 
         // Generate Report
         Result<FileInfo> file = _reportService.GenerateMessageLeadReport(reportDefault, qualified, report);
@@ -26,7 +26,7 @@ public class MessageAnalysisManager(IMessageService textService, IReportService 
         return file;
     }
 
-    public Result<FileInfo> Manage<T>(string reportDefault, string messages, string callQuery, string customerQuery, string report, bool truncate, int days = 120) where T : IConvert
+    public Result<FileInfo> Manage<T>(string reportDefault, string messages, string callQuery, string customerQuery, string report, bool truncate, MessageType type, int days = 120) where T : IConvert
     {
         // Retrieve Items
         List<IMessage> msgs = _textService.GetMessages<T>(messages);
@@ -35,7 +35,7 @@ public class MessageAnalysisManager(IMessageService textService, IReportService 
         List<ICustomerSubscription> customers = _textService.GetCustomerRecords(nums, customerQuery);
 
         // Process Items
-        List<QualifiedMessageRecord> qualified = MessageQualifier.Qualify(msgs, calls, customers);
+        List<QualifiedMessageRecord> qualified = MessageQualifier.Qualify(msgs, calls, customers, type);
 
         // Truncate report
         if (truncate)

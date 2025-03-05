@@ -11,11 +11,11 @@ public static class QualifiedMsgTranslate
     /// </summary>
     /// <param name="entity"></param>
     /// <returns></returns>
-    public static QualifiedMessageRecord Translate(this IQualifiedMessageTranslate entity)
+    public static QualifiedMessageRecord Translate(this IQualifiedMessageTranslate entity, MessageType type)
     {
         IMessage message = MessageInterfaceTranslate.Translate(entity);
         ICustomerSubscription customer = CustomerSubscriptionTranslate.Translate(entity);
 
-        return new QualifiedMessageRecord(message, customer, entity.ImLead, entity.SalesLead);
+        return new QualifiedMessageRecord(message, customer, entity.ImLead, entity.SalesLead, type);
     }
 }
