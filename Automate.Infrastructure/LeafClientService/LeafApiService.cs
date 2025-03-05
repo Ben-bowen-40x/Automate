@@ -59,7 +59,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
             if (response.IsSuccessStatusCode)
             {
                 string result = await response.Content.ReadAsStringAsync();
-                if (result is null || result.Length == 0 || result == string.Empty)
+                if (string.IsNullOrWhiteSpace(result) || result.Length == 0)
                 {
                     return Result.Failure<string>("Parsing failure. The process of reading the results from Json failed. The results somehow became null.");
                 }
