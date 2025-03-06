@@ -14,10 +14,10 @@ public class SplitDateMountainOffsetMsgCol : IMsgZoneEnumStr
     public string? Time { get; set; }
     [Name("FormCustomFields")]
     public string? Contents { get; set; }
-    [Name("Account Name")]
+    [Name("Account Name", "Email")]
     public string? Source { get; set; }
 
-    public TimeZoneEnum TimeZone => TimeZoneEnum.Mountain;
+    public TimeZoneEnum TimeZone => TimeZoneEnum.Eastern;
 
     public IMessage Convert<IMsgTimeStr, IMessage>()
     {

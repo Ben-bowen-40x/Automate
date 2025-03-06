@@ -2,6 +2,8 @@
 using Automate.Cli.Verbs.VerbHelper;
 using Automate.Domain.SolutionFunctionality;
 using CSharpFunctionalExtensions;
+using Automate.Domain.ValueObjects;
+using Automate.Application.MessageReportAnalysis;
 
 namespace Automate.Cli.Verbs;
 
@@ -17,7 +19,7 @@ internal class MessageAnalysisVerb : IVerb
     [Option('o', "output", Required = false, HelpText = "Enter the location where you would like the report file to be output." + fileDefault + "In any case, the program will print to screen the location where the report file is generated. Also, remember that you are providing the full file path, not a relative path.")]
     public string ReportLocation { get; set; } = string.Empty;
     [Option('t', "csvType", Required = true, HelpText = MessageVerbHelper.HelpText)]
-    public MessageCsvType MessageType { get; set; }
+    public MessageType MessageType { get; set; }
 
     // Essentially required options
     [Option('a', "appendToReport", Default = false, HelpText = "This option allows the user to append the results of the analysis to the report, rather than generating an entirely new report.")]
@@ -38,8 +40,8 @@ internal class MessageAnalysisVerb : IVerb
     // Not Required Options
     [Option('x', "truncate", Required = false, Default = false, HelpText = "This option is a boolean and will truncate the report. Default truncation is 120 days. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated.")]
     public bool Truncate { get; set; } = false;
-    [Option('d', "daysToTruncate", Required = false, Default = 120, HelpText = "This option determines how many days to truncate the report. Default truncation is 120 days. This option will NOT truncate the report if the boolean 'x' option is undefined. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated.")]
-    public int DaysOfTruncation { get; set; } = 120;
+    [Option('d', "daysToTruncate", Required = false, Default = MessageAnalysisReportManager.DefaultDays, HelpText = "This option determines how many days to truncate the report. Default truncation is 120 days. This option will NOT truncate the report if the boolean 'x' option is undefined. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated.")]
+    public int DaysOfTruncation { get; set; } = MessageAnalysisReportManager.DefaultDays;
     [Option('O', "truncatedReportOutput", Required = false, HelpText = "This option is only needed if -x or -truncate is switched on. It is the output location of the truncated report.")]
     public string TruncatedReportLoc { get; set; } = string.Empty;
     #endregion

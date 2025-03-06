@@ -13,7 +13,7 @@ public class MessageQualifier
     /// <param name="callRecords"></param>
     /// <param name="customerRecords"></param>
     /// <returns></returns>
-    public static List<QualifiedMessageRecord> Qualify(List<IMessage> msgs, List<ICallRecord> callRecords, List<ICustomerSubscription> customerRecords)
+    public static List<QualifiedMessageRecord> Qualify(List<IMessage> msgs, List<ICallRecord> callRecords, List<ICustomerSubscription> customerRecords, MessageType type)
     {
         // Prepare logger
         object sender = new MessageQualifier();
@@ -39,7 +39,7 @@ public class MessageQualifier
             bool billable = DetermineBillability(msg, callMsgPhoneMatch, couldBeBillable, match, out bool isSalesLead);
 
             // Add to Result
-            result.Add(new(msg, match, billable && couldBeBillable, isSalesLead));
+            result.Add(new QualifiedMessageRecord(msg, match, billable && couldBeBillable, isSalesLead, type));
         }
 
         // Note the end of the log

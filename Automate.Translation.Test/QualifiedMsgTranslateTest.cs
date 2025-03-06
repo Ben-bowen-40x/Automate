@@ -111,11 +111,12 @@ public class QualifiedMsgTranslateTest
         expectedSubscription.Sellers.Returns(CustomerSubscriptionTranslate.VerifySeller(sellers));
 
         // Set up expected value for QualifiedMessageRecord
-        QualifiedMessageRecord expectedRecord = new(expectedMessage, expectedSubscription, imLead, salesLead);
+        MessageType type = MessageType.Leaf;
+        QualifiedMessageRecord expectedRecord = new(expectedMessage, expectedSubscription, imLead, salesLead, type);
         #endregion
 
         // Act
-        QualifiedMessageRecord actualRecord = toBeTranslated.Translate();
+        QualifiedMessageRecord actualRecord = toBeTranslated.Translate(type);
 
         #region Assert
         // Confirm proper execution
