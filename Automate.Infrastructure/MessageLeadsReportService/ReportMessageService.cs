@@ -119,7 +119,7 @@ public class ReportMessageService : IReportMessageService
     public List<ICustomerSubscription> GetCustomerRecords(List<long> msgNums, string customerRepo)
     {
         // Prepare the repo location. This is the default location
-        FileInfo customerLocation = customerRepo == string.Empty || !File.Exists(customerRepo)
+        FileInfo customerLocation = string.IsNullOrWhiteSpace(customerRepo) || !File.Exists(customerRepo)
             ? Location(_customerRecordRepo)
             : new(customerRepo);
 
