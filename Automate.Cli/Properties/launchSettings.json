@@ -108,7 +108,7 @@
     },
     "Analyze Messages - Produce New Leased": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LeasedMessages2025.csv -t Leased",
+      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LeasedMessagesInput.csv -t Leased",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
@@ -184,7 +184,7 @@
     },
     "Analyze Messages - Append Leased to Power Bi": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LeasedMessages2025.csv -t Leased -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LeasedMessages.csv",
+      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LeasedMessagesInput.csv -t Leased -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LeasedMessages.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

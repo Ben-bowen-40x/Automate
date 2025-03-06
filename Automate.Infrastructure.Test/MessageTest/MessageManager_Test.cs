@@ -38,7 +38,7 @@ public class MessageManager_Test
         var result = fileName switch
         {
             MsgLeads => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>("", "", "", "", "", MessageType.Leaf),
-            CctLeads => manager.Manage<SplitDateMountainOffsetMsgCol>("", "", "", "", "", MessageType.Leaf),
+            CctLeads => manager.Manage<SplitDateMountainOffsetMsgCol>("", "", "", "", "", MessageType.Pan),
             _ => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>("", "", "", "", "", MessageType.Leaf)
         };
         StringLogger.ProduceLog(DateTime.Now, sender, member, $"End Test");
