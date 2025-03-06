@@ -32,7 +32,7 @@ public class CustSubDbEntity : ICustSubIntIdNumberStr
     [Column("InitialCompleted")]
     public int? InitialCompleted { get; set; }
     [Column("ContractValue")]
-    public double? DoubleValue { get; set; }
+    public double? ContractValue { get; set; }
     [Column("Seller1")]
     public string? Seller1 { get; set; }
     [Column("Seller2")]

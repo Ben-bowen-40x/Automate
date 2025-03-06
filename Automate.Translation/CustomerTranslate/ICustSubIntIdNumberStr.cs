@@ -15,7 +15,7 @@ public interface ICustSubIntIdNumberStr : IPhoneNumberCompatible
     int? CustomerActive { get; set; }
     int? SubscriptionActive { get; set; }
     int? InitialCompleted { get; set; }
-    double? DoubleValue { get; set; }
+    double? ContractValue { get; set; }
     string? Seller1 { get; set; }
     string? Seller2 { get; set; }
     string? Seller3 { get; set; }

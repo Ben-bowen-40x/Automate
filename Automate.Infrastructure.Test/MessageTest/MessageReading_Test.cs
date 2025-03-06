@@ -128,12 +128,13 @@ public class MessageReading_Test
         /************************************************************************
          * Assemble
          ************************************************************************/
+        var type = MessageType.Leaf;
         FileInfo file = TestFile(@".info\MessageAnalysis\Test", "TestReaderFile.csv");
         if (!file.Exists) File.Create(file.FullName);
 
         // Read the contents 
         Result<List<QualifiedMessageMap>> reader = CsvService.Parse<QualifiedMessageMap>(file);
-        IEnumerable<QualifiedMessageRecord> expected = reader.Value.Select(c => c.Translate());
+        IEnumerable<QualifiedMessageRecord> expected = reader.Value.Select(c => c.Translate(type));
 
         /************************************************************************
          * Act
@@ -143,7 +144,7 @@ public class MessageReading_Test
         {
             // Read the contents 
             Result<List<QualifiedMessageMap>> contents = CsvService.Parse<QualifiedMessageMap>(file);
-            IEnumerable<QualifiedMessageRecord> contentValue = contents.Value.Select(c => c.Translate());
+            IEnumerable<QualifiedMessageRecord> contentValue = contents.Value.Select(c => c.Translate(type));
 
             // Write the contents to file
             Result written = CsvService.Write<QualifiedMessageRecord, QualifiedMessageMap>(file, contentValue);
@@ -151,7 +152,7 @@ public class MessageReading_Test
 
         // Retrieve contents
         Result<List<QualifiedMessageMap>> read = CsvService.Parse<QualifiedMessageMap>(file);
-        List<QualifiedMessageRecord> actual = read.Value.Select(c => c.Translate()).ToList();
+        List<QualifiedMessageRecord> actual = read.Value.Select(c => c.Translate(type)).ToList();
 
         /************************************************************************
          * Assert
