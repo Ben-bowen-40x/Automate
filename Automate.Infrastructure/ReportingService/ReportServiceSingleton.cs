@@ -80,7 +80,7 @@ internal class ReportServiceSingleton : IReportService
         var report = MsgReportDefault(reportDefault);
 
         // Generate the file info that contains the file info for the report
-        FileInfo file = reportLocation == string.Empty ? new(Folder + report) : new(reportLocation);
+        FileInfo file = string.IsNullOrWhiteSpace(reportLocation) ? new(Folder + report) : new(reportLocation);
 
         // Check whether the file exists. If not, create one
         if (!file.Exists)

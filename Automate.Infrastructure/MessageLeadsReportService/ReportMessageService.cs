@@ -31,7 +31,7 @@ public class ReportMessageService : IReportMessageService
     #endregion
 
     #region Implementation
-    public List<IMessage> RetrieveReportMessages(string reportLocation, out List<QualifiedMessageRecord> records)
+    public List<IMessage> RetrieveReportMessages(MessageType type, string reportLocation, out List<QualifiedMessageRecord> records)
     {
         // Check to see whether the report file actually exists. If not, create it
         FileInfo reportLoc = new(reportLocation);
@@ -51,7 +51,7 @@ public class ReportMessageService : IReportMessageService
 
         // Translate report columns to qualified messages
         records = reportColumns
-            .Select(m => m.Translate())
+            .Select(m => m.Translate(type))
             .ToList();
 
         return reportRecords;
