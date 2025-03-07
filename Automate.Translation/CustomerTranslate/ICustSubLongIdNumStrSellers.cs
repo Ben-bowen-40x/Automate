@@ -4,12 +4,12 @@ public interface ICustSubLongIdNumStrSellers
 {
     long SubscriptionId { get; set; }
     long CustomerId { get; set; }
-    DateTimeOffset Date { get; set; }
-    DateTimeOffset SubscriptionStartDate { get; set; }
+    DateTime Date { get; set; }
+    DateTime SubscriptionStartDate { get; set; }
     string? Number1 { get; set; }
     string? Number2 { get; set; }
-    DateTimeOffset CustomerCancelDate { get; set; }
-    DateTimeOffset SubscriptionCancelDate { get; set; }
+    DateTime CustomerCancelDate { get; set; }
+    DateTime SubscriptionCancelDate { get; set; }
     int? CustomerActive { get; set; }
     int? SubscriptionActive { get; set; }
     int? InitialCompleted { get; set; }

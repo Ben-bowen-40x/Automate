@@ -84,10 +84,10 @@ public static class CustomerSubscriptionTranslate
     public static ICustomerSubscription Translate(this ICustSubLongIdNumStrSellers entity)
     {
         // Translate dates
-        DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.Date.DateTime, TimeZoneEnum.Pacific, DateDefault.Max);
-        DateTimeOffset subscriptionStartDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionStartDate.DateTime, TimeZoneEnum.Pacific, DateDefault.Max);
-        DateTimeOffset customerCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.CustomerCancelDate.DateTime, TimeZoneEnum.Pacific, DateDefault.Max);
-        DateTimeOffset subscriptionCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionCancelDate.DateTime, TimeZoneEnum.Pacific, DateDefault.Max);
+        DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.Date, TimeZoneEnum.Pacific, DateDefault.Max);
+        DateTimeOffset subscriptionStartDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionStartDate, TimeZoneEnum.Pacific, DateDefault.Max);
+        DateTimeOffset customerCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.CustomerCancelDate, TimeZoneEnum.Pacific, DateDefault.Max);
+        DateTimeOffset subscriptionCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionCancelDate, TimeZoneEnum.Pacific, DateDefault.Max);
 
         // Translate Phone numbers
         PhoneNumber number1 = PhoneNumberTranslate.Translate(entity.Number1);
