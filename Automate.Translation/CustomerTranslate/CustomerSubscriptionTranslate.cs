@@ -35,20 +35,6 @@ public static class CustomerSubscriptionTranslate
     }
 
     /// <summary>
-    /// Converts <see cref="ICustSubLongIdPhoneNumber"/> into <see cref="ICustomerSubscription"/>
-    /// </summary>
-    /// <param name="entity"></param>
-    /// <returns></returns>
-    public static ICustomerSubscription Translate(this ICustSubLongIdPhoneNumber entity)
-    {
-        PhoneNumber number = entity.Number.Translate();
-        PhoneNumber number2 = entity.Number2.Translate();
-        string sellers = VerifySeller(entity.Sellers);
-        CustomerSubscription result = new(entity.CustomerId, entity.SubscriptionId, entity.Date, entity.SubscriptionStartDate, number, number2, entity.CustomerCancelDate, entity.SubscriptionCancelDate, entity.CustomerActive, entity.SubscriptionActive, entity.InitialCompleted, entity.DoubleValue, sellers);
-        return result;
-    }
-
-    /// <summary>
     /// Converts <see cref="ICustSubIntIdNumberStr"/> into <see cref="ICustomerSubscription"/>
     /// </summary>
     /// <param name="entity"></param>
@@ -98,10 +84,10 @@ public static class CustomerSubscriptionTranslate
     public static ICustomerSubscription Translate(this ICustSubLongIdNumStrSellers entity)
     {
         // Translate dates
-        DateTimeOffset date = entity.Date;
-        DateTimeOffset subscriptionStartDate = entity.SubscriptionStartDate;
-        DateTimeOffset customerCancelDate = entity.CustomerCancelDate;
-        DateTimeOffset subscriptionCancelDate = entity.SubscriptionCancelDate;
+        DateTimeOffset date = ConvertPrimitive.ConvertDateTimeOffset(entity.Date.DateTime, TimeZoneEnum.Pacific, DateDefault.Max);
+        DateTimeOffset subscriptionStartDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionStartDate.DateTime, TimeZoneEnum.Pacific, DateDefault.Max);
+        DateTimeOffset customerCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.CustomerCancelDate.DateTime, TimeZoneEnum.Pacific, DateDefault.Max);
+        DateTimeOffset subscriptionCancelDate = ConvertPrimitive.ConvertDateTimeOffset(entity.SubscriptionCancelDate.DateTime, TimeZoneEnum.Pacific, DateDefault.Max);
 
         // Translate Phone numbers
         PhoneNumber number1 = PhoneNumberTranslate.Translate(entity.Number1);
