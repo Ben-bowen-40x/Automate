@@ -32,22 +32,27 @@ public class ConvertDateTimeOffsetTests
         Theory,
         // year, month, day, hour, minute, second, offset(hours)
         // Remember that the offsets are specific to Daylight Savings or Standard Time
-        InlineData(new int[] { 2024, 07, 14, 15, 07, 33, -4 }, TimeZoneEnum.Eastern, true),
-        InlineData(new int[] { 2024, 01, 14, 15, 07, 33, -5 }, TimeZoneEnum.Eastern, true),
-        InlineData(new int[] { 2024, 07, 14, 15, 07, 33, -5 }, TimeZoneEnum.Central, true),
-        InlineData(new int[] { 2024, 01, 14, 15, 07, 33, -6 }, TimeZoneEnum.Central, true),
-        InlineData(new int[] { 2024, 07, 14, 15, 07, 33, -6 }, TimeZoneEnum.Mountain, true),
-        InlineData(new int[] { 2024, 01, 14, 15, 07, 33, -7 }, TimeZoneEnum.Mountain, true),
-        InlineData(new int[] { 2024, 07, 14, 15, 07, 33, -7 }, TimeZoneEnum.Pacific, true),
-        InlineData(new int[] { 2024, 01, 14, 15, 07, 33, -8 }, TimeZoneEnum.Pacific, true),
+        InlineData(new int[] { 2024, 07, 14, 15, 07, 33, -4 }, TimeZoneEnum.Eastern),
+        InlineData(new int[] { 2024, 01, 14, 15, 07, 33, -5 }, TimeZoneEnum.Eastern),
+        InlineData(new int[] { 2024, 07, 14, 15, 07, 33, -5 }, TimeZoneEnum.Central),
+        InlineData(new int[] { 2024, 01, 14, 15, 07, 33, -6 }, TimeZoneEnum.Central),
+        InlineData(new int[] { 2024, 07, 14, 15, 07, 33, -6 }, TimeZoneEnum.Mountain),
+        InlineData(new int[] { 2024, 01, 14, 15, 07, 33, -7 }, TimeZoneEnum.Mountain),
+        InlineData(new int[] { 2024, 07, 14, 15, 07, 33, -7 }, TimeZoneEnum.Pacific),
+        InlineData(new int[] { 2024, 01, 14, 15, 07, 33, -8 }, TimeZoneEnum.Pacific),
     ]
-    public void ConvertDateTimeAndTimeZoneWithOutParameter(int[] dateInt, TimeZoneEnum zone, bool expected)
+    public void ConvertDateTimeAndTimeZoneWithOutParameter(int[] dateInt, TimeZoneEnum zone)
     {
+        // Assemble
         DateTime newDate = Functions.IntsToDateTime(dateInt[0], dateInt[1], dateInt[2], dateInt[3], dateInt[4], dateInt[5]);
         DateTimeOffset expectedDate = Functions.GetExpectedDateTimeOffset(dateInt[6], newDate);
-        var actual = ConvertDateTimeOffset.TryConvert(newDate, zone, out DateTimeOffset actualDate);
+
+        // Act
+        bool actual = ConvertDateTimeOffset.TryConvert(newDate, zone, out DateTimeOffset actualDate);
+
+        // Assert
         Assert.Equal(expectedDate, actualDate);
-        Assert.Equal(expected, actual);
+        Assert.True(actual);
     }
     #endregion
 
