@@ -118,6 +118,13 @@ public class ReportMessageService : IReportMessageService
 
     public List<ICustomerSubscription> GetCustomerRecords(List<long> msgNums, string customerRepo)
     {
+        List<ICustomerSubscription> filteredCustomers = GetCustomerRecords(customerRepo)
+            .Where(c => msgNums.Contains(c.Number.Number) || msgNums.Contains(c.Number2.Number))
+            .ToList();
+        return filteredCustomers;
+    }
+    public List<ICustomerSubscription> GetCustomerRecords(string customerRepo)
+    {
         // Prepare the repo location. This is the default location
         FileInfo customerLocation = string.IsNullOrWhiteSpace(customerRepo) || !File.Exists(customerRepo)
             ? Location(_customerRecordRepo)
@@ -127,11 +134,12 @@ public class ReportMessageService : IReportMessageService
         List<CustSubJsonReader> localCustomers = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
-        List<ICustomerSubscription> filteredCustomers = localCustomers
+
+        List<ICustomerSubscription> translated = localCustomers
             .Select(c => c.Translate())
-            .Where(c => msgNums.Contains(c.Number.Number) || msgNums.Contains(c.Number2.Number))
             .ToList();
-        return filteredCustomers;
+
+        return translated;
     }
     #endregion
 
@@ -184,5 +192,6 @@ public class ReportMessageService : IReportMessageService
 
         return result;
     }
+
     #endregion
 }
