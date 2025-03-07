@@ -19,8 +19,8 @@ public class ConvertDateTimeOffsetTests
     ]
     public void ConvertDateTimeAndTimeZoneEnum(int[] dateInt, TimeZoneEnum zone)
     {
-        DateTime newDate = MakeDateFromIntArray(dateInt[0], dateInt[1], dateInt[2], dateInt[3], dateInt[4], dateInt[5]);
-        DateTimeOffset expected = GetExpectedDateTimeOffset(dateInt[6], newDate);
+        DateTime newDate = Functions.IntsToDateTime(dateInt[0], dateInt[1], dateInt[2], dateInt[3], dateInt[4], dateInt[5]);
+        DateTimeOffset expected = Functions.GetExpectedDateTimeOffset(dateInt[6], newDate);
         var actual = ConvertDateTimeOffset.Convert(newDate, zone);
         Assert.Equal(expected, actual);
     }
@@ -31,6 +31,7 @@ public class ConvertDateTimeOffsetTests
     [
         Theory,
         // year, month, day, hour, minute, second, offset(hours)
+        // Remember that the offsets are specific to Daylight Savings or Standard Time
         InlineData(new int[] { 2024, 07, 14, 15, 07, 33, -4 }, TimeZoneEnum.Eastern, true),
         InlineData(new int[] { 2024, 01, 14, 15, 07, 33, -5 }, TimeZoneEnum.Eastern, true),
         InlineData(new int[] { 2024, 07, 14, 15, 07, 33, -5 }, TimeZoneEnum.Central, true),
@@ -42,8 +43,8 @@ public class ConvertDateTimeOffsetTests
     ]
     public void ConvertDateTimeAndTimeZoneWithOutParameter(int[] dateInt, TimeZoneEnum zone, bool expected)
     {
-        DateTime newDate = MakeDateFromIntArray(dateInt[0], dateInt[1], dateInt[2], dateInt[3], dateInt[4], dateInt[5]);
-        DateTimeOffset expectedDate = GetExpectedDateTimeOffset(dateInt[6], newDate);
+        DateTime newDate = Functions.IntsToDateTime(dateInt[0], dateInt[1], dateInt[2], dateInt[3], dateInt[4], dateInt[5]);
+        DateTimeOffset expectedDate = Functions.GetExpectedDateTimeOffset(dateInt[6], newDate);
         var actual = ConvertDateTimeOffset.TryConvert(newDate, zone, out DateTimeOffset actualDate);
         Assert.Equal(expectedDate, actualDate);
         Assert.Equal(expected, actual);
@@ -64,8 +65,8 @@ public class ConvertDateTimeOffsetTests
     ]
     public void ConvertDateTimeAndTimeZoneAsTimeSpan(int[] dateTimeInt)
     {
-        DateTime newDate = MakeDateFromIntArray(dateTimeInt[0], dateTimeInt[1], dateTimeInt[2], dateTimeInt[3], dateTimeInt[4], dateTimeInt[5]);
-        DateTimeOffset expected = GetExpectedDateTimeOffset(dateTimeInt[6], newDate);
+        DateTime newDate = Functions.IntsToDateTime(dateTimeInt[0], dateTimeInt[1], dateTimeInt[2], dateTimeInt[3], dateTimeInt[4], dateTimeInt[5]);
+        DateTimeOffset expected = Functions.GetExpectedDateTimeOffset(dateTimeInt[6], newDate);
         var actual = ConvertDateTimeOffset.ConvertLocalToDTOffset(newDate, TimeSpan.FromHours(dateTimeInt[6]));
         Assert.Equal(expected, actual);
     }
@@ -91,19 +92,4 @@ public class ConvertDateTimeOffsetTests
     #endregion
     //*/
 
-    #region Private
-    internal static DateTimeOffset GetExpectedDateTimeOffset(int dateInt, DateTime newDate)
-    {
-        return new(newDate - TimeSpan.FromHours(dateInt), TimeSpan.FromHours(0));
-    }
-
-    internal static DateTime MakeDateFromIntArray(int dateInt0, int dateInt1, int dateInt2, int dateInt3, int dateInt4, int dateInt5)
-    {
-        var value = dateInt0 == 0 || dateInt1 == 0 || dateInt2 == 0 || dateInt3 == 0 || dateInt4 == 0 || dateInt5 == 0
-            ? DateTime.MinValue
-            : new DateTime(dateInt0, dateInt1, dateInt2, dateInt3, dateInt4, dateInt5);
-
-        return value;
-    }
-    #endregion
 }

@@ -59,11 +59,11 @@ public class QualifiedMsgTranslateTest
     {
         #region Assemble
         // Convert datetimes
-        DateTimeOffset date = IntArrToDTO(dateInts[0], dateInts[1], dateInts[2], dateInts[3], dateInts[4], dateInts[5], dateInts[6]);
-        DateTimeOffset custDate = IntArrToDTO(custDateInts[0], custDateInts[1], custDateInts[2], custDateInts[3], custDateInts[4], custDateInts[5], custDateInts[6]);
-        DateTimeOffset custCxlDate = IntArrToDTO(custCxlDateInts[0], custCxlDateInts[1], custCxlDateInts[2], custCxlDateInts[3], custCxlDateInts[4], custCxlDateInts[5], custCxlDateInts[6]);
-        DateTimeOffset subStartDate = IntArrToDTO(subStartInts[0], subStartInts[1], subStartInts[2], subStartInts[3], subStartInts[4], subStartInts[5], subStartInts[6]);
-        DateTimeOffset subCxlDate = IntArrToDTO(subCxlInts[0], subCxlInts[1], subCxlInts[2], subCxlInts[3], subCxlInts[4], subCxlInts[5], subCxlInts[6]);
+        DateTimeOffset date = Functions.IntsToDto(dateInts[0], dateInts[1], dateInts[2], dateInts[3], dateInts[4], dateInts[5], dateInts[6]);
+        DateTimeOffset custDate = Functions.IntsToDto(custDateInts[0], custDateInts[1], custDateInts[2], custDateInts[3], custDateInts[4], custDateInts[5], custDateInts[6]);
+        DateTimeOffset custCxlDate = Functions.IntsToDto(custCxlDateInts[0], custCxlDateInts[1], custCxlDateInts[2], custCxlDateInts[3], custCxlDateInts[4], custCxlDateInts[5], custCxlDateInts[6]);
+        DateTimeOffset subStartDate = Functions.IntsToDto(subStartInts[0], subStartInts[1], subStartInts[2], subStartInts[3], subStartInts[4], subStartInts[5], subStartInts[6]);
+        DateTimeOffset subCxlDate = Functions.IntsToDto(subCxlInts[0], subCxlInts[1], subCxlInts[2], subCxlInts[3], subCxlInts[4], subCxlInts[5], subCxlInts[6]);
 
         // Convert PhoneNumber
         PhoneNumber phNumber = PhoneNumberTranslate.Translate(number);
@@ -144,10 +144,5 @@ public class QualifiedMsgTranslateTest
         Assert.Equal(expectedRecord.Billable, actualRecord.Billable);
         #endregion
     }
-    public static DateTimeOffset IntArrToDTO(int year, int month, int day, int hour, int minutes, int seconds, int offset)
-    {
-        return year == 0 || month == 0 || day == 0
-            ? DateTimeOffset.MinValue
-            : new(new DateTime(year, month, day, hour, minutes, seconds), TimeSpan.FromHours(offset));
-    }
+    
 }
