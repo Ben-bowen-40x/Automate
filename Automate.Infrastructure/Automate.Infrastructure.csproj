@@ -16,6 +16,7 @@
   <ItemGroup>
     <Content Include=".info\ApiRepos\LeafTesting\ForceUpdateTest.json" />
     <Content Include=".info\ApiRepos\LeafThreads.json" />
+    <Content Include=".info\ApiRepos\RepoTests\CustomerRepoTest.json" />
     <Content Include=".info\Discrepancy\Discrepancy.csv" />
     <Content Include=".info\Discrepancy\Discrepancy.sql" />
     <Content Include=".info\Discrepancy\LocalRepo\Discrepancy.json" />

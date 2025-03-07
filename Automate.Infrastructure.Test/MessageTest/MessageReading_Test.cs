@@ -1,5 +1,4 @@
-﻿using Automate.Domain.SolutionFunctionality;
-using Automate.Domain.ValueObjects;
+﻿using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.DataRetrievalFormats;
 using Automate.Translation.MessageTranslate;
@@ -12,7 +11,6 @@ namespace Automate.Infrastructure.Test.MessageTest;
 
 public class MessageReading_Test
 {
-    private FileInfo TestFile(string location, string file) => FolderFinder.GetLocalFile(nameof(Infrastructure), location, file);
 
     #region Special Message Can Be Read
     [
@@ -25,7 +23,7 @@ public class MessageReading_Test
     public void SpecialMessageType_CanBeReadFromTest(string file)
     {
         // Assemble
-        FileInfo f = TestFile(@".info\MessageAnalysis\Test", file);
+        FileInfo f = Functions.TestFile(@".info\MessageAnalysis\Test", file);
 
         // Act
         Result<List<LeasedMessage>> result = CsvService.Parse<LeasedMessage>(f);
@@ -57,8 +55,8 @@ public class MessageReading_Test
     public void RetrieveAndTranslateLeafThreads(int days)
     {
         // Assemble
-        FileInfo json = TestFile(@".info\Testing", "DateReading.json");
-        FileInfo csv = TestFile(@".info\Testing", "DateReading.csv");
+        FileInfo json = Functions.TestFile(@".info\Testing", "DateReading.json");
+        FileInfo csv = Functions.TestFile(@".info\Testing", "DateReading.csv");
         DateTimeOffset date1 = DateTime.Now - TimeSpan.FromDays(days + 0);
         DateTimeOffset date2 = DateTime.Now - TimeSpan.FromDays(days + 2);
         DateTimeOffset date3 = DateTime.Now - TimeSpan.FromDays(days + 3);
@@ -128,12 +126,13 @@ public class MessageReading_Test
         /************************************************************************
          * Assemble
          ************************************************************************/
-        FileInfo file = TestFile(@".info\MessageAnalysis\Test", "TestReaderFile.csv");
+        var type = MessageType.Leaf;
+        FileInfo file = Functions.TestFile(@".info\MessageAnalysis\Test", "TestReaderFile.csv");
         if (!file.Exists) File.Create(file.FullName);
 
         // Read the contents 
         Result<List<QualifiedMessageMap>> reader = CsvService.Parse<QualifiedMessageMap>(file);
-        IEnumerable<QualifiedMessageRecord> expected = reader.Value.Select(c => c.Translate());
+        IEnumerable<QualifiedMessageRecord> expected = reader.Value.Select(c => c.Translate(type));
 
         /************************************************************************
          * Act
@@ -143,7 +142,7 @@ public class MessageReading_Test
         {
             // Read the contents 
             Result<List<QualifiedMessageMap>> contents = CsvService.Parse<QualifiedMessageMap>(file);
-            IEnumerable<QualifiedMessageRecord> contentValue = contents.Value.Select(c => c.Translate());
+            IEnumerable<QualifiedMessageRecord> contentValue = contents.Value.Select(c => c.Translate(type));
 
             // Write the contents to file
             Result written = CsvService.Write<QualifiedMessageRecord, QualifiedMessageMap>(file, contentValue);
@@ -151,7 +150,7 @@ public class MessageReading_Test
 
         // Retrieve contents
         Result<List<QualifiedMessageMap>> read = CsvService.Parse<QualifiedMessageMap>(file);
-        List<QualifiedMessageRecord> actual = read.Value.Select(c => c.Translate()).ToList();
+        List<QualifiedMessageRecord> actual = read.Value.Select(c => c.Translate(type)).ToList();
 
         /************************************************************************
          * Assert
