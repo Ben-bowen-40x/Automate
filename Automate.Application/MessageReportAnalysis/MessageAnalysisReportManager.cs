@@ -52,6 +52,8 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         List<IMessage> msgs = _msgService.GetMessages<T>(messages);
         List<IMessage> messagePartitions = _msgService.PartitionMessagesAndReportRecords(msgs, reportMsgs);
         List<long> num = messagePartitions.Select(m => m.Number.Number).ToList();
+
+        // Retrieve items specific to messages
         List<ICallRecord> calls = _msgService.GetCallRecords(num, callsFile);
         List<ICustomerSubscription> customers = _msgService.GetCustomerRecords(num, customersFile);
 
