@@ -9,4 +9,5 @@ public interface IReportMessageService
     public List<IMessage> PartitionMessagesAndReportRecords(List<IMessage> uniqueMsgs, List<IMessage> reportRecords);
     public List<ICallRecord> GetCallRecords(List<long> msgNums, string callLocation);
     public List<ICustomerSubscription> GetCustomerRecords(List<long> msgNums, string customerLocation);
+    public List<ICustomerSubscription> GetCustomerRecords(string customerLocation);
 }

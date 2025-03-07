@@ -15,5 +15,4 @@ public interface ICustomerSubscription : IDatedRecord
     double ContractValue { get; init; }
     string Sellers { get; init; }
     string ToString();
-
 }
