@@ -2,13 +2,16 @@
 
 public record QualifiedMessageRecord(IMessage Message, ICustomerSubscription Customer, bool Billable, bool IsSalesLead, MessageType Type)
 {
-    private readonly ulong _id = (ulong)
+    private readonly long _mod = Message.Date.Year % 71;
+    private long Divisor => _mod == 0 || _mod == 1
+        ? 72
+        : _mod;
+    public ulong Id => (ulong)
         (
-            Message.Date.Year + Message.Date.Month + Message.Date.DayOfYear + Message.Date.Hour + Message.Date.Minute + Message.Date.Second + Message.Date.Offset.Minutes +
-            Customer.Date.Year + Customer.Date.Month + Customer.Date.DayOfYear + Customer.Date.Hour + Customer.Date.Minute + Customer.Date.Second + Customer.Date.Offset.Minutes +
-            (Message.Number.Number / (Message.Date.Year % 71))
+            Message.Date.Year + Message.Date.Month + Message.Date.DayOfYear + Message.Date.Day +
+            Message.Date.Hour + Message.Date.Minute + Message.Date.Second +
+            (Message.Number.Number / Divisor)
         );
-    public ulong Id => _id;
 };
 
 public enum MessageType
