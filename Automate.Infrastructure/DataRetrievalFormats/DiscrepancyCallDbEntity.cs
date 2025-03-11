@@ -13,7 +13,7 @@ public class DiscrepancyCallDbEntity : ICallBoolStringDateTime, IPhoneNumberComp
     [Column("contact_number_clean")]
     public long NumberLong { get; set; }
     [Column("called_at")]
-    public DateTime? Date { get; set; }
+    public DateTimeOffset? Date { get; set; }
     [Column("sale_billable")]
     public string? Billable { get; set; }
     [Column("duration")]
