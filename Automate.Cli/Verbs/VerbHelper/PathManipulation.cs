@@ -121,14 +121,20 @@ public static class PathManipulation
             return Result.Failure<FileType>($"The provided file location does not exist. Here is the provided file location: \"{location}\"");
 
         FileInfo fileInfo = new(location);
-        var ext = fileInfo.Extension;
+        Result<FileType> result = VerifyType(fileInfo);
+        return result;
+    }
+
+    internal static Result<FileType> VerifyType(FileInfo fileInfo)
+    {
+        string ext = fileInfo.Extension;
         return ext switch
         {
             ".json" => FileType.Json,
             ".csv" => FileType.Csv,
             ".txt" => FileType.Txt,
             ".sql" => FileType.Sql,
-            _ => Result.Failure<FileType>($"The provided {nameof(FileType)} has a file extension that is unrecognized.\nThis is the provided extension: \"{ext}\"\nThis is the provided file:\n\"{location}\"")
+            _ => Result.Failure<FileType>($"The provided {nameof(FileType)} has a file extension that is unrecognized.\nThis is the provided extension: \"{ext}\"\nThis is the provided file:\n\"{fileInfo.FullName}\"")
         };
     }
 }
