@@ -69,17 +69,17 @@ internal class UpdateRepoVerb : IVerb
                 break;
             case RepoType.Deprecated:
                 ITypedRepoUpdateManager manage = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result resul = manage.Manage<CallDbEntity>(DwhQueryType.AllCalls, DwhConnectionType.Calls, repoInfo, ForceUpdate || Update);
+                Result resul = manage.Manage<CallDbEntity>(DwhQueryType.AllCalls, DwhConnectionType.Calls, repoInfo, valueInfo, ForceUpdate || Update);
                 code = DetermineReturnCode(resul);
                 break;
             case RepoType.Customers:
                 ITypedRepoUpdateManager manag = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result resu = manag.Manage<CustSubDbEntity>(DwhQueryType.AllCustomers, DwhConnectionType.Customers, repoInfo, ForceUpdate || Update);
+                Result resu = manag.Manage<CustSubDbEntity>(DwhQueryType.AllCustomers, DwhConnectionType.Customers, repoInfo, valueInfo, ForceUpdate || Update);
                 code = DetermineReturnCode(resu);
                 break;
             case RepoType.ContactForms:
                 ITypedRepoUpdateManager mana = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result res = mana.Manage<WebFormEntity>(DwhQueryType.ContactForms, DwhConnectionType.ContactForms, repoInfo, ForceUpdate || Update);
+                Result res = mana.Manage<WebFormEntity>(DwhQueryType.ContactForms, DwhConnectionType.ContactForms, repoInfo, valueInfo, ForceUpdate || Update);
                 code = DetermineReturnCode(res);
                 break;
             case RepoType.ContactUpdate:
@@ -97,7 +97,7 @@ internal class UpdateRepoVerb : IVerb
                 break;
             case var i when i == RepoType.Discrepancy || i == RepoType.Calls:
                 ITypedRepoUpdateManager ma = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result r = ma.Manage<DiscrepancyCallDbEntity>(DwhQueryType.Discrepancy, DwhConnectionType.Calls, repoInfo, ForceUpdate || Update);
+                Result r = ma.Manage<DiscrepancyCallDbEntity>(DwhQueryType.Discrepancy, DwhConnectionType.Calls, repoInfo, valueInfo, ForceUpdate || Update);
                 code = DetermineReturnCode(r);
                 break;
             default:

@@ -22,7 +22,7 @@ public class QueryTests
     {
         try
         {
-            Query q = new(DwhQueryType.Test, query);
+            Query q = new(query);
             Assert.NotNull(q);
             Assert.Contains("FROM", q.From);
             Assert.Contains("SELECT", q.Select);
@@ -50,7 +50,7 @@ public class QueryTests
     ]
     public void QueryClass_Setters_ProperlyAddComponents(string query, string addition, Query.QueryType type, string expected)
     {
-        Query q = new(DwhQueryType.Test, query);
+        Query q = new(query);
         switch (type)
         {
             case Query.QueryType.Where:
@@ -78,11 +78,11 @@ public class QueryTests
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where otherthings is not null group by stuffandthings, thingsandstuff, andstuffthings order by otherthings asc", "and stuffandthings > 123456789 and otherstuffandthings < 123456789", Query.QueryType.Where),
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 order by otherthings asc", "group by stuffandthings, thingsandstuff, andstuffthings", Query.QueryType.GroupBy),
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings", "order by otherthings", Query.QueryType.OrderBy),
-        InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings order by otherthings","theseotherthings, thisstuff", Query.QueryType.OrderBy),
+        InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings order by otherthings", "theseotherthings, thisstuff", Query.QueryType.OrderBy),
     ]
     public void QueryClass_Setters_ProperlyAppendComponents(string query, string addition, Query.QueryType type)
     {
-        Query q = new(DwhQueryType.Test, query);
+        Query q = new(query);
         switch (type)
         {
             case Query.QueryType.Where:
