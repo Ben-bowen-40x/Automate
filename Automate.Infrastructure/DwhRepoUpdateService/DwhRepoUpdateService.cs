@@ -86,18 +86,14 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
             if (!repoLocation.Exists)
                 File.WriteAllText(repoLocation.FullName, string.Empty);
 
-            Result json = JsonService.WriteToFile(repoLocation, list);
-            Result csv = CsvService.Write(list, repoLocation);
-
-            return (
-                json.IsSuccess, csv.IsSuccess) switch
+            Result result = repoLocation.Extension switch
             {
-                (true, true) or  // Both succeed
-                (true, false) or // Only Json succeed
-                (false, true) => // Only Csv succeed
-                    Result.Success(),
-                (false, false) => Result.Failure(json.Error + " " + csv.Error),
+                ".json" => JsonService.WriteToFile(repoLocation, list),
+                ".csv" => CsvService.Write(list, repoLocation),
+                _ => Result.Failure($"Failed to parse file because it's not a supported file type\n{repoLocation.FullName}")
             };
+
+            return result;
         }
         catch (Exception ex)
         {
