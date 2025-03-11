@@ -18,7 +18,7 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
             DwhConnectionType.Calls => _settings.CallsConnectionString!,
             DwhConnectionType.Customers => _settings.CustomersConnectionString!,
             DwhConnectionType.ContactForms => _settings.ContactFormsConnectionString!,
-            _ => _settings.CallsConnectionString!
+            _ => throw new ArgumentException($"The given connection type has not been assigned a connection string:\n{type}")
         };
 
     public IQuery GetQuery(DwhQueryType type)
