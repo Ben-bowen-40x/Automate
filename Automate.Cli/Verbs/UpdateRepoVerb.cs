@@ -90,9 +90,9 @@ internal class UpdateRepoVerb : IVerb
                 // Inform the user what took place
                 Result uploaded = re.UploadedContacts;
                 Result<DirectoryInfo> contactLocation = re.ContactLocation;
-                _ = DetermineReturnCode(uploaded);
+                var c = DetermineReturnCode(uploaded);
                 Console.WriteLine("Request: Contacts Upload");
-                code = DetermineReturnCode(contactLocation);
+                code = c + DetermineReturnCode(contactLocation);
                 Console.WriteLine("Request: Contact generation");
                 break;
             case var i when i == RepoType.Discrepancy || i == RepoType.Calls:
