@@ -1,5 +1,6 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Application.InfrastructureValueObjects;
+using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.JsonManipulationService;
 using CSharpFunctionalExtensions;
@@ -24,10 +25,9 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
     public IQuery GetQuery(DwhQueryType type)
         => type switch
         {
-            DwhQueryType.AllCalls => _rawQuery.CallBasicAddon,
             DwhQueryType.AllCustomers => _rawQuery.CustomerBasic,
-            DwhQueryType.ContactForms => _rawQuery.WebFormQuery1,
-            DwhQueryType.Discrepancy => _rawQuery.DiscrepancyQuery(),
+            DwhQueryType.ContactForms => _rawQuery.WebFormQuery,
+            DwhQueryType.Discrepancy or DwhQueryType.AllCalls => _rawQuery.DatedCallsQuery(),
             _ => _rawQuery.CustomerBasic
         };
 
@@ -51,17 +51,16 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
     {
         // Filter the connection string
         List<long> numbers = existing.Select(e => e.Number.Number).ToList();
-        IQuery newQuery = _rawQuery.Filter(type, query, numbers);
+        IQuery newQuery = _rawQuery.NumberFilter(type, query, numbers);
         Result<List<TEntity>> entities = GetEntitiesList<TEntity>(connectionString, newQuery);
         return entities;
     }
 
-    public Result<List<TEntity>> GetRepo<TEntity>(string location)
+    public Result<List<TEntity>> GetRepo<TEntity>(FileInfo location)
     {
         try
         {
-            FileInfo loc = new(location);
-            Result<List<TEntity>> result = JsonService.ReadFile<TEntity>(loc);
+            Result<List<TEntity>> result = JsonService.ReadFile<TEntity>(location);
             return result;
         }
         catch (Exception ex)
@@ -77,19 +76,28 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
     #endregion
 
     #region Update
-    public Result Update<TEntity>(List<TEntity> list1, List<TEntity> list2, string repoLocation)
+    public Result Update<TEntity>(List<TEntity> list1, List<TEntity> list2, FileInfo repoLocation)
         => Update([.. list1, .. list2], repoLocation);
 
-    public Result Update<TEntity>(List<TEntity> list, string repoLocation)
+    public Result Update<TEntity>(List<TEntity> list, FileInfo repoLocation)
     {
         try
         {
-            if (!File.Exists(repoLocation))
-                File.WriteAllText(repoLocation, string.Empty);
+            if (!repoLocation.Exists)
+                File.WriteAllText(repoLocation.FullName, string.Empty);
 
-            FileInfo repo = new(repoLocation);
-            Result result = JsonService.WriteToFile(repo, list);
-            return result;
+            Result json = JsonService.WriteToFile(repoLocation, list);
+            Result csv = CsvService.Write(list, repoLocation);
+
+            return (
+                json.IsSuccess, csv.IsSuccess) switch
+            {
+                (true, true) or  // Both succeed
+                (true, false) or // Only Json succeed
+                (false, true) => // Only Csv succeed
+                    Result.Success(),
+                (false, false) => Result.Failure(json.Error + " " + csv.Error),
+            };
         }
         catch (Exception ex)
         {

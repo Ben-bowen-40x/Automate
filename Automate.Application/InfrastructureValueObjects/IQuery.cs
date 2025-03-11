@@ -2,7 +2,6 @@
 
 public interface IQuery
 {
-    DwhQueryType Type { get; }
     string Select { get; }
     string From { get; }
     string? Where { get; }

@@ -43,8 +43,8 @@ internal class Settings : IInfrastructureSettings, IDomainSettings
     public string? LeafThreadsEndpoint { get; set; }
 
     // Discrepancy
-    public string? Discrepancy { get; set; }
-    public string? Discrepancy2 { get; set; }
+    public string? CallsQuery { get; set; }
+    public string? CallsQueryFilter { get; set; }
     public string? OriginalDiscrepancy { get; set; }
 
     // Contacts
@@ -54,8 +54,7 @@ internal class Settings : IInfrastructureSettings, IDomainSettings
     public ulong ContactUpdateNumber { get; set; }
 
     // Forms
-    public string? WebFormQuery1 { get; set; }
-    public string? WebFormQuery2 { get; set; }
+    public string? WebFormQuery { get; set; }
 
     // ISharpQuerySettings
     public string? GuliagarName { get; set; }

@@ -29,8 +29,8 @@ public class DiscrepancyService_Test
         var q = new RawQuery(_settings as IRawQuerySettings);
 
         // Act
-        IQuery action = q.DiscrepancyQuery();
-        action.AppendWhere(_settings.Discrepancy2!);
+        IQuery action = q.DatedCallsQuery();
+        action.AppendWhere(_settings.CallsQueryFilter!);
 
         // Assert
         Assert.NotNull(action);
