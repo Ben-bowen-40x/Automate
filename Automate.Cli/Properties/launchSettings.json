@@ -45,70 +45,70 @@
     // Produce New Messages
     "Analyze Messages - Produce New Pan": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\PNContactForms.csv -t Pan",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\PNContactForms.csv -t Pan",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Produce New Leaf to GAds": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t GAdsLeaf",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t GAdsLeaf",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Produce New Leaf": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t Leaf",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t Leaf",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Produce New Leaf to GAds - LeafRepo": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeafRepo",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeafRepo",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Produce New Leaf - LeafRepo": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Produce New Web Forms": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ManualWebForms.csv -t ManualWebForm",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ManualWebForms.csv -t ManualWebForm",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Produce New Meta Forms, non-specific output": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MetaForms.csv -t MetaForm",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MetaForms.csv -t MetaForm",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Produce New Meta Forms, specific output": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MetaForms.csv -t MetaForm -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\MetaForms.csv",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MetaForms.csv -t MetaForm -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\MetaForms.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Produce New Libacion": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LibacionForm.csv -t Libacion",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LibacionForm.csv -t Libacion",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Produce New Leased": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LeasedMessagesInput.csv -t Leased",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LeasedMessagesInput.csv -t Leased",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
@@ -117,7 +117,7 @@
     // Append / Truncated reports
     "Analyze Messages - Truncated 180 days -- Append New Leaf - LeafRepo": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo -xd 180 -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv -O ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LeafReport_Gads_Truncated180.csv",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo -xd 180 -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv -O ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LeafReport_Gads_Truncated180.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
@@ -135,56 +135,56 @@
     // Append Messages
     "Analyze Messages - Append Pan to Power Bi": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\PNContactForms.csv -t Pan -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\PanReport.csv",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\PNContactForms.csv -t Pan -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\PanReport.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Append Leaf to GAds": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t GAdsLeaf -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads.csv",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t GAdsLeaf -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Append Leaf to Power Bi": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t Leaf -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t Leaf -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Append Leaf to GAds - Leaf Repo": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeafRepo -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads.csv",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t GAdsLeafRepo -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF_Gads.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Append Leaf to Power Bi - Leaf Repo": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Append Web Forms to Power Bi": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ManualWebForms.csv -t ManualWebForm -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\ManualWebForms.csv",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\ManualWebForms.csv -t ManualWebForm -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\ManualWebForms.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Append Libacion to Power Bi": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LibacionForm.csv -t Libacion -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LibacionForm.csv",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LibacionForm.csv -t Libacion -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LibacionForm.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }
     },
     "Analyze Messages - Append Leased to Power Bi": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LeasedMessagesInput.csv -t Leased -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LeasedMessages.csv",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LeasedMessagesInput.csv -t Leased -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LeasedMessages.csv",
       "environmentVariables": {
         "DOTNET_ENVIRONMENT": "Development"
       }

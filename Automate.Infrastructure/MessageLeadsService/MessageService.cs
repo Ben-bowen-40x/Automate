@@ -49,11 +49,10 @@ public class MessageService(IDwhSettings settings) : IMessageService
     #endregion
 
     #region Implementation
-    public List<IMessage> GetMessages<T>(string msgs) where T : IConvert
+    public List<IMessage> GetMessages<T>(FileInfo msgs) where T : IConvert
     {
         // Retrieve Messages
-        FileInfo msgLocStr = string.IsNullOrWhiteSpace(msgs) ? Location(_messagesLocation) : new(msgs);
-        Result<List<T>> result = CsvService.Parse<T>(msgLocStr);
+        Result<List<T>> result = CsvService.Parse<T>(msgs);
         IEnumerable<T> messageCol = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
@@ -67,14 +66,9 @@ public class MessageService(IDwhSettings settings) : IMessageService
         return uniqueMsgs;
     }
 
-    public List<ICallRecord> GetCallRecords(IEnumerable<long> msgNums, string callRepo)
+    public List<ICallRecord> GetCallRecords(IEnumerable<long> msgNums, FileInfo callRepo)
     {
-        // Prepare the repo location
-        FileInfo callLocation = string.IsNullOrWhiteSpace(callRepo) || !File.Exists(callRepo)
-            ? Location(_callRecordRepo)
-            : new(callRepo);
-
-        Result<List<CallRecordJsonReader>> result = JsonService.ReadFile<CallRecordJsonReader>(callLocation);
+        Result<List<CallRecordJsonReader>> result = JsonService.ReadFile<CallRecordJsonReader>(callRepo);
         List<CallRecordJsonReader> localCalls = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
@@ -85,14 +79,9 @@ public class MessageService(IDwhSettings settings) : IMessageService
         return filteredCalls;
     }
 
-    public List<ICustomerSubscription> GetCustomerRecords(IEnumerable<long> msgNums, string customerRepo)
+    public List<ICustomerSubscription> GetCustomerRecords(IEnumerable<long> msgNums, FileInfo customerRepo)
     {
-        // Prepare the repo location. This is the default location
-        FileInfo customerLocation = string.IsNullOrWhiteSpace(customerRepo) || !File.Exists(customerRepo)
-            ? Location(_customerRecordRepo)
-            : new(customerRepo);
-
-        var result = JsonService.ReadFile<CustSubJsonReader>(customerLocation);
+        Result<List<CustSubJsonReader>> result = JsonService.ReadFile<CustSubJsonReader>(customerRepo);
         List<CustSubJsonReader> localCustomers = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
