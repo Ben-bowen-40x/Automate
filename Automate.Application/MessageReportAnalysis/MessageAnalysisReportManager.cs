@@ -24,19 +24,19 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
     {
         List<QualifiedMessageRecord> reportRecords = GetReportRecords<T>(messages, callsFile, customersFile, report, type);
 
-        // Truncate the report 
+        // Truncate the report by filtering from a specific number of days
         if (truncate)
         {
             DateTimeOffset past = DateTimeOffset.Now - TimeSpan.FromDays(days);
             List<QualifiedMessageRecord> truncatedRecords = reportRecords.Where(r => DateTimeOffset.Compare(past, r.Message.Date) <= 0).ToList();
             var result = _reportService.GenerateMessageLeadReport(reportDefault + "Truncated" + days, truncatedRecords, truncatedReport);
             Result<FileInfo> appended = _reportService.GenerateMessageLeadReport(reportDefault, reportRecords, report);
-            if (result.IsSuccess)
-                return result;
-            if (result.IsFailure && appended.IsSuccess)
-                return appended;
-            if (result.IsFailure && appended.IsFailure)
-                return Result.Failure<FileInfo>(result.Error + "\n" + appended.Error);
+            return (result.IsSuccess, appended.IsSuccess) switch
+            {
+                (true, true) or (true, false) => result,
+                (false, true) => appended,
+                (false, false) => Result.Failure<FileInfo>(result.Error + "\n" + appended.Error)
+            };
         }
 
         // Generate Report
@@ -71,48 +71,48 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
 
         #region Local
         List<QualifiedMessageRecord> resetRecords(FileInfo customersFile, List<QualifiedMessageRecord> records)
-    {
-        // Refresh report data to be consistent with repository
-        List<ICustomerSubscription> reportCust = _msgService.GetCustomerRecords(customersFile);
-        List<QualifiedMessageRecord> recordsRefreshed = records
-                .Select(r => resetRecords(r, reportCust))
-            .ToList();
-        records = recordsRefreshed; // If the report record could not be found in the list of customers, then the original record's customer is used
-
-        return records;
-
-        #region Local
-            static QualifiedMessageRecord resetRecords(QualifiedMessageRecord r, List<ICustomerSubscription> reportCust)
         {
-            // Find Customer
-            long rph = r.Customer.Number.Number;
-            long r2ph = r.Customer.Number2.Number;
-            long rsubid = r.Customer.SubscriptionId;
-            ICustomerSubscription? newc = reportCust.FirstOrDefault(c => //c.Number.Number == rph || c.Number2.Number == r2ph || 
-                c.SubscriptionId == rsubid);
-            ICustomerSubscription newcust = newc ?? r.Customer; // This means that the report contains subscription records that don't exist in the repo. This happens all the time because there are default values.
+            // Refresh report data to be consistent with repository
+            List<ICustomerSubscription> reportCust = _msgService.GetCustomerRecords(customersFile);
+            List<QualifiedMessageRecord> recordsRefreshed = records
+                .Select(r => resetRecords(r, reportCust))
+                .ToList();
+            records = recordsRefreshed; // If the report record could not be found in the list of customers, then the original record's customer is used
 
-            // Customer Matches
-            bool idMatch = r.Customer.CustomerId == newcust.CustomerId;
-            bool subMatch = r.Customer.SubscriptionId == newcust.SubscriptionId;
-            bool dtmatch = DateTime.Compare(r.Customer.Date.DateTime, newcust.Date.DateTime) == 0; // DateTimeOffset.DateTime does not do any weird conversions
-            bool subDtMatch = DateTime.Compare(r.Customer.SubscriptionStartDate.DateTime, newcust.SubscriptionStartDate.DateTime) == 0;
-            bool cxlDtMatch = DateTime.Compare(r.Customer.CustomerCancelDate.DateTime, newcust.CustomerCancelDate.DateTime) == 0;
-            bool sCxlDtMatch = DateTime.Compare(r.Customer.SubscriptionCancelDate.DateTime, newcust.SubscriptionCancelDate.DateTime) == 0;
-            bool activeMatch = r.Customer.CustomerActive == newcust.CustomerActive;
-            bool subActMatch = r.Customer.SubscriptionActive == newcust.SubscriptionActive;
-            bool initialMatch = r.Customer.InitialCompleted == newcust.InitialCompleted;
-            bool phMatch = r.Customer.Number.Number == newcust.Number.Number;
-            bool ph2Match = r.Customer.Number2.Number == newcust.Number2.Number;
-            bool cvMatch = r.Customer.ContractValue == newcust.ContractValue;
-            bool sellMatch = r.Customer.Sellers.Equals(newcust.Sellers, StringComparison.CurrentCultureIgnoreCase);
-            bool customerMatches = idMatch && subMatch && dtmatch && subDtMatch && cxlDtMatch && sCxlDtMatch && activeMatch && subActMatch && initialMatch && phMatch && ph2Match && cvMatch && sellMatch;
+            return records;
 
-            QualifiedMessageRecord result = new(r.Message, newcust, r.Billable, r.IsSalesLead, r.Type);
-            return result;
+            #region Local
+            static QualifiedMessageRecord resetRecords(QualifiedMessageRecord r, List<ICustomerSubscription> reportCust)
+            {
+                // Find Customer
+                long rph = r.Customer.Number.Number;
+                long r2ph = r.Customer.Number2.Number;
+                long rsubid = r.Customer.SubscriptionId;
+                ICustomerSubscription? newc = reportCust.FirstOrDefault(c => //c.Number.Number == rph || c.Number2.Number == r2ph || 
+                    c.SubscriptionId == rsubid);
+                ICustomerSubscription newcust = newc ?? r.Customer; // This means that the report contains subscription records that don't exist in the repo. This happens all the time because there are default values.
+
+                // Customer Matches
+                bool idMatch = r.Customer.CustomerId == newcust.CustomerId;
+                bool subMatch = r.Customer.SubscriptionId == newcust.SubscriptionId;
+                bool dtmatch = DateTime.Compare(r.Customer.Date.DateTime, newcust.Date.DateTime) == 0; // DateTimeOffset.DateTime does not do any weird conversions
+                bool subDtMatch = DateTime.Compare(r.Customer.SubscriptionStartDate.DateTime, newcust.SubscriptionStartDate.DateTime) == 0;
+                bool cxlDtMatch = DateTime.Compare(r.Customer.CustomerCancelDate.DateTime, newcust.CustomerCancelDate.DateTime) == 0;
+                bool sCxlDtMatch = DateTime.Compare(r.Customer.SubscriptionCancelDate.DateTime, newcust.SubscriptionCancelDate.DateTime) == 0;
+                bool activeMatch = r.Customer.CustomerActive == newcust.CustomerActive;
+                bool subActMatch = r.Customer.SubscriptionActive == newcust.SubscriptionActive;
+                bool initialMatch = r.Customer.InitialCompleted == newcust.InitialCompleted;
+                bool phMatch = r.Customer.Number.Number == newcust.Number.Number;
+                bool ph2Match = r.Customer.Number2.Number == newcust.Number2.Number;
+                bool cvMatch = r.Customer.ContractValue == newcust.ContractValue;
+                bool sellMatch = r.Customer.Sellers.Equals(newcust.Sellers, StringComparison.CurrentCultureIgnoreCase);
+                bool customerMatches = idMatch && subMatch && dtmatch && subDtMatch && cxlDtMatch && sCxlDtMatch && activeMatch && subActMatch && initialMatch && phMatch && ph2Match && cvMatch && sellMatch;
+
+                QualifiedMessageRecord result = new(r.Message, newcust, r.Billable, r.IsSalesLead, r.Type);
+                return result;
+            }
+            #endregion
         }
-        #endregion
-    }
         #endregion
     }
 }
