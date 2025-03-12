@@ -115,17 +115,17 @@ public static class PathManipulation
             : $"This was the literal input:  \n{path}\nAnd this is the actual path, confirmed to exist by the system:  \n{Path.GetFullPath(path)}";
     }
 
-    internal static Result<FileType> VerifyType(string location)
+    internal static Result<FileType> VerifyFileType(string location)
     {
         if (!File.Exists(location))
             return Result.Failure<FileType>($"The provided file location does not exist. Here is the provided file location: \"{location}\"");
 
         FileInfo fileInfo = new(location);
-        Result<FileType> result = VerifyType(fileInfo);
+        Result<FileType> result = VerifyFileType(fileInfo);
         return result;
     }
 
-    internal static Result<FileType> VerifyType(FileInfo fileInfo)
+    internal static Result<FileType> VerifyFileType(FileInfo fileInfo)
     {
         string ext = fileInfo.Extension;
         return ext switch

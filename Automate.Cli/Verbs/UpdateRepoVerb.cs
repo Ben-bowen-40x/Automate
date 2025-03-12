@@ -38,12 +38,12 @@ internal class UpdateRepoVerb : IVerb
     public int Run(IServiceProvider service)
     {
         // Validate Input
-        Result<FileType> apiJson = PathManipulation.VerifyType(ApiRepositoryJson);
+        Result<FileType> apiJson = PathManipulation.VerifyFileType(ApiRepositoryJson);
         FileInfo repoInfo = !ApiRepositoryJson.Exists || apiJson.IsFailure || apiJson.Value != FileType.Json
             ? throw new ArgumentException($"The provided repository does not exist. This was the given repository:\n{nameof(ApiRepositoryJson)} -> {ApiRepositoryJson}")
             : ApiRepositoryJson;
         string valueRepoName = ValueRepositoryCsv is not null ? ValueRepositoryCsv.FullName : string.Empty;
-        Result<FileType> valueCsv = PathManipulation.VerifyType(valueRepoName);
+        Result<FileType> valueCsv = PathManipulation.VerifyFileType(valueRepoName);
         string valueInfo = !File.Exists(valueRepoName) || valueCsv.IsFailure || valueCsv.Value != FileType.Csv
             ? string.Empty
             : valueRepoName;
