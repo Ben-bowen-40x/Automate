@@ -6,5 +6,5 @@ namespace Automate.Application.TypedRepoUpdate;
 
 public interface ITypedRepoUpdateManager
 {
-    Result Manage<TEntity>(DwhQueryType type, DwhConnectionType connection, string repoJson, bool hardUpdate) where TEntity : class, IPhoneNumberCompatible;
+    Result Manage<TEntity>(DwhQueryType type, DwhConnectionType connection, FileInfo repoJson, string valueRepo, bool hardUpdate) where TEntity : class, IPhoneNumberCompatible;
 }

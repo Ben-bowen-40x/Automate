@@ -1,8 +1,8 @@
 ﻿namespace Automate.Domain.ValueObjects;
 
-public record DiscrepancyCall(PhoneNumber Number, bool Billable, DateTime Date, TimeSpan Duration, DiscrepancySource Source, string Notes) : IDiscrepancyCall
+public record DiscrepancyCall(PhoneNumber Number, bool Billable, DateTimeOffset Date, TimeSpan Duration, DiscrepancySource Source, string Notes) : IDiscrepancyCall
 {
-    public DateTime Date { get; set; } = Date;
+    public DateTimeOffset Date { get; set; } = Date;
 
     public override string ToString()
     {

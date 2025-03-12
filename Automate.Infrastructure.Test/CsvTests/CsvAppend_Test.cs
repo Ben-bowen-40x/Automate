@@ -30,26 +30,13 @@ public class CsvAppend_Test
     ]
     public void CsvAppendDoesNotHaveStackOverflowIssues(string contentToAppend1, string contentToAppend2, string contentToAppend3)
     {
-        // If the file doesn't exist, create it 
-        if (!File.Exists(TestFileLocation1.FullName))
-        {
-            File.WriteAllText(TestFileLocation1.FullName, $"{CsvAppendTestColumns.c1},{CsvAppendTestColumns.c2},{CsvAppendTestColumns.c3}\n");
-        }
-
-        // Translate input to objects
-        List<CsvAppendTestColumns> unparsed =
-        [
-            new()
-            {
-                Col1 = contentToAppend1,
-                Col2 = contentToAppend2,
-                Col3 = contentToAppend3,
-            }
-        ];
+        GenerateFile();
+        List<CsvAppendTestColumns> unparsed = CreateObjects(contentToAppend1, contentToAppend2, contentToAppend3);
 
         // Append to the file
         CsvService.Append<CsvAppendTestColumns, CsvAppend_TestMap>(TestFileLocation1, unparsed);
     }
+
     #endregion
 
     #region CsvAppendDoesNotHaveStackOverflowIssues_IOErrortest
@@ -90,6 +77,55 @@ public class CsvAppend_Test
 
         // Append to the file
         CsvService.Append<CsvAppendTestColumns, CsvAppend_TestMap>(TestFileLocation1, unparsed);
+    }
+    #endregion
+
+    #region Csv can read and write without mapping
+    // Why is this here? Because this class has easy theories to use, that's why
+    // Plus, I don't have to make a new test class!
+    [
+        Theory,
+        InlineData("This is column 1", "This is Colmn 2", "This is column 3"),
+        InlineData("Thi is column 1", "This is Column 2", "This is column 3"),
+        InlineData("This s column 1", "This is Column 2", "This is column 3"),
+        InlineData("This iscolumn 1", "This is Column 2", "This is column 3"),
+        InlineData("This is clumn 1", "This is Column 2", "This is column 3"),
+        InlineData("This is column 1", "This is Clumn 2", "This is column 3"),
+        InlineData("This is colun 1", "This is Column 2", "This is column 3"),
+        InlineData("This is column1", "his is Column 2", "This is column 3"),
+        InlineData("This is column 1", "his is Column 2", "This is column 3"),
+        InlineData("This is column 1", "Ths is Column 2", "This is column 3"),
+        InlineData("This is column 1", "Thisis Column 2", "This is column 3"),
+    ]
+    public void CsvWriteWorksWithoutMapping(string content1, string content2, string content3)
+    {
+        GenerateFile();
+
+        List<CsvAppendTestColumns> unparsed = CreateObjects(content1, content2, content3);
+        CsvService.Write(unparsed, TestFileLocation1);
+    }
+    #endregion
+
+    #region Private
+    private void GenerateFile()
+    {
+        // If the file doesn't exist, create it 
+        if (!File.Exists(TestFileLocation1.FullName))
+        {
+            File.WriteAllText(TestFileLocation1.FullName, $"{CsvAppendTestColumns.c1},{CsvAppendTestColumns.c2},{CsvAppendTestColumns.c3}\n");
+        }
+    }
+    private static List<CsvAppendTestColumns> CreateObjects(string contentToAppend1, string contentToAppend2, string contentToAppend3)
+    {
+        // Translate input to objects
+        return [
+            new()
+            {
+                Col1 = contentToAppend1,
+                Col2 = contentToAppend2,
+                Col3 = contentToAppend3,
+            }
+        ];
     }
     #endregion
 }

@@ -8,6 +8,7 @@ public enum RepoType
     ContactForms,
     ContactUpdate,
     Discrepancy,
+    Deprecated,
 }
 
 internal class UpdateRepoHelper

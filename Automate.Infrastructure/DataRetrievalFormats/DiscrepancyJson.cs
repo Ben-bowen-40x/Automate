@@ -8,7 +8,7 @@ public class DiscrepancyJson : ICallDateTime, IConvert
 {
     public NumberType? Number { get; set; }
     public string? Billable { get; set; }
-    public DateTime Date { get; set; }
+    public DateTimeOffset Date { get; set; }
     public int? Duration { get; set; }
     public string? Source { get; set; }
     public string? Notes { get; set; }

@@ -19,8 +19,8 @@ public interface IRawQuerySettings
     string? MessageCustQuery2 { get; set; }
 
     // Discrepancy
-    string? Discrepancy { get; set; }
-    string? Discrepancy2 { get; set; }
+    string? CallsQuery { get; set; }
+    string? CallsQueryFilter { get; set; }
     string? OriginalDiscrepancy { get; set; }
 
     // Contacts
@@ -30,6 +30,5 @@ public interface IRawQuerySettings
     ulong ContactUpdateNumber { get; set; }
 
     // Forms
-    public string? WebFormQuery1 { get; set; }
-    public string? WebFormQuery2 { get; set; }
+    public string? WebFormQuery { get; set; }
 }

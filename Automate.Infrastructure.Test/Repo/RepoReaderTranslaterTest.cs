@@ -26,7 +26,7 @@ public class RepoReaderTranslaterTest
         FileInfo file = Functions.TestFile(@".info/ApiRepos/RepoTests", "CustomerRepoTest.json");
 
         // Get the test file Contents
-        Result<List<CustSubJsonReader>> contents = Service.GetRepo<CustSubJsonReader>(file.FullName);
+        Result<List<CustSubJsonReader>> contents = Service.GetRepo<CustSubJsonReader>(file);
         List<CustSubJsonReader> expected = contents.IsSuccess
             ? contents.Value
             : throw new Exception("Failure retrieving expected values from repo");
@@ -35,16 +35,16 @@ public class RepoReaderTranslaterTest
         // Write the test file contents repeatedly
         for (int i = 0; i < reps; i++)
         {
-            Result<List<CustSubJsonReader>> inter = Service.GetRepo<CustSubJsonReader>(file.FullName);
+            Result<List<CustSubJsonReader>> inter = Service.GetRepo<CustSubJsonReader>(file);
             List<CustSubJsonReader> list = inter.IsSuccess
                 ? inter.Value
                 : throw new Exception($"Failure retrieving values from repo during iterative execution. Iteration index: {i}");
-            Result u = Service.Update(list, file.FullName);
+            Result u = Service.Update(list, file);
             if (u.IsFailure) throw new Exception("Failure updating repo.");
         }
 
         // Assert
-        Result<List<CustSubJsonReader>> c = Service.GetRepo<CustSubJsonReader>(file.FullName);
+        Result<List<CustSubJsonReader>> c = Service.GetRepo<CustSubJsonReader>(file);
         List<CustSubJsonReader> actual = c.IsSuccess
             ? contents.Value
             : throw new Exception("Failure retrieving expected values from repo");
