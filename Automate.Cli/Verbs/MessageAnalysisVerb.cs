@@ -13,7 +13,6 @@ namespace Automate.Cli.Verbs;
 [Verb(AnalyzeMessages, HelpText = "Analyze message leads. Specify the repository locations, report locations, whether a truncated report should be generated")]
 internal class MessageAnalysisVerb : IVerb
 {
-
     #region Options
     public const string AnalyzeMessages = "analyzeMessages";
 
@@ -61,7 +60,6 @@ internal class MessageAnalysisVerb : IVerb
     #region Private
     private const string _fileDefault = " If a file is not provided or the provided location does not exist, a default will be used instead. ";
     private const string _helpText = "Choose which type of message file you wish to analyze. The following options are case-sensitive: " + MessageTypeText.Text;
-    private record FilePaths(FileInfo MessageLoc, FileInfo CallRepoLoc, FileInfo CustomerRepoLoc, string TruncatedRepoLoc, string ReportLoc);
 
     private string InformUser()
     {
@@ -89,6 +87,7 @@ internal class MessageAnalysisVerb : IVerb
         return string.Join('\n', resultList);
     }
 
+    private record FilePaths(FileInfo MessageLoc, FileInfo CallRepoLoc, FileInfo CustomerRepoLoc, string TruncatedRepoLoc, string ReportLoc);
     private FilePaths VerifyInput()
     {
         // Verify that the file inputs exist. If they don't, default them
