@@ -37,7 +37,7 @@ public class MatchDiscrepancyCalls
 
             // Find out if there are billable calls with matching phone number before the lead
             int billableBeforeCount = phoneMatch
-                .Where(m => m.Billable && DateTime.Compare(m.Date, billed.Date) < 0)
+                .Where(m => m.Billable && DateTimeOffset.Compare(m.Date, billed.Date) < 0)
                 .ToList()
                 .Count;
 

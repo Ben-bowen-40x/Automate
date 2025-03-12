@@ -40,13 +40,12 @@ public class InfrastructureTestSettings : IInfrastructureTestSettings
     public string? MessageCallQuery3 { get; set; }
     public string? MessageCustQuery1 { get; set; }
     public string? MessageCustQuery2 { get; set; }
-    public string? Discrepancy { get; set; }
-    public string? Discrepancy2 { get; set; }
+    public string? CallsQuery { get; set; }
+    public string? CallsQueryFilter { get; set; }
     public string? OriginalDiscrepancy { get; set; }
     public string? ContactUpdate1 { get; set; }
     public string? ContactUpdate2 { get; set; }
     public string? ContactUpdate3 { get; set; }
     public ulong ContactUpdateNumber { get; set; }
-    public string? WebFormQuery1 { get; set; }
-    public string? WebFormQuery2 { get; set; }
+    public string? WebFormQuery { get; set; }
 }

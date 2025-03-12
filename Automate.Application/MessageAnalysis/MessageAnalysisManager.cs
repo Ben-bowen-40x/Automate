@@ -9,7 +9,7 @@ public class MessageAnalysisManager(IMessageService textService, IReportService 
     private readonly IMessageService _textService = textService;
     private readonly IReportService _reportService = reportService;
 
-    public Result<FileInfo> Manage<T>(string reportDefault, string messages, string callQuery, string customerQuery, string report, MessageType type) where T : IConvert
+    public Result<FileInfo> Manage<T>(string reportDefault, FileInfo messages, FileInfo callQuery, FileInfo customerQuery, string report, MessageType type) where T : IConvert
     {
         // Retrieve Items
         List<IMessage> msgs = _textService.GetMessages<T>(messages);
@@ -26,7 +26,7 @@ public class MessageAnalysisManager(IMessageService textService, IReportService 
         return file;
     }
 
-    public Result<FileInfo> Manage<T>(string reportDefault, string messages, string callQuery, string customerQuery, string report, bool truncate, MessageType type, int days = 120) where T : IConvert
+    public Result<FileInfo> Manage<T>(string reportDefault, FileInfo messages, FileInfo callQuery, FileInfo customerQuery, string report, bool truncate, MessageType type, int days = 120) where T : IConvert
     {
         // Retrieve Items
         List<IMessage> msgs = _textService.GetMessages<T>(messages);

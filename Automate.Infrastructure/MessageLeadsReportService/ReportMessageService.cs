@@ -57,13 +57,9 @@ public class ReportMessageService : IReportMessageService
         return reportRecords;
     }
 
-    public List<IMessage> GetMessages<T>(string messageLocation) where T : IConvert
+    public List<IMessage> GetMessages<T>(FileInfo messageLocation) where T : IConvert
     {
-        // Retrieve Messages
-        FileInfo msgLocStr = messageLocation == string.Empty
-            ? Location(_messagesLocation)
-            : new(messageLocation);
-        Result<List<T>> result = CsvService.Parse<T>(msgLocStr);
+        Result<List<T>> result = CsvService.Parse<T>(messageLocation);
         IEnumerable<T> messageCol = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
@@ -98,14 +94,9 @@ public class ReportMessageService : IReportMessageService
         }
     }
 
-    public List<ICallRecord> GetCallRecords(List<long> msgNums, string callRepo)
+    public List<ICallRecord> GetCallRecords(List<long> msgNums, FileInfo callRepo)
     {
-        // Prepare the repo location
-        FileInfo callLocation = string.IsNullOrWhiteSpace(callRepo) || !File.Exists(callRepo)
-            ? Location(_callRecordRepo)
-            : new(callRepo);
-
-        Result<List<CallRecordJsonReader>> result = JsonService.ReadFile<CallRecordJsonReader>(callLocation);
+        Result<List<CallRecordJsonReader>> result = JsonService.ReadFile<CallRecordJsonReader>(callRepo);
         List<CallRecordJsonReader> localCalls = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
@@ -116,21 +107,16 @@ public class ReportMessageService : IReportMessageService
         return filteredCalls;
     }
 
-    public List<ICustomerSubscription> GetCustomerRecords(List<long> msgNums, string customerRepo)
+    public List<ICustomerSubscription> GetCustomerRecords(List<long> msgNums, FileInfo customerRepo)
     {
         List<ICustomerSubscription> filteredCustomers = GetCustomerRecords(customerRepo)
             .Where(c => msgNums.Contains(c.Number.Number) || msgNums.Contains(c.Number2.Number))
             .ToList();
         return filteredCustomers;
     }
-    public List<ICustomerSubscription> GetCustomerRecords(string customerRepo)
+    public List<ICustomerSubscription> GetCustomerRecords(FileInfo customerRepo)
     {
-        // Prepare the repo location. This is the default location
-        FileInfo customerLocation = string.IsNullOrWhiteSpace(customerRepo) || !File.Exists(customerRepo)
-            ? Location(_customerRecordRepo)
-            : new(customerRepo);
-
-        Result<List<CustSubJsonReader>> result = JsonService.ReadFile<CustSubJsonReader>(customerLocation);
+        Result<List<CustSubJsonReader>> result = JsonService.ReadFile<CustSubJsonReader>(customerRepo);
         List<CustSubJsonReader> localCustomers = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);

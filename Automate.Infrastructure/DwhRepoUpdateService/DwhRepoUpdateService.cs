@@ -1,5 +1,6 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Application.InfrastructureValueObjects;
+using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.JsonManipulationService;
 using CSharpFunctionalExtensions;
@@ -18,16 +19,15 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
             DwhConnectionType.Calls => _settings.CallsConnectionString!,
             DwhConnectionType.Customers => _settings.CustomersConnectionString!,
             DwhConnectionType.ContactForms => _settings.ContactFormsConnectionString!,
-            _ => _settings.CallsConnectionString!
+            _ => throw new ArgumentException($"The given connection type has not been assigned a connection string:\n{type}")
         };
 
     public IQuery GetQuery(DwhQueryType type)
         => type switch
         {
-            DwhQueryType.AllCalls => _rawQuery.CallBasicAddon,
             DwhQueryType.AllCustomers => _rawQuery.CustomerBasic,
-            DwhQueryType.ContactForms => _rawQuery.WebFormQuery1,
-            DwhQueryType.Discrepancy => _rawQuery.DiscrepancyQuery(),
+            DwhQueryType.ContactForms => _rawQuery.WebFormQuery,
+            DwhQueryType.Discrepancy or DwhQueryType.AllCalls => _rawQuery.DatedCallsQuery(),
             _ => _rawQuery.CustomerBasic
         };
 
@@ -51,17 +51,16 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
     {
         // Filter the connection string
         List<long> numbers = existing.Select(e => e.Number.Number).ToList();
-        IQuery newQuery = _rawQuery.Filter(type, query, numbers);
+        IQuery newQuery = _rawQuery.NumberFilter(type, query, numbers);
         Result<List<TEntity>> entities = GetEntitiesList<TEntity>(connectionString, newQuery);
         return entities;
     }
 
-    public Result<List<TEntity>> GetRepo<TEntity>(string location)
+    public Result<List<TEntity>> GetRepo<TEntity>(FileInfo location)
     {
         try
         {
-            FileInfo loc = new(location);
-            Result<List<TEntity>> result = JsonService.ReadFile<TEntity>(loc);
+            Result<List<TEntity>> result = JsonService.ReadFile<TEntity>(location);
             return result;
         }
         catch (Exception ex)
@@ -77,18 +76,23 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
     #endregion
 
     #region Update
-    public Result Update<TEntity>(List<TEntity> list1, List<TEntity> list2, string repoLocation)
+    public Result Update<TEntity>(List<TEntity> list1, List<TEntity> list2, FileInfo repoLocation)
         => Update([.. list1, .. list2], repoLocation);
 
-    public Result Update<TEntity>(List<TEntity> list, string repoLocation)
+    public Result Update<TEntity>(List<TEntity> list, FileInfo repoLocation)
     {
         try
         {
-            if (!File.Exists(repoLocation))
-                File.WriteAllText(repoLocation, string.Empty);
+            if (!repoLocation.Exists)
+                File.WriteAllText(repoLocation.FullName, string.Empty);
 
-            FileInfo repo = new(repoLocation);
-            Result result = JsonService.WriteToFile(repo, list);
+            Result result = repoLocation.Extension switch
+            {
+                ".json" => JsonService.WriteToFile(repoLocation, list),
+                ".csv" => CsvService.Write(list, repoLocation),
+                _ => Result.Failure($"Failed to parse file because it's not a supported file type\n{repoLocation.FullName}")
+            };
+
             return result;
         }
         catch (Exception ex)

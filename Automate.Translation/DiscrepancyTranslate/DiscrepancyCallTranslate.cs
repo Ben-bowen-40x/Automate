@@ -16,7 +16,7 @@ public static class DiscrepancyCallTranslate
     {
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.NumberLong);
         bool billable = ConvertPrimitive.ConvertBool(entity.Billable);
-        DateTime date = ConvertPrimitive.ConvertDate(entity.Date, DateDefault.Min);
+        DateTimeOffset date = entity.Date is not null ? entity.Date.Value : DateTimeOffset.MinValue;
         string notes = VerifyNotes(entity.Notes);
         DiscrepancySource source = VerifySource(entity.Source);
         TimeSpan duration = GetDuration(entity.Duration);
@@ -51,7 +51,7 @@ public static class DiscrepancyCallTranslate
     {
         string notes = VerifyNotes(entity.Notes);
         DiscrepancySource source = VerifySource(entity.Source);
-        DateTime startDate = ConvertPrimitive.ConvertDate(entity.Date, DateDefault.Min);
+        DateTimeOffset startDate = ConvertPrimitive.ConvertDateTimeOffset(entity.Date, DateDefault.Min);
         TimeSpan duration = GetDuration(entity.Duration);
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
         DiscrepancyCall result = new(number, true, startDate, duration, source, notes); // Note that source leads are always billable

@@ -8,7 +8,6 @@ public partial class Query : IQuery
     #region Constructors
     public Query(Query query)
     {
-        Type = query.Type;
         Select = query.Select;
         From = query.From;
         Where = query.Where;
@@ -16,26 +15,24 @@ public partial class Query : IQuery
         OrderBy = query.OrderBy;
         QueryString = query.QueryString;
     }
-    public Query(DwhQueryType type, string query)
+    public Query(string query)
     {
         QueryString = VerifyQuery(query, out string select, out string from, out string? where, out string? groupBy, out string? orderBy);
-        Type = type;
         Select = select;
         From = from;
         Where = where;
         GroupBy = groupBy;
         OrderBy = orderBy;
     }
-    public Query(DwhQueryType type, string select, string from) : this(type, select, from, null, null, null, true) { }
-    public Query(DwhQueryType type, string select, string from, bool addSpaces) : this(type, select, from, null, null, null, addSpaces) { }
-    public Query(DwhQueryType type, string select, string from, string? where) : this(type, select, from, where, null, null, true) { }
-    public Query(DwhQueryType type, string select, string from, string? where, bool addSpaces) : this(type, select, from, where, null, null, addSpaces) { }
-    public Query(DwhQueryType type, string select, string from, string? where, string? groupby) : this(type, select, from, where, groupby, null, true) { }
-    public Query(DwhQueryType type, string select, string from, string? where, string? groupby, bool addSpaces) : this(type, select, from, where, groupby, null, addSpaces) { }
-    public Query(DwhQueryType type, string select, string from, string? where, string? groupby, string? orderBy) : this(type, select, from, where, groupby, orderBy, true) { }
-    public Query(DwhQueryType type, string select, string from, string? where, string? groupby, string? orderby, bool addSpaces)
+    public Query(string select, string from) : this(select, from, null, null, null, true) { }
+    public Query(string select, string from, bool addSpaces) : this(select, from, null, null, null, addSpaces) { }
+    public Query(string select, string from, string? where) : this(select, from, where, null, null, true) { }
+    public Query(string select, string from, string? where, bool addSpaces) : this(select, from, where, null, null, addSpaces) { }
+    public Query(string select, string from, string? where, string? groupby) : this(select, from, where, groupby, null, true) { }
+    public Query(string select, string from, string? where, string? groupby, bool addSpaces) : this(select, from, where, groupby, null, addSpaces) { }
+    public Query(string select, string from, string? where, string? groupby, string? orderBy) : this(select, from, where, groupby, orderBy, true) { }
+    public Query(string select, string from, string? where, string? groupby, string? orderby, bool addSpaces)
     {
-        Type = type;
         Select = select;
         From = from;
         Where = where;
@@ -55,7 +52,6 @@ public partial class Query : IQuery
     #endregion
 
     #region Public
-    public DwhQueryType Type { get; }
     public string Select { get; }
     private const string SelectStr = "SELECT ";
     public string From { get; }

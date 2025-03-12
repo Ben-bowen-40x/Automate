@@ -51,7 +51,23 @@ internal static class CsvService
             return Result.Success();
         }
         catch (Exception ex)
-        { return Result.Failure(CsvException(path.FullName, ex, nameof(Write))); }
+        {
+            var exception = CsvException(path.FullName, ex, nameof(Write));
+            return Result.Failure(exception); }
+    }
+    internal static Result Write<TClass>(IEnumerable<TClass> unparsedObject, FileInfo path)
+    {
+        try
+        {
+            using StreamWriter writer = new(path.FullName);
+            using CsvWriter csv = new(writer, _config);
+            csv.WriteRecords(unparsedObject);
+            return Result.Success();
+        }
+        catch (Exception ex)
+        { 
+            var exception = CsvException(path.FullName, ex, nameof(Write));
+            return Result.Failure(exception); }
     }
     internal static Result Append<TClass, TMap>(FileInfo path, IEnumerable<TClass> unparsed) where TMap : ClassMap
     {

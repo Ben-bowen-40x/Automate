@@ -14,19 +14,19 @@ public class RawQuery(IRawQuerySettings settings)
     /// <param name="query"></param>
     /// <param name="values"></param>
     /// <returns></returns>
-    public IQuery Filter(DwhQueryType type, IQuery query, List<long> values)
+    public IQuery NumberFilter(DwhQueryType type, IQuery query, List<long> values)
     {
         string where = type switch
         {
-            DwhQueryType.AllCalls => $"{_s.CallBasicNumerical!} in ({string.Join(",", values)})",
-            DwhQueryType.AllCustomers => $"{_s.CustomerBasicNumerical!} in ({string.Join(",", values)})",
+            DwhQueryType.AllCalls or DwhQueryType.Discrepancy or DwhQueryType.MessageCall => $"{_s.CallBasicNumerical!} in ({string.Join(',', values)})",
+            DwhQueryType.AllCustomers => $"{_s.CustomerBasicNumerical!} in ({string.Join(',', values)})",
             _ => string.Empty
         };
         query.AppendWhere(where);
         return query;
     }
-    public IQuery CallBasicAddon => new Query(DwhQueryType.AllCalls, _s.CallBasic! + _s.CallBasicAddon);
-    public IQuery CustomerBasic => new Query(DwhQueryType.AllCustomers, _s.CustomerBasic!);
+    public IQuery CallBasicAddon => new Query(_s.CallBasic! + _s.CallBasicAddon);
+    public IQuery CustomerBasic => new Query(_s.CustomerBasic!);
 
     #endregion
 
@@ -77,23 +77,28 @@ public class RawQuery(IRawQuerySettings settings)
         var threeMonths = startDate - NinetyDays;
         var date = threeMonths.Date.ToString(_s.QueryDateFormat!);
         string str = $"{_s.CallBasic! + _s.MessageCallQuery1!} '{date}' {_s.MessageCallQuery2!};";
-        IQuery query = new Query(DwhQueryType.MessageCall, str);
+        IQuery query = new Query(str);
         return query;
     }
     #endregion
 
     #region Discrepancy Query
     /// <summary>
+    /// Accepts a <see cref="DateTime"/>, <paramref name="start"/>, which defines when the query should pull records
+    /// </summary>
+    /// <param name="start"></param>
+    /// <returns></returns>
+    public IQuery DatedCallsQuery(DateTime start) => DatedCallsQuery(start, DateTime.Now);
+
+    /// <summary>
     /// Returns the Discrepancy Query as a raw string
     /// </summary>
     /// <returns>
     /// <para><see cref="string"/> that is the raw sql query</para>
     /// </returns>
-    public IQuery DiscrepancyQuery(int daysBeforeNow = 365)
-    {
-        return DiscrepancyQuery(DateTime.Now - TimeSpan.FromDays(daysBeforeNow));
-    }
-    private IQuery Discrepancy => new Query(DwhQueryType.Discrepancy, _s.Discrepancy!);
+    public IQuery DatedCallsQuery(int daysBeforeNow = 365) => DatedCallsQuery(DateTime.Now - TimeSpan.FromDays(daysBeforeNow));
+    private IQuery? _callsQuery;
+    public IQuery CallsQuery => _callsQuery ??= new Query(_s.CallsQuery!);
 
     /// <summary>
     /// Accepts a <see cref="DateTime"/> <paramref name="start"/>, which defines when the query should pull records, and <paramref name="end"/>, which is the most recent date
@@ -101,26 +106,17 @@ public class RawQuery(IRawQuerySettings settings)
     /// <param name="start"></param>
     /// <param name="end"></param>
     /// <returns></returns>
-    public IQuery DiscrepancyQuery(DateTime start, DateTime end)
+    public IQuery DatedCallsQuery(DateTime start, DateTime end)
     {
         string startString = start.ToString(_s.QueryDateFormat!);
         string endString = end.ToString(_s.QueryDateFormat!);
 
-        IQuery query = Discrepancy;
-        string str = $"{_s.Discrepancy2!} '{startString}' AND '{endString}'"; // Keep this here for debugging purposes
+        IQuery query = CallsQuery;
+        string str = $"{_s.CallsQueryFilter!} '{startString}' AND '{endString}'"; // Keep this here for debugging purposes
         query.AppendWhere(str);
         return query;
     }
 
-    /// <summary>
-    /// Accepts a <see cref="DateTime"/>, <paramref name="start"/>, which defines when the query should pull records
-    /// </summary>
-    /// <param name="start"></param>
-    /// <returns></returns>
-    public IQuery DiscrepancyQuery(DateTime start)
-    {
-        return DiscrepancyQuery(start, DateTime.Now);
-    }
     #endregion
 
     #region Contact Update Query
@@ -140,8 +136,5 @@ public class RawQuery(IRawQuerySettings settings)
 
     #endregion
 
-    #region Web Forms Query
-    public IQuery WebFormQuery1 => new Query(DwhQueryType.ContactForms, _s.WebFormQuery1!);
-    public string WebFormQuery2 => _s.WebFormQuery2!;
-    #endregion
+    public IQuery WebFormQuery => new Query(_s.WebFormQuery!);
 }
