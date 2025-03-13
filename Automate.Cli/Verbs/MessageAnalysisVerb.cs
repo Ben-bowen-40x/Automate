@@ -87,6 +87,7 @@ internal class MessageAnalysisVerb : IVerb
         return string.Join('\n', resultList);
     }
 
+    // Please keep this private. It doesn't need to appear anywhere except in this class
     private record FilePaths(FileInfo MessageLoc, FileInfo CallRepoLoc, FileInfo CustomerRepoLoc, string TruncatedRepoLoc, string ReportLoc);
     private FilePaths VerifyInput()
     {
@@ -140,6 +141,7 @@ internal class MessageAnalysisVerb : IVerb
 
     private static Result<FileInfo> Execute(bool append, IServiceProvider service, FileInfo messageLocation, FileInfo callLocation, FileInfo customerLocation, string reportLocation, MessageType messageType, string truncateReport, bool truncate, int days)
     {
+        string excMsg = $"There is no case where the input can be executed. Here is the input:\n{nameof(append)}: {append}\n{nameof(service)}: {service}\n{nameof(messageLocation)}: {messageLocation.FullName}\n{nameof(callLocation)}: {callLocation.FullName}\n{nameof(customerLocation)}: {customerLocation.FullName}\n{nameof(reportLocation)}: {reportLocation}\n{nameof(messageType)}: {messageType}\n{nameof(truncateReport)}: {truncateReport}\n{nameof(truncate)}: {truncate}\n{nameof(messageType)}: {messageType}\n{nameof(days)}: {days}";
         IMessageAnalysisManager generator = service.GetRequiredService<IMessageAnalysisManager>();
         IMessageAnalysisReportManager appender = service.GetRequiredService<IMessageAnalysisReportManager>();
         return (messageType, append, truncate) switch
@@ -199,7 +201,7 @@ internal class MessageAnalysisVerb : IVerb
             (MessageType.Leased, false, false) => generator.Manage<LeasedMessage>(MessageType.Leased.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
 
             // Default
-            _ => throw new Exception($"There is no case where the input can be executed. Here is the input:\n{nameof(append)}: {append}\n{nameof(service)}: {service}\n{nameof(messageLocation)}: {messageLocation}\n{nameof(callLocation)}: {callLocation}\n{nameof(customerLocation)}: {customerLocation}\n{nameof(reportLocation)}: {reportLocation}\n{nameof(messageType)}: {messageType}\n{nameof(truncateReport)}: {truncateReport}\n{nameof(truncate)}: {truncate}\n{nameof(messageType)}: {messageType}\n{nameof(days)}: {days}")
+            _ => throw new Exception(excMsg)
         };
     }
 
