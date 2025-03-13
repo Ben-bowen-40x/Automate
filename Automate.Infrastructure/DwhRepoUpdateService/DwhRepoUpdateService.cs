@@ -13,23 +13,21 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
     readonly RawQuery _rawQuery = new(settings);
 
     #region Getters
-    public string GetConnection(DwhConnectionType type)
-        => type switch
-        {
-            DwhConnectionType.Calls => _settings.CallsConnectionString!,
-            DwhConnectionType.Customers => _settings.CustomersConnectionString!,
-            DwhConnectionType.ContactForms => _settings.ContactFormsConnectionString!,
-            _ => throw new ArgumentException($"The given connection type has not been assigned a connection string:\n{type}")
-        };
+    public string GetConnection(DwhConnectionType type) => type switch
+    {
+        DwhConnectionType.Calls => _settings.CallsConnectionString!,
+        DwhConnectionType.Customers => _settings.CustomersConnectionString!,
+        DwhConnectionType.ContactForms => _settings.ContactFormsConnectionString!,
+        _ => throw new ArgumentException($"The given connection type has not been assigned a connection string:\n{type}")
+    };
 
-    public IQuery GetQuery(DwhQueryType type)
-        => type switch
-        {
-            DwhQueryType.AllCustomers => _rawQuery.CustomerBasic,
-            DwhQueryType.ContactForms => _rawQuery.WebFormQuery,
-            DwhQueryType.Discrepancy or DwhQueryType.AllCalls => _rawQuery.DatedCallsQuery(),
-            _ => _rawQuery.CustomerBasic
-        };
+    public IQuery GetQuery(DwhQueryType type) => type switch
+    {
+        DwhQueryType.AllCustomers => _rawQuery.CustomerBasic,
+        DwhQueryType.ContactForms => _rawQuery.WebFormQuery,
+        DwhQueryType.Discrepancy or DwhQueryType.AllCalls => _rawQuery.DatedCallsQuery(),
+        _ => _rawQuery.CustomerBasic
+    };
 
     public Result<List<TEntity>> GetEntitiesList<TEntity>(string connectionString, IQuery query) where TEntity : class, IPhoneNumberCompatible
     {
