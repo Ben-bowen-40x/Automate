@@ -38,38 +38,27 @@ public class WebFormEntity : ClassMap<WebFormEntity>, IContactFormTyped
         Map(m => m.Zip).Index(index++).Name(ZCode);
     }
 
-    [Column(DateStr)]
-    [Name(DateStr)]
+    [Column(DateStr), Name(DateStr)]
     public DateTime Date { get; set; }
-    [Column(FName)]
-    [Name(FName)]
+    [Column(FName), Name(FName)]
     public string? FirstName { get; set; }
-    [Column(LName)]
-    [Name(LName)]
+    [Column(LName), Name(LName)]
     public string? LastName { get; set; }
-    [Column(Ph)]
-    [Name(Ph)]
+    [Column(Ph), Name(Ph)]
     public string? Phone { get; set; }
-    [Column(Eml)]
-    [Name(Eml)]
+    [Column(Eml), Name(Eml)]
     public string? Email { get; set; }
-    [Column(Prob)]
-    [Name(Prob)]
+    [Column(Prob), Name(Prob)]
     public string? Problem { get; set; }
-    [Column(Brnch)]
-    [Name(Brnch)]
+    [Column(Brnch), Name(Brnch)]
     public string? Branch { get; set; }
-    [Column(Refer)]
-    [Name(Refer)]
+    [Column(Refer), Name(Refer)]
     public string? ReferringUrl { get; set; }
-    [Column(Form)]
-    [Name(Form)]
+    [Column(Form), Name(Form)]
     public string? FormPageUrl { get; set; }
-    [Column(Cust)]
-    [Name(Cust)]
+    [Column(Cust), Name(Cust)]
     public string? CurrentCustomer { get; set; }
-    [Column(ZCode)]
-    [Name(ZCode)]
+    [Column(ZCode), Name(ZCode)]
     public string? Zip { get; set; }
 
     private PhoneNumber? _number;
