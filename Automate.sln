@@ -16,9 +16,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Automate.Infrastructure.Test", "Automate.Infrastructure.Test\Automate.Infrastructure.Test.csproj", "{9A7259CC-9568-400D-9045-15B558C8DF4E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{24010172-1BFF-41F8-B843-D0C14FB44C42}"
-	ProjectSection(SolutionItems) = preProject
-		ForceUpdateRepos.bat = ForceUpdateRepos.bat
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{CA84C872-80AF-4F21-8CDD-824AD7442561}"
 EndProject
@@ -30,6 +27,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "info", "info", "{DD91B9B7-0058-482D-92DB-E444C6B66860}"
 	ProjectSection(SolutionItems) = preProject
 		.info_VersionNaming.txt = .info_VersionNaming.txt
+		ForceUpdateRepos.bat = ForceUpdateRepos.bat
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Automate.Translation", "Automate.Translation\Automate.Translation.csproj", "{14BFA317-07A8-46A3-B349-D68B0DD49240}"
