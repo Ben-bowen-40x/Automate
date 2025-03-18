@@ -15,16 +15,16 @@ namespace Automate.Cli.Verbs;
 [Verb(VerbName, HelpText = "This updates the local repo of a specified Api. Obviously, this is get-only.")]
 internal class UpdateRepoVerb : IVerb
 {
-    private const string VerbName = "updateRepo";
 
     #region Options
+    private const string VerbName = "updateRepo";
     [Option('t', "type", Required = true, HelpText = UpdateRepoHelper.RepoTypeHelpText)]
     public RepoType Type { get; set; }
 
     [Option('v', "valueRepo", Required = false, HelpText = "Enter the existing repository that will be updated. This repo is for value objects only and is used elsewhere. If a value is not provided, a default will be used. This value must be a CSV file.")]
     public FileInfo? ValueRepositoryCsv { get; set; }
 
-    [Option('a', "apiRepo", Required = true, HelpText = "Enter the local repository that will be updated for the api. This repo is for api call return values and is used in soft and hard updates, but not force updates. If a value is not provided, a default will be used. This value must be a JSON file.")]
+    [Option('a', "apiRepo", Required = true, HelpText = "Enter the local repository that will be updated for the api. This repo is for api call return values and is used in soft and hard updates, but not force updates. This REQUIRED value must be a JSON file.")]
     public required FileInfo ApiRepositoryJson { get; set; }
 
     [Option('f', "forceUpdate", Required = false, Default = false, HelpText = "Specifies whether you would like to force a call to the api. This will pull all data from the API until all calls are exhausted, and that information will be used to refresh the domain value repo. This will only work if this application is up-to-date with the API and connected online.")]
@@ -32,26 +32,35 @@ internal class UpdateRepoVerb : IVerb
 
     [Option('u', "hardUpdate", Required = false, Default = false, HelpText = "Specifies whether you would like to refresh the data in the local repo. If not, the local repo will be used to update the repo containing domain values (value objects) instead.")]
     public bool Update { get; set; }
+    [Option('V', "valueRepoRequired", Required = false, Default = false, HelpText = "This value is used ONLY when a Csv repo file is required. Use caution when activating this switch, because the value repo file location will be required in order for this switch to work, and the Json repo file location is required and must exist as well.")]
+    public bool ValueRepoRequired { get; set; }
     #endregion
 
     #region Public (Other than Options)
     public int Run(IServiceProvider service)
     {
         // Validate Input
-        Result<FileType> apiJson = PathManipulation.VerifyFileType(ApiRepositoryJson);
-        FileInfo repoInfo = !ApiRepositoryJson.Exists || apiJson.IsFailure || apiJson.Value != FileType.Json
+        Result<FileType> verifiedJson = PathManipulation.VerifyFileType(ApiRepositoryJson);
+        FileInfo repoInfo = !ApiRepositoryJson.Exists || verifiedJson.IsFailure || verifiedJson.Value != FileType.Json
             ? throw new ArgumentException($"The provided repository does not exist. This was the given repository:\n{nameof(ApiRepositoryJson)} -> {ApiRepositoryJson}")
             : ApiRepositoryJson;
-        string valueRepoName = ValueRepositoryCsv is not null ? ValueRepositoryCsv.FullName : string.Empty;
-        Result<FileType> valueCsv = PathManipulation.VerifyFileType(valueRepoName);
-        string valueInfo = !File.Exists(valueRepoName) || valueCsv.IsFailure || valueCsv.Value != FileType.Csv
-            ? string.Empty
+        string valueRepoName = ValueRepositoryCsv is not null && ValueRepositoryCsv.Exists
+            ? ValueRepositoryCsv.FullName
+            : ValueRepoRequired
+                ? throw new ArgumentException($"The user made the {nameof(ValueRepositoryCsv)} required, but did not provide a valid file location: {ValueRepositoryCsv}")
+                : string.Empty;
+        Result<FileType> verifiedCsv = PathManipulation.VerifyFileType(valueRepoName);
+        string valueInfo = !File.Exists(valueRepoName) || verifiedCsv.IsFailure || verifiedCsv.Value != FileType.Csv
+            ? ValueRepoRequired
+                ? throw new ArgumentException($"The user made the {nameof(ValueRepositoryCsv)} required, but did not provide a valid file location, which is missing the .csv extension: {ValueRepositoryCsv}")
+                : string.Empty
             : valueRepoName;
 
         // Inform user of the chosen values
         Console.WriteLine($"The user chose the following values:");
         Console.WriteLine($"- Repo type: \"{Type}\"");
         Console.WriteLine($"- Value Repository location: \n\t{PathManipulation.LocationInformation(valueInfo)}");
+        Console.WriteLine($"- Whether the value repository is a required value: \n\t{ValueRepoRequired}");
         Console.WriteLine($"- Repository location: \n\t{PathManipulation.LocationInformation(ApiRepositoryJson.FullName)}");
         Console.WriteLine($"- Whether to perform a hard update on the repositories: {Update}");
         Console.WriteLine($"- Whether to perform a force update on the repositories (This will override the Hard Update option): {ForceUpdate}");
@@ -63,42 +72,42 @@ internal class UpdateRepoVerb : IVerb
         switch (Type)
         {
             case RepoType.Leaf:
-                IRepoUpdateManager manager = service.GetRequiredService<IRepoUpdateManager>();
-                Result result = manager.Manage<LeafThread>(valueInfo, repoInfo.FullName, Update, ForceUpdate);
-                code = DetermineReturnCode(result);
+                IRepoUpdateManager lfManager = service.GetRequiredService<IRepoUpdateManager>();
+                Result leafResult = lfManager.Manage<LeafThread>(valueInfo, repoInfo.FullName, Update, ForceUpdate);
+                code = DetermineReturnCode(leafResult);
                 break;
             case RepoType.Deprecated:
-                ITypedRepoUpdateManager manage = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result resul = manage.Manage<CallDbEntity>(DwhQueryType.AllCalls, DwhConnectionType.Calls, repoInfo, valueInfo, ForceUpdate || Update);
-                code = DetermineReturnCode(resul);
+                ITypedRepoUpdateManager deprecatedManager = service.GetRequiredService<ITypedRepoUpdateManager>();
+                Result deprecatedResult = deprecatedManager.Manage<CallDbEntity>(DwhQueryType.AllCalls, DwhConnectionType.Calls, repoInfo, valueInfo, ForceUpdate || Update);
+                code = DetermineReturnCode(deprecatedResult);
                 break;
             case RepoType.Customers:
-                ITypedRepoUpdateManager manag = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result resu = manag.Manage<CustSubDbEntity>(DwhQueryType.AllCustomers, DwhConnectionType.Customers, repoInfo, valueInfo, ForceUpdate || Update);
-                code = DetermineReturnCode(resu);
+                ITypedRepoUpdateManager customerManager = service.GetRequiredService<ITypedRepoUpdateManager>();
+                Result customersResult = customerManager.Manage<CustSubDbEntity>(DwhQueryType.AllCustomers, DwhConnectionType.Customers, repoInfo, valueInfo, ForceUpdate || Update);
+                code = DetermineReturnCode(customersResult);
                 break;
             case RepoType.ContactForms:
-                ITypedRepoUpdateManager mana = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result res = mana.Manage<WebFormEntity>(DwhQueryType.ContactForms, DwhConnectionType.ContactForms, repoInfo, valueInfo, ForceUpdate || Update);
-                code = DetermineReturnCode(res);
+                ITypedRepoUpdateManager formsManager = service.GetRequiredService<ITypedRepoUpdateManager>();
+                Result contactFormsResult = formsManager.Manage<WebFormEntity>(DwhQueryType.ContactForms, DwhConnectionType.ContactForms, repoInfo, valueInfo, ForceUpdate || Update);
+                code = DetermineReturnCode(contactFormsResult);
                 break;
             case RepoType.ContactUpdate:
                 Console.WriteLine($"Default values were chosen for the following choice: {RepoType.ContactUpdate}");
-                IContactUpdateManager man = service.GetRequiredService<IContactUpdateManager>();
-                UpdateResult re = man.UpdateContacts("");
+                IContactUpdateManager cUpdateManager = service.GetRequiredService<IContactUpdateManager>();
+                UpdateResult contactUpdateResult = cUpdateManager.UpdateContacts("");
 
                 // Inform the user what took place
-                Result uploaded = re.UploadedContacts;
-                Result<DirectoryInfo> contactLocation = re.ContactLocation;
+                Result uploaded = contactUpdateResult.UploadedContacts;
+                Result<DirectoryInfo> contactLocation = contactUpdateResult.ContactLocation;
                 var c = DetermineReturnCode(uploaded);
                 Console.WriteLine("Request: Contacts Upload");
                 code = c + DetermineReturnCode(contactLocation);
                 Console.WriteLine("Request: Contact generation");
                 break;
             case var i when i == RepoType.Discrepancy || i == RepoType.Calls:
-                ITypedRepoUpdateManager ma = service.GetRequiredService<ITypedRepoUpdateManager>();
-                Result r = ma.Manage<DiscrepancyCallDbEntity>(DwhQueryType.Discrepancy, DwhConnectionType.Calls, repoInfo, valueInfo, ForceUpdate || Update);
-                code = DetermineReturnCode(r);
+                ITypedRepoUpdateManager callsManager = service.GetRequiredService<ITypedRepoUpdateManager>();
+                Result callsResult = callsManager.Manage<DiscrepancyCallDbEntity>(DwhQueryType.Discrepancy, DwhConnectionType.Calls, repoInfo, valueInfo, ForceUpdate || Update);
+                code = DetermineReturnCode(callsResult);
                 break;
             default:
                 Console.WriteLine($"No existing repository type was selected, so no execution will take place.\nEither choose an existing repository type or create a repository update functionality for the following repo selection: {Type}");
