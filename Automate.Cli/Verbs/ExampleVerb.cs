@@ -40,7 +40,9 @@ internal class ExampleVerb : IVerb
         Console.WriteLine($"\n- {nameof(SecondFileLocation)}: \n{secondLocation}");
         Console.WriteLine($"\n- {nameof(ThirdFileLocation)}: \n{thirdLocation}");
 
-        return ProgramErrorCodes.Success;
+        int code = ProgramErrorCodes.Success;
+        Environment.ExitCode = code;
+        return code;
     }
     #endregion
 }

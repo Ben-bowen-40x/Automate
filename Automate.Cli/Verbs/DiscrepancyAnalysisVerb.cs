@@ -39,7 +39,9 @@ internal class DiscrepancyAnalysisVerb : IVerb
         StringLogger.NameLog(DateTime.Now, AnalyzeDiscrepancy);
 
         // Return code 
-        return DetermineReturnCode(fileName, report, comparisonLoc, result);
+        int code = DetermineReturnCode(fileName, report, comparisonLoc, result);
+        Environment.ExitCode = code;
+        return code;
     }
 
     #region Private Members

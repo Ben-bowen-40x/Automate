@@ -35,7 +35,9 @@ internal class ContactUpdateVerb : IVerb
 
         StringLogger.NameLog(DateTime.Now, UpdateContacts);
 
-        return DetermineReturnCode(result, directoryExists);
+        int code = DetermineReturnCode(result, directoryExists);
+        Environment.ExitCode = code;
+        return code;
     }
     #endregion
 
