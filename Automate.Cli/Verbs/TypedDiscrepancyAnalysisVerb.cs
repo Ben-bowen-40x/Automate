@@ -89,7 +89,7 @@ internal class TypedDiscrepancyAnalysisVerb : IVerb
 
     static int ReturnCode(string fileName, string report, string query, bool resultSuccess)
         => (fileName.Equals(string.Empty), report.Equals(string.Empty), query.Equals(string.Empty), resultSuccess) switch
-    {
+        {
             (true, true, true, true) => ProgramErrorCodes.Analyze_GeneratedReport_AllFilesDefaulted,
             (true, true, true, false) => ProgramErrorCodes.Analyze_CriticalFailure,
             (true, true, false, true) => ProgramErrorCodes.Analyze_GeneratedReport_FileAndReportDefaulted,
