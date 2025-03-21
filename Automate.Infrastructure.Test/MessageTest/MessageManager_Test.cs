@@ -35,6 +35,7 @@ public class MessageManager_Test
         FileInfo messages = Functions.TestFile(@".info\MessageAnalysis\", fileName);
         FileInfo callrepo = Functions.TestFile(@".info\ApiRepos\", "CallRepo.json");
         FileInfo customer = Functions.TestFile(@".info\ApiRepos\", "CustomerRepo.json");
+        string name = nameof(TextManager_ProperlyExecutes);
 
         // Assemble
         MessageAnalysisManager manager = new(new MessageService(_settings), new ReportServiceSingleton());
@@ -42,9 +43,9 @@ public class MessageManager_Test
         // Act
         var result = fileName switch
         {
-            MsgLeads => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>(nameof(TextManager_ProperlyExecutes), messages, callrepo, customer, "", MessageType.Leaf),
-            CctLeads => manager.Manage<SplitDateMountainOffsetMsgCol>(nameof(TextManager_ProperlyExecutes), messages, callrepo, customer, "", MessageType.Pan),
-            _ => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>(nameof(TextManager_ProperlyExecutes), messages, callrepo, customer, "", MessageType.Leaf)
+            MsgLeads => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>(name, messages, callrepo, customer, "", MessageType.Leaf),
+            CctLeads => manager.Manage<SplitDateMountainOffsetMsgCol>(name, messages, callrepo, customer, "", MessageType.Pan),
+            _ => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>(name, messages, callrepo, customer, "", MessageType.Leaf)
         };
         StringLogger.ProduceLog(DateTime.Now, sender, member, $"End Test");
 

@@ -9,8 +9,11 @@
 
   <ItemGroup>
     <Compile Remove=".info\Discrepancy\Past\**" />
+    <Compile Remove=".info\MessageAnalysis\LocalRepo\**" />
     <EmbeddedResource Remove=".info\Discrepancy\Past\**" />
+    <EmbeddedResource Remove=".info\MessageAnalysis\LocalRepo\**" />
     <None Remove=".info\Discrepancy\Past\**" />
+    <None Remove=".info\MessageAnalysis\LocalRepo\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,8 +28,6 @@
     <Content Include=".info\Discrepancy\Discrepancy.csv" />
     <Content Include=".info\Discrepancy\Discrepancy.sql" />
     <Content Include=".info\Discrepancy\LocalRepo\Discrepancy.json" />
-    <Content Include=".info\MessageAnalysis\LocalRepo\CallRepo.json" />
-    <Content Include=".info\MessageAnalysis\LocalRepo\CustomerRepo.json" />
   </ItemGroup>
 
   <ItemGroup>
