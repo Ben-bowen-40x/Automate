@@ -114,7 +114,7 @@ internal class UpdateRepoVerb : IVerb
                 code = ProgramErrorCodes.Error;
                 break;
         };
-
+        Environment.ExitCode = code;
         return code;
     }
     #endregion

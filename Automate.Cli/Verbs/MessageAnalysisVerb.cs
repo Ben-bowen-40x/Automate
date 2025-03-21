@@ -53,7 +53,9 @@ internal class MessageAnalysisVerb : IVerb
         // Logger
         StringLogger.NameLog(DateTime.Now, AnalyzeMessages, MessageType.ToString());
 
-        return DetermineReturnCode(result, MessageLocation.Exists, CallRepoLocation.Exists, CustomerRepoLocation.Exists, ReportLocation.Exists);
+        int code = DetermineReturnCode(result, MessageLocation.Exists, CallRepoLocation.Exists, CustomerRepoLocation.Exists, ReportLocation.Exists);
+        Environment.ExitCode = code;
+        return code;
     }
     #endregion
 

@@ -51,8 +51,8 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         List<IMessage> reportMsgs = _msgService.RetrieveReportMessages(type, report, out List<QualifiedMessageRecord> records);
         List<IMessage> msgs = _msgService.GetMessages<T>(messages);
 
-        //reset = true; // This should not execute except when customer information should be reset in the report. VERY RARE
-        records = reset ? resetRecords(customersFile, records) : records;
+        // This should not execute except when customer information should be reset in the report. VERY RARE
+        //reset = true; records = reset ? resetRecords(customersFile, records) : records;
 
         // Messages
         List<IMessage> messagePartitions = _msgService.PartitionMessagesAndReportRecords(msgs, reportMsgs);

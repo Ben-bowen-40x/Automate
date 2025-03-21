@@ -7,6 +7,7 @@ public interface IDwhRepoUpdateService
 {
     string GetConnection(DwhConnectionType type);
     IQuery GetQuery(DwhQueryType type);
+    Result<IQuery> GetQuery(FileInfo file);
     Result<List<TEntity>> GetEntitiesList<TEntity>(string connectionString, IQuery query) where TEntity : class, IPhoneNumberCompatible;
     Result<List<TEntity>> GetEntitiesParition<TEntity>(DwhQueryType type, List<TEntity> existing, string connectionString, IQuery query) where TEntity : class, IPhoneNumberCompatible;
     Result<List<TEntity>> GetRepo<TEntity>(FileInfo location);

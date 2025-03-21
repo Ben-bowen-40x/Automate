@@ -58,7 +58,9 @@ internal class TypedDiscrepancyAnalysisVerb : IVerb
         StringLogger.NameLog(DateTime.Now, AnalyzeDiscrepancy);
 
         // Return code 
-        return DetermineReturnCode(fileName.FullName, report.FullName, query.FullName, result);
+        int code = DetermineReturnCode(fileName.FullName, report.FullName, query.FullName, result);
+        Environment.ExitCode = code;
+        return code;
     }
 
     #region Private Members
@@ -86,38 +88,24 @@ internal class TypedDiscrepancyAnalysisVerb : IVerb
     }
 
     static int ReturnCode(string fileName, string report, string query, bool resultSuccess)
-    {
-        if (fileName == string.Empty && report != string.Empty && query != string.Empty && resultSuccess)
-            return ProgramErrorCodes.Analyze_GeneratedReport_BillableFileDefaulted;
-        else if (fileName != string.Empty && report == string.Empty && query != string.Empty && resultSuccess)
-            return ProgramErrorCodes.Analyze_GeneratedReport_ReportLocDefaulted;
-        else if (fileName != string.Empty && report != string.Empty && query == string.Empty && resultSuccess)
-            return ProgramErrorCodes.Analyze_GeneratedReport_QueryDefaulted;
-        else if (fileName == string.Empty && report == string.Empty && query != string.Empty && resultSuccess)
-            return ProgramErrorCodes.Analyze_GeneratedReport_FileAndReportDefaulted;
-        else if (fileName != string.Empty && report == string.Empty && query == string.Empty && resultSuccess)
-            return ProgramErrorCodes.Analyze_GeneratedReport_ReportAndQueryDefaulted;
-        else if (fileName == string.Empty && report != string.Empty && query == string.Empty && resultSuccess)
-            return ProgramErrorCodes.Analyze_GeneratedReport_FileAndQueryDefaulted;
-        else if (fileName == string.Empty && report == string.Empty && query == string.Empty && resultSuccess)
-            return ProgramErrorCodes.Analyze_GeneratedReport_AllFilesDefaulted;
+        => (fileName.Equals(string.Empty), report.Equals(string.Empty), query.Equals(string.Empty), resultSuccess) switch
+        {
+            (true, true, true, true) => ProgramErrorCodes.Analyze_GeneratedReport_AllFilesDefaulted,
+            (true, true, true, false) => ProgramErrorCodes.Analyze_CriticalFailure,
+            (true, true, false, true) => ProgramErrorCodes.Analyze_GeneratedReport_FileAndReportDefaulted,
+            (true, true, false, false) => ProgramErrorCodes.Analyze_FailedReport_FileAndReportDefaulted,
+            (true, false, true, true) => ProgramErrorCodes.Analyze_GeneratedReport_FileAndQueryDefaulted,
+            (true, false, true, false) => ProgramErrorCodes.Analyze_FailedReport_FileAndQueryDefaulted,
+            (true, false, false, true) => ProgramErrorCodes.Analyze_GeneratedReport_BillableFileDefaulted,
+            (true, false, false, false) => ProgramErrorCodes.Analyze_FailedReport_BillableFileDefaulted,
 
-        else if (fileName == string.Empty && report != string.Empty && query != string.Empty && !resultSuccess)
-            return ProgramErrorCodes.Analyze_FailedReport_BillableFileDefaulted;
-        else if (fileName != string.Empty && report == string.Empty && query != string.Empty && !resultSuccess)
-            return ProgramErrorCodes.Analyze_FailedReport_ReportLocDefaulted;
-        else if (fileName != string.Empty && report != string.Empty && query == string.Empty && !resultSuccess)
-            return ProgramErrorCodes.Analyze_FailedReport_QueryDefaulted;
-        else if (fileName == string.Empty && report == string.Empty && query != string.Empty && !resultSuccess)
-            return ProgramErrorCodes.Analyze_FailedReport_FileAndReportDefaulted;
-        else if (fileName != string.Empty && report == string.Empty && query == string.Empty && !resultSuccess)
-            return ProgramErrorCodes.Analyze_FailedReport_ReportAndQueryDefaulted;
-        else if (fileName == string.Empty && report != string.Empty && query == string.Empty && !resultSuccess)
-            return ProgramErrorCodes.Analyze_FailedReport_FileAndQueryDefaulted;
-        else if (fileName == string.Empty && report == string.Empty && query == string.Empty && !resultSuccess)
-            return ProgramErrorCodes.Analyze_CriticalFailure;
-
-        return ProgramErrorCodes.Success;
-    }
+            (false, true, true, true) => ProgramErrorCodes.Analyze_GeneratedReport_ReportAndQueryDefaulted,
+            (false, true, true, false) => ProgramErrorCodes.Analyze_FailedReport_ReportAndQueryDefaulted,
+            (false, true, false, true) => ProgramErrorCodes.Analyze_GeneratedReport_ReportLocDefaulted,
+            (false, true, false, false) => ProgramErrorCodes.Analyze_FailedReport_ReportLocDefaulted,
+            (false, false, true, true) => ProgramErrorCodes.Analyze_GeneratedReport_QueryDefaulted,
+            (false, false, true, false) => ProgramErrorCodes.Analyze_FailedReport_QueryDefaulted,
+            _ => ProgramErrorCodes.Success,
+        };
     #endregion
 }

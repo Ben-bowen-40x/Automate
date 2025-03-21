@@ -29,6 +29,19 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
         _ => _rawQuery.CustomerBasic
     };
 
+    public Result<IQuery> GetQuery(FileInfo file)
+    {
+        if (!file.Extension.Equals(".sql", StringComparison.CurrentCultureIgnoreCase))
+            return Result.Failure<IQuery>($"The input file must be a sql file. Input: {file.FullName}");
+        try
+        {
+            string sqlRaw = File.ReadAllText(file.FullName);
+            Query result = new(sqlRaw);
+            return result;
+        }
+        catch (Exception ex)
+        { return Result.Failure<IQuery>(ex.Message); }
+    }
     public Result<List<TEntity>> GetEntitiesList<TEntity>(string connectionString, IQuery query) where TEntity : class, IPhoneNumberCompatible
     {
         try

@@ -20,9 +20,11 @@ public class MessageManager_Test
     private const string MsgLeads = "MessagesToAnalyze.csv";
     private const string CctLeads = "PNContactForms.csv";
     [
-        Theory,
+        Theory
+        //(Skip = "This test is not currently working")
+        ,
         InlineData(MsgLeads),
-        //InlineData(CctLeads),
+        InlineData(CctLeads),
     ]
     public void TextManager_ProperlyExecutes(string fileName)
     {
@@ -30,16 +32,19 @@ public class MessageManager_Test
         object sender = new MessageManager_Test();
         string member = nameof(TextManager_ProperlyExecutes);
         StringLogger.NewLog(DateTime.Now, sender, member, "Start Test");
+        FileInfo messages = Functions.TestFile(@".info\MessageAnalysis\", fileName);
+        FileInfo callrepo = Functions.TestFile(@".info\ApiRepos\", "CallRepo.json");
+        FileInfo customer = Functions.TestFile(@".info\ApiRepos\", "CustomerRepo.json");
 
         // Assemble
         MessageAnalysisManager manager = new(new MessageService(_settings), new ReportServiceSingleton());
-        
+
         // Act
         var result = fileName switch
         {
-            MsgLeads => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>("", "", "", "", "", MessageType.Leaf),
-            CctLeads => manager.Manage<SplitDateMountainOffsetMsgCol>("", "", "", "", "", MessageType.Pan),
-            _ => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>("", "", "", "", "", MessageType.Leaf)
+            MsgLeads => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>(nameof(TextManager_ProperlyExecutes), messages, callrepo, customer, "", MessageType.Leaf),
+            CctLeads => manager.Manage<SplitDateMountainOffsetMsgCol>(nameof(TextManager_ProperlyExecutes), messages, callrepo, customer, "", MessageType.Pan),
+            _ => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>(nameof(TextManager_ProperlyExecutes), messages, callrepo, customer, "", MessageType.Leaf)
         };
         StringLogger.ProduceLog(DateTime.Now, sender, member, $"End Test");
 
