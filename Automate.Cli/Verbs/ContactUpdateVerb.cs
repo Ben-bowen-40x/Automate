@@ -35,7 +35,9 @@ internal class ContactUpdateVerb : IVerb
 
         StringLogger.NameLog(DateTime.Now, UpdateContacts);
 
-        return DetermineReturnCode(result, directoryExists);
+        int code = DetermineReturnCode(result, directoryExists);
+        Environment.ExitCode = code;
+        return code;
     }
     #endregion
 
@@ -44,15 +46,15 @@ internal class ContactUpdateVerb : IVerb
     {
         const string generated = "The contacts where generated.";
         const string nGenerated = "At least one contact was not generated";
-        
+
         const string uploaded = "The contacts were successfully uploaded";
         const string nUploaded = "The contacts were not successfully uploaded";
-        
+
         string exists = result.ContactLocation.IsSuccess
             ? $"The directory containing the contacts given by the user exists. Here is the directory:\n{result.ContactLocation.Value.FullName}"
             : $"The directory containing the contacts given by the user does not exist, or the contacts could not be generated.";
         const string nExists = "The directory provided by the user did not exist, so one was generated instead.";
-        
+
         if (directoryExists && result.ContactLocation.IsSuccess && result.UploadedContacts.IsSuccess)
         {
             Console.WriteLine(generated);

@@ -65,7 +65,9 @@ internal class ConvertJsonToCsv : IVerb
         Result<FileInfo> result = JsonConversionHelper.Execute(Type, manager, jsonFileLocation, csvDestination);
 
         // Determine error code to return
-        return DetermineReturnCode(result);
+        int code = DetermineReturnCode(result);
+        Environment.ExitCode = code;
+        return code;
     }
     #endregion
 
