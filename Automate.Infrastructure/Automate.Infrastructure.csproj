@@ -14,6 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include=".info\ApiRepos\ActiveCampaigns.json" />
+    <Content Include=".info\ApiRepos\CallRepo.json" />
+    <Content Include=".info\ApiRepos\ContactFormsRepo.json" />
+    <Content Include=".info\ApiRepos\CustomerRepo.json" />
+    <Content Include=".info\ApiRepos\Discrepancy.json" />
     <Content Include=".info\ApiRepos\LeafTesting\ForceUpdateTest.json" />
     <Content Include=".info\ApiRepos\LeafThreads.json" />
     <Content Include=".info\ApiRepos\RepoTests\CustomerRepoTest.json" />
