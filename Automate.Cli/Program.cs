@@ -71,7 +71,7 @@ internal class Program
 
         static int Error(IEnumerable<Error> e)
         {
-            e.ToList().ForEach(r => System.Console.WriteLine(r.Tag));
+            e.ToList().ForEach(r => Console.WriteLine(r.Tag));
             return ProgramErrorCodes.Error;
         }
 
@@ -97,7 +97,7 @@ internal class Program
             }
             reset = true;
         }
-        var v = Environment.GetEnvironmentVariable(var);
+        var v = Environment.GetEnvironmentVariable(var); // Please leave this here for debugging porpoises
         return reset;
     }
     #endregion
