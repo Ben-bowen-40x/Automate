@@ -16,6 +16,7 @@ internal class Program
         object sender = new Program();
         string member = nameof(Main);
         StringLogger.NewLog(DateTime.Now, sender, member, [$"Started execution from {nameof(Program)}.{nameof(Main)}. Here are the arguments input by the user:", .. args]);
+        var set = SetDotnetEnv();
         #endregion
 
         IHostBuilder builder = Host.CreateDefaultBuilder(args)
@@ -76,9 +77,28 @@ internal class Program
 
         static int ObjectError(object o)
         {
-            System.Console.WriteLine(o.ToString());
+            Console.WriteLine(o.ToString());
             return ProgramErrorCodes.Error;
         }
+    }
+
+    private static bool SetDotnetEnv()
+    {
+        string dev = "Development";
+        string var = "DOTNET_ENVIRONMENT";
+        bool reset = false;
+        bool isDebug = new DoIfDebug().IsDebug();
+        if (isDebug)
+        {
+            string? env = Environment.GetEnvironmentVariable(var);
+            if (string.IsNullOrWhiteSpace(env) || !env.Equals(dev, StringComparison.CurrentCultureIgnoreCase))
+            {
+                Environment.SetEnvironmentVariable(var, dev);
+            }
+            reset = true;
+        }
+        var v = Environment.GetEnvironmentVariable(var);
+        return reset;
     }
     #endregion
 }
