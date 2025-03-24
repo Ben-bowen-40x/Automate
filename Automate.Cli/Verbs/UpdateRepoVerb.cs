@@ -1,4 +1,5 @@
-﻿using Automate.Application.InfrastructureValueObjects;
+﻿using Automate.Application.DbRepoUpdateManager;
+using Automate.Application.InfrastructureValueObjects;
 using Automate.Application.RepoUpdate;
 using Automate.Application.TypedRepoUpdate;
 using Automate.Application.UpdateContacts;
@@ -38,7 +39,7 @@ internal class UpdateRepoVerb : IVerb
     #region Public (Other than Options)
     public int Run(IServiceProvider service)
     {
-        // Validate Input
+        #region Validate Input
         Result<FileType> verifiedJson = PathManipulation.VerifyFileType(ApiRepositoryJson);
         FileInfo repoInfo = !ApiRepositoryJson.Exists || verifiedJson.IsFailure || verifiedJson.Value != FileType.Json
             ? throw new ArgumentException($"The provided repository does not exist. This was the given repository:\n{nameof(ApiRepositoryJson)} -> {ApiRepositoryJson}")
@@ -54,8 +55,9 @@ internal class UpdateRepoVerb : IVerb
                 ? throw new ArgumentException($"The user made the {nameof(ValueRepositoryCsv)} required, but did not provide a valid file location, which is missing the .csv extension: {ValueRepositoryCsv}")
                 : string.Empty
             : valueRepoName;
+        #endregion
 
-        // Inform user of the chosen values
+        #region Inform user of the chosen values
         Console.WriteLine($"The user chose the following values:");
         Console.WriteLine($"- Repo type: \"{Type}\"");
         Console.WriteLine($"- Value Repository location: \n\t{PathManipulation.LocationInformation(valueInfo)}");
@@ -63,6 +65,7 @@ internal class UpdateRepoVerb : IVerb
         Console.WriteLine($"- Repository location: \n\t{PathManipulation.LocationInformation(ApiRepositoryJson.FullName)}");
         Console.WriteLine($"- Whether to perform a hard update on the repositories: {Update}");
         Console.WriteLine($"- Whether to perform a force update on the repositories (This will override the Hard Update option): {ForceUpdate}");
+        #endregion
 
         // Prepare result
         int code;

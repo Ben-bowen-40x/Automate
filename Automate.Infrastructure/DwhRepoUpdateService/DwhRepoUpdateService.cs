@@ -71,7 +71,12 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
     {
         try
         {
-            Result<List<TEntity>> result = JsonService.ReadFile<TEntity>(location);
+            Result<List<TEntity>> result = location.Extension switch
+            {
+                ".json" => JsonService.ReadFile<TEntity>(location),
+                ".csv" => CsvService.Parse<TEntity>(location),
+                _ => Result.Failure<List<TEntity>>($"The provided file location does not have the correct file extension. Extension: {location.Extension}. Full file location: {location.FullName}")
+            };
             return result;
         }
         catch (Exception ex)
