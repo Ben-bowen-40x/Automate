@@ -76,6 +76,7 @@ internal class ConvertJsonToCsv : IVerb
     {
         if (result.IsSuccess)
         {
+            Console.WriteLine($"The program was successful! Here is the result: {result.Value}");
             return ProgramErrorCodes.Success;
         }
         else
