@@ -122,8 +122,8 @@ internal class UpdateRepoVerb : IVerb
     private static int DetermineReturnCode(Result result)
     {
         string message = result.IsSuccess
-            ? "Execution of this request was successful."
-            : $"Execution of this requrest was NOT successful. {result.Error}";
+            ? "Execution of this request was successful.\n"
+            : $"Execution of this requrest was NOT successful. {result.Error}\n";
         int code = result.IsSuccess
             ? ProgramErrorCodes.Success
             : ProgramErrorCodes.Error;
