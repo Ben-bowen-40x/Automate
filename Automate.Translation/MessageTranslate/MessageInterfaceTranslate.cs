@@ -21,10 +21,10 @@ public static partial class MessageInterfaceTranslate
             ? FindTimeZone(entity)
             : TimeZoneEnum.Eastern;
         DateTimeOffset date = ConvertDateTimeOffset.Convert(d, z);
-        
+
         // Source
         string source = VerifySource(entity.Source);
-        
+
         // Determine lead status
         bool islead = !string.IsNullOrWhiteSpace(entity.Lead) && entity.Lead.Contains("yes", StringComparison.CurrentCultureIgnoreCase);
         IMessage result = islead
@@ -140,7 +140,8 @@ public static partial class MessageInterfaceTranslate
     // No need to test; all components are tested elsewhere
     public static IMessage Translate(this IMsgZoneEnumStr entity)
     {
-        DateTimeOffset start = ConvertPrimitive.ConvertDateTimeOffset(entity.Date, entity.TimeZone, DateDefault.Min);
+        string datetime = entity.Date + " " + entity.Time;
+        DateTimeOffset start = ConvertPrimitive.ConvertDateTimeOffset(datetime, entity.TimeZone, DateDefault.Min);
         string source = VerifySource(entity.Source);
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
         string message = VerifyContents(entity.Contents);
