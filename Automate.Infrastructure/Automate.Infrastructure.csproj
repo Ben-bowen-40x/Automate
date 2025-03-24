@@ -9,10 +9,13 @@
 
   <ItemGroup>
     <Compile Remove=".info\Discrepancy\Past\**" />
+    <Compile Remove=".info\FormAnalysis\LocalRepo\**" />
     <Compile Remove=".info\MessageAnalysis\LocalRepo\**" />
     <EmbeddedResource Remove=".info\Discrepancy\Past\**" />
+    <EmbeddedResource Remove=".info\FormAnalysis\LocalRepo\**" />
     <EmbeddedResource Remove=".info\MessageAnalysis\LocalRepo\**" />
     <None Remove=".info\Discrepancy\Past\**" />
+    <None Remove=".info\FormAnalysis\LocalRepo\**" />
     <None Remove=".info\MessageAnalysis\LocalRepo\**" />
   </ItemGroup>
 
@@ -49,7 +52,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include=".info\FormAnalysis\LocalRepo\" />
     <Folder Include=".info\Reports\ContactUpdate\" />
   </ItemGroup>
 
