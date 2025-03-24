@@ -40,7 +40,7 @@ internal static class CsvService
         catch (Exception ex)
         { return Result.Failure<List<T>>(CsvException(path.FullName, ex, nameof(Parse))); }
     }
-    internal static Result Write<TClass, TMap>(FileInfo path, IEnumerable<TClass> unparsedObject) where TMap : ClassMap
+    internal static Result Write<TClass, TMap>(FileInfo path, IEnumerable<TClass> unparsedObject) where TMap : ClassMap<TClass>
     {
         try
         {
@@ -71,7 +71,7 @@ internal static class CsvService
             return Result.Failure(exception);
         }
     }
-    internal static Result Append<TClass, TMap>(FileInfo path, IEnumerable<TClass> unparsed) where TMap : ClassMap
+    internal static Result Append<TClass, TMap>(FileInfo path, IEnumerable<TClass> unparsed) where TMap : ClassMap<TClass>
     {
         try
         {
