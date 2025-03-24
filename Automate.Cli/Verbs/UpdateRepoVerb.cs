@@ -1,4 +1,5 @@
-﻿using Automate.Application.InfrastructureValueObjects;
+﻿using Automate.Application.DbRepoUpdateManager;
+using Automate.Application.InfrastructureValueObjects;
 using Automate.Application.RepoUpdate;
 using Automate.Application.TypedRepoUpdate;
 using Automate.Application.UpdateContacts;
@@ -12,16 +13,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Automate.Cli.Verbs;
 
-[Verb(VerbName, HelpText = "This updates the local repo of a specified Api. Obviously, this is get-only.")]
+[Verb(VerbName, HelpText = "This updates the local repo of a specified Api. This is not a REST api interface. These commands are get-only.")]
 internal class UpdateRepoVerb : IVerb
 {
-
     #region Options
     private const string VerbName = "updateRepo";
     [Option('t', "type", Required = true, HelpText = UpdateRepoHelper.RepoTypeHelpText)]
     public RepoType Type { get; set; }
 
-    [Option('v', "valueRepo", Required = false, HelpText = "Enter the existing repository that will be updated. This repo is for value objects only and is used elsewhere. If a value is not provided, a default will be used. This value must be a CSV file.")]
+    [Option('v', "valueRepo", Required = false, HelpText = "Enter the existing repository that will be updated. This repo is for value objects only and is used elsewhere. If a value is not provided, a default will be used, unless the -V --valueRepoRequired switch is used, in which case this value repo location must exist and be provided. In any case when this value is set, this value must be a CSV file. Otherwise, the application will throw.")]
     public FileInfo? ValueRepositoryCsv { get; set; }
 
     [Option('a', "apiRepo", Required = true, HelpText = "Enter the local repository that will be updated for the api. This repo is for api call return values and is used in soft and hard updates, but not force updates. This REQUIRED value must be a JSON file.")]
@@ -39,7 +39,7 @@ internal class UpdateRepoVerb : IVerb
     #region Public (Other than Options)
     public int Run(IServiceProvider service)
     {
-        // Validate Input
+        #region Validate Input
         Result<FileType> verifiedJson = PathManipulation.VerifyFileType(ApiRepositoryJson);
         FileInfo repoInfo = !ApiRepositoryJson.Exists || verifiedJson.IsFailure || verifiedJson.Value != FileType.Json
             ? throw new ArgumentException($"The provided repository does not exist. This was the given repository:\n{nameof(ApiRepositoryJson)} -> {ApiRepositoryJson}")
@@ -55,8 +55,9 @@ internal class UpdateRepoVerb : IVerb
                 ? throw new ArgumentException($"The user made the {nameof(ValueRepositoryCsv)} required, but did not provide a valid file location, which is missing the .csv extension: {ValueRepositoryCsv}")
                 : string.Empty
             : valueRepoName;
+        #endregion
 
-        // Inform user of the chosen values
+        #region Inform user of the chosen values
         Console.WriteLine($"The user chose the following values:");
         Console.WriteLine($"- Repo type: \"{Type}\"");
         Console.WriteLine($"- Value Repository location: \n\t{PathManipulation.LocationInformation(valueInfo)}");
@@ -64,6 +65,7 @@ internal class UpdateRepoVerb : IVerb
         Console.WriteLine($"- Repository location: \n\t{PathManipulation.LocationInformation(ApiRepositoryJson.FullName)}");
         Console.WriteLine($"- Whether to perform a hard update on the repositories: {Update}");
         Console.WriteLine($"- Whether to perform a force update on the repositories (This will override the Hard Update option): {ForceUpdate}");
+        #endregion
 
         // Prepare result
         int code;
@@ -122,13 +124,14 @@ internal class UpdateRepoVerb : IVerb
     #region Private
     private static int DetermineReturnCode(Result result)
     {
-        if (result.IsSuccess)
-        {
-            Console.WriteLine("Execution of this request was successful.");
-            return ProgramErrorCodes.Success;
-        }
-        Console.WriteLine($"Execution of this request was NOT successful. {result.Error}");
-        return ProgramErrorCodes.Error;
+        string message = result.IsSuccess
+            ? "Execution of this request was successful.\n"
+            : $"Execution of this requrest was NOT successful. {result.Error}\n";
+        int code = result.IsSuccess
+            ? ProgramErrorCodes.Success
+            : ProgramErrorCodes.Error;
+        Console.WriteLine(message);
+        return code;
     }
     #endregion
 }

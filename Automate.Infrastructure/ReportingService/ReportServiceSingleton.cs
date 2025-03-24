@@ -53,7 +53,7 @@ internal class ReportServiceSingleton : IReportService
     public Result<FileInfo> GenerateDiscrepancyReport(List<DiscrepancyMatch> matches, string reportLoc = "")
     {
         FileInfo report =
-            reportLoc == string.Empty || !reportLoc.Contains(".csv")
+            string.IsNullOrWhiteSpace(reportLoc) || !reportLoc.Contains(".csv")
             ? new(Folder + $"DiscrepancyReport{DateTime.Now.ToString(DateTimeStrings.FileDateTimeFormat)}.csv")
             : new(reportLoc);
         if (!File.Exists(report.FullName))
@@ -116,7 +116,7 @@ internal class ReportServiceSingleton : IReportService
     public Result<FileInfo> GenerateLeafMessages(List<IMessage> msgs, string location)
     {
         // Check for default
-        FileInfo loc = location == string.Empty
+        FileInfo loc = string.IsNullOrWhiteSpace(location)
             ? LeafApiService.MessageRepoLocation
             : new(location);
 
