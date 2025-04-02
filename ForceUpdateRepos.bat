@@ -4,10 +4,11 @@ title Execute repo updates from debug
 set callRepo=%errorlevel%
 "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" updateRepo -ut Customers -a "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json"
 set customerRepo=%errorlevel%
-"%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" updateRepo -ft Leaf -a "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\LeafThreads.json"
+"%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" updateRepo -ut Leaf -a "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\LeafThreads.json"
 set leafRepo=%errorlevel%
 echo Return codes. Return code 0 indicates success
-echo callRepo returned the following code: %callRepo%
-echo customerRepo returned the following code: %customerRepo%
-echo leafRepo returned the following code: %leafRepo%
-Pause
+echo	CallRepo returned the following code: %callRepo%
+echo	CustomerRepo returned the following code: %customerRepo%
+echo	LeafRepo returned the following code: %leafRepo%
+echo We will now execute the report generation. In the case where this is unacceptable because of the return codes above, press Ctrl + c and then confirm execution closure
+call ".\ReportGeneration.bat"

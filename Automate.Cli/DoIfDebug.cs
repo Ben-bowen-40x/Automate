@@ -8,6 +8,10 @@ namespace Automate.Cli;
 /// </summary>
 internal class DoIfDebug : IDetermineDebug
 {
+    /// <summary>
+    /// If the build is in debug, returns true, otherwise, returns false
+    /// </summary>
+    /// <returns>A boolean which indicates whether the current build is in debug</returns>
     public bool IsDebug()
     {
 #if DEBUG
