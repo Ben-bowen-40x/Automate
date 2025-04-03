@@ -44,7 +44,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
         else if (hardUpdate)
         {
             // Call
-            Task<Result<List<TEntity>>> threads = _service.GetLeafThreadsAsync<TEntity>(client, leaf.Count - 1);
+            Task<Result<List<TEntity>>> threads = _service.GetLeafThreadsAsync<TEntity>(client, offset: leaf.Count - 1);
 
             // Check for errors
             if (!threads.IsFaulted)
@@ -58,7 +58,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                     List<IMessage> mVal = value.Select(v => v.Convert<TEntity, IMessage>()).ToList();
                     List<IMessage> mLeaf = leaf.Select(v => v.Convert<TEntity, IMessage>()).ToList();
                     List<IMessage> m = [.. mLeaf, .. mVal];
-                    var result = _reportService.GenerateLeafMessages(m, valueRepoCsv);
+                    Result<FileInfo> result = _reportService.GenerateLeafMessages(m, valueRepoCsv);
 
                     return result;
                 }

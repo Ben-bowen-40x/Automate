@@ -146,7 +146,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         while (resume)
         {
             if (errorCount == errorLimit)
-                return Result.Failure<List<TEntity>>($"Reached error limit. Error limit: {errorLimit}");
+                return Result.Failure<List<TEntity>>($"Reached error limit. Error limit: {errorLimit} attempts");
 
             try
             {
@@ -197,7 +197,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
             : new(leafRepoLoc);
 
         List<TEntity> combined = [.. leafRepo, .. apiResult];
-        var result = Update(combined, leafRepoLocation.FullName);
+        Result result = Update(combined, leafRepoLocation.FullName);
 
         return result;
     }
