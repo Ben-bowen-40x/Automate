@@ -42,7 +42,11 @@ internal class TypedDiscrepancyAnalysisVerb : IVerb
         #endregion
 
         // Inform user of the input
-        InformUser(fileName.FullName, report.FullName, query.FullName);
+        var inform = service.GetRequiredService<IUserInformation>();
+        string billableLocMsg = $"For the following option, \"{nameof(BillableCallCsvLoc)}\" -- {PathManipulation.LocationInformation(fileName.FullName)}";
+        string reportLocMsg = $"\nFor the following option, \"{nameof(ReportLocation)}\" -- {PathManipulation.LocationInformation(report.FullName)}";
+        string queryLocMsg = $"\nFor the following option, \"{nameof(ComparisonCallQueryLoc)}\" -- {PathManipulation.LocationInformation(query.FullName)}";
+        inform.InformUser(billableLocMsg, reportLocMsg, queryLocMsg);
 
         // Prepare the result
         ITypedDiscrepancyManager callManager = service.GetRequiredService<ITypedDiscrepancyManager>();
@@ -58,37 +62,22 @@ internal class TypedDiscrepancyAnalysisVerb : IVerb
         StringLogger.NameLog(DateTime.Now, AnalyzeDiscrepancy);
 
         // Return code 
-        int code = DetermineReturnCode(fileName.FullName, report.FullName, query.FullName, result);
+        int code = DetermineReturnCode(fileName.FullName, report.FullName, query.FullName, result, inform);
         Environment.ExitCode = code;
         return code;
     }
 
     #region Private Members
-    private void InformUser(string fileName, string report, string query)
-    {
-        Console.WriteLine($"For the following option, \"{nameof(BillableCallCsvLoc)}\" -- {PathManipulation.LocationInformation(fileName)}");
-        Console.WriteLine($"\nFor the following option, \"{nameof(ReportLocation)}\" -- {PathManipulation.LocationInformation(report)}");
-        Console.WriteLine($"\nFor the following option, \"{nameof(ComparisonCallQueryLoc)}\" -- {PathManipulation.LocationInformation(query)}");
-    }
 
-    static int DetermineReturnCode(string fileName, string report, string query, Result<FileInfo> result)
+    static int DetermineReturnCode(string fileName, string report, string query, Result<FileInfo> result, IUserInformation inform)
     {
-        if (result.IsSuccess)
-        {
-            Console.WriteLine($"Generated report. Report Location:");
-            Console.WriteLine(result.Value.FullName);
-            return ReturnCode(fileName, report, query, result.IsSuccess);
-        }
-        else
-        {
-            Console.WriteLine("Failed to generate report.");
+        if (result.IsFailure)
             StringLogger.AddLog(GetFullName.GetMemberName(new DiscrepancyAnalysisVerb(), nameof(DetermineReturnCode)), "Report failed to generate.");
-            return ReturnCode(fileName, report, query, result.IsSuccess);
-        }
-    }
-
-    static int ReturnCode(string fileName, string report, string query, bool resultSuccess)
-        => (fileName.Equals(string.Empty), report.Equals(string.Empty), query.Equals(string.Empty), resultSuccess) switch
+        string message = result.IsSuccess
+            ? $"Generated report. Report Location:\n{result.Value.FullName}"
+            : "Failed to generate report.";
+        inform.InformUser(message);
+        return (string.IsNullOrWhiteSpace(fileName), string.IsNullOrWhiteSpace(report), string.IsNullOrWhiteSpace(query), result.IsSuccess) switch
         {
             (true, true, true, true) => ProgramErrorCodes.Analyze_GeneratedReport_AllFilesDefaulted,
             (true, true, true, false) => ProgramErrorCodes.Analyze_CriticalFailure,
@@ -107,5 +96,6 @@ internal class TypedDiscrepancyAnalysisVerb : IVerb
             (false, false, true, false) => ProgramErrorCodes.Analyze_FailedReport_QueryDefaulted,
             _ => ProgramErrorCodes.Success,
         };
+    }
     #endregion
 }

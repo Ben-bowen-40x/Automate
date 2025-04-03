@@ -43,8 +43,9 @@ internal class MessageAnalysisVerb : IVerb
     public int Run(IServiceProvider service)
     {
         // Inform the user what is going on
+        var inform = service.GetRequiredService<IUserInformation>();
         string info = InformUser();
-        Console.WriteLine(info);
+        inform.InformUser(info);
         FilePaths verified = VerifyInput();
 
         // Execute
@@ -53,7 +54,7 @@ internal class MessageAnalysisVerb : IVerb
         // Logger
         StringLogger.NameLog(DateTime.Now, AnalyzeMessages, MessageType.ToString());
 
-        int code = DetermineReturnCode(result, MessageLocation.Exists, CallRepoLocation.Exists, CustomerRepoLocation.Exists, ReportLocation.Exists);
+        int code = DetermineReturnCode(result, MessageLocation.Exists, CallRepoLocation.Exists, CustomerRepoLocation.Exists, ReportLocation.Exists, inform);
         Environment.ExitCode = code;
         return code;
     }
@@ -207,12 +208,12 @@ internal class MessageAnalysisVerb : IVerb
         };
     }
 
-    private static int DetermineReturnCode(Result<FileInfo> result, bool msgLocExists, bool callQExists, bool customerExists, bool reportExists)
+    private static int DetermineReturnCode(Result<FileInfo> result, bool msgLocExists, bool callQExists, bool customerExists, bool reportExists, IUserInformation inform)
     {
         string message = result.IsSuccess
             ? $"The report creation was successful.\nHere is the report:\n{result.Value}"
             : $"There was a critical error. The report was not generated. Error:\n{result.Error}";
-        Console.WriteLine(message);
+        inform.InformUser(message);
 
         return (result.IsSuccess, msgLocExists, callQExists, customerExists, reportExists) switch
         {

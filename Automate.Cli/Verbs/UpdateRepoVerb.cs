@@ -3,6 +3,7 @@ using Automate.Application.RepoUpdate;
 using Automate.Application.TypedRepoUpdate;
 using Automate.Application.UpdateContacts;
 using Automate.Cli.Verbs.VerbHelper;
+using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.AnalyzeDiscrepancyService;
 using Automate.Infrastructure.DataRetrievalFormats;
@@ -57,13 +58,15 @@ internal class UpdateRepoVerb : IVerb
         #endregion
 
         #region Inform user of the chosen values
-        Console.WriteLine($"The user chose the following values:");
-        Console.WriteLine($"- Repo type: \"{Type}\"");
-        Console.WriteLine($"- Value Repository location: \n\t{PathManipulation.LocationInformation(valueInfo)}");
-        Console.WriteLine($"- Whether the value repository is a required value: \n\t{ValueRepoRequired}");
-        Console.WriteLine($"- Repository location: \n\t{PathManipulation.LocationInformation(ApiRepositoryJson.FullName)}");
-        Console.WriteLine($"- Whether to perform a hard update on the repositories: {Update}");
-        Console.WriteLine($"- Whether to perform a force update on the repositories (This will override the Hard Update option): {ForceUpdate}");
+        IUserInformation inform = service.GetRequiredService<IUserInformation>();
+        string chosen = $"The user chose the following values:";
+        string typeMsg = $"- Repo type: \"{Type}\"";
+        string valRepoMsg = $"- Value Repository location: \n\t{PathManipulation.LocationInformation(valueInfo)}";
+        string valRepoRequiredMsg = $"- Whether the value repository is a required value: \n\t{ValueRepoRequired}";
+        string apiRepoMsg = $"- Repository location: \n\t{PathManipulation.LocationInformation(ApiRepositoryJson.FullName)}";
+        string updateMsg = $"- Whether to perform a hard update on the repositories: {Update}";
+        string forceUpdateMsg = $"- Whether to perform a force update on the repositories (This will override the Hard Update option): {ForceUpdate}";
+        inform.InformUser(chosen, typeMsg, valRepoMsg, valRepoRequiredMsg, apiRepoMsg, updateMsg, forceUpdateMsg);
         #endregion
 
         // Prepare result
@@ -75,43 +78,43 @@ internal class UpdateRepoVerb : IVerb
             case RepoType.Leaf:
                 IRepoUpdateManager lfManager = service.GetRequiredService<IRepoUpdateManager>();
                 Result leafResult = lfManager.Manage<LeafThread>(valueInfo, repoInfo.FullName, Update, ForceUpdate);
-                code = DetermineReturnCode(leafResult);
+                code = DetermineReturnCode(leafResult, inform);
                 break;
             case RepoType.Deprecated:
                 ITypedRepoUpdateManager deprecatedManager = service.GetRequiredService<ITypedRepoUpdateManager>();
                 Result deprecatedResult = deprecatedManager.Manage<CallDbEntity>(DwhQueryType.AllCalls, DwhConnectionType.Calls, repoInfo, valueInfo, ForceUpdate || Update);
-                code = DetermineReturnCode(deprecatedResult);
+                code = DetermineReturnCode(deprecatedResult, inform);
                 break;
             case RepoType.Customers:
                 ITypedRepoUpdateManager customerManager = service.GetRequiredService<ITypedRepoUpdateManager>();
                 Result customersResult = customerManager.Manage<CustSubDbEntity>(DwhQueryType.AllCustomers, DwhConnectionType.Customers, repoInfo, valueInfo, ForceUpdate || Update);
-                code = DetermineReturnCode(customersResult);
+                code = DetermineReturnCode(customersResult, inform);
                 break;
             case RepoType.ContactForms:
                 ITypedRepoUpdateManager formsManager = service.GetRequiredService<ITypedRepoUpdateManager>();
                 Result contactFormsResult = formsManager.Manage<WebFormEntity>(DwhQueryType.ContactForms, DwhConnectionType.ContactForms, repoInfo, valueInfo, ForceUpdate || Update);
-                code = DetermineReturnCode(contactFormsResult);
+                code = DetermineReturnCode(contactFormsResult, inform);
                 break;
             case RepoType.ContactUpdate:
-                Console.WriteLine($"Default values were chosen for the following choice: {RepoType.ContactUpdate}");
+                inform.InformUser($"Default values were chosen for the following choice: {RepoType.ContactUpdate}");
                 IContactUpdateManager cUpdateManager = service.GetRequiredService<IContactUpdateManager>();
                 UpdateResult contactUpdateResult = cUpdateManager.UpdateContacts("");
 
                 // Inform the user what took place
                 Result uploaded = contactUpdateResult.UploadedContacts;
                 Result<DirectoryInfo> contactLocation = contactUpdateResult.ContactLocation;
-                var c = DetermineReturnCode(uploaded);
-                Console.WriteLine("Request: Contacts Upload");
-                code = c + DetermineReturnCode(contactLocation);
-                Console.WriteLine("Request: Contact generation");
+                var c = DetermineReturnCode(uploaded, inform);
+                inform.InformUser("Request: Contacts Upload");
+                code = c + DetermineReturnCode(contactLocation, inform);
+                inform.InformUser("Request: Contact generation");
                 break;
             case var i when i == RepoType.Discrepancy || i == RepoType.Calls:
                 ITypedRepoUpdateManager callsManager = service.GetRequiredService<ITypedRepoUpdateManager>();
                 Result callsResult = callsManager.Manage<DiscrepancyCallDbEntity>(DwhQueryType.Discrepancy, DwhConnectionType.Calls, repoInfo, valueInfo, ForceUpdate || Update);
-                code = DetermineReturnCode(callsResult);
+                code = DetermineReturnCode(callsResult, inform);
                 break;
             default:
-                Console.WriteLine($"No existing repository type was selected, so no execution will take place.\nEither choose an existing repository type or create a repository update functionality for the following repo selection: {Type}");
+                inform.InformUser($"No existing repository type was selected, so no execution will take place.\nEither choose an existing repository type or create a repository update functionality for the following repo selection: {Type}");
                 code = ProgramErrorCodes.Error;
                 break;
         };
@@ -121,7 +124,7 @@ internal class UpdateRepoVerb : IVerb
     #endregion
 
     #region Private
-    private static int DetermineReturnCode(Result result)
+    private static int DetermineReturnCode(Result result, IUserInformation inform)
     {
         string message = result.IsSuccess
             ? "Execution of this request was successful.\n"
@@ -129,7 +132,7 @@ internal class UpdateRepoVerb : IVerb
         int code = result.IsSuccess
             ? ProgramErrorCodes.Success
             : ProgramErrorCodes.Error;
-        Console.WriteLine(message);
+        inform.InformUser(message);
         return code;
     }
     #endregion

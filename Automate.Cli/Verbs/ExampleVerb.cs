@@ -1,5 +1,7 @@
 ﻿using Automate.Cli.Verbs.VerbHelper;
+using Automate.Domain.SolutionFunctionality;
 using CommandLine;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Automate.Cli.Verbs;
 
@@ -34,11 +36,13 @@ internal class ExampleVerb : IVerb
             ThirdFileLocation == string.Empty || !Path.Exists(ThirdFileLocation)
             ? nothing(ThirdFileLocation)
             : PathManipulation.LocationInformation(ThirdFileLocation);
-
-        Console.WriteLine("The following are the options the user chose:");
-        Console.WriteLine($"- {nameof(FileLocation)}: \n{fileLocation}");
-        Console.WriteLine($"\n- {nameof(SecondFileLocation)}: \n{secondLocation}");
-        Console.WriteLine($"\n- {nameof(ThirdFileLocation)}: \n{thirdLocation}");
+        
+        var inform = service.GetRequiredService<IUserInformation>();
+        string options = "The following are the options the user chose:";
+        string fileLocMsg = $"- {nameof(FileLocation)}: \n{fileLocation}";
+        string secondLocMsg = $"\n- {nameof(SecondFileLocation)}: \n{secondLocation}";
+        string thirdLocMsg = $"\n- {nameof(ThirdFileLocation)}: \n{thirdLocation}";
+        inform.InformUser(options, fileLocMsg, secondLocMsg, thirdLocMsg);
 
         int code = ProgramErrorCodes.Success;
         Environment.ExitCode = code;
