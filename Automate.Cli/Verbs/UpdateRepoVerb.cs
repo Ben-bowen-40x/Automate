@@ -126,13 +126,17 @@ internal class UpdateRepoVerb : IVerb
     #region Private
     private static int DetermineReturnCode(Result result, IUserInformation inform)
     {
-        string message = result.IsSuccess
-            ? "Execution of this request was successful.\n"
-            : $"Execution of this requrest was NOT successful. {result.Error}\n";
         int code = result.IsSuccess
-            ? ProgramErrorCodes.Success
-            : ProgramErrorCodes.Error;
-        inform.InformUser(message);
+            ? new Func<int>(() =>
+                {
+                    inform.InformUser("Execution of this request was successful.\n");
+                    return ProgramErrorCodes.Success;
+                })()
+            : new Func<int>(() =>
+                {
+                    inform.InformUser($"Execution of this requrest was NOT successful. {result.Error}\n");
+                    return ProgramErrorCodes.Error;
+                })();
         return code;
     }
     #endregion
