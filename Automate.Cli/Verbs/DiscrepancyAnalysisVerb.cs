@@ -60,11 +60,13 @@ internal class DiscrepancyAnalysisVerb : IVerb
     #region Private Members
     static int DetermineReturnCode(string fileName, string report, string query, Result<FileInfo> result, IUserInformation inform)
     {
-        if (result.IsFailure)
-            StringLogger.AddLog(GetFullName.GetMemberName(new DiscrepancyAnalysisVerb(), nameof(DetermineReturnCode)), "Report failed to generate.");
         string message = result.IsSuccess
             ? $"Generated Report. Report Location:\n{result.Value.FullName}"
-            : "Failed to generate report.";
+            : new Func<string>(() =>
+                {
+                    StringLogger.AddLog(GetFullName.GetMemberName(new DiscrepancyAnalysisVerb(), nameof(DetermineReturnCode)), "Report failed to generate.");
+                    return "Failed to generate report.";
+                })();
         inform.InformUser(message);
         return (string.IsNullOrWhiteSpace(fileName), string.IsNullOrWhiteSpace(report), string.IsNullOrWhiteSpace(query), result.IsSuccess) switch
         {
