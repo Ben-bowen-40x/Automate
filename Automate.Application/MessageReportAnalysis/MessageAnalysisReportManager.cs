@@ -70,6 +70,7 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         return result;
 
         #region Local
+#pragma warning disable CS8321 // Local function is declared but never used
         List<QualifiedMessageRecord> resetRecords(FileInfo customersFile, List<QualifiedMessageRecord> records)
         {
             // Refresh report data to be consistent with repository
@@ -113,6 +114,7 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
             }
             #endregion
         }
+#pragma warning restore CS8321 // Local function is declared but never used
         #endregion
     }
 }

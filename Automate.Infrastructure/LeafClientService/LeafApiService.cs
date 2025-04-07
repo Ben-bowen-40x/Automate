@@ -152,6 +152,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
             {
                 // Call the api
                 Result<List<TEntity>> result = await GetAsync<List<TEntity>>(LeafThreadUrl(offset, limit), client);
+                await Task.Delay(sleepInterval);
                 if (result.IsSuccess)
                 {
                     List<TEntity> value = result.Value;
@@ -159,9 +160,11 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
                     resume = value.Count == limit;
                 }
                 else
+                {
+                    errorCount++;
                     return result;
+                }
                 offset += limit;
-                Thread.Sleep(sleepInterval);
             }
             catch { errorCount++; }
         }
@@ -204,7 +207,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
 
     public Result Update<TEntity>(List<TEntity> leafRepo, string leafRepoLoc) where TEntity : class, IConvert
     {
-        FileInfo leafRepoLocation = leafRepoLoc == string.Empty || !File.Exists(leafRepoLoc)
+        FileInfo leafRepoLocation = string.IsNullOrWhiteSpace(leafRepoLoc) || !File.Exists(leafRepoLoc)
             ? LeafRepoLocation
             : new(leafRepoLoc);
 
