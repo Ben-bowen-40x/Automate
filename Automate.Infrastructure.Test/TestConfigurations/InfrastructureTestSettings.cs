@@ -10,6 +10,7 @@ public class InfrastructureTestSettings : IInfrastructureTestSettings
     public string? LeafAcctUuid { get; set; }
     public string? LeafUuid { get; set; }
     public string? LeafThreadsEndpoint { get; set; }
+    public string? LeafMessagesEndpoint { get; set; }
     public string? LeafApiTestRepo { get; set; }
 
     // ICsvTestFileSettings

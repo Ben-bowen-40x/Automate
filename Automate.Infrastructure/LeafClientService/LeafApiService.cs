@@ -1,4 +1,5 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
+using Automate.Application.InfrastructureValueObjects;
 using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.CsvManipulationService;
@@ -17,16 +18,18 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         HttpClient client = factory.CreateClient(settings.LeafName!);
         return client;
     }
-    internal Uri LeafThreadUrl(int offset, int limit) => new($"{settings.LeafBase}{settings.LeafThreadsEndpoint}?offset={offset}&limit={limit}");
+    internal Uri LeafThreadUrl(int offset = 0, int limit = 1000) => new($"{settings.LeafBase}{settings.LeafThreadsEndpoint}?limit={limit}&offset={offset}");
+    internal Uri LeafMessagesUrl(string thread, int limit = 10, string type = "sms") => new($"{settings.LeafBase}{settings.LeafThreadsEndpoint}/{thread}{settings.LeafMessagesEndpoint}?limit={limit}&type={type}&offset=0");
     #endregion
 
     #region Internal
-    internal static async Task<Result<T>> GetAsync<T>(Uri url, HttpClient client)
+    internal static async Task<Result<T>> GetSingleAsync<T>(Uri url, HttpClient client)
     {
         // Attempt to make the call
         try
         {
             HttpResponseMessage response = await client.GetAsync(url);
+            Wait();
             if (response.IsSuccessStatusCode)
             {
                 T? value = await response.Content.ReadFromJsonAsync<T>();
@@ -36,7 +39,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
                 }
 
                 string str = await response.Content.ReadAsStringAsync();
-                string error = str is null || str.Length == 0 || str == string.Empty
+                string error = string.IsNullOrWhiteSpace(str) || str.Length == 0
                     ? "Parsing failure. The process of reading the results from Json failed. The results somehow became null."
                     : str;
 
@@ -131,12 +134,13 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
     #endregion
 
     #region Implementation
+    public Uri DefaultLeafThreadUrl(int offset = 0) => LeafThreadUrl(offset);
     private static FileInfo? _msgRepoLoc;
     private static FileInfo? _leafRepoLoc;
     public static FileInfo MessageRepoLocation => _msgRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafMessages.csv");
     public static FileInfo LeafRepoLocation => _leafRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafThreads.json");
 
-    public async Task<Result<List<TEntity>>> GetLeafThreadsAsync<TEntity>(HttpClient client, int offset = 0, int errorLimit = 5, int sleepInterval = 500, int limit = 1000) where TEntity : class, IConvert
+    public async Task<Result<List<TEntity>>> GetAsync<TEntity>(HttpClient client, int offset = 0, int errorLimit = 5, int sleepInterval = 500, int limit = 1000) where TEntity : class, IConvert
     {
         int errorCount = 0;
 
@@ -151,8 +155,8 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
             try
             {
                 // Call the api
-                Result<List<TEntity>> result = await GetAsync<List<TEntity>>(LeafThreadUrl(offset, limit), client);
-                await Task.Delay(sleepInterval);
+                Uri newurl = LeafThreadUrl(offset, limit);
+                Result<List<TEntity>> result = await GetSingleAsync<List<TEntity>>(newurl, client);
                 if (result.IsSuccess)
                 {
                     List<TEntity> value = result.Value;
@@ -173,6 +177,61 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
             return Result.Failure<List<TEntity>>("Something went wrong and values were not retrieved.");
 
         return master;
+    }
+
+    public Task<Result<List<Msg>>[]> GetMessages<TEntity>(HttpClient client, List<TEntity> threads) where TEntity : ILeafThread
+    {
+        List<Task<Result<List<Msg>>>> tasks = new(threads.Count);
+        foreach (TEntity thread in threads)
+        {
+            // Retrieve the thread id
+            if (thread.Uuid is null)
+                continue;
+            string threadid = thread.Uuid!;
+            Uri uri = LeafMessagesUrl(threadid);
+
+            // Retrieve the new list 
+            Task<Result<List<Msg>>> messagesResultTask = GetSingleAsync<List<Msg>>(uri, client);
+            tasks.Add(messagesResultTask);
+
+            Thread.Sleep(150);
+        }
+
+        Task<Result<List<Msg>>[]> completedTask = Task.WhenAll(tasks);
+
+        return completedTask;
+    }
+
+    private static async void Wait(int sleepInterval = 500) => await Task.Delay(sleepInterval);
+
+    public Result<List<TEntity>> ReassignMessages<TEntity>(List<TEntity> threads, Task<Result<List<Msg>>[]> completedTask) where TEntity : ILeafThread
+    {
+        if (completedTask.IsCompletedSuccessfully)
+        {
+            Result<List<Msg>>[] messageResult = completedTask.Result;
+
+            foreach (Result<List<Msg>> msgR in messageResult)
+            {
+                // Unwrap 
+                if (msgR.IsSuccess)
+                {
+                    List<Msg> messages = msgR.Value;
+                    foreach (TEntity thread in threads)
+                    {
+                        if (thread.Uuid is null)
+                            continue;
+                        else if (messages.Count > 0 && thread.Uuid.Equals(messages[0].Thread))
+                        {
+                            thread.Messages = [.. messages];
+                            break;
+                        }
+                    }
+                }
+            }
+            return threads;
+        }
+        string error = completedTask.Exception is not null ? completedTask.Exception.Message : "The task failed to complete and carried no exception message";
+        return Result.Failure<List<TEntity>>(error);
     }
 
     public Result ReposMatch<TEntity>(out List<IMessage> msgs, out List<TEntity> leaf, string msgRepo = "", string leafRepo = "") where TEntity : class, IConvert

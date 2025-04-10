@@ -41,6 +41,7 @@ internal class Settings : IInfrastructureSettings, IDomainSettings
     public string? LeafAcctUuid { get; set; }
     public string? LeafUuid { get; set; }
     public string? LeafThreadsEndpoint { get; set; }
+    public string? LeafMessagesEndpoint { get; set; }
 
     // Discrepancy
     public string? CallsQuery { get; set; }

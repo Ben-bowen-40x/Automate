@@ -3,9 +3,10 @@
 namespace Automate.Application.InfrastructureValueObjects;
 public interface ILeafThread : IConvert
 {
-    public Msg[]? Messages { get; set; }
-    public Prospect? Prospect { get; set; }
-    public DateTimeOffset Creation { get; set; }
+    string? Uuid { get; set; }
+    Msg[]? Messages { get; set; }
+    Prospect? Prospect { get; set; }
+    DateTimeOffset Creation { get; set; }
 }
 
 public class Prospect

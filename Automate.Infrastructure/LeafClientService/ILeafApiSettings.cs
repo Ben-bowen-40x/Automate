@@ -9,4 +9,5 @@ public interface ILeafApiSettings
     public string? LeafAcctUuid { get; set; }
     public string? LeafUuid { get; set; }
     public string? LeafThreadsEndpoint { get; set; }
+    public string? LeafMessagesEndpoint { get; set; }
 }
