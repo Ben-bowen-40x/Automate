@@ -13,13 +13,7 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
     readonly RawQuery _rawQuery = new(settings);
 
     #region Getters
-    public string GetConnection(DwhConnectionType type) => type switch
-    {
-        DwhConnectionType.Calls => _settings.CallsConnectionString!,
-        DwhConnectionType.Customers => _settings.CustomersConnectionString!,
-        DwhConnectionType.ContactForms => _settings.ContactFormsConnectionString!,
-        _ => throw new ArgumentException($"The given connection type has not been assigned a connection string:\n{type}")
-    };
+    public string GetConnection(DwhConnectionType type) => _settings.GetConnectionString(type)!;
 
     public IQuery GetQuery(DwhQueryType type) => type switch
     {
