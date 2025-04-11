@@ -50,7 +50,7 @@ internal class UpdateRepoVerb : IVerb
                 ? throw new ArgumentException($"The user made the {nameof(ValueRepositoryCsv)} required, but did not provide a valid file location: {ValueRepositoryCsv}")
                 : string.Empty;
         Result<FileType> verifiedCsv = PathManipulation.VerifyFileType(valueRepoName);
-        string valueInfo = !File.Exists(valueRepoName) || verifiedCsv.IsFailure || verifiedCsv.Value != FileType.Csv
+        string valueInfo = verifiedCsv.IsFailure || verifiedCsv.Value != FileType.Csv
             ? ValueRepoRequired
                 ? throw new ArgumentException($"The user made the {nameof(ValueRepositoryCsv)} required, but did not provide a valid file location, which is missing the .csv extension: {ValueRepositoryCsv}")
                 : string.Empty
