@@ -7,6 +7,7 @@ using Automate.Domain.SolutionFunctionality;
 using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.AnalyzeDiscrepancyService;
 using Automate.Infrastructure.DataRetrievalFormats;
+using Automate.Infrastructure.LeafClientService;
 using CommandLine;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -77,7 +78,10 @@ internal class UpdateRepoVerb : IVerb
         {
             case RepoType.Leaf:
                 IRepoUpdateManager lfManager = service.GetRequiredService<IRepoUpdateManager>();
-                Result leafResult = lfManager.Manage<LeafThread>(valueInfo, repoInfo.FullName, Update, ForceUpdate);
+                string valueLocation = string.IsNullOrWhiteSpace(valueInfo)
+                    ? LeafApiService.MessageRepoLocation.FullName
+                    : valueInfo;
+                Result leafResult = lfManager.Manage<LeafThread>(valueLocation, repoInfo.FullName, Update, ForceUpdate);
                 code = DetermineReturnCode(leafResult, inform);
                 break;
             case RepoType.Deprecated:

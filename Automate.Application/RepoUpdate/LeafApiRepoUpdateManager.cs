@@ -13,12 +13,13 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
     public Result Manage<TEntity>(string valueRepoCsv, string rawRepo, bool hardUpdate, bool forceUpdate) where TEntity : class, IConvert, ILeafThread
     {
         HttpClient client = _service.GetClient(factory);
-        Result _ = _service.ReposMatch(out List<IMessage> msgs, out List<TEntity> leaf, valueRepoCsv, rawRepo);
         const string failure = "Call to the API failed";
 
         #region Get rid of this
         if (false)
         {
+            List<TEntity> leaf = getLeaf<TEntity>(rawRepo);
+            
             // Retrieve messages
             Task<Result<List<Msg>>[]> msgsTask = _service.GetMessages(client, leaf);
 
@@ -83,6 +84,9 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
         }
         else if (hardUpdate)
         {
+            // Retrieve leaf repo
+            List<TEntity> leaf = getLeaf<TEntity>(rawRepo);
+
             // Call
             Task<Result<List<TEntity>>> threads = _service.GetAsync<TEntity>(client, offset: leaf.Count - 1);
 
@@ -95,7 +99,9 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                     List<TEntity> value = threadVals.Value;
 
                     // Change message values
-                    Task<Result<List<Msg>>[]> msgsTask = _service.GetMessages(client, value);
+                    Task<Result<List<Msg>>[]> msgsTask = value.Count > 0
+                        ? _service.GetMessages(client, value)
+                        : new Task<Result<List<Msg>>[]>(() => throw new InvalidOperationException("Values are empty"));
                     var valueCopy = value.ToList();
                     Result<List<TEntity>> val = _service.ReassignMessages(valueCopy, msgsTask);
 
@@ -121,11 +127,22 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
         }
         else
         {
+            List<TEntity> leaf = getLeaf<TEntity>(rawRepo);
             List<IMessage> m = leaf
                 .Select(l => l.Convert<TEntity, IMessage>())
                 .ToList();
             var result = _reportService.GenerateLeafMessages(m, valueRepoCsv);
             return result;
         }
+    }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "I don't want to confuse this with anything else")]
+    private List<TEntity> getLeaf<TEntity>(string rawRepo) where TEntity : class, IConvert, ILeafThread
+    {
+        Result<List<TEntity>> leafResult = _service.GetLocalRepo<TEntity>(rawRepo);
+        List<TEntity> leaf = leafResult.IsSuccess
+            ? leafResult.Value
+            : throw new Exception(leafResult.Error); // The buck must stop here, because no usage of this method can permit an empty list
+        return leaf;
     }
 }

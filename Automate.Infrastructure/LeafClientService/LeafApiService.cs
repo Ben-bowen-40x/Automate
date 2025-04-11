@@ -104,7 +104,16 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         }
     }
 
-    internal static Result<List<TEntity>> RetrieveLeafRepo<TEntity>(string leafRepo = "") where TEntity : class, IConvert
+    #endregion
+
+    #region Implementation
+    public Uri DefaultLeafThreadUrl(int offset = 0) => LeafThreadUrl(offset);
+    private static FileInfo? _msgRepoLoc;
+    private static FileInfo? _leafRepoLoc;
+    public static FileInfo MessageRepoLocation => _msgRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafMessages.csv");
+    public static FileInfo LeafRepoLocation => _leafRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafThreads.json");
+    
+    public Result<List<TEntity>> GetLocalRepo<TEntity>(string leafRepo) where TEntity : class, IConvert, ILeafThread
     {
         // Check location string
         FileInfo repo = string.IsNullOrWhiteSpace(leafRepo) || !File.Exists(leafRepo)
@@ -113,7 +122,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
 
         // Check if location exists
         if (!repo.Exists)
-            File.WriteAllText(repo.FullName, "");
+            File.WriteAllText(repo.FullName, string.Empty);
 
         try
         {
@@ -131,14 +140,6 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         catch (Exception ex) { return Result.Failure<List<TEntity>>(ex.Message); }
 
     }
-    #endregion
-
-    #region Implementation
-    public Uri DefaultLeafThreadUrl(int offset = 0) => LeafThreadUrl(offset);
-    private static FileInfo? _msgRepoLoc;
-    private static FileInfo? _leafRepoLoc;
-    public static FileInfo MessageRepoLocation => _msgRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafMessages.csv");
-    public static FileInfo LeafRepoLocation => _leafRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafThreads.json");
 
     public async Task<Result<List<TEntity>>> GetAsync<TEntity>(HttpClient client, int offset = 0, int errorLimit = 5, int sleepInterval = 500, int limit = 1000) where TEntity : class, IConvert
     {
@@ -234,10 +235,10 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         return Result.Failure<List<TEntity>>(error);
     }
 
-    public Result ReposMatch<TEntity>(out List<IMessage> msgs, out List<TEntity> leaf, string msgRepo = "", string leafRepo = "") where TEntity : class, IConvert
+    public Result ReposMatch<TEntity>(out List<IMessage> msgs, out List<TEntity> leaf, string msgRepo = "", string leafRepo = "") where TEntity : class, IConvert, ILeafThread
     {
         Result<List<IMessage>> imsgs = RetrieveMessageRepo(msgRepo);
-        Result<List<TEntity>> ileaf = RetrieveLeafRepo<TEntity>(leafRepo);
+        Result<List<TEntity>> ileaf = GetLocalRepo<TEntity>(leafRepo);
         msgs = imsgs.IsSuccess ? imsgs.Value : [];
         leaf = ileaf.IsSuccess ? ileaf.Value : [];
 
