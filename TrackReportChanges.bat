@@ -1,7 +1,9 @@
 @echo off
 title Track Report changes with local git
+echo Saving changes to tracked reports
 cd "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\"
-rem git commit -am "Update Report on %date% %time%"
+git commit -am "Update Report on %date% %time%"
+set success=%errorlevel%
+echo Success code: %success%
 cd %USERPROFILE%
-
 pause
