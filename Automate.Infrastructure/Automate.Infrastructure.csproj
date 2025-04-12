@@ -45,6 +45,9 @@
     <None Include=".info\ApiRepos\LeafMessages.csv" />
     <None Include=".info\FormAnalysis\FormsToAnalyze.csv" />
     <None Include=".info\MessageAnalysis\PNContactForms.csv" />
+    <None Include=".info\Queries\GoonDoggle.sql" />
+    <None Include=".info\Queries\MacBang.sql" />
+    <None Include=".info\Queries\PanFries.sql" />
     <None Include=".info\Reports\TextReport_LF.csv" />
     <None Include=".info\MessageAnalysis\MessageCallQuery.sql" />
     <None Include=".info\MessageAnalysis\MessagesToAnalyze.csv" />

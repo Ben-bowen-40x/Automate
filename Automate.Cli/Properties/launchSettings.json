@@ -165,6 +165,24 @@
       "commandLineArgs": "updateRepo -t ContactForms -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\ContactFormsRepo.json -v ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\DWHforms.csv"
     },
 
+    // Update Dwh Repo
+    "Update DwhRepo - GoonDoggle": {
+      "commandName": "Project",
+      "commandLineArgs": "updateDwhRepo -t GoonDoggle -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\GoonDoggle.csv"
+    },
+    "Update DwhRepo - MacBang": {
+      "commandName": "Project",
+      "commandLineArgs": "updateDwhRepo -t MacBang -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\MacBang.csv"
+    },
+    "Update DwhRepo - PanFries": {
+      "commandName": "Project",
+      "commandLineArgs": "updateDwhRepo -t PanFries -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\PanFries.csv"
+    },
+    "Update DwhRepo - CornFormation": {
+      "commandName": "Project",
+      "commandLineArgs": "updateDwhRepo -t CornFormation -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\CornFormation.csv"
+    },
+
     // Update Discrepancy Repo
     "Update Discrepancy Repo - Default Repo Locations - Hard/Forceupdate": {
       "commandName": "Project",
