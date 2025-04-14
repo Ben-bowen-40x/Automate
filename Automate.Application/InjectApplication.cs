@@ -6,6 +6,7 @@ using Automate.Application.JsonCsvConversion;
 using Automate.Application.MessageReportAnalysis;
 using Automate.Application.RepoUpdate;
 using Automate.Application.TypedRepoUpdate;
+using Automate.Application.DwhRepoUpdate;
 
 namespace Automate.Application;
 
@@ -19,7 +20,8 @@ public static class InjectApplication
         services.AddScoped<IDiscrepancyManager, DiscrepancyManager>();
         services.AddScoped<IJsonToCsvConversionManager, JsonToCsvConversionManager>();
         services.AddScoped<IRepoUpdateManager, LeafApiRepoUpdateManager>();
-        services.AddScoped<ITypedRepoUpdateManager, DwhRepoUpdateManager>();
+        services.AddScoped<ITypedRepoUpdateManager, TypedDwhRepoUpdateManager>();
+        services.AddScoped<IDwhRepoUpdateManager, DwhRepoUpdateManager>();
         return services;
     }
 }
