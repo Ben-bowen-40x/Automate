@@ -19,6 +19,8 @@ set libacionReport=%errorlevel%
 rem Pan Report
 "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" analyzeMessages -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json" -q "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json" -as "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\PNContactForms.csv" -t Pan -o "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\PanReport.csv"
 set panReport=%errorlevel%
+
+rem ContactForms 
 "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" convertJsonToCsv -t DwhContactForms -j "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\ContactFormsDWH2024json.json" -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\DWHforms2024.csv"
 set converted=%errorlevel%
 echo 
@@ -39,7 +41,7 @@ if %converted%==0 (
 pause
 
 rem ManualWebForms report
-"%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" analyzeMessages -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json" -q "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json" -as "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\ManualWebForms.csv" -t ManualWebForm -o "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\ManualWebForms.csv"
+"%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" analyzeMessages -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json" -q "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json" -as "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\CornFormation.csv" -t ManualWebForm -o "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\CornFormation.csv"
 set webFormReport=%errorlevel%
 
 echo Return codes. Return code 0 indicates success. Any other code indicates failure.
