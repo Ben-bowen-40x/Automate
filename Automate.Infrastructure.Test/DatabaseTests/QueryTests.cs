@@ -1,5 +1,4 @@
-﻿using Automate.Application.InfrastructureValueObjects;
-using Automate.Infrastructure.DatabaseService;
+﻿using Automate.Infrastructure.DatabaseService;
 
 namespace Automate.Infrastructure.Test.DatabaseTests;
 
