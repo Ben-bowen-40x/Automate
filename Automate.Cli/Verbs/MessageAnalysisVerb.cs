@@ -19,22 +19,29 @@ internal class MessageAnalysisVerb : IVerb
     // Required Options
     [Option('s', "source", Required = true, HelpText = "Enter the csv file location of messages." + _fileDefault)]
     public required FileInfo MessageLocation { get; set; }
+
     [Option('o', "output", Required = false, HelpText = "Enter the location where you would like the report file to be output." + _fileDefault + "In any case, the program will print to screen the location where the report file is generated. Also, remember that you are providing the full file path, not a relative path.")]
     public required FileInfo ReportLocation { get; set; }
+
     [Option('c', "callRepo", Required = true, HelpText = "Enter the call repository file location that contains call records in local repo. This must be a Json. If one is not provided, or if the provided file does not exist, or the provided repo is not a Json file, the execution will fail.")]
     public required FileInfo CallRepoLocation { get; set; }
+
     [Option('q', "customerRepo", Required = true, HelpText = "Enter the customer repository file location that holds customer records in local repo. This must be a Json file. If one is not provided, or if the provided file does not exist, or the provided repo is not a Json file, the execution will fail.")]
     public required FileInfo CustomerRepoLocation { get; set; }
+
     [Option('a', "appendToReport", Default = false, HelpText = "This option allows the user to append the results of the analysis to the report, rather than generating an entirely new report.")]
     public bool Append { get; set; }
+
     [Option('t', "messageType", Required = true, HelpText = _helpText)]
     public MessageType MessageType { get; set; }
 
     // Not Required Options
     [Option('x', "truncate", Required = false, Default = false, HelpText = "This option is a boolean and will truncate the report. Default truncation is 120 days. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated. The required companion option to this option is the output location of the truncated report.")]
     public bool Truncate { get; set; }
-    [Option('d', "daysToTruncate", Required = false, Default = MessageAnalysisReportManager.DefaultDays, HelpText = "This option determines how many days to truncate the report. Default truncation is 120 days. This option will NOT truncate the report if the boolean 'x' option is undefined. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated.")]
+
+    [Option('d', "daysToTruncate", Required = false, Default = MessageAnalysisReportManager.DefaultDays, HelpText = "This option determines how many days to truncate the report. Default truncation is " + MessageAnalysisReportManager.DefaultDaysStr + " days. This option will NOT truncate the report if the boolean 'x' option is undefined. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated.")]
     public int DaysOfTruncation { get; set; } = MessageAnalysisReportManager.DefaultDays;
+
     [Option('O', "truncatedReportOutput", Required = false, HelpText = "This option is only needed if -x or -truncate is switched on. It is the output location of the truncated report.")]
     public string TruncatedReportLoc { get; set; } = string.Empty;
     #endregion
