@@ -54,3 +54,4 @@ echo libacionReport returned the following code: %libacionReport%
 echo panReport returned the following code: %panReport%
 echo webFormReport returned the following code: %webFormReport%
 echo CalliValley returned the following code: %calliValley%
+pause
