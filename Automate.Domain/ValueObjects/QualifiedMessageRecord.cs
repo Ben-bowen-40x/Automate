@@ -25,6 +25,7 @@ public enum MessageType
     MetaForm,
     Libacion,
     Leased,
+    CalliValley,
 }
 public class MessageTypeText
 {
@@ -38,5 +39,6 @@ public class MessageTypeText
         MetaForm,
         Libacion,
         Leased,
+        CalliValley,
         """;
 }

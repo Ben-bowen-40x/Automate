@@ -44,7 +44,7 @@ public class MessageManager_Test
         var result = fileName switch
         {
             MsgLeads => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>(name, messages, callrepo, customer, "", MessageType.Leaf),
-            CctLeads => manager.Manage<SplitDateMountainOffsetMsgCol>(name, messages, callrepo, customer, "", MessageType.Pan),
+            CctLeads => manager.Manage<SplitDateEasternOffsetMsgCol>(name, messages, callrepo, customer, "", MessageType.Pan),
             _ => manager.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>(name, messages, callrepo, customer, "", MessageType.Leaf)
         };
         StringLogger.ProduceLog(DateTime.Now, sender, member, $"End Test");

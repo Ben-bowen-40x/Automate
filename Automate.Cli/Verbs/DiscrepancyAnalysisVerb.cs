@@ -26,10 +26,23 @@ internal class DiscrepancyAnalysisVerb : IVerb
         string parent = PathManipulation.RetrieveParentDir(ReportLocation);
 
         // Verify command line input
-        VerifyUserInput(parent, out string fileName, out string report, out string comparisonLoc);
+        string fileName = !File.Exists(BillableCallCsvLoc)
+            ? string.Empty
+            : BillableCallCsvLoc;
+        string report = !Directory.Exists(parent)
+            ? string.Empty
+            : ReportLocation;
+        string comparisonLoc = !File.Exists(ComparisonCallQueryLoc)
+            ? string.Empty
+            : ComparisonCallQueryLoc;
+        File.WriteAllText(report, "");
 
         // Inform user of the input
-        InformUser(fileName, report, comparisonLoc);
+        var inform = service.GetRequiredService<IUserInformation>();
+        string fileNameMsg = $"For the following option, \"{nameof(BillableCallCsvLoc)}\" -- {PathManipulation.LocationInformation(fileName)}";
+        string reportMsg = $"\nFor the following option, \"{nameof(ReportLocation)}\" -- {PathManipulation.LocationInformation(report)}";
+        string comparisonLocMsg = $"\nFor the following option, \"{nameof(ComparisonCallQueryLoc)}\" -- {PathManipulation.LocationInformation(comparisonLoc)}";
+        inform.InformUser(fileNameMsg, reportMsg, comparisonLocMsg);
 
         // Prepare the result
         var callManager = service.GetRequiredService<IDiscrepancyManager>();
@@ -39,82 +52,41 @@ internal class DiscrepancyAnalysisVerb : IVerb
         StringLogger.NameLog(DateTime.Now, AnalyzeDiscrepancy);
 
         // Return code 
-        int code = DetermineReturnCode(fileName, report, comparisonLoc, result);
+        int code = DetermineReturnCode(fileName, report, comparisonLoc, result, inform);
         Environment.ExitCode = code;
         return code;
     }
 
     #region Private Members
-    private void InformUser(string fileName, string report, string query)
+    static int DetermineReturnCode(string fileName, string report, string query, Result<FileInfo> result, IUserInformation inform)
     {
-        Console.WriteLine($"For the following option, \"{nameof(BillableCallCsvLoc)}\" -- {PathManipulation.LocationInformation(fileName)}");
-        Console.WriteLine($"\nFor the following option, \"{nameof(ReportLocation)}\" -- {PathManipulation.LocationInformation(report)}");
-        Console.WriteLine($"\nFor the following option, \"{nameof(ComparisonCallQueryLoc)}\" -- {PathManipulation.LocationInformation(query)}");
-    }
-
-    private void VerifyUserInput(string parent, out string fileName, out string report, out string query)
-    {
-        fileName = !File.Exists(BillableCallCsvLoc)
-                    ? string.Empty
-                    : BillableCallCsvLoc;
-        report = !Directory.Exists(parent)
-                    ? string.Empty
-                    : ReportLocation;
-        query = !File.Exists(ComparisonCallQueryLoc)
-                    ? string.Empty
-                    : ComparisonCallQueryLoc;
-        File.WriteAllText(report, "");
-    }
-
-    static int DetermineReturnCode(string fileName, string report, string query, Result<FileInfo> result)
-    {
-        if (result.IsSuccess)
+        string message = result.IsSuccess
+            ? $"Generated Report. Report Location:\n{result.Value.FullName}"
+            : new Func<string>(() =>
+                {
+                    StringLogger.AddLog(GetFullName.GetMemberName(new DiscrepancyAnalysisVerb(), nameof(DetermineReturnCode)), "Report failed to generate.");
+                    return "Failed to generate report.";
+                })();
+        inform.InformUser(message);
+        return (string.IsNullOrWhiteSpace(fileName), string.IsNullOrWhiteSpace(report), string.IsNullOrWhiteSpace(query), result.IsSuccess) switch
         {
-            Console.WriteLine($"Generated report. Report Location:");
-            Console.WriteLine(result.Value.FullName);
-            return ReturnCode(fileName, report, query, result.IsSuccess);
-        }
-        else
-        {
-            Console.WriteLine("Failed to generate report.");
-            StringLogger.AddLog(GetFullName.GetMemberName(new DiscrepancyAnalysisVerb(), nameof(DetermineReturnCode)), "Report failed to generate.");
-            return ReturnCode(fileName, report, query, result.IsSuccess);
-        }
-    }
+            (true, true, true, true) => ProgramErrorCodes.Analyze_GeneratedReport_AllFilesDefaulted,
+            (true, true, true, false) => ProgramErrorCodes.Analyze_CriticalFailure,
+            (true, true, false, true) => ProgramErrorCodes.Analyze_GeneratedReport_FileAndReportDefaulted,
+            (true, true, false, false) => ProgramErrorCodes.Analyze_FailedReport_FileAndReportDefaulted,
+            (true, false, true, true) => ProgramErrorCodes.Analyze_GeneratedReport_FileAndQueryDefaulted,
+            (true, false, true, false) => ProgramErrorCodes.Analyze_FailedReport_FileAndQueryDefaulted,
+            (true, false, false, true) => ProgramErrorCodes.Analyze_GeneratedReport_BillableFileDefaulted,
+            (true, false, false, false) => ProgramErrorCodes.Analyze_FailedReport_BillableFileDefaulted,
 
-    static int ReturnCode(string fileName, string report, string query, bool resultSuccess)
-    {
-        if (fileName == string.Empty && report != string.Empty && query != string.Empty && resultSuccess)
-            return ProgramErrorCodes.Analyze_GeneratedReport_BillableFileDefaulted;
-        else if (fileName != string.Empty && report == string.Empty && query != string.Empty && resultSuccess)
-            return ProgramErrorCodes.Analyze_GeneratedReport_ReportLocDefaulted;
-        else if (fileName != string.Empty && report != string.Empty && query == string.Empty && resultSuccess)
-            return ProgramErrorCodes.Analyze_GeneratedReport_QueryDefaulted;
-        else if (fileName == string.Empty && report == string.Empty && query != string.Empty && resultSuccess)
-            return ProgramErrorCodes.Analyze_GeneratedReport_FileAndReportDefaulted;
-        else if (fileName != string.Empty && report == string.Empty && query == string.Empty && resultSuccess)
-            return ProgramErrorCodes.Analyze_GeneratedReport_ReportAndQueryDefaulted;
-        else if (fileName == string.Empty && report != string.Empty && query == string.Empty && resultSuccess)
-            return ProgramErrorCodes.Analyze_GeneratedReport_FileAndQueryDefaulted;
-        else if (fileName == string.Empty && report == string.Empty && query == string.Empty && resultSuccess)
-            return ProgramErrorCodes.Analyze_GeneratedReport_AllFilesDefaulted;
-
-        else if (fileName == string.Empty && report != string.Empty && query != string.Empty && !resultSuccess)
-            return ProgramErrorCodes.Analyze_FailedReport_BillableFileDefaulted;
-        else if (fileName != string.Empty && report == string.Empty && query != string.Empty && !resultSuccess)
-            return ProgramErrorCodes.Analyze_FailedReport_ReportLocDefaulted;
-        else if (fileName != string.Empty && report != string.Empty && query == string.Empty && !resultSuccess)
-            return ProgramErrorCodes.Analyze_FailedReport_QueryDefaulted;
-        else if (fileName == string.Empty && report == string.Empty && query != string.Empty && !resultSuccess)
-            return ProgramErrorCodes.Analyze_FailedReport_FileAndReportDefaulted;
-        else if (fileName != string.Empty && report == string.Empty && query == string.Empty && !resultSuccess)
-            return ProgramErrorCodes.Analyze_FailedReport_ReportAndQueryDefaulted;
-        else if (fileName == string.Empty && report != string.Empty && query == string.Empty && !resultSuccess)
-            return ProgramErrorCodes.Analyze_FailedReport_FileAndQueryDefaulted;
-        else if (fileName == string.Empty && report == string.Empty && query == string.Empty && !resultSuccess)
-            return ProgramErrorCodes.Analyze_CriticalFailure;
-
-        return ProgramErrorCodes.Success;
+            (false, true, true, true) => ProgramErrorCodes.Analyze_GeneratedReport_ReportAndQueryDefaulted,
+            (false, true, true, false) => ProgramErrorCodes.Analyze_FailedReport_ReportAndQueryDefaulted,
+            (false, true, false, true) => ProgramErrorCodes.Analyze_GeneratedReport_ReportLocDefaulted,
+            (false, true, false, false) => ProgramErrorCodes.Analyze_FailedReport_ReportLocDefaulted,
+            (false, false, true, true) => ProgramErrorCodes.Analyze_GeneratedReport_QueryDefaulted,
+            (false, false, true, false) => ProgramErrorCodes.Analyze_FailedReport_QueryDefaulted,
+            _ => ProgramErrorCodes.Success
+        };
     }
     #endregion
 }

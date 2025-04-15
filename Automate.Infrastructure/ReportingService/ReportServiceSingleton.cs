@@ -4,8 +4,10 @@ using Automate.Domain.ValueObjects;
 using Automate.Infrastructure.ContactsUpdateService;
 using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.DataRetrievalFormats;
+using Automate.Infrastructure.JsonManipulationService;
 using Automate.Infrastructure.LeafClientService;
 using CSharpFunctionalExtensions;
+using CsvHelper.Configuration;
 
 namespace Automate.Infrastructure.ReportingService;
 
@@ -60,6 +62,7 @@ internal class ReportServiceSingleton : IReportService
         {
             File.WriteAllText(report.FullName, _errorMessage);
         }
+        return Save<DiscrepancyMatch, DiscrepancyAnalysisMatchMap>(matches, report);
         try
         {
             var result = CsvService.Write<DiscrepancyMatch, DiscrepancyAnalysisMatchMap>(report, matches);
@@ -83,6 +86,7 @@ internal class ReportServiceSingleton : IReportService
         FileInfo file = string.IsNullOrWhiteSpace(reportLocation) ? new(Folder + report) : new(reportLocation);
 
         // Check whether the file exists. If not, create one
+        return Save<QualifiedMessageRecord, QualifiedMessageMap>(messages, file);
         if (!file.Exists)
             File.WriteAllText(file.FullName, _errorMessage);
         try
@@ -120,11 +124,54 @@ internal class ReportServiceSingleton : IReportService
             ? LeafApiService.MessageRepoLocation
             : new(location);
 
+        return Save<IMessage, MessageMapRW>(msgs, loc);
         // Attempt to write the information to file
         try
         {
-            var result = CsvService.Write<IMessage, MessageMapRW>(loc, msgs);
+            Result result = CsvService.Write<IMessage, MessageMapRW>(loc, msgs);
             return result.IsSuccess ? loc : Result.Failure<FileInfo>(result.Error);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure<FileInfo>(ex.Message);
+        }
+    }
+    private static Result<FileInfo> Save<TypeIn, TypeSave>(List<TypeIn> list, FileInfo location) where TypeSave : ClassMap<TypeIn>
+    {
+        try
+        {
+            if (!location.Exists)
+                File.WriteAllText(location.FullName, "");
+            Result result = location.Extension switch
+            {
+                ".csv" => CsvService.Write<TypeIn, TypeSave>(location, list),
+                ".json" => JsonService.WriteToFile(location, list),
+                _ => Result.Failure($"Invalid file type. Type of current file: {location.Extension}\nFull file: {location.FullName}")
+            };
+            return result.IsSuccess
+                ? Result.Success(location)
+                : Result.Failure<FileInfo>(result.Error);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure<FileInfo>(ex.Message);
+        }
+    }
+    private static Result<FileInfo> Save<TypeIn>(List<TypeIn> list, FileInfo location)
+    {
+        try
+        {
+            if (!location.Exists)
+                return Result.Failure<FileInfo>($"File location does not exist: {location.FullName}");
+            Result result = location.Extension switch
+            {
+                ".csv" => CsvService.Write(list, location),
+                ".json" => JsonService.WriteToFile(location, list),
+                _ => Result.Failure<FileInfo>($"Invalid file type. Type of current file: {location.Extension}\nFull file: {location.FullName}")
+            };
+            return result.IsSuccess
+                ? Result.Success(location)
+                : Result.Failure<FileInfo>(result.Error);
         }
         catch (Exception ex)
         {

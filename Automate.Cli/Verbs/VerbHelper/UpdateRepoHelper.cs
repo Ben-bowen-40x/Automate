@@ -8,7 +8,11 @@ public enum RepoType
     ContactForms,
     ContactUpdate,
     Discrepancy,
-    Deprecated,
+
+    /// <summary>
+    /// Do not include in <see cref="UpdateRepoHelper.RepoTypeHelpText"/>
+    /// </summary>
+    Deprecated, 
 }
 
 internal class UpdateRepoHelper

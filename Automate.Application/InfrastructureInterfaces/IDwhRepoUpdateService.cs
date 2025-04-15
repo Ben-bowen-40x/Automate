@@ -5,6 +5,8 @@ namespace Automate.Application.InfrastructureInterfaces;
 
 public interface IDwhRepoUpdateService
 {
+    Result WriteEntitiesList<T>(FileInfo file, List<T> list);
+    Result<List<T>> GetEntitiesList<T>(SqlFileType type) where T : class;
     string GetConnection(DwhConnectionType type);
     IQuery GetQuery(DwhQueryType type);
     Result<IQuery> GetQuery(FileInfo file);

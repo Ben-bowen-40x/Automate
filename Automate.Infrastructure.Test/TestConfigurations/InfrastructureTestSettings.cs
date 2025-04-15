@@ -1,4 +1,6 @@
-﻿namespace Automate.Infrastructure.Test.TestConfigurations;
+﻿using Automate.Application.InfrastructureValueObjects;
+
+namespace Automate.Infrastructure.Test.TestConfigurations;
 
 public class InfrastructureTestSettings : IInfrastructureTestSettings
 {
@@ -10,6 +12,7 @@ public class InfrastructureTestSettings : IInfrastructureTestSettings
     public string? LeafAcctUuid { get; set; }
     public string? LeafUuid { get; set; }
     public string? LeafThreadsEndpoint { get; set; }
+    public string? LeafMessagesEndpoint { get; set; }
     public string? LeafApiTestRepo { get; set; }
 
     // ICsvTestFileSettings
@@ -29,6 +32,13 @@ public class InfrastructureTestSettings : IInfrastructureTestSettings
     public string? CallsConnectionString { get; set; }
     public string? CustomersConnectionString { get; set; }
     public string? ContactFormsConnectionString { get; set; }
+    public string? GetConnectionString(DwhConnectionType type) => type switch
+    {
+        DwhConnectionType.Calls => CallsConnectionString!,
+        DwhConnectionType.Customers => CustomersConnectionString!,
+        DwhConnectionType.ContactForms => ContactFormsConnectionString!,
+        _ => throw new ArgumentException($"The given connection type has not been assigned a connection string:\n{type}")
+    };
     public string? QueryDateFormat { get; set; }
     public string? CallBasicNumerical { get; set; }
     public string? CustomerBasicNumerical { get; set; }

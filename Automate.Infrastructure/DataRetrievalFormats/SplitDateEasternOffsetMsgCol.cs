@@ -4,20 +4,20 @@ using Automate.Translation.ValueObjectTranslate;
 
 namespace Automate.Infrastructure.DataRetrievalFormats;
 
-public class SplitDateMountainOffsetMsgCol : IMsgZoneEnumStr
+public class SplitDateEasternOffsetMsgCol : IMsgZoneEnumStr
 {
-    [Name("Phone")]
+    [Name("Customer #")]
     public string? Number { get; set; }
     [Name("Date")]
     public string? Date { get; set; }
     [Name("Time")]
     public string? Time { get; set; }
-    [Name("Pest Problem/Message Content")]
+    [Name("FormCustomFields")]
     public string? Contents { get; set; }
-    [Name("UUID")]
+    [Name("Account Name", "Email")]
     public string? Source { get; set; }
 
-    public TimeZoneEnum TimeZone => TimeZoneEnum.Mountain;
+    public TimeZoneEnum TimeZone => TimeZoneEnum.Eastern;
 
     public IMessage Convert<IMsgTimeStr, IMessage>()
     {

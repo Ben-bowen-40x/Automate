@@ -1,5 +1,6 @@
 ﻿using Automate.Application.InfrastructureInterfaces;
 using Automate.Application.InfrastructureValueObjects;
+using Automate.Domain.SolutionFunctionality;
 using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.DatabaseService;
 using Automate.Infrastructure.JsonManipulationService;
@@ -13,13 +14,7 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
     readonly RawQuery _rawQuery = new(settings);
 
     #region Getters
-    public string GetConnection(DwhConnectionType type) => type switch
-    {
-        DwhConnectionType.Calls => _settings.CallsConnectionString!,
-        DwhConnectionType.Customers => _settings.CustomersConnectionString!,
-        DwhConnectionType.ContactForms => _settings.ContactFormsConnectionString!,
-        _ => throw new ArgumentException($"The given connection type has not been assigned a connection string:\n{type}")
-    };
+    public string GetConnection(DwhConnectionType type) => _settings.GetConnectionString(type)!;
 
     public IQuery GetQuery(DwhQueryType type) => type switch
     {
@@ -31,17 +26,33 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
 
     public Result<IQuery> GetQuery(FileInfo file)
     {
-        if (!file.Extension.Equals(".sql", StringComparison.CurrentCultureIgnoreCase))
-            return Result.Failure<IQuery>($"The input file must be a sql file. Input: {file.FullName}");
+        Result<string> queryStr = GetQueryString(file);
+        string query = queryStr.IsSuccess
+            ? queryStr.Value
+            : string.Empty;
         try
         {
-            string sqlRaw = File.ReadAllText(file.FullName);
-            Query result = new(sqlRaw);
-            return result;
+            Query q = new(query);
+            return q;
         }
         catch (Exception ex)
         { return Result.Failure<IQuery>(ex.Message); }
     }
+    static Result<string> GetQueryString(FileInfo file)
+    {
+        if (!file.Extension.Equals(".sql", StringComparison.CurrentCultureIgnoreCase))
+            return Result.Failure<string>($"The input file must be a sql file. Input: {file.FullName}");
+        try
+        {
+            string sqlRaw = File.ReadAllText(file.FullName);
+            return sqlRaw;
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure<string>(ex.Message);
+        }
+    }
+
     public Result<List<TEntity>> GetEntitiesList<TEntity>(string connectionString, IQuery query) where TEntity : class, IPhoneNumberCompatible
     {
         try
@@ -58,6 +69,40 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
         }
     }
 
+    public Result<List<T>> GetEntitiesList<T>(SqlFileType type) where T : class
+    {
+        const string folder = ".info/Queries";
+        FileInfo file = type switch
+        {
+            SqlFileType.GoonDoggle => FolderFinder.GetLocalFile(nameof(Infrastructure), folder, "GoonDoggle.sql"),
+            SqlFileType.MacBang => FolderFinder.GetLocalFile(nameof(Infrastructure), folder, "MacBang.sql"),
+            SqlFileType.PanFries => FolderFinder.GetLocalFile(nameof(Infrastructure), folder, "PanFries.sql"),
+            _ => throw new NotImplementedException($"This {nameof(SqlFileType)} has not been implemented: {type}")
+        };
+
+        // Retrieve connection string
+        string cxnStr = _settings.GetConnectionString(DwhConnectionType.Customers)!;
+
+        // Create Context
+        DwhContext<T> context = new(cxnStr);
+        Task<IEnumerable<T>> items = DwhContextHelpers.GetItemsFromFileAsync(context, file);
+
+        // Ensure success
+        if (items.IsFaulted)
+            return Result.Failure<List<T>>(items.Exception.Message);
+
+        // Return result
+        List<T> result = items.Result.ToList();
+        return result;
+    }
+
+    public Result WriteEntitiesList<T>(FileInfo file, List<T> list)
+    {
+        if (!file.Exists)
+            File.WriteAllText(file.FullName, string.Empty);
+        Result result = CsvService.Write(list, file);
+        return result;
+    }
     public Result<List<TEntity>> GetEntitiesParition<TEntity>(DwhQueryType type, List<TEntity> existing, string connectionString, IQuery query) where TEntity : class, IPhoneNumberCompatible
     {
         // Filter the connection string

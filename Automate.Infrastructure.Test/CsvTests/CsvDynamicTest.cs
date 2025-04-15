@@ -1,4 +1,6 @@
-﻿using CsvHelper;
+﻿using Automate.Infrastructure.CsvManipulationService;
+using CsvHelper;
+using System.Dynamic;
 using System.Globalization;
 
 namespace Automate.Infrastructure.Test.CsvTests;
@@ -49,6 +51,24 @@ public class CsvDynamicTest
 
         // Assert
         Assert.NotNull(records);
+    }
+
+    [Fact]
+    public void WritesCsvFilesAnonymously()
+    {
+        var records = new List<dynamic>();
+
+        dynamic record = new ExpandoObject();
+        record.Contents = string.Empty;
+        record.Date = DateTimeOffset.MaxValue;
+        record.Number = default(long);
+        record.Source = string.Empty;
+        records.Add(record);
+
+        var result = CsvService.Write(records, Functions.pathtofile);
+
+        // Assert
+        Assert.True(result.IsSuccess);
     }
 }
 

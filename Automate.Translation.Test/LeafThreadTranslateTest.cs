@@ -25,15 +25,18 @@ public class LeafThreadTranslateTest
 
         // Assemble types -- Msg arr
         Msg first = Substitute.For<Msg>();
-        first.Creation = (thedate);
-        first.Direction = (i);
+        first.Creation = thedate;
+        first.Direction = i + 46;
         Msg second = Substitute.For<Msg>();
-        second.Creation = (thedate + TimeSpan.FromHours(48));
-        second.Direction = (i);
+        second.Creation = thedate + TimeSpan.FromHours(48);
+        second.Direction = i + 45;
         Msg third = Substitute.For<Msg>();
-        third.Creation = (thedate + TimeSpan.FromDays(4) + TimeSpan.FromHours(3) + TimeSpan.FromMinutes(4));
-        second.Direction = (i);
-        List<Msg> mockArr = [first, second, third];
+        third.Creation = thedate + TimeSpan.FromDays(4) + TimeSpan.FromHours(3) + TimeSpan.FromMinutes(4);
+        second.Direction = (i + 44);
+        Msg fourth = Substitute.For<Msg>();
+        fourth.Creation = thedate + TimeSpan.FromDays(4) + TimeSpan.FromHours(3) + TimeSpan.FromMinutes(4);
+        fourth.Direction = (i + 43);
+        List<Msg> mockArr = [first, second, third, fourth];
 
         // Act
         var actual = LeafThreadTranslate.GetFirstMessage(mockArr);
