@@ -1,4 +1,5 @@
-﻿using Automate.Domain;
+﻿using Automate.Application.InfrastructureValueObjects;
+using Automate.Domain;
 using Automate.Infrastructure;
 
 namespace Automate.Cli;
@@ -15,6 +16,13 @@ internal class Settings : IInfrastructureSettings, IDomainSettings
     public string? CallsConnectionString { get; set; }
     public string? CustomersConnectionString { get; set; }
     public string? ContactFormsConnectionString { get; set; }
+    public string? GetConnectionString(DwhConnectionType type) => type switch
+    {
+        DwhConnectionType.Calls => CallsConnectionString!,
+        DwhConnectionType.Customers => CustomersConnectionString!,
+        DwhConnectionType.ContactForms => ContactFormsConnectionString!,
+        _ => throw new ArgumentException($"The given connection type has not been assigned a connection string:\n{type}")
+    };
 
     // IRawQuery settings
     public string? QueryDateFormat { get; set; }
@@ -41,6 +49,7 @@ internal class Settings : IInfrastructureSettings, IDomainSettings
     public string? LeafAcctUuid { get; set; }
     public string? LeafUuid { get; set; }
     public string? LeafThreadsEndpoint { get; set; }
+    public string? LeafMessagesEndpoint { get; set; }
 
     // Discrepancy
     public string? CallsQuery { get; set; }

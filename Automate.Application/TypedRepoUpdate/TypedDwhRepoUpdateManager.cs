@@ -4,7 +4,7 @@ using CSharpFunctionalExtensions;
 
 namespace Automate.Application.TypedRepoUpdate;
 
-internal class DwhRepoUpdateManager(IDwhRepoUpdateService service) : ITypedRepoUpdateManager
+internal class TypedDwhRepoUpdateManager(IDwhRepoUpdateService service) : ITypedRepoUpdateManager
 {
     readonly IDwhRepoUpdateService _service = service;
     public Result Manage<TEntity>(DwhQueryType type, DwhConnectionType connection, FileInfo repoJson, string valueRepo, bool hardUpdate) where TEntity : class, IPhoneNumberCompatible

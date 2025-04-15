@@ -25,7 +25,18 @@ public static class PathManipulation
         return parent;
     }
 
-    internal static bool TryCreate(this FileInfo location, out string error) => location.FullName.TryCreate(out error);
+    internal static bool TryCreate(this FileInfo location, out string error)
+    {
+        try
+        {
+            return location.FullName.TryCreate(out error);
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            return false;
+        }
+    }
 
     internal static Result TryCreate(this FileInfo location) => location.FullName.TryCreate();
 
@@ -127,15 +138,21 @@ public static class PathManipulation
 
     internal static Result<FileType> VerifyFileType(FileInfo fileInfo)
     {
-        string ext = fileInfo.Extension;
-        return ext switch
+        try
         {
-            ".json" => FileType.Json,
-            ".csv" => FileType.Csv,
-            ".txt" => FileType.Txt,
-            ".sql" => FileType.Sql,
-            _ => Result.Failure<FileType>($"The provided {nameof(FileType)} has a file extension that is unrecognized.\nThis is the provided extension: \"{ext}\"\nThis is the provided file:\n\"{fileInfo.FullName}\"")
-        };
+            return fileInfo.Extension switch
+            {
+                ".json" => FileType.Json,
+                ".csv" => FileType.Csv,
+                ".txt" => FileType.Txt,
+                ".sql" => FileType.Sql,
+                _ => Result.Failure<FileType>($"The provided {nameof(FileType)} has a file extension that is unrecognized.\nThis is the provided file:\n\"{fileInfo.FullName}\"")
+            };
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure<FileType>(ex.Message);
+        }
     }
 }
 

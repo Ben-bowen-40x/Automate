@@ -36,20 +36,14 @@ public static class LeafThreadTranslate
     #region Internal -- For testing
     internal static Msg GetFirstMessage(IList<Msg> messages)
     {
-        Msg leastRecent = messages[^1];
+        Msg leastRecent = new() { Creation = DateTimeOffset.MaxValue };
         foreach (Msg msg in messages)
         {
             bool date = DateTimeOffset.Compare(msg.Creation, leastRecent.Creation) < 0;
-            bool type = Match(msg);
-            if (date && type)
+            if (date)
                 leastRecent = msg;
         }
         return leastRecent;
-
-        static bool Match(Msg msg)
-        {
-            return msg.Direction is not null && msg.Direction.Equals("ingress", StringComparison.InvariantCultureIgnoreCase);
-        }
     }
 
     internal static List<Msg> VerifyMessages(Msg[]? msgs)

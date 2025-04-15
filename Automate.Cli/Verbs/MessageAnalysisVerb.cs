@@ -19,22 +19,29 @@ internal class MessageAnalysisVerb : IVerb
     // Required Options
     [Option('s', "source", Required = true, HelpText = "Enter the csv file location of messages." + _fileDefault)]
     public required FileInfo MessageLocation { get; set; }
+
     [Option('o', "output", Required = false, HelpText = "Enter the location where you would like the report file to be output." + _fileDefault + "In any case, the program will print to screen the location where the report file is generated. Also, remember that you are providing the full file path, not a relative path.")]
     public required FileInfo ReportLocation { get; set; }
+
     [Option('c', "callRepo", Required = true, HelpText = "Enter the call repository file location that contains call records in local repo. This must be a Json. If one is not provided, or if the provided file does not exist, or the provided repo is not a Json file, the execution will fail.")]
     public required FileInfo CallRepoLocation { get; set; }
+
     [Option('q', "customerRepo", Required = true, HelpText = "Enter the customer repository file location that holds customer records in local repo. This must be a Json file. If one is not provided, or if the provided file does not exist, or the provided repo is not a Json file, the execution will fail.")]
     public required FileInfo CustomerRepoLocation { get; set; }
+
     [Option('a', "appendToReport", Default = false, HelpText = "This option allows the user to append the results of the analysis to the report, rather than generating an entirely new report.")]
     public bool Append { get; set; }
+
     [Option('t', "messageType", Required = true, HelpText = _helpText)]
     public MessageType MessageType { get; set; }
 
     // Not Required Options
     [Option('x', "truncate", Required = false, Default = false, HelpText = "This option is a boolean and will truncate the report. Default truncation is 120 days. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated. The required companion option to this option is the output location of the truncated report.")]
     public bool Truncate { get; set; }
-    [Option('d', "daysToTruncate", Required = false, Default = MessageAnalysisReportManager.DefaultDays, HelpText = "This option determines how many days to truncate the report. Default truncation is 120 days. This option will NOT truncate the report if the boolean 'x' option is undefined. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated.")]
+
+    [Option('d', "daysToTruncate", Required = false, Default = MessageAnalysisReportManager.DefaultDays, HelpText = "This option determines how many days to truncate the report. Default truncation is " + MessageAnalysisReportManager.DefaultDaysStr + " days. This option will NOT truncate the report if the boolean 'x' option is undefined. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated.")]
     public int DaysOfTruncation { get; set; } = MessageAnalysisReportManager.DefaultDays;
+
     [Option('O', "truncatedReportOutput", Required = false, HelpText = "This option is only needed if -x or -truncate is switched on. It is the output location of the truncated report.")]
     public string TruncatedReportLoc { get; set; } = string.Empty;
     #endregion
@@ -43,8 +50,9 @@ internal class MessageAnalysisVerb : IVerb
     public int Run(IServiceProvider service)
     {
         // Inform the user what is going on
+        var inform = service.GetRequiredService<IUserInformation>();
         string info = InformUser();
-        Console.WriteLine(info);
+        inform.InformUser(info);
         FilePaths verified = VerifyInput();
 
         // Execute
@@ -53,7 +61,7 @@ internal class MessageAnalysisVerb : IVerb
         // Logger
         StringLogger.NameLog(DateTime.Now, AnalyzeMessages, MessageType.ToString());
 
-        int code = DetermineReturnCode(result, MessageLocation.Exists, CallRepoLocation.Exists, CustomerRepoLocation.Exists, ReportLocation.Exists);
+        int code = DetermineReturnCode(result, MessageLocation.Exists, CallRepoLocation.Exists, CustomerRepoLocation.Exists, File.Exists(verified.ReportLoc), inform);
         Environment.ExitCode = code;
         return code;
     }
@@ -69,10 +77,10 @@ internal class MessageAnalysisVerb : IVerb
 
         List<string> resultList = [$"The user chose the following verb: {AnalyzeMessages}"];
 
-        string messageLoc = MessageLocation.Exists
+        string messageLoc = MessageLocation is not null && MessageLocation.Exists
             ? MessageLocation.FullName
             : not;
-        string reportLoc = ReportLocation.Exists
+        string reportLoc = ReportLocation is not null && ReportLocation.Exists
             ? ReportLocation.FullName
             : not;
 
@@ -121,11 +129,12 @@ internal class MessageAnalysisVerb : IVerb
 
         // Report location
         Result<FileType> reportLoc = PathManipulation.VerifyFileType(ReportLocation);
+        string reportDefault = FolderFinder.GetLocalFolder(nameof(Infrastructure), ".info/Reports").FullName + $"{MessageType}{DateTime.Now.ToString(DateTimeStrings.FileDateTimeFormat)}.csv";
         string reportLocation = ReportLocation.TryCreate(out string error) && reportLoc.IsSuccess && reportLoc.Value == FileType.Csv
             ? ReportLocation.FullName
             : Append
-                ? throw new ArgumentException($"The user provided the following literal as the report location: {ReportLocation.FullName} -- That file location does not exist. This cannot be done when the option {nameof(Append)} is {Append} because no such file location exists. This resulted in the following error:\n {error}")
-                : ReportLocation.FullName;
+                ? throw new ArgumentException($"The user provided the following literal as the report location: {reportDefault} -- That file location does not exist. This cannot be done when the option {nameof(Append)} is {Append} because no such file location exists. This resulted in the following error:\n {error}")
+                : reportDefault;
 
         return new(MessageLoc: messageLocation, CallRepoLoc: callRepoLocation, CustomerRepoLoc: customerRepoLocation, TruncatedRepoLoc: truncatedReportLoc, ReportLoc: reportLocation);
 
@@ -149,10 +158,10 @@ internal class MessageAnalysisVerb : IVerb
         return (messageType, append, truncate) switch
         {
             // Pan
-            (MessageType.Pan, true, true) => appender.Manage<SplitDateMountainOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncateReport, truncate, messageType, days),
-            (MessageType.Pan, true, false) => appender.Manage<SplitDateMountainOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
-            (MessageType.Pan, false, true) => generator.Manage<SplitDateMountainOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncate, messageType, days),
-            (MessageType.Pan, false, false) => generator.Manage<SplitDateMountainOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
+            (MessageType.Pan, true, true) => appender.Manage<SplitDateEasternOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncateReport, truncate, messageType, days),
+            (MessageType.Pan, true, false) => appender.Manage<SplitDateEasternOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
+            (MessageType.Pan, false, true) => generator.Manage<SplitDateEasternOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncate, messageType, days),
+            (MessageType.Pan, false, false) => generator.Manage<SplitDateEasternOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
 
             // GAdsLeaf
             (MessageType.GAdsLeaf, true, true) => appender.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>(MessageType.GAdsLeaf.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncateReport, truncate, messageType, days),
@@ -202,17 +211,23 @@ internal class MessageAnalysisVerb : IVerb
             (MessageType.Leased, false, true) => generator.Manage<LeasedMessage>(MessageType.Leased.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncate, messageType, days),
             (MessageType.Leased, false, false) => generator.Manage<LeasedMessage>(MessageType.Leased.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
 
+            // Calli
+            (MessageType.CalliValley, true, true) => appender.Manage<SplitDateMountainOffsetMsgCol>(MessageType.CalliValley.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncateReport, truncate, messageType, days),
+            (MessageType.CalliValley, true, false) => appender.Manage<SplitDateMountainOffsetMsgCol>(MessageType.CalliValley.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
+            (MessageType.CalliValley, false, true) => generator.Manage<SplitDateMountainOffsetMsgCol>(MessageType.CalliValley.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncate, messageType, days),
+            (MessageType.CalliValley, false, false) => generator.Manage<SplitDateMountainOffsetMsgCol>(MessageType.CalliValley.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
+
             // Default
             _ => throw new Exception(excMsg)
         };
     }
 
-    private static int DetermineReturnCode(Result<FileInfo> result, bool msgLocExists, bool callQExists, bool customerExists, bool reportExists)
+    private static int DetermineReturnCode(Result<FileInfo> result, bool msgLocExists, bool callQExists, bool customerExists, bool reportExists, IUserInformation inform)
     {
         string message = result.IsSuccess
             ? $"The report creation was successful.\nHere is the report:\n{result.Value}"
             : $"There was a critical error. The report was not generated. Error:\n{result.Error}";
-        Console.WriteLine(message);
+        inform.InformUser(message);
 
         return (result.IsSuccess, msgLocExists, callQExists, customerExists, reportExists) switch
         {

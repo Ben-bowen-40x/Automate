@@ -1,8 +1,11 @@
-﻿namespace Automate.Infrastructure.DatabaseService;
+﻿using Automate.Application.InfrastructureValueObjects;
+
+namespace Automate.Infrastructure.DatabaseService;
 
 public interface IDwhSettings : IRawQuerySettings
 {
-    public string? CallsConnectionString { get; set; }
-    public string? CustomersConnectionString { get; set; }
-    public string? ContactFormsConnectionString { get; set; }
+    string? CallsConnectionString { get; set; }
+    string? CustomersConnectionString { get; set; }
+    string? ContactFormsConnectionString { get; set; }
+    string? GetConnectionString(DwhConnectionType type);
 }

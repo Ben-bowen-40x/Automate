@@ -12,4 +12,5 @@ public class LeafTestSettings : ILeafApiSettings
     public string? LeafUuid { get; set; }
     public string? LeafThreads { get; set; }
     public string? LeafThreadsEndpoint { get; set; }
+    public string? LeafMessagesEndpoint { get; set; }
 }

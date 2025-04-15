@@ -2,18 +2,22 @@
 using Automate.Application;
 using Automate.Infrastructure;
 using Microsoft.Extensions.Configuration;
+using Automate.Domain.SolutionFunctionality;
 
 namespace Automate.Cli;
 
 internal static class ConfigureCommandLine
 {
-   public static void ConfigureCli(this IServiceCollection services, IConfiguration configuration)
-   {
-      // Add settings and bind to configuration
-      Settings settings = new();
-      configuration.Bind(settings);
-      typeof(Settings).GetInterfaces().ToList().ForEach(s => services.AddSingleton(s, settings));
+    public static void ConfigureCli(this IServiceCollection services, IConfiguration configuration)
+    {
+        // Add a service
+        services.AddScoped<IUserInformation, UserInformation>();
 
-      services.AddInfrastructure(settings).AddApplication();
-   }
+        // Add settings and bind to configuration
+        Settings settings = new();
+        configuration.Bind(settings);
+        typeof(Settings).GetInterfaces().ToList().ForEach(s => services.AddSingleton(s, settings));
+
+        services.AddInfrastructure(settings).AddApplication();
+    }
 }

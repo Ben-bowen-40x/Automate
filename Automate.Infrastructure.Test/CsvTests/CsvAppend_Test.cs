@@ -1,5 +1,8 @@
-﻿using Automate.Infrastructure.CsvManipulationService;
+﻿using Automate.Domain.SolutionFunctionality;
+using Automate.Infrastructure.CsvManipulationService;
+using Automate.Infrastructure.DataRetrievalFormats;
 using Automate.Infrastructure.Test.TestConfigurations;
+using CSharpFunctionalExtensions;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 
@@ -130,6 +133,20 @@ public class CsvAppend_Test
     #endregion
 }
 
+public class CsvRead_Test
+{
+    [Fact]
+    public void SpecificFile_MapsAccordingly()
+    {
+        // Set up file location
+        var file = FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/MessageAnalysis", "CalliValleyInput.csv");
+
+        // Read file
+        Result<List<SplitDateMountainOffsetMsgCol>> result = CsvService.Parse<SplitDateMountainOffsetMsgCol>(file);
+
+        Assert.True(result.IsSuccess);
+    }
+}
 #region Necessary objects -- Do Not separate into another file, please
 internal class CsvAppend_TestMap : ClassMap<CsvAppendTestColumns>
 {
