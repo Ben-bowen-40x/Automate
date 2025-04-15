@@ -20,10 +20,13 @@ rem Pan Report
 "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" analyzeMessages -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json" -q "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json" -as "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\PNContactForms.csv" -t Pan -o "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\PanReport.csv"
 set panReport=%errorlevel%
 
+rem CalliValley
+"%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" analyzeMessages -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json" -q "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json" -as "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\CalliValleyInput.csv" -t CalliValley -o "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\CalliValley.csv"
+set calliValley=%errorlevel%
+
 rem ContactForms 
 "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" convertJsonToCsv -t DwhContactForms -j "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\ContactFormsDWH2024json.json" -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\DWHforms2024.csv"
 set converted=%errorlevel%
-echo 
 
 rem Ask the user to perform the final manual task
 if %converted%==0 (
@@ -41,7 +44,7 @@ if %converted%==0 (
 pause
 
 rem ManualWebForms report
-"%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" analyzeMessages -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json" -q "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json" -as "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\CornFormation.csv" -t ManualWebForm -o "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\CornFormation.csv"
+"%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" analyzeMessages -c %USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json -q %USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json -as %USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\ManualWebForms.csv -t ManualWebForm -o %USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\ManualWebForms.csv
 set webFormReport=%errorlevel%
 
 echo Return codes. Return code 0 indicates success. Any other code indicates failure.
@@ -50,4 +53,4 @@ echo leasedReport generation returned the following code: %leasedReport%
 echo libacionReport returned the following code: %libacionReport%
 echo panReport returned the following code: %panReport%
 echo webFormReport returned the following code: %webFormReport%
-pause
+echo CalliValley returned the following code: %calliValley%
