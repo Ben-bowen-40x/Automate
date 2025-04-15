@@ -61,7 +61,7 @@ internal class MessageAnalysisVerb : IVerb
         // Logger
         StringLogger.NameLog(DateTime.Now, AnalyzeMessages, MessageType.ToString());
 
-        int code = DetermineReturnCode(result, MessageLocation.Exists, CallRepoLocation.Exists, CustomerRepoLocation.Exists, ReportLocation.Exists, inform);
+        int code = DetermineReturnCode(result, MessageLocation.Exists, CallRepoLocation.Exists, CustomerRepoLocation.Exists, File.Exists(verified.ReportLoc), inform);
         Environment.ExitCode = code;
         return code;
     }
@@ -77,10 +77,10 @@ internal class MessageAnalysisVerb : IVerb
 
         List<string> resultList = [$"The user chose the following verb: {AnalyzeMessages}"];
 
-        string messageLoc = MessageLocation.Exists
+        string messageLoc = MessageLocation is not null && MessageLocation.Exists
             ? MessageLocation.FullName
             : not;
-        string reportLoc = ReportLocation.Exists
+        string reportLoc = ReportLocation is not null && ReportLocation.Exists
             ? ReportLocation.FullName
             : not;
 
@@ -129,11 +129,12 @@ internal class MessageAnalysisVerb : IVerb
 
         // Report location
         Result<FileType> reportLoc = PathManipulation.VerifyFileType(ReportLocation);
+        string reportDefault = FolderFinder.GetLocalFolder(nameof(Infrastructure), ".info/Reports").FullName + $"{MessageType}{DateTime.Now.ToString(DateTimeStrings.FileDateTimeFormat)}.csv";
         string reportLocation = ReportLocation.TryCreate(out string error) && reportLoc.IsSuccess && reportLoc.Value == FileType.Csv
             ? ReportLocation.FullName
             : Append
-                ? throw new ArgumentException($"The user provided the following literal as the report location: {ReportLocation.FullName} -- That file location does not exist. This cannot be done when the option {nameof(Append)} is {Append} because no such file location exists. This resulted in the following error:\n {error}")
-                : ReportLocation.FullName;
+                ? throw new ArgumentException($"The user provided the following literal as the report location: {reportDefault} -- That file location does not exist. This cannot be done when the option {nameof(Append)} is {Append} because no such file location exists. This resulted in the following error:\n {error}")
+                : reportDefault;
 
         return new(MessageLoc: messageLocation, CallRepoLoc: callRepoLocation, CustomerRepoLoc: customerRepoLocation, TruncatedRepoLoc: truncatedReportLoc, ReportLoc: reportLocation);
 
@@ -157,10 +158,10 @@ internal class MessageAnalysisVerb : IVerb
         return (messageType, append, truncate) switch
         {
             // Pan
-            (MessageType.Pan, true, true) => appender.Manage<SplitDateMountainOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncateReport, truncate, messageType, days),
-            (MessageType.Pan, true, false) => appender.Manage<SplitDateMountainOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
-            (MessageType.Pan, false, true) => generator.Manage<SplitDateMountainOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncate, messageType, days),
-            (MessageType.Pan, false, false) => generator.Manage<SplitDateMountainOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
+            (MessageType.Pan, true, true) => appender.Manage<SplitDateEasternOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncateReport, truncate, messageType, days),
+            (MessageType.Pan, true, false) => appender.Manage<SplitDateEasternOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
+            (MessageType.Pan, false, true) => generator.Manage<SplitDateEasternOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncate, messageType, days),
+            (MessageType.Pan, false, false) => generator.Manage<SplitDateEasternOffsetMsgCol>(MessageType.Pan.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
 
             // GAdsLeaf
             (MessageType.GAdsLeaf, true, true) => appender.Manage<UnifiedDateUnchangedOffset_SeparateGclid_SourceCantBeEmpty_MsgCol>(MessageType.GAdsLeaf.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncateReport, truncate, messageType, days),
@@ -209,6 +210,12 @@ internal class MessageAnalysisVerb : IVerb
             (MessageType.Leased, true, false) => appender.Manage<LeasedMessage>(MessageType.Leased.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
             (MessageType.Leased, false, true) => generator.Manage<LeasedMessage>(MessageType.Leased.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncate, messageType, days),
             (MessageType.Leased, false, false) => generator.Manage<LeasedMessage>(MessageType.Leased.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
+
+            // Calli
+            (MessageType.CalliValley, true, true) => appender.Manage<SplitDateMountainOffsetMsgCol>(MessageType.CalliValley.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncateReport, truncate, messageType, days),
+            (MessageType.CalliValley, true, false) => appender.Manage<SplitDateMountainOffsetMsgCol>(MessageType.CalliValley.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
+            (MessageType.CalliValley, false, true) => generator.Manage<SplitDateMountainOffsetMsgCol>(MessageType.CalliValley.ToString(), messageLocation, callLocation, customerLocation, reportLocation, truncate, messageType, days),
+            (MessageType.CalliValley, false, false) => generator.Manage<SplitDateMountainOffsetMsgCol>(MessageType.CalliValley.ToString(), messageLocation, callLocation, customerLocation, reportLocation, messageType),
 
             // Default
             _ => throw new Exception(excMsg)

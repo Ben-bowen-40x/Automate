@@ -68,6 +68,10 @@
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LeasedMessagesInput.csv -t Leased"
     },
+    "Analyze Messages - Produce New CalliValley": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\CalliValleyInput.csv -t CalliValley"
+    },
 
     // Append / Truncated reports
     "Analyze Messages - Truncated 180 days -- Append New Leaf - LeafRepo": {
@@ -113,6 +117,10 @@
     "Analyze Messages - Append Leased to Power Bi": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LeasedMessagesInput.csv -t Leased -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LeasedMessages.csv"
+    },
+    "Analyze Messages - Append CalliValley to Power Bi": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\CalliValleyInput.csv -t CalliValley -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\CalliValley.csv"
     },
 
     // Update LeafApi
