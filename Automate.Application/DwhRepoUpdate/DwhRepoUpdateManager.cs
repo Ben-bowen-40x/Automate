@@ -6,13 +6,13 @@ namespace Automate.Application.DwhRepoUpdate;
 public class DwhRepoUpdateManager(IDwhRepoUpdateService service) : IDwhRepoUpdateManager
 {
     private readonly IDwhRepoUpdateService _service = service;
-    public Result Manage(SqlFileType sqlFileType, FileInfo saveLocation)
+    public Result Manage<T>(SqlFileType sqlFileType, FileInfo saveLocation) where T : class
     {
-        Result<List<dynamic>> resultList = _service.GetEntitiesList(sqlFileType);
+        Result<List<T>> resultList = _service.GetEntitiesList<T>(sqlFileType);
         if (resultList.IsFailure)
             return resultList;
 
-        List<dynamic> result = resultList.Value;
+        List<T> result = resultList.Value;
         Result saved = _service.WriteEntitiesList(saveLocation, result);
         return saved;
     }

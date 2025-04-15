@@ -1,6 +1,7 @@
 ﻿using Automate.Application.DwhRepoUpdate;
 using Automate.Application.InfrastructureInterfaces;
 using Automate.Domain.SolutionFunctionality;
+using Automate.Infrastructure.DataRetrievalFormats;
 using CommandLine;
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,7 +33,7 @@ internal class UpdateDwhRepoVerb : IVerb
         }
 
         IDwhRepoUpdateManager manager = service.GetRequiredService<IDwhRepoUpdateManager>();
-        Result result = manager.Manage(Filetype, ValueRepoLocation);
+        Result result = manager.Manage<NoTimeMsgCol>(Filetype, ValueRepoLocation);
 
         int code = result.IsSuccess
             ? ProgramErrorCodes.Success

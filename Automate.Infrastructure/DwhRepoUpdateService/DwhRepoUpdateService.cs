@@ -69,7 +69,7 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
         }
     }
 
-    public Result<List<dynamic>> GetEntitiesList(SqlFileType type)
+    public Result<List<T>> GetEntitiesList<T>(SqlFileType type) where T : class
     {
         const string folder = ".info/Queries";
         FileInfo file = type switch
@@ -84,23 +84,23 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
         string cxnStr = _settings.GetConnectionString(DwhConnectionType.Customers)!;
 
         // Create Context
-        DwhContext<dynamic> context = new(cxnStr);
-        Task<IEnumerable<dynamic>> items = DwhContextHelpers.GetItemsFromFileAsync(context, file);
-        
+        DwhContext<T> context = new(cxnStr);
+        Task<IEnumerable<T>> items = DwhContextHelpers.GetItemsFromFileAsync(context, file);
+
         // Ensure success
         if (items.IsFaulted)
-            return Result.Failure<List<dynamic>>(items.Exception.Message);
-        
+            return Result.Failure<List<T>>(items.Exception.Message);
+
         // Return result
-        List<dynamic> result = items.Result.ToList();
+        List<T> result = items.Result.ToList();
         return result;
     }
 
-    public Result WriteEntitiesList(FileInfo file, List<dynamic> list)
+    public Result WriteEntitiesList<T>(FileInfo file, List<T> list)
     {
         if (!file.Exists)
             File.WriteAllText(file.FullName, string.Empty);
-        var result = CsvService.Write(list, file);
+        Result result = CsvService.Write(list, file);
         return result;
     }
     public Result<List<TEntity>> GetEntitiesParition<TEntity>(DwhQueryType type, List<TEntity> existing, string connectionString, IQuery query) where TEntity : class, IPhoneNumberCompatible

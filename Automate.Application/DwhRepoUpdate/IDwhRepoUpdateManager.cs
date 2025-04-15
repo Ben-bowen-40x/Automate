@@ -5,5 +5,5 @@ namespace Automate.Application.DwhRepoUpdate;
 
 public interface IDwhRepoUpdateManager
 {
-    Result Manage(SqlFileType sqlFileType, FileInfo saveLocation);
+    Result Manage<T>(SqlFileType sqlFileType, FileInfo saveLocation) where T : class;
 }
