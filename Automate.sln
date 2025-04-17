@@ -30,6 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "info", "info", "{DD91B9B7-0
 		ForceUpdateRepos.bat = ForceUpdateRepos.bat
 		MasterTask.bat = MasterTask.bat
 		ReportGeneration.bat = ReportGeneration.bat
+		Queries.bat = Queries.bat
 		test.bat = test.bat
 		TrackReportChanges.bat = TrackReportChanges.bat
 	EndProjectSection
