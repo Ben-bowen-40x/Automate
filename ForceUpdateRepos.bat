@@ -1,8 +1,6 @@
 @echo off
 title Execute repo updates from debug
 
-call "Queries.bat"
-
 "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" updateRepo -ut Calls -a "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json"
 set callRepo=%errorlevel%
 
