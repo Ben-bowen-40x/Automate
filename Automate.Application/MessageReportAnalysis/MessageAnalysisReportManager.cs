@@ -46,17 +46,17 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         return success;
     }
 
-    private List<QualifiedMessageRecord> GetReportRecords<T>(FileInfo messages, FileInfo callsFile, FileInfo customersFile, string report, MessageType type) where T : IConvert
+    List<QualifiedMessageRecord> GetReportRecords<T>(FileInfo messages, FileInfo callsFile, FileInfo customersFile, string report, MessageType type) where T : IConvert
     {
         // Retrieve Items This is here
         List<IMessage> reportMsgs = _msgService.RetrieveReportMessages(type, report, out List<QualifiedMessageRecord> records);
         List<IMessage> msgs = _msgService.GetMessages<T>(messages);
 
-        // This should not execute except when customer information should be reset in the report. VERY RARE
-        //bool reset = true; records = reset ? ResetRecords(customersFile, records) : records;
+        // Customer information regularly updates in the repo, which could change the outcome of the analysis
+        records = ResetRecords(customersFile, records);
 
         // This should not execute except when message information should be reset in the report. VERY RARE
-        //bool resetM = true; records = resetM ? ResetMessages(msgs, records) : records;
+        bool resetM = false; records = resetM ? ResetMessages(msgs, records) : records;
 
         // Messages
         List<IMessage> messagePartitions = _msgService.PartitionMessagesAndReportRecords(msgs, reportMsgs);
@@ -75,8 +75,7 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
 
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "")]
-    private static List<QualifiedMessageRecord> ResetMessages(List<IMessage> msgs, List<QualifiedMessageRecord> records)
+    static List<QualifiedMessageRecord> ResetMessages(List<IMessage> msgs, List<QualifiedMessageRecord> records)
     {
         // Refresh report data to be consistent with Messages repository
         List<QualifiedMessageRecord> recordsrefreshed = records
@@ -92,7 +91,6 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "This member should only be used when the report values for customer information must be reset to match the repository. This occurred once when the datetime information for customer attributes was being changed with every execution. That is not longer happening, therefore this execution should not be needed anymore.")]
     List<QualifiedMessageRecord> ResetRecords(FileInfo customersFile, List<QualifiedMessageRecord> records)
     {
         // Refresh report data to be consistent with repository
