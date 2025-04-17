@@ -6,12 +6,12 @@ set /p host="Please enter the url of the database: "
 set /p user="Please enter your username: "
 set /p pass="Please enter your password: "
 
-rem Active HPP & YEP
-echo Active HPP and YEP Query
-set hepyep="%USERPROFILE%\Repos\Sql-Queries\Current Customers by Service type\Active HPP & YEP only.sql"
-set hepyepOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\HepYep.tsv
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb < %hepyep% --batch > %hepyepOutput%
-set hepyepErr=%errorlevel%
+rem Active Not Termite
+echo Active not Termite query
+set notTermite="%USERPROFILE%\Repos\Sql-Queries\Current Customers by Service type\Active NOT Termite.sql"
+set notTermiteOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\NotTermite.tsv
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb < %notTermite% --batch > %notTermiteOutput%
+set notTermiteErr=%errorlevel%
 
 rem Active Termite
 echo Active Termite Query
@@ -61,8 +61,8 @@ echo MacBang output: %macBangOutput%
 echo Pan success: %pan%
 echo Pan output: %panOutput%
 
-echo HepYep success: %hepyepErr%
-echo HepYep output: %hepyepOutput%
+echo HepYep success: %notTermiteErr%
+echo HepYep output: %notTermiteOutput%
 
 echo Termite success: %termiteErr%
 echo Termite output: %termiteOutput%
