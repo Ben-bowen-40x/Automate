@@ -72,16 +72,14 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
     public Result<List<T>> GetEntitiesList<T>(SqlFileType type) where T : class
     {
         const string folder = ".info/Queries";
-        FileInfo file = type switch
+        (FileInfo file, string cxnStr) = type switch
         {
-            SqlFileType.GoonDoggle => FolderFinder.GetLocalFile(nameof(Infrastructure), folder, "GoonDoggle.sql"),
-            SqlFileType.MacBang => FolderFinder.GetLocalFile(nameof(Infrastructure), folder, "MacBang.sql"),
-            SqlFileType.PanFries => FolderFinder.GetLocalFile(nameof(Infrastructure), folder, "PanFries.sql"),
+            SqlFileType.GoonDoggle => (FolderFinder.GetLocalFile(nameof(Infrastructure), folder, "GoonDoggle.sql"), _settings.GetConnectionString(DwhConnectionType.Customers)!),
+            SqlFileType.MacBang => (FolderFinder.GetLocalFile(nameof(Infrastructure), folder, "MacBang.sql"), _settings.GetConnectionString(DwhConnectionType.Customers)!),
+            SqlFileType.PanFries => (FolderFinder.GetLocalFile(nameof(Infrastructure), folder, "PanFries.sql"), _settings.GetConnectionString(DwhConnectionType.Customers)!),
+            SqlFileType.CornFormation => (FolderFinder.GetLocalFile(nameof(Infrastructure), folder, "CornFormation.sql"), _settings.GetConnectionString(DwhConnectionType.Customers)!),
             _ => throw new NotImplementedException($"This {nameof(SqlFileType)} has not been implemented: {type}")
         };
-
-        // Retrieve connection string
-        string cxnStr = _settings.GetConnectionString(DwhConnectionType.Customers)!;
 
         // Create Context
         DwhContext<T> context = new(cxnStr);

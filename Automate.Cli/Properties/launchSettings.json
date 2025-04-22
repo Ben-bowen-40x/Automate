@@ -200,7 +200,8 @@
     // Update Contacts
     "Update PHONE Contacts Repo -- Default repo location": {
       "commandName": "Project",
-      "commandLineArgs": "updateRepo -t ContactUpdate"
+      // The repo will not be used; just adding it here because it's a required parameter
+      "commandLineArgs": "updateRepo -t ContactUpdate -a ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json"
     },
 
     // Example
