@@ -55,8 +55,8 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         // Customer information regularly updates in the repo, which could change the outcome of the analysis
         records = ResetRecords(customersFile, records);
 
-        // This should not execute except when message information should be reset in the report. VERY RARE
-        bool resetM = false; records = resetM ? ResetMessages(msgs, records) : records;
+        // This should not execute except when message information should be reset in the report
+        records = ResetMessages(msgs, records);
 
         // Messages
         List<IMessage> messagePartitions = _msgService.PartitionMessagesAndReportRecords(msgs, reportMsgs);
