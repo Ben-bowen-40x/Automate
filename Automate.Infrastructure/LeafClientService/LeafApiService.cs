@@ -19,7 +19,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         return client;
     }
     internal Uri LeafThreadUrl(int offset = 0, int limit = 1000) => new($"{settings.LeafBase}{settings.LeafThreadsEndpoint}?limit={limit}&offset={offset}");
-    internal Uri LeafMessagesUrl(string thread, int limit = 10, string type = "sms") => new($"{settings.LeafBase}{settings.LeafThreadsEndpoint}/{thread}{settings.LeafMessagesEndpoint}?limit={limit}&type={type}&offset=0");
+    internal Uri LeafMessagesUrl(string thread, int limit = 100, string type = "sms") => new($"{settings.LeafBase}{settings.LeafThreadsEndpoint}/{thread}{settings.LeafMessagesEndpoint}?limit={limit}&type={type}&offset=0");
     #endregion
 
     #region Internal
