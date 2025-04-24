@@ -61,8 +61,8 @@ echo MacBang output: %macBangOutput%
 echo Pan success: %pan%
 echo Pan output: %panOutput%
 
-echo HepYep success: %notTermiteErr%
-echo HepYep output: %notTermiteOutput%
+echo Not Termite success: %notTermiteErr%
+echo Not Termite output: %notTermiteOutput%
 
 echo Termite success: %termiteErr%
 echo Termite output: %termiteOutput%

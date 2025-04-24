@@ -78,6 +78,10 @@
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo -xd 180 -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv -O ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LeafReport_Gads_Truncated180.csv"
     },
+    "Analyze Messages - Truncated year to date days -- Append New Leaf - LeafRepo": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -as ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafMessages.csv -t LeafRepo -x -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\TextReport_LF.csv -O ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LeafReport_Gads_Truncated180.csv"
+    },
     /*/
     "Analyze Messages - Truncated 180 days -- Append New WebForm": {
       "commandName": "Project",
