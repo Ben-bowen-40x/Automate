@@ -36,11 +36,11 @@ internal class MessageAnalysisVerb : IVerb
     public MessageType MessageType { get; set; }
 
     // Not Required Options
-    [Option('x', "truncate", Required = false, Default = false, HelpText = "This option is a boolean and will truncate the report. Default truncation is 120 days. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated. The required companion option to this option is the output location of the truncated report.")]
+    [Option('x', "truncate", Required = false, Default = false, HelpText = "This option is a boolean and will truncate the report. Default truncation is the number of days from year start to date. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated. The required companion option to this option is the output location of the truncated report.")]
     public bool Truncate { get; set; }
 
-    [Option('d', "daysToTruncate", Required = false, Default = MessageAnalysisReportManager.DefaultDays, HelpText = "This option determines how many days to truncate the report. Default truncation is " + MessageAnalysisReportManager.DefaultDaysStr + " days. This option will NOT truncate the report if the boolean 'x' option is undefined. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated.")]
-    public int DaysOfTruncation { get; set; } = MessageAnalysisReportManager.DefaultDays;
+    [Option('d', "daysToTruncate", Required = false, HelpText = "This option determines how many days to truncate the report. Default truncation is the number of days from year start to date. This option will NOT truncate the report if the boolean 'x' option is undefined. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated.")]
+    public int DaysOfTruncation { get; set; } = (DateTime.Today - new DateTime(DateTime.Now.Year, 1, 1)).Days;
 
     [Option('O', "truncatedReportOutput", Required = false, HelpText = "This option is only needed if -x or -truncate is switched on. It is the output location of the truncated report.")]
     public string TruncatedReportLoc { get; set; } = string.Empty;
@@ -91,7 +91,7 @@ internal class MessageAnalysisVerb : IVerb
         resultList.Add($"- Location of report output (not required): \n\t\"{ReportLocation}\"\n\t- Literal path: \n\t{reportLoc}");
         resultList.Add($"- Whether or not to append to existing report (defaults to False): \n\t{Append}");
         resultList.Add($"- Whether or not to truncate the report (defaults to False): \n\t{Truncate}");
-        if (Truncate) resultList.Add($"- The number of days to truncate the report (defaults to {MessageAnalysisReportManager.DefaultDays}): \n\t{DaysOfTruncation}");
+        if (Truncate) resultList.Add($"- The number of days to truncate the report (defaults to year to date days): \n\t{DaysOfTruncation}");
         resultList.Add("");
 
         return string.Join('\n', resultList);
