@@ -20,7 +20,8 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
     }
 
     public const int DefaultDays = 120;
-    public const string DefaultDaysStr = "120";
+    public static int DefaultYtd = (DateTime.Today - new DateTime(DateTime.Now.Year, 1, 1)).Days;
+    public static int DefaultLastYtd = (DateTime.Today - new DateTime(DateTime.Now.Year - 1, 1, 1)).Days;
     public Result<FileInfo> Manage<T>(string reportDefault, FileInfo messages, FileInfo callsFile, FileInfo customersFile, string report, string truncatedReport, bool truncate, MessageType type, int days = DefaultDays) where T : IConvert
     {
         List<QualifiedMessageRecord> reportRecords = GetReportRecords<T>(messages, callsFile, customersFile, report, type);
@@ -72,7 +73,6 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         // Collect the report together
         List<QualifiedMessageRecord> result = [.. records, .. qualified];
         return result;
-
     }
 
     static List<QualifiedMessageRecord> ResetMessages(List<IMessage> msgs, List<QualifiedMessageRecord> records)

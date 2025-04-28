@@ -40,7 +40,7 @@ internal class MessageAnalysisVerb : IVerb
     public bool Truncate { get; set; }
 
     [Option('d', "daysToTruncate", Required = false, HelpText = "This option determines how many days to truncate the report. Default truncation is the number of days from year start to date. This option will NOT truncate the report if the boolean 'x' option is undefined. You CANNOT truncate and append at the same time, so truncation will only work with the -appendToReport or -a switch off, otherwise, the report will not be truncated.")]
-    public int DaysOfTruncation { get; set; } = (DateTime.Today - new DateTime(DateTime.Now.Year, 1, 1)).Days;
+    public int DaysOfTruncation { get; set; } = MessageAnalysisReportManager.DefaultYtd;
 
     [Option('O', "truncatedReportOutput", Required = false, HelpText = "This option is only needed if -x or -truncate is switched on. It is the output location of the truncated report.")]
     public string TruncatedReportLoc { get; set; } = string.Empty;
