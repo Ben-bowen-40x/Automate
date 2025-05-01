@@ -19,7 +19,9 @@ public static class LeafThreadTranslate
         PhoneNumber num = ExtractPhoneNumber(entity.Prospect);
 
         // Extract Date
-        DateTimeOffset dto = first.Creation;
+        DateTimeOffset dto = (entity.Creation - first.Creation).Duration() > TimeSpan.FromSeconds(2)
+            ? entity.Creation // This means that the true first message could not be found
+            : first.Creation;
 
         // Extract contents
         string contents = MessageInterfaceTranslate.VerifyContents(first.Message);
