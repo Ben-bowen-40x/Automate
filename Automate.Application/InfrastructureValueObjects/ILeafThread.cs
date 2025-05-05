@@ -17,7 +17,7 @@ public class Prospect
     public string? Cellphone { get; set; }
     public DateTimeOffset Creation { get; set; }
     public DateTimeOffset Modification { get; set; }
-    public bool HasConsented { get; set; }
+    public bool Consented { get; set; }
     public bool Blocked { get; set; }
     public string? Customer { get; set; }
     public string[]? Profiles { get; set; }
