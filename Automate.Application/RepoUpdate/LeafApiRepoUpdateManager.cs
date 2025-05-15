@@ -15,11 +15,12 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
         HttpClient client = _service.GetClient(factory);
         const string failure = "Call to the API failed";
 
+        // Retrieve leaf repo
+        List<TEntity> leaf = getLeaf<TEntity>(rawRepo);
+
         #region Get rid of this
         if (false)
         {
-            List<TEntity> leaf = getLeaf<TEntity>(rawRepo);
-            
             // Retrieve messages
             Task<Result<List<Msg>>[]> msgsTask = _service.GetMessages(client, leaf);
 
@@ -84,9 +85,6 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
         }
         else if (hardUpdate)
         {
-            // Retrieve leaf repo
-            List<TEntity> leaf = getLeaf<TEntity>(rawRepo);
-
             // Call
             Task<Result<List<TEntity>>> threads = _service.GetAsync<TEntity>(client, offset: leaf.Count - 1);
 
@@ -127,7 +125,6 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
         }
         else
         {
-            List<TEntity> leaf = getLeaf<TEntity>(rawRepo);
             List<IMessage> m = leaf
                 .Select(l => l.Convert<TEntity, IMessage>())
                 .ToList();
