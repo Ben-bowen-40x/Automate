@@ -19,6 +19,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
         List<TEntity> leaf = getLeaf<TEntity>(rawRepo);
 
         #region Get rid of this
+#pragma warning disable CS0162 // Unreachable code detected
         if (false)
         {
             // Retrieve messages
@@ -42,6 +43,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
 
             return file;
         }
+#pragma warning restore CS0162 // Unreachable code detected
         #endregion
 
         // Force Update
