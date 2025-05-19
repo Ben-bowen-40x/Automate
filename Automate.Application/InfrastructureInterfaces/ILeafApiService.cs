@@ -6,6 +6,7 @@ namespace Automate.Application.InfrastructureInterfaces;
 
 public interface ILeafApiService
 {
+    Result<List<TEntity>> MaintainLocalRepoIdempotency<TEntity>(List<TEntity> refreshedRepo, List<TEntity> existingRepo) where TEntity : class, IConvert, ILeafThread;
     Task<Result<List<Msg>>[]> GetMessages<TEntity>(HttpClient client, List<TEntity> threads) where TEntity : ILeafThread;
     Result<List<TEntity>> ReassignMessages<TEntity>(List<TEntity> threads, Task<Result<List<Msg>>[]> completedTask) where TEntity: ILeafThread;
     HttpClient GetClient(IHttpClientFactory factory);

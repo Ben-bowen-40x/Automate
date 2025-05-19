@@ -38,14 +38,14 @@ public static class LeafThreadTranslate
     #region Internal -- For testing
     internal static Msg GetFirstMessage(IList<Msg> messages)
     {
-        Msg leastRecent = new() { Creation = DateTimeOffset.MaxValue };
+        Msg first = new() { Creation = DateTimeOffset.MaxValue };
         foreach (Msg msg in messages)
         {
-            bool date = DateTimeOffset.Compare(msg.Creation, leastRecent.Creation) < 0;
+            bool date = DateTimeOffset.Compare(msg.Creation, first.Creation) < 0;
             if (date)
-                leastRecent = msg;
+                first = msg;
         }
-        return leastRecent;
+        return first;
     }
 
     internal static List<Msg> VerifyMessages(Msg[]? msgs)

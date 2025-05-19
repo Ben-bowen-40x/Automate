@@ -70,6 +70,8 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                         ? val.Value
                         : value;
 
+                    _service.MaintainLocalRepoIdempotency(newValue, leaf);
+
                     // Update the repo
                     Result update = _service.Update(newValue, rawRepo);
 
