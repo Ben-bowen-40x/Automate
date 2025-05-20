@@ -19,7 +19,9 @@ public static class LeafThreadTranslate
         PhoneNumber num = ExtractPhoneNumber(entity.Prospect);
 
         // Extract Date
-        DateTimeOffset dto = first.Creation;
+        DateTimeOffset dto = (entity.Creation - first.Creation).Duration() > TimeSpan.FromSeconds(2)
+            ? entity.Creation // This means that the true first message could not be found
+            : first.Creation;
 
         // Extract contents
         string contents = MessageInterfaceTranslate.VerifyContents(first.Message);
@@ -36,14 +38,14 @@ public static class LeafThreadTranslate
     #region Internal -- For testing
     internal static Msg GetFirstMessage(IList<Msg> messages)
     {
-        Msg leastRecent = new() { Creation = DateTimeOffset.MaxValue };
+        Msg first = new() { Creation = DateTimeOffset.MaxValue };
         foreach (Msg msg in messages)
         {
-            bool date = DateTimeOffset.Compare(msg.Creation, leastRecent.Creation) < 0;
+            bool date = DateTimeOffset.Compare(msg.Creation, first.Creation) < 0;
             if (date)
-                leastRecent = msg;
+                first = msg;
         }
-        return leastRecent;
+        return first;
     }
 
     internal static List<Msg> VerifyMessages(Msg[]? msgs)
