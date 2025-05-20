@@ -112,7 +112,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
     private static FileInfo? _leafRepoLoc;
     public static FileInfo MessageRepoLocation => _msgRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafMessages.csv");
     public static FileInfo LeafRepoLocation => _leafRepoLoc ??= FolderFinder.GetLocalFile(nameof(Infrastructure), ".info/ApiRepos/", "LeafThreads.json");
-    
+
     public Result<List<TEntity>> GetLocalRepo<TEntity>(string leafRepo) where TEntity : class, IConvert, ILeafThread
     {
         // Check location string
@@ -279,6 +279,90 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         {
             return Result.Failure(ex.Message);
         }
+    }
+
+    public Result<List<TEntity>> MaintainLocalRepoIdempotency<TEntity>(List<TEntity> refreshedRepo, List<TEntity> existingRepo) where TEntity : class, IConvert, ILeafThread
+    {
+        // Convert to a linked list for overall reduction in time complexity
+        LinkedList<TEntity> existing = new(existingRepo);
+        if (existingRepo.Count == 0)
+            return Result.Failure<List<TEntity>>("Local repo is empty");
+
+        // Compare existing and refreshed repos to ensure that necessary existing information is not lost
+        foreach (var fresh in refreshedRepo)
+        {
+            if (fresh.Uuid is null)
+                continue;
+
+            // Find the fresh messages source
+            string? freshsource = fresh.Messages is not null && firstSourcedMsg(fresh.Messages, out Msg freshResult)
+                ? freshResult.Source
+                : null;
+
+            // Find the matching item in old repo
+            foreach (var old in existing)
+            {
+                if (old.Uuid is null)
+                    continue;
+
+                // Find the old item that matches the fresh item using the uuid
+                if (string.Equals(old.Uuid, fresh.Uuid)) // DO NOT ignore casing. This uuid is case-sensitive
+                {
+                    // Retrieve the old source
+                    string? oldsource = old.Messages is not null && firstSourcedMsg(old.Messages, out Msg oldResult)
+                        ? oldResult.Source
+                        : null;
+
+                    // Make a new source for later assignment. This source is highly likely to be not null
+                    string? source = (oldsource is not null, freshsource is not null) switch
+                    {
+                        (true, true) => string.Equals(oldsource, freshsource) // DO NOT ignore casing. This source should be a URL that is case-sensitive
+                            ? freshsource // If the source has not changed, use the freshsource, otherwise use the oldsource
+                            : oldsource,
+                        (true, false) => oldsource,
+                        (false, true) or (false, false) => freshsource
+                    };
+
+                    // Reset the fresh list of messages based on whether the old or fresh message list is not null
+                    fresh.Messages = (old.Messages is not null, fresh.Messages is not null) switch
+                    {
+                        (true, false) => old.Messages, // Use old messages because they are not null
+                        (true, true) or (false, true) or (false, false) => fresh.Messages
+                    };
+
+                    // Reset the source on all messages in the final list
+                    if (fresh.Messages is not null)
+                        foreach (var m in fresh.Messages)
+                            m.Source = source;
+
+                    // Remove this item from the old repo list to reduce the time complexity.
+                    existing.Remove(old); // O(1) complexity
+
+                    // We've achieved the purpose of the nested loop, so we can break the nested loop
+                    break;
+                }
+                else if (fresh.Messages is not null)
+                    // Ensure all the messages have the same source
+                    foreach (var msg in fresh.Messages)
+                        msg.Source = freshsource;
+            }
+        }
+        return refreshedRepo;
+
+        #region Local
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Local functions shouldn't follow method naming conventions")]
+        static bool firstSourcedMsg(Msg[] msgs, out Msg sourced)
+        {
+            sourced = msgs[0];
+
+            // Find the first message whose source is not null. Otherwise, the first indexed message is used.
+            foreach (var msg in msgs)
+                if (msg.Source is not null)
+                    sourced = msg;
+            return sourced.Source is not null;
+        }
+
+        #endregion
     }
     #endregion
 }

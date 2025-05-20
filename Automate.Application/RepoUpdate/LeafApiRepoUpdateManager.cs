@@ -15,11 +15,13 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
         HttpClient client = _service.GetClient(factory);
         const string failure = "Call to the API failed";
 
+        // Retrieve leaf repo
+        List<TEntity> leaf = getLeaf<TEntity>(rawRepo);
+
         #region Get rid of this
+#pragma warning disable CS0162 // Unreachable code detected
         if (false)
         {
-            List<TEntity> leaf = getLeaf<TEntity>(rawRepo);
-            
             // Retrieve messages
             Task<Result<List<Msg>>[]> msgsTask = _service.GetMessages(client, leaf);
 
@@ -41,6 +43,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
 
             return file;
         }
+#pragma warning restore CS0162 // Unreachable code detected
         #endregion
 
         // Force Update
@@ -67,6 +70,8 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                         ? val.Value
                         : value;
 
+                    _service.MaintainLocalRepoIdempotency(newValue, leaf);
+
                     // Update the repo
                     Result update = _service.Update(newValue, rawRepo);
 
@@ -84,9 +89,6 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
         }
         else if (hardUpdate)
         {
-            // Retrieve leaf repo
-            List<TEntity> leaf = getLeaf<TEntity>(rawRepo);
-
             // Call
             Task<Result<List<TEntity>>> threads = _service.GetAsync<TEntity>(client, offset: leaf.Count - 1);
 
@@ -127,7 +129,6 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
         }
         else
         {
-            List<TEntity> leaf = getLeaf<TEntity>(rawRepo);
             List<IMessage> m = leaf
                 .Select(l => l.Convert<TEntity, IMessage>())
                 .ToList();
