@@ -32,6 +32,10 @@
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\PNContactForms.csv -t Pan"
     },
+    "Analyze Messages - Produce New Pan, specific output": {
+      "commandName": "Project",
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\PNContactForms.csv -t Pan -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\PanReport.csv"
+    },
     "Analyze Messages - Produce New Leaf to GAds": {
       "commandName": "Project",
       "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\MessagesToAnalyze.csv -t GAdsLeaf"
