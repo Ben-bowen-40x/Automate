@@ -8,5 +8,15 @@ git commit -am "Update Report on %date% %time%"
 set success=%errorlevel%
 
 echo Success code: %success%
-cd %USERPROFILE%
+
+if not "%success%"=="0" goto :pauseExecution
+
+echo Execution was successful!
+goto :end
+
+:pauseExecution
+echo Something went wrong. Pausing execution.
 pause
+
+:end
+cd %USERPROFILE%
