@@ -353,7 +353,7 @@ public class LeafApiService(ILeafApiSettings settings) : ILeafApiService
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "Local functions shouldn't follow method naming conventions")]
         static bool firstSourcedMsg(Msg[] msgs, out Msg sourced)
         {
-            sourced = msgs[0];
+            sourced = msgs.Length > 0 ? msgs[0] : new();
 
             // Find the first message whose source is not null. Otherwise, the first indexed message is used.
             foreach (var msg in msgs)
