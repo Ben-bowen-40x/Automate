@@ -1,6 +1,7 @@
 @echo off
 title Execute daily queries
 
+rem Inputs from Command Line
 echo Please have your password ready
 set /p host="Please enter the url of the database: "
 set /p user="Please enter your username: "
@@ -48,7 +49,21 @@ set panQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\
 "C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb < %panQuery% --batch > %panOutput%
 set pan=%errorlevel%
 
+rem Lotus
+echo Lotus Query
+set lotusOut=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LotusReport.tsv
+set lotusQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\Lotus.sql
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb < %lotusQuery% --batch > %lotusOut%
+set lotus=%errorlevel%
+
+rem Error Levels
 echo Error levels specified here
+echo Not Termite success: %notTermiteErr%
+echo Not Termite output: %notTermiteOutput%
+
+echo Termite success: %termiteErr%
+echo Termite output: %termiteOutput%
+
 echo Corn success: %corn%
 echo Corn output: %cornOutput%
 
@@ -61,10 +76,25 @@ echo MacBang output: %macBangOutput%
 echo Pan success: %pan%
 echo Pan output: %panOutput%
 
-echo Not Termite success: %notTermiteErr%
-echo Not Termite output: %notTermiteOutput%
+echo Lotus success: %lotus%
+echo Lotus output: %lotusOut%
 
-echo Termite success: %termiteErr%
-echo Termite output: %termiteOutput%
+rem Stop if there is an error
+if not "%notTermiteErr%"=="0" goto :pauseExecution
+if not "%termiteErr%"=="0" goto :pauseExecution
+if not "%corn%"=="0" goto :pauseExecution
+if not "%goon%"=="0" goto :pauseExecution
+if not "%macBang%"=="0" goto :pauseExecution
+if not "%pan%"=="0" goto :pauseExecution
+if not "%lotus%"=="0" goto :pauseExecution
 
+rem Ending
+echo All Executions were successful!
+goto :end
+
+:pauseExecution
+echo At least one execution failed
 pause
+
+:end
+timeout /t 5

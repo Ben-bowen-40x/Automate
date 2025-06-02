@@ -23,34 +23,25 @@ rem CalliValley
 "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" analyzeMessages -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json" -q "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json" -s "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\CalliValleyInput.csv" -t CalliValley -o "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\CalliValley.csv"
 set calliValley=%errorlevel%
 
-rem ContactForms 
-rem "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" convertJsonToCsv -t DwhContactForms -j "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\ContactFormsDWH2024json.json" -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\DWHforms2024.csv"
-rem set converted=%errorlevel%
-rem 
-rem rem Ask the user to perform the final manual task
-rem if %converted%==0 (
-rem 	echo Please place Manual web forms into the following file: 
-rem 	echo "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\ManualWebForms.csv"
-rem ) else (
-rem 	echo The conversion process was unsuccessful. 
-rem 	echo Please execute the convertJsonToCsv verb as follows ...
-rem 	echo "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" convertJsonToCsv -t DwhContactForms -j "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\ContactFormsDWH2024json.json" -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\DWHforms2024.csv"
-rem 	echo	(That will place the web forms in the following file:
-rem 	echo	"%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\DWHforms2024.csv")
-rem 	echo ... and add the contents of the latter file into the following file manually:
-rem 	echo "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\ManualWebForms.csv" 
-rem )
-rem pause
-
-rem rem ManualWebForms report
-rem "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" analyzeMessages -c %USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json -q %USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json -as %USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\ManualWebForms.csv -t ManualWebForm -o %USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\ManualWebForms.csv
-rem set webFormReport=%errorlevel%
-
 echo Return codes. Return code 0 indicates success. Any other code indicates failure.
 echo leafReport generation returned the following code: %leafrepoReport%
 echo leasedReport generation returned the following code: %leasedReport%
 echo libacionReport returned the following code: %libacionReport%
 echo panReport returned the following code: %panReport%
-rem echo webFormReport returned the following code: %webFormReport%
 echo CalliValley returned the following code: %calliValley%
+
+if not "%leafrepoReport%"=="0" goto :pauseExecution
+if not "%leasedReport%"=="0" goto :pauseExecution
+if not "%libacionReport%"=="0" goto :pauseExecution
+if not "%panReport%"=="0" goto :pauseExecution
+if not "%calliValley%"=="0" goto :pauseExecution
+
+echo All Executions were successful!
+goto :end
+
+:pauseExecution
+echo At least one execution failed
 pause
+
+:end
+timeout /t 5
