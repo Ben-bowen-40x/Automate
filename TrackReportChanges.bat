@@ -9,12 +9,13 @@ set success=%errorlevel%
 
 echo Success code: %success%
 
-if not "%success%"=="0" goto :pauseExecution
+if not %success%==0 goto :pauseExecution
 
 echo Execution was successful!
 goto :end
 
 :pauseExecution
+echo:
 echo Something went wrong. Pausing execution.
 pause
 

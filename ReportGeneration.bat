@@ -6,29 +6,34 @@ Pause
 rem Leaf Report
 "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" analyzeMessages -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json" -q "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json" -as "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\LeafMessages.csv" -t LeafRepo -x -o "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\TextReport_LF.csv" -O "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\LeafReport_Gads_Truncated180.csv"
 set leafrepoReport=%errorlevel%
+echo:
 
 rem Leased Report
 "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" analyzeMessages -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json" -q "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json" -s "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\LeasedMessagesInput.csv" -t Leased -o "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\LeasedMessages.csv"
 set leasedReport=%errorlevel%
+echo:
 
 rem Libacion Report
 "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" analyzeMessages -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json" -q "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json" -s "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\LibacionForm.csv " -t Libacion -o "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\LibacionForm.csv"
 set libacionReport=%errorlevel%
+echo:
 
 rem Pan Report
 "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" analyzeMessages -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json" -q "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json" -s "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\PNContactForms.csv" -t Pan -o "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\PanReport.csv"
 set panReport=%errorlevel%
+echo:
 
 rem CalliValley
 "%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" analyzeMessages -c "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CallRepo.json" -q "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\CustomerRepo.json" -s "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\MessageAnalysis\CalliValleyInput.csv" -t CalliValley -o "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\CalliValley.csv"
 set calliValley=%errorlevel%
+echo:
 
 echo Return codes. Return code 0 indicates success. Any other code indicates failure.
-echo leafReport generation returned the following code: %leafrepoReport%
-echo leasedReport generation returned the following code: %leasedReport%
-echo libacionReport returned the following code: %libacionReport%
-echo panReport returned the following code: %panReport%
-echo CalliValley returned the following code: %calliValley%
+echo leafReport generation returned %leafrepoReport%
+echo leasedReport generation returned %leasedReport%
+echo libacionReport returned %libacionReport%
+echo panReport returned %panReport%
+echo CalliValley returned %calliValley%
 
 if not "%leafrepoReport%"=="0" goto :pauseExecution
 if not "%leasedReport%"=="0" goto :pauseExecution
@@ -45,3 +50,4 @@ pause
 
 :end
 timeout /t 5
+echo:
