@@ -15,7 +15,7 @@ echo Execution was successful!
 goto :end
 
 :pauseExecution
-echo:
+echo.
 echo Something went wrong. Pausing execution.
 pause
 
