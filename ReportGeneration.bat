@@ -1,6 +1,7 @@
 @echo off
 title Generate Reports 
 echo Please be sure to refresh the following message lists: LeafRepo Truncated, Leased, Libacion, Pan
+echo.
 Pause
 
 rem Leaf Report
