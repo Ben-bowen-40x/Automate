@@ -10,15 +10,19 @@ set reportGen=%errorlevel%
 call ".\TrackReportChanges.bat"
 set tracking=%errorlevel%
 
+echo.
 echo Were there errors in the queries?
 echo %queries%
 
+echo.
 echo Were there errors in the repo updates?
 echo %repos%
 
+echo.
 echo Were there errors in the report generation?
 echo %reportGen%
 
+echo.
 echo Were there errors in tracking report changes?
 echo %tracking%
 
