@@ -63,6 +63,14 @@ set lotusQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Querie
 "C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb < %lotusQuery% --batch > %lotusOut%
 set lotus=%errorlevel%
 
+rem KatharticSummary
+echo.
+echo KatharticSummary Query
+set katharticOut=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\KatharticSummary.tsv
+set katharticQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\KatharticSummary.sql
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb < %katharticQuery% --batch > %katharticOut%
+set katharsis=%errorlevel%
+
 rem Error Levels
 echo.
 echo Error levels specified here
@@ -101,6 +109,11 @@ echo Lotus output: %lotusOut%
 if not %lotus%==0 type %lotusOut% rem error messages are placed in the output file
 echo.
 
+echo KatharticSummary success: %katharsis%
+echo KatharticSummary output: %katharticOut%
+if not %katharsis%==0 type %katharticOut% rem error messages are placed in the output file
+echo.
+
 rem Stop if there is an error
 if not "%notTermiteErr%"=="0" goto :pauseExecution
 if not "%termiteErr%"=="0" goto :pauseExecution
@@ -109,6 +122,7 @@ if not "%goon%"=="0" goto :pauseExecution
 if not "%macBang%"=="0" goto :pauseExecution
 if not "%pan%"=="0" goto :pauseExecution
 if not "%lotus%"=="0" goto :pauseExecution
+if not "%katharsis%"=="0" goto :pauseExecution
 
 rem Ending
 echo All Executions were successful!
