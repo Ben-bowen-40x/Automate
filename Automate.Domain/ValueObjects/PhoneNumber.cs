@@ -48,12 +48,16 @@ public partial class PhoneNumber
     }
     #endregion
 
-    #region Internal
+    #region Private
     long ValidateStringInput(string? number)
     {
         if (string.IsNullOrWhiteSpace(number))
             return Default;
-        string clean = NonDigitChar().Replace(number, string.Empty);
+        var split = number.Split("ex");
+        if (split.Length == 0)
+            return Default;
+
+        string clean = NonDigitChar().Replace(split[0], string.Empty);
         long result = StrToLong(clean);
         return result;
     }
