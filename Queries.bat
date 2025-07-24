@@ -79,6 +79,14 @@ set upsilonQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Quer
 "C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb < %upsilonQuery% --batch > %upsilonOut%
 set upsilon=%errorlevel%
 
+rem Giggle
+echo.
+echo Giggle Custard
+set custard="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GiggleCustardQuery.sql"
+set custardOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GigglyCustard.tsv
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb < %custard% --batch > %custardOutput%
+set custardErr=%errorlevel%
+
 rem Error Levels
 echo.
 echo.
@@ -128,6 +136,11 @@ echo Upsilon output: %upsilonOut%
 if not %upsilon%==0 type %upsilonOut% rem error messages are placed in the output file
 echo.
 
+echo Custard Query success: %custardErr%
+echo Custard output: %custardOutput%
+if not %custardErr%==0 type %custardOutput% rem error messages are placed in the output file
+echo.
+
 rem Stop if there is an error
 if not "%notTermiteErr%"=="0" goto :pauseExecution
 if not "%termiteErr%"=="0" goto :pauseExecution
@@ -138,6 +151,7 @@ if not "%pan%"=="0" goto :pauseExecution
 if not "%lotus%"=="0" goto :pauseExecution
 if not "%katharsis%"=="0" goto :pauseExecution
 if not "%upsilon%"=="0" goto :pauseExecution
+if not "%custardErr%"=="0" goto :pauseExecution
 
 rem Ending
 echo All Executions were successful!
