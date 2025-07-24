@@ -46,7 +46,10 @@ public class PhoneNumberTests
         InlineData("+1(867) 638-4943", 8676384943),
         InlineData("+1(223) 382-3138", 2233823138),
         InlineData("+1(256) 116-1572", 2561161572),
-        InlineData("+1(639) 161-7221", 6391617221)
+        InlineData("+1(639) 161-7221", 6391617221),
+        InlineData("+1(639) 161-7221 ext. 005", 6391617221),
+        InlineData("+16391617221 ext. 005", 6391617221),
+        InlineData("16391617221 ext. 005", 6391617221),
     ]
     #endregion
     public void PhoneNumber_CtorWorksOnString(string input, long expected)
