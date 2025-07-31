@@ -93,52 +93,62 @@ echo.
 echo Error levels specified here
 echo Not Termite success: %notTermiteErr%
 echo Not Termite output: %notTermiteOutput%
-if not %notTermiteErr%==0 type %notTermiteOutput% rem error messages are placed in the output file
+rem error messages are placed in the output file
+if not %notTermiteErr%==0 type %notTermiteOutput% 
 echo.
 
 echo Termite success: %termiteErr%
 echo Termite output: %termiteOutput%
-if not %termiteErr%==0 type %termiteOutput% rem error messages are placed in the output file
+rem error messages are placed in the output file
+if not %termiteErr%==0 type %termiteOutput% 
 echo.
 
 echo Corn success: %corn%
 echo Corn output: %cornOutput%
-if not %corn%==0 type %cornOutput% rem error messages are placed in the output file
+rem error messages are placed in the output file
+if not %corn%==0 type %cornOutput% 
 echo.
 
 echo Goon success: %goon%
 echo Goon output: %goonOutput%
-if not %goon%==0 type %goonOutput% rem error messages are placed in the output file
+rem error messages are placed in the output file
+if not %goon%==0 type %goonOutput% 
 echo.
 
 echo MacBang success: %macBang%
 echo MacBang output: %macBangOutput%
-if not %macBang%==0 type %macBangOutput% rem error messages are placed in the output file
+rem error messages are placed in the output file
+if not %macBang%==0 type %macBangOutput% 
 echo.
 
 echo Pan success: %pan%
 echo Pan output: %panOutput%
-if not %pan%==0 type %panOutput% rem error messages are placed in the output file
+rem error messages are placed in the output file
+if not %pan%==0 type %panOutput% 
 echo.
 
 echo Lotus success: %lotus%
 echo Lotus output: %lotusOut%
-if not %lotus%==0 type %lotusOut% rem error messages are placed in the output file
+rem error messages are placed in the output file
+if not %lotus%==0 type %lotusOut% 
 echo.
 
 echo KatharticSummary success: %katharsis%
-echo KatharticSummary output: %katharticOut%
-if not %katharsis%==0 type %katharticOut% rem error messages are placed in the output file
+echo KatharticSummary output: %katharticOu
+rem error messages are placed in the output filet%
+if not %katharsis%==0 type %katharticOut% 
 echo.
 
 echo Upsilon Query success: %upsilon%
 echo Upsilon output: %upsilonOut%
-if not %upsilon%==0 type %upsilonOut% rem error messages are placed in the output file
+rem error messages are placed in the output file
+if not %upsilon%==0 type %upsilonOut% 
 echo.
 
 echo Custard Query success: %custardErr%
 echo Custard output: %custardOutput%
-if not %custardErr%==0 type %custardOutput% rem error messages are placed in the output file
+rem error messages are placed in the output file
+if not %custardErr%==0 type %custardOutput% 
 echo.
 
 rem Stop if there is an error
