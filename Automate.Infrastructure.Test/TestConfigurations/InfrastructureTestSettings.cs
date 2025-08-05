@@ -1,4 +1,5 @@
 ﻿using Automate.Application.InfrastructureValueObjects;
+using Automate.Infrastructure.FatSap;
 
 namespace Automate.Infrastructure.Test.TestConfigurations;
 
@@ -58,4 +59,9 @@ public class InfrastructureTestSettings : IInfrastructureTestSettings
     public string? ContactUpdate3 { get; set; }
     public ulong ContactUpdateNumber { get; set; }
     public string? WebFormQuery { get; set; }
+    public string? FatSapClientName { get; set; }
+    public string? FatBaseEndpoint { get; set; }
+    public string? FatAccountId { get; set; }
+    public string? FatDateFormat { get; set; }
+    public string? FatToken { get; set; }
 }

@@ -35,6 +35,13 @@ public static class InjectInfrastructure
             c.DefaultRequestHeaders.Add("Authorization", settings.LeafTokenType);
         });
 
+        // Add FatSap client
+        services.AddHttpClient(settings.FatSapClientName!, c =>
+        {
+            c.BaseAddress = new Uri(settings.FatBaseEndpoint!);
+            c.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", settings.FatToken!);
+        });
+
         // Add client with cookies
         services.AddHttpClient(settings.Cookie!)
             .ConfigurePrimaryHttpMessageHandler(() =>
