@@ -1,5 +1,4 @@
-﻿using Automate.Application.InfrastructureInterfaces;
-using Automate.Application.InfrastructureValueObjects;
+﻿using Automate.Application.InfrastructureValueObjects;
 using Automate.Infrastructure.CsvManipulationService;
 using Automate.Infrastructure.JsonManipulationService;
 using CSharpFunctionalExtensions;
@@ -32,11 +31,7 @@ public class FatSapService(IFatSapSettings settings, IHttpClientFactory factory)
     #endregion
 
     #region Implementation
-    public async Task<Result<FatSapRoot>> GetCallAsync(DateTime startDate, DateTime endDate)
-    {
-        var value = await GetCallAsync(CallUri(startDate, endDate));
-        return value;
-    }
+    public async Task<Result<FatSapRoot>> GetCallAsync(DateTime startDate, DateTime endDate) => await GetCallAsync(CallUri(startDate, endDate));
 
     /// <summary>
     /// Utility method
@@ -179,4 +174,14 @@ public class FatSapService(IFatSapSettings settings, IHttpClientFactory factory)
             : recent.Value;
     }
     #endregion
+}
+
+public class FatSapRepoService(IFatSapSettings settings)
+{
+    #region Private
+    private readonly IFatSapSettings _settings = settings;
+    #endregion
+
+    // Retrieve repo
+
 }
