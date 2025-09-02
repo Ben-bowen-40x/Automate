@@ -140,7 +140,8 @@ public static partial class MessageInterfaceTranslate
     // No need to test; all components are tested elsewhere
     public static IMessage Translate(this IMsgZoneEnumStr entity)
     {
-        string datetime = entity.Date + " " + entity.Time;
+        string time = entity.Time is null ? "" : entity.Time!.Split("UTC")[0];
+        string datetime = entity.Date + " " + time;
         DateTimeOffset start = ConvertPrimitive.ConvertDateTimeOffset(datetime, entity.TimeZone, DateDefault.Min);
         string source = VerifySource(entity.Source);
         PhoneNumber number = PhoneNumberTranslate.Translate(entity.Number);
