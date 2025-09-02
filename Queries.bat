@@ -87,6 +87,14 @@ set custardOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Rep
 "C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb < %custard% --batch > %custardOutput%
 set custardErr=%errorlevel%
 
+rem LeafQuery
+echo.
+echo LeafQuery
+set leafQ="%USERPROFILE%\Repos\Sql-Queries\LeafDataQuery.sql"
+set leafQutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LeafQueryOut.tsv
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb < %leafQ% --batch > %leafQutput%
+set leafQErr=%errorlevel%
+
 rem Error Levels
 echo.
 echo.
@@ -149,6 +157,12 @@ echo Custard Query success: %custardErr%
 echo Custard output: %custardOutput%
 rem error messages are placed in the output file
 if not %custardErr%==0 type %custardOutput% 
+echo.
+
+echo Leaf Query success: %leafQErr%
+echo Leaf output: %leafQutput%
+rem error messages are placed in the output file
+if not %leafQErr%==0 type %leafQutput% 
 echo.
 
 rem Stop if there is an error
