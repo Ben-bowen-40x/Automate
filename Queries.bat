@@ -12,7 +12,7 @@ echo.
 echo Active not Termite query
 set notTermite="%USERPROFILE%\Repos\Sql-Queries\Current Customers by Service type\Active NOT Termite.sql"
 set notTermiteOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\NotTermite.tsv
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb < %notTermite% --batch > %notTermiteOutput%
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %notTermite% > %notTermiteOutput%
 set notTermiteErr=%errorlevel%
 
 rem Active Termite
@@ -20,7 +20,7 @@ echo.
 echo Active Termite Query
 set termite="%USERPROFILE%\Repos\Sql-Queries\Current Customers by Service type\Active Termite only.sql"
 set termiteOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\Termite.tsv
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb < %termite% --batch > %termiteOutput%
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %termite% > %termiteOutput%
 set termiteErr=%errorlevel%
 
 rem CornFormation
@@ -28,7 +28,7 @@ echo.
 echo Corn Formation Query
 set cornOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\CornFormationReport.tsv
 set cornQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\CornFormation.sql
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb < %cornQuery% --batch > %cornOutput%
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %cornQuery% > %cornOutput%
 set corn=%errorlevel%
 
 rem GoonDoggle
@@ -36,7 +36,7 @@ echo.
 echo GoonDoggle Query
 set goonOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GoonDoggleReport.tsv
 set goonQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GoonDoggle.sql
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb < %goonQuery% --batch > %goonOutput%
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %goonQuery% > %goonOutput%
 set goon=%errorlevel%
 
 rem MacBang
@@ -44,7 +44,7 @@ echo.
 echo MacBang Query
 set macBangOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\MacBangReport.tsv
 set macbangQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\MacBang.sql
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb < %macbangQuery% --batch > %macBangOutput%
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %macbangQuery% > %macBangOutput%
 set macBang=%errorlevel%
 
 rem PanFries
@@ -52,7 +52,7 @@ echo.
 echo Pan Fries Query
 set panOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\PanFriesReport.tsv
 set panQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\PanFries.sql
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb < %panQuery% --batch > %panOutput%
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %panQuery% > %panOutput%
 set pan=%errorlevel%
 
 rem Lotus
@@ -60,7 +60,7 @@ echo.
 echo Lotus Query
 set lotusOut=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LotusReport.tsv
 set lotusQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\Lotus.sql
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb < %lotusQuery% --batch > %lotusOut%
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %lotusQuery% > %lotusOut%
 set lotus=%errorlevel%
 
 rem KatharticSummary
@@ -68,7 +68,7 @@ echo.
 echo KatharticSummary Query
 set katharticOut=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\KatharticSummary.tsv
 set katharticQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\KatharticSummary.sql
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb < %katharticQuery% --batch > %katharticOut%
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %katharticQuery% > %katharticOut%
 set katharsis=%errorlevel%
 
 rem Upsilon
@@ -76,7 +76,7 @@ echo.
 echo Upsilon Query
 set upsilonOut=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\UpsilonOut.tsv
 set upsilonQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\Upsilon.sql
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb < %upsilonQuery% --batch > %upsilonOut%
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %upsilonQuery% > %upsilonOut%
 set upsilon=%errorlevel%
 
 rem Giggle
@@ -84,7 +84,7 @@ echo.
 echo Giggle Custard
 set custard="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GiggleCustardQuery.sql"
 set custardOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GigglyCustard.tsv
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb < %custard% --batch > %custardOutput%
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %custard% > %custardOutput%
 set custardErr=%errorlevel%
 
 rem LeafQuery
@@ -92,7 +92,7 @@ echo.
 echo LeafQuery
 set leafQ="%USERPROFILE%\Repos\Sql-Queries\LeafDataQuery.sql"
 set leafQutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LeafQueryOut.tsv
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb < %leafQ% --batch > %leafQutput%
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %leafQ% > %leafQutput%
 set leafQErr=%errorlevel%
 
 rem Error Levels
