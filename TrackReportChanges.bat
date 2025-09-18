@@ -21,3 +21,5 @@ pause
 
 :end
 cd %USERPROFILE%
+
+echo.
