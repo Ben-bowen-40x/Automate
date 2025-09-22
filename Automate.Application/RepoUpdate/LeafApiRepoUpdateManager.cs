@@ -38,7 +38,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
             Result update = _service.Update(newValue, rawRepo);
 
             // Convert the newValues and save
-            List<IMessage> m = newValue.Select(v => v.Convert<TEntity, IMessage>()).ToList();
+            List<IMessage> m = [.. newValue.Select(v => v.Convert<TEntity, IMessage>())];
             Result<FileInfo> file = _reportService.GenerateLeafMessages(m, valueRepoCsv);
 
             return file;
@@ -76,7 +76,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
                     Result update = _service.Update(newValue, rawRepo);
 
                     // Convert the newValues and save
-                    List<IMessage> m = newValue.Select(v => v.Convert<TEntity, IMessage>()).ToList();
+                    List<IMessage> m = [.. newValue.Select(v => v.Convert<TEntity, IMessage>())];
                     Result<FileInfo> file = _reportService.GenerateLeafMessages(m, valueRepoCsv);
 
                     return file;
@@ -114,8 +114,8 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
 
                     Result updated = _service.Update(leaf, newValue, rawRepo);
 
-                    List<IMessage> mVal = newValue.Select(v => v.Convert<TEntity, IMessage>()).ToList();
-                    List<IMessage> mLeaf = leaf.Select(v => v.Convert<TEntity, IMessage>()).ToList();
+                    List<IMessage> mVal = [.. newValue.Select(v => v.Convert<TEntity, IMessage>())];
+                    List<IMessage> mLeaf = [.. leaf.Select(v => v.Convert<TEntity, IMessage>())];
                     List<IMessage> m = [.. mLeaf, .. mVal];
                     Result<FileInfo> result = _reportService.GenerateLeafMessages(m, valueRepoCsv);
 
@@ -129,9 +129,7 @@ public class LeafApiRepoUpdateManager(ILeafApiService service, IHttpClientFactor
         }
         else
         {
-            List<IMessage> m = leaf
-                .Select(l => l.Convert<TEntity, IMessage>())
-                .ToList();
+            List<IMessage> m = [.. leaf.Select(l => l.Convert<TEntity, IMessage>())];
             var result = _reportService.GenerateLeafMessages(m, valueRepoCsv);
             return result;
         }
