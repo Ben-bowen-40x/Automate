@@ -168,7 +168,7 @@ public static partial class MessageInterfaceTranslate
         string sourcer = string.IsNullOrWhiteSpace(source)
             ? string.Empty
             : source;
-        string removal = "z:";
+        const string removal = "z:";
         string replaced = sourcer.Replace(removal, null);
         string result = TSH.ReplaceCsvAwkward(replaced, string.Empty);
         return result;

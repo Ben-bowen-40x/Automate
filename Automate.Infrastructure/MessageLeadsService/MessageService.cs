@@ -58,7 +58,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
             : throw new Exception(result.Error);
 
         // Translate from column type to IMessage type
-        List<IMessage> msgList = messageCol.Select(m => m.Convert<T, IMessage>()).ToList();
+        List<IMessage> msgList = [.. messageCol.Select(m => m.Convert<T, IMessage>())];
 
         // Remove duplicates
         List<IMessage> uniqueMsgs = RemoveDuplicates(msgList);
@@ -72,10 +72,9 @@ public class MessageService(IDwhSettings settings) : IMessageService
         List<CallRecordJsonReader> localCalls = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
-        List<ICallRecord> filteredCalls = localCalls
+        List<ICallRecord> filteredCalls = [.. localCalls
             .Select(c => c.Translate())
-            .Where(c => msgNums.Contains(c.Number.Number))
-            .ToList();
+            .Where(c => msgNums.Contains(c.Number.Number))];
         return filteredCalls;
     }
 
@@ -112,7 +111,7 @@ public class MessageService(IDwhSettings settings) : IMessageService
     internal static List<IMessage> RemoveDuplicates(IEnumerable<IMessage> msgs)
     {
         // Remove duplicated phone numbers. Also remove any phone numbers that defaulted because they won't be useful
-        List<long> numbers = msgs.Select(i => i.Number.Number).Where(i => i != PhoneNumber.Default).Distinct().ToList();
+        List<long> numbers = [.. msgs.Select(i => i.Number.Number).Where(i => i != PhoneNumber.Default).Distinct()];
 
         // Create a new list that contains the earliest text that matches each unique phone number
         List<IMessage> result = new(numbers.Count);
