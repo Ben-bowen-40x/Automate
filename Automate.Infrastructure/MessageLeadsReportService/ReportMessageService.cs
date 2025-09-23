@@ -31,7 +31,7 @@ public class ReportMessageService : IReportMessageService
     #endregion
 
     #region Implementation
-    public List<IMessage> RetrieveReportMessages(MessageType type, string reportLocation, out List<QualifiedMessageRecord> records)
+    public List<QualifiedMessageRecord> RetrieveReportMessages(MessageType type, string reportLocation)
     {
         // Check to see whether the report file actually exists. If not, create it
         FileInfo reportLoc = new(reportLocation);
@@ -40,21 +40,14 @@ public class ReportMessageService : IReportMessageService
 
         // Retrieve messages from report
         Result<List<QualifiedMessageMap>> result = CsvService.Parse<QualifiedMessageMap>(reportLoc);
-        IEnumerable<QualifiedMessageMap> reportColumns = result.IsSuccess
+        List<QualifiedMessageMap> reportColumns = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
 
-        // Translate report columns to IMessage
-        List<IMessage> reportRecords = reportColumns
-            .Select(m => m.Convert<QualifiedMessageMap, IMessage>())
-            .ToList();
-
         // Translate report columns to qualified messages
-        records = reportColumns
-            .Select(m => m.Translate(type))
-            .ToList();
+        List<QualifiedMessageRecord> records = [.. reportColumns.Select(m => m.Translate(type))];
 
-        return reportRecords;
+        return records;
     }
 
     public List<IMessage> GetMessages<T>(FileInfo messageLocation) where T : IConvert
