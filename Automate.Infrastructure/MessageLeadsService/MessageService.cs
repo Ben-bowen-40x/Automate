@@ -117,12 +117,14 @@ public class MessageService(IDwhSettings settings) : IMessageService
         List<IMessage> result = new(numbers.Count);
         foreach (long num in numbers)
         {
-            result.Add(
-                FindFirst(
-                    msgs
-                    .Where(i => i.Number.Number == num)
-                    .ToList()
-                ));
+            List<IMessage> matchList = [.. msgs.Where(i => i.Number.Number == num)]; // The length of this should never be 0
+
+            // Find the chronological first message. Use a default just in case
+            IMessage earliest = new Message(new(0), DateTimeOffset.MaxValue, "These are default contents", "This is a default source");
+            foreach (IMessage match in matchList)
+                if (match.Date < earliest.Date)
+                    earliest = match;
+            result.Add(earliest);
         }
 
         // Return
