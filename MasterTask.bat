@@ -9,6 +9,8 @@ call ".\ReportGeneration.bat"
 set reportGen=%errorlevel%
 call ".\OpenFiles.bat"
 set excelOpen=%errorlevel%
+call ".\LeafExclusion.bat"
+set exclusion=%errorlevel%
 call ".\TrackReportChanges.bat"
 set tracking=%errorlevel%
 
@@ -23,6 +25,9 @@ echo %reportGen%
 
 echo Were there errors in the Excel opening and saving?
 echo %excelOpen%
+
+echo Were there errors in the Exclusion execution?
+echo %exclusion%
 
 echo Were there errors in tracking report changes?
 echo %tracking%
