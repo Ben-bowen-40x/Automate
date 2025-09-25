@@ -9,6 +9,7 @@ using Automate.Infrastructure.MessageLeadsReportService;
 using Automate.Infrastructure.LeafClientService;
 using Automate.Infrastructure.DwhRepoUpdateService;
 using System.Net;
+using Automate.Infrastructure.LeafExclusionService;
 
 namespace Automate.Infrastructure;
 
@@ -24,6 +25,7 @@ public static class InjectInfrastructure
         services.AddScoped<IJsonConversionService, JsonConversionService>();
         services.AddScoped<ILeafApiService, LeafApiService>();
         services.AddScoped<IDwhRepoUpdateService, DwhRepoService>();
+        services.AddScoped<ILeafExcludeService, LeafExcludeService>();
 
         services.AddHttpClient();
 
