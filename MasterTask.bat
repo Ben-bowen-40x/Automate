@@ -7,23 +7,25 @@ call ".\ForceUpdateRepos.bat"
 set repos=%errorlevel%
 call ".\ReportGeneration.bat"
 set reportGen=%errorlevel%
+call ".\OpenFiles.bat"
+set excelOpen=%errorlevel%
 call ".\TrackReportChanges.bat"
 set tracking=%errorlevel%
 
-echo.
 echo Were there errors in the queries?
 echo %queries%
 
-echo.
 echo Were there errors in the repo updates?
 echo %repos%
 
-echo.
 echo Were there errors in the report generation?
 echo %reportGen%
 
-echo.
+echo Were there errors in the Excel opening and saving?
+echo %excelOpen%
+
 echo Were there errors in tracking report changes?
 echo %tracking%
 
+echo.
 pause

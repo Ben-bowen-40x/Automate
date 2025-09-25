@@ -17,6 +17,7 @@ public class QueryTests
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 stuffandthings, thingsandstuff, andstuffthings order by otherthings desc"), // This should throw because it doesn't have a GROUP BY keyword
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings otherthings desc"), // This should throw because it's missing the ORDER BY keyword
     ]
+    #endregion
     public void QueryClassProperlyParsesQueryStrings(string query)
     {
         try
@@ -38,7 +39,6 @@ public class QueryTests
             Assert.Contains(query, ex.Message); // Asserts that the query is contained in the exception message
         }
     }
-    #endregion
 
     #region QueryClass_Setters_ProperlyAddComponents
     [
@@ -47,6 +47,7 @@ public class QueryTests
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 order by otherthings asc", "group by stuffandthings, thingsandstuff, andstuffthings", Query.QueryType.GroupBy, "select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings order by otherthings asc"),
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings", "order by otherthings", Query.QueryType.OrderBy, "select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings order by otherthings"),
     ]
+    #endregion
     public void QueryClass_Setters_ProperlyAddComponents(string query, string addition, Query.QueryType type, string expected)
     {
         Query q = new(query);
@@ -67,7 +68,6 @@ public class QueryTests
         Assert.Contains(addition.ToLower(), q.QueryString.ToLower());
         Assert.Equal(expected.ToLower() + " ", q.QueryString.ToLower());
     }
-    #endregion
 
     #region QueryClass_Setters_ProperlyAppendComponents
     [
@@ -79,6 +79,7 @@ public class QueryTests
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings", "order by otherthings", Query.QueryType.OrderBy),
         InlineData("select stuff, things, otherstuff, otherthings from place left join otherplace on place.one = otherplace.one where stuffandthings > 123456789 and otherstuffandthings < 123456789 group by stuffandthings, thingsandstuff, andstuffthings order by otherthings", "theseotherthings, thisstuff", Query.QueryType.OrderBy),
     ]
+    #endregion
     public void QueryClass_Setters_ProperlyAppendComponents(string query, string addition, Query.QueryType type)
     {
         Query q = new(query);
@@ -106,5 +107,4 @@ public class QueryTests
         else
             Assert.Contains(addition.ToLower(), q.QueryString.ToLower());
     }
-    #endregion
 }

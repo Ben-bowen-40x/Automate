@@ -75,6 +75,12 @@ internal class Settings : IInfrastructureSettings, IDomainSettings
     public string? GuliagarUrl2 { get; set; }
     public string? GuliagarBunny { get; set; }
 
+    // IFatSapSettings
+    public string? FatSapClientName { get; set; }
+    public string? FatBaseEndpoint { get; set; }
+    public string? FatAccountId { get; set; }
+    public string? FatDateFormat { get; set; }
+    public string? FatToken { get; set; }
     #endregion
 
     #region IDomainSettings
