@@ -39,6 +39,7 @@ public class LeafExcludeService : ILeafExcludeService
 
     public Result Save(List<PhoneNumber> numbers, FileInfo location)
     {
-        return CsvService.Write(numbers.Select(n => n.Number).ToList(), location);
+        Result result = CsvService.Write(numbers.Select(n => n.Number).ToList(), location);
+        return result;
     }
 }
