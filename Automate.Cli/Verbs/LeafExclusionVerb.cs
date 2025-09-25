@@ -42,7 +42,7 @@ internal class LeafExclusionVerb : IVerb
         ILeafExclusionManager manager = service.GetRequiredService<ILeafExclusionManager>();
         Result result = manager.Manage(LeafRepoLocation, Output);
 
-        int code = result.IsSuccess ? ProgramErrorCodes.Success : 1;
+        int code = result.IsSuccess ? ProgramErrorCodes.Success : ProgramErrorCodes.Error;
         Environment.ExitCode = code;
         return code;
     }
