@@ -77,6 +77,12 @@
       "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\CalliValleyInput.csv -t CalliValley"
     },
 
+    // Leaf Exclusion
+    "Leaf Exclusion": {
+      "commandName": "Project",
+      "commandLineArgs": "leafExclusion -f ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\LeafThreads.json -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\ExclusionList.csv"
+    },
+
     // Append / Truncated reports
     "Analyze Messages - Truncated 180 days -- Append New Leaf - LeafRepo": {
       "commandName": "Project",

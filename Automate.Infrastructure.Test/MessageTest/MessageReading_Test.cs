@@ -28,7 +28,7 @@ public class MessageReading_Test
         // Act
         Result<List<LeasedMessage>> result = CsvService.Parse<LeasedMessage>(f);
         List<IMessage> translation = result.IsSuccess
-            ? result.Value.Select(c => c.Translate()).ToList()
+            ? [.. result.Value.Select(c => c.Translate())]
             : throw new Exception(result.Error);
 
         // Assert

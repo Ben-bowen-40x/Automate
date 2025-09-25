@@ -5,13 +5,13 @@ namespace Automate.Infrastructure.DataRetrievalFormats;
 
 public class MessageClass : IMsgStrDateTimeOffset
 {
-    [Name("Number")]
+    [Name("Number","Phone Number")]
     public string? Number { get; set; }
-    [Name("Date")]
+    [Name("Date", "Date of Message")]
     public DateTimeOffset Date { get; set; }
-    [Name("Contents")]
+    [Name("Contents","Message Contents")]
     public string? Contents { get; set; }
-    [Name("Source")]
+    [Name("Source", "Message Source")]
     public string? Source { get; set; }
 
     public IMessage Convert<IMsgStrDateTimeOffset, IMessage>()

@@ -17,21 +17,13 @@ public class ReportMessageService : IReportMessageService
     // Parent folder
     private const string _fileLoc = @".info\MessageAnalysis";
 
-    // Csv File Names
-    private const string _messagesLocation = "MessagesToAnalyze.csv";
-
-    // Json File Names
-    private const string _callRecordRepo = @"LocalRepo\CallRepo.json";
-    private const string _customerRecordRepo = @"LocalRepo\CustomerRepo.json";
-
     // File Locations
     private DirectoryInfo? loc;
     public DirectoryInfo Loc => loc ??= FolderFinder.GetLocalFolder(nameof(Infrastructure), _fileLoc);
-    private FileInfo Location(string file) => new(Loc.FullName + file);
     #endregion
 
     #region Implementation
-    public List<IMessage> RetrieveReportMessages(MessageType type, string reportLocation, out List<QualifiedMessageRecord> records)
+    public List<QualifiedMessageRecord> RetrieveReportMessages(MessageType type, string reportLocation)
     {
         // Check to see whether the report file actually exists. If not, create it
         FileInfo reportLoc = new(reportLocation);
@@ -40,21 +32,14 @@ public class ReportMessageService : IReportMessageService
 
         // Retrieve messages from report
         Result<List<QualifiedMessageMap>> result = CsvService.Parse<QualifiedMessageMap>(reportLoc);
-        IEnumerable<QualifiedMessageMap> reportColumns = result.IsSuccess
+        List<QualifiedMessageMap> reportColumns = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
 
-        // Translate report columns to IMessage
-        List<IMessage> reportRecords = reportColumns
-            .Select(m => m.Convert<QualifiedMessageMap, IMessage>())
-            .ToList();
-
         // Translate report columns to qualified messages
-        records = reportColumns
-            .Select(m => m.Translate(type))
-            .ToList();
+        List<QualifiedMessageRecord> records = [.. reportColumns.Select(m => m.Translate(type))];
 
-        return reportRecords;
+        return records;
     }
 
     public List<IMessage> GetMessages<T>(FileInfo messageLocation) where T : IConvert
@@ -65,9 +50,7 @@ public class ReportMessageService : IReportMessageService
             : throw new Exception(result.Error);
 
         // Translate from column type to IMessage type...
-        List<IMessage> msgs = messageCol
-            .Select(m => m.Convert<T, IMessage>())
-            .ToList();
+        List<IMessage> msgs = [.. messageCol.Select(m => m.Convert<T, IMessage>())];
 
         // Remove duplicates from message origin
         List<IMessage> uniqueMsgs = RemoveDuplicates(msgs);
@@ -78,18 +61,15 @@ public class ReportMessageService : IReportMessageService
     public List<IMessage> PartitionMessagesAndReportRecords(List<IMessage> uniqueMsgs, List<IMessage> reportRecords)
     {
         // Only accept occurrences that do not also occur in the list of report records, by phone number
-        List<IMessage> reportAndMessageDiscrepancy = uniqueMsgs // Leave this here for debugging purposes
-            .Where(m => FindPartition(reportRecords, m))
-            .ToList();
+        List<IMessage> reportAndMessageDiscrepancy = [.. uniqueMsgs // Leave this here for debugging purposes
+            .Where(m => FindPartition(reportRecords, m))];
         return reportAndMessageDiscrepancy;
 
         static bool FindPartition(List<IMessage> reportRecords, IMessage m)
         {
             foreach (var report in reportRecords)
-            {
                 if (report.Number.Number == m.Number.Number)
                     return false;
-            }
             return true;
         }
     }
@@ -100,18 +80,15 @@ public class ReportMessageService : IReportMessageService
         List<CallRecordJsonReader> localCalls = result.IsSuccess
             ? result.Value
             : throw new Exception(result.Error);
-        List<ICallRecord> filteredCalls = localCalls
+        List<ICallRecord> filteredCalls = [.. localCalls
             .Select(c => c.Translate())
-            .Where(c => msgNums.Contains(c.Number.Number))
-            .ToList();
+            .Where(c => msgNums.Contains(c.Number.Number))];
         return filteredCalls;
     }
 
     public List<ICustomerSubscription> GetCustomerRecords(List<long> msgNums, FileInfo customerRepo)
     {
-        List<ICustomerSubscription> filteredCustomers = GetCustomerRecords(customerRepo)
-            .Where(c => msgNums.Contains(c.Number.Number) || msgNums.Contains(c.Number2.Number))
-            .ToList();
+        List<ICustomerSubscription> filteredCustomers = [.. GetCustomerRecords(customerRepo).Where(c => msgNums.Contains(c.Number.Number) || msgNums.Contains(c.Number2.Number))];
         return filteredCustomers;
     }
     public List<ICustomerSubscription> GetCustomerRecords(FileInfo customerRepo)
@@ -121,9 +98,7 @@ public class ReportMessageService : IReportMessageService
             ? result.Value
             : throw new Exception(result.Error);
 
-        List<ICustomerSubscription> translated = localCustomers
-            .Select(c => c.Translate())
-            .ToList();
+        List<ICustomerSubscription> translated = [.. localCustomers.Select(c => c.Translate())];
 
         return translated;
     }
@@ -132,14 +107,7 @@ public class ReportMessageService : IReportMessageService
     #region Private Members
     private static DateTimeOffset? _twelve;
     private static DateTimeOffset Early => _twelve ??= new(new DateTime(2012, 1, 1)); // This is a sufficient amount of time in the past
-
-    /// <summary>
-    /// <paramref name="items"/> must be of type <see cref="IList{T}"/> because we will be using the indices of <paramref name="items"/>
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="items"></param>
-    /// <returns></returns>
-    private static T FindFirst<T>(IList<T> items) where T : IDatedRecord
+    private static T FindFirst<T>(List<T> items) where T : IDatedRecord
     {
         T leastRecent = items[0];
         foreach (T item in items)
@@ -159,25 +127,21 @@ public class ReportMessageService : IReportMessageService
     internal static List<IMessage> RemoveDuplicates(IEnumerable<IMessage> msgs)
     {
         // Remove duplicated phone numbers. Also remove any phone numbers that defaulted because they won't be useful
-        List<long> numbers = msgs
+        List<long> numbers = [.. msgs
             .Select(i => i.Number.Number)
             .Where(i => i != PhoneNumber.Default)
-            .Distinct() // Yes, this makes the time complexity O(3N), but it's really not that different than if we did the same thing in a loop
-            .ToList(); // This must either be an array or a list because we want the Length/Count
+            .Distinct()]; // This must either be an array or a list because we want the Length/Count
 
         // Create a new list that contains the chronologically earliest text that matches each phone number
         List<IMessage> result = new(numbers.Count);
         foreach (long num in numbers)
         {
-            List<IMessage> shortList = msgs
-                .Where(i => i.Number.Number == num)
-                .ToList();
+            List<IMessage> shortList = [.. msgs.Where(i => i.Number.Number == num)];
             IMessage first = FindFirst(shortList);
             result.Add(first);
         }
 
         return result;
     }
-
     #endregion
 }

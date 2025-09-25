@@ -1,4 +1,6 @@
-﻿namespace Automate.Translation.CustomerTranslate;
+﻿using Automate.Translation.ValueObjectTranslate;
+
+namespace Automate.Translation.CustomerTranslate;
 
 public interface ICustSubLongIdNumStrSellers
 {
@@ -17,4 +19,5 @@ public interface ICustSubLongIdNumStrSellers
     string? Seller1 { get; set; }
     string? Seller2 { get; set; }
     string? Seller3 { get; set; }
+    TimeZoneEnum Zone { get; }
 }

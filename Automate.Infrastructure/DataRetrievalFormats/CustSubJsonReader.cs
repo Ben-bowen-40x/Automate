@@ -1,4 +1,5 @@
 ﻿using Automate.Translation.CustomerTranslate;
+using Automate.Translation.ValueObjectTranslate;
 
 namespace Automate.Infrastructure.DataRetrievalFormats;
 
@@ -19,4 +20,5 @@ public class CustSubJsonReader : ICustSubLongIdNumStrSellers
     public string? Seller1 { get; set; }
     public string? Seller2 { get; set; }
     public string? Seller3 { get; set; }
+    public TimeZoneEnum Zone => TimeZoneEnum.Pacific;
 }
