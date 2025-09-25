@@ -102,17 +102,18 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         return records;
 
         #region Local
-        static QualifiedMessageRecord resetRecords(QualifiedMessageRecord r, List<ICustomerSubscription> reportCust)
+        static QualifiedMessageRecord resetRecords(QualifiedMessageRecord r, List<ICustomerSubscription> repoCust)
         {
             // Find Customer
-            long rph = r.Customer.Number.Number;
-            long r2ph = r.Customer.Number2.Number;
+            //long rph = r.Customer.Number.Number;
+            //long r2ph = r.Customer.Number2.Number;
             long rsubid = r.Customer.SubscriptionId;
-            ICustomerSubscription? newc = reportCust.FirstOrDefault(c => //c.Number.Number == rph || c.Number2.Number == r2ph || 
+            ICustomerSubscription? newc = repoCust.FirstOrDefault(c => //c.Number.Number == rph || c.Number2.Number == r2ph || 
                 c.SubscriptionId == rsubid);
             ICustomerSubscription newcust = newc ?? r.Customer; // This means that the report contains subscription records that don't exist in the repo. This happens all the time because the report cannot use NULL: the report uses default values that either do not exist in the repo, or they exist as NULL.
 
             // Customer Matches
+            /*
             bool idMatch = r.Customer.CustomerId == newcust.CustomerId;
             bool subMatch = r.Customer.SubscriptionId == newcust.SubscriptionId;
             bool dtmatch = DateTime.Compare(r.Customer.Date.DateTime, newcust.Date.DateTime) == 0; // DateTimeOffset.DateTime does not do any weird conversions
@@ -127,6 +128,7 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
             bool cvMatch = r.Customer.ContractValue == newcust.ContractValue;
             bool sellMatch = r.Customer.Sellers.Equals(newcust.Sellers, StringComparison.CurrentCultureIgnoreCase);
             bool customerMatches = idMatch && subMatch && dtmatch && subDtMatch && cxlDtMatch && sCxlDtMatch && activeMatch && subActMatch && initialMatch && phMatch && ph2Match && cvMatch && sellMatch;
+            */
 
             QualifiedMessageRecord result = new(r.Message, newcust, r.Billable, r.IsSalesLead, r.Type);
             return result;
