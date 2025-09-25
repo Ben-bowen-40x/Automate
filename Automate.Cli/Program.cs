@@ -2,11 +2,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
-using Automate.Cli;
 using Automate.Cli.Verbs;
 using Automate.Domain.SolutionFunctionality;
 
-namespace Automate;
+namespace Automate.Cli;
 
 internal class Program
 {
