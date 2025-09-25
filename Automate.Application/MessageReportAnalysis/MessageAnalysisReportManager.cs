@@ -30,7 +30,7 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         if (truncate)
         {
             DateTimeOffset past = DateTimeOffset.Now - TimeSpan.FromDays(days);
-            List<QualifiedMessageRecord> truncatedRecords = reportRecords.Where(r => DateTimeOffset.Compare(past, r.Message.Date) <= 0).ToList();
+            List<QualifiedMessageRecord> truncatedRecords = [.. reportRecords.Where(r => DateTimeOffset.Compare(past, r.Message.Date) <= 0)];
             var result = _reportService.GenerateMessageLeadReport(reportDefault + "Truncated" + days, truncatedRecords, truncatedReport);
             Result<FileInfo> appended = _reportService.GenerateMessageLeadReport(reportDefault, reportRecords, report);
             return (result.IsSuccess, appended.IsSuccess) switch
@@ -79,9 +79,7 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
     static List<QualifiedMessageRecord> ResetMessages(List<IMessage> msgs, List<QualifiedMessageRecord> records)
     {
         // Refresh report data to be consistent with Messages repository
-        List<QualifiedMessageRecord> recordsrefreshed = records
-            .Select(r => resetRecords(r, msgs))
-            .ToList();
+        List<QualifiedMessageRecord> recordsrefreshed = [.. records.Select(r => resetRecords(r, msgs))];
         return recordsrefreshed;
 
         // local
