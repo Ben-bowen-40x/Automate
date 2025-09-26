@@ -105,10 +105,15 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
             // Find Customer
             //long rph = r.Customer.Number.Number;
             //long r2ph = r.Customer.Number2.Number;
-            long rsubid = r.Customer.SubscriptionId;
-            ICustomerSubscription? newc = repoCust.FirstOrDefault(c => //c.Number.Number == rph || c.Number2.Number == r2ph || 
-                c.SubscriptionId == rsubid);
-            ICustomerSubscription newcust = newc ?? r.Customer; // This means that the report contains subscription records that don't exist in the repo. This happens all the time because the report cannot use NULL: the report uses default values that either do not exist in the repo, or they exist as NULL.
+            //long rsubid = r.Customer.SubscriptionId;
+            var customerMatches = MessageQualifier.CustomerMatches(r.Message, new LinkedList<ICustomerSubscription>(repoCust));
+            var newcust = MessageQualifier.CustomerAttributableToMsg(r.Message, customerMatches, out bool _);
+            if (newcust.SubscriptionId == 0)
+                newcust = r.Customer;
+
+            //ICustomerSubscription? newc = repoCust.FirstOrDefault(c => //c.Number.Number == rph || c.Number2.Number == r2ph || 
+            //c.SubscriptionId == rsubid);
+            //ICustomerSubscription newcust = newc ?? r.Customer; // This means that the report contains subscription records that don't exist in the repo. This happens all the time because the report cannot use NULL: the report uses default values that either do not exist in the repo, or they exist as NULL.
 
             // Customer Matches
             /*
