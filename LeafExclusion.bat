@@ -2,7 +2,7 @@
 title Leaf Exclusion
 
 echo Retrieve Exclusions and save to report
-"%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Debug\net8.0\Automate.Cli.exe" leafExclusion -f "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\LeafThreads.json" -o "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\ExclusionList.csv"
+"%USERPROFILE%\Repos\Automate\Automate.Cli\bin\Release\net8.0\Automate.Cli.exe" leafExclusion -f "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\ApiRepos\LeafThreads.json" -o "%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\ExclusionList.csv"
 set exclusion=%errorlevel%
 
 rem Return codes
