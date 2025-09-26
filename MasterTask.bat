@@ -1,10 +1,10 @@
 @echo off
 title Update repos and generate reports
 
-call".\ReleaseBuild.bat"
-set build=%errorlevel%
 call ".\Queries.bat"
 set queries=%errorlevel%
+call ".\ReleaseBuild.bat"
+set build=%errorlevel%
 call ".\ForceUpdateRepos.bat"
 set repos=%errorlevel%
 call ".\ReportGeneration.bat"
