@@ -3,6 +3,8 @@ title Update repos and generate reports
 
 call ".\Queries.bat"
 set queries=%errorlevel%
+call ".\ReleaseBuild.bat"
+set build=%errorlevel%
 call ".\ForceUpdateRepos.bat"
 set repos=%errorlevel%
 call ".\ReportGeneration.bat"
@@ -13,6 +15,9 @@ call ".\LeafExclusion.bat"
 set exclusion=%errorlevel%
 call ".\TrackReportChanges.bat"
 set tracking=%errorlevel%
+
+echo Were there errors in the build?
+echo %build%
 
 echo Were there errors in the queries?
 echo %queries%
