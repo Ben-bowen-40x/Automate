@@ -87,7 +87,7 @@ internal class Program
         string var = "DOTNET_ENVIRONMENT";
         bool reset = false;
         bool isDebug = new DoIfDebug().IsDebug();
-        if (isDebug)
+        if (isDebug || !isDebug)
         {
             string? env = Environment.GetEnvironmentVariable(var);
             if (string.IsNullOrWhiteSpace(env) || !env.Equals(dev, StringComparison.CurrentCultureIgnoreCase))

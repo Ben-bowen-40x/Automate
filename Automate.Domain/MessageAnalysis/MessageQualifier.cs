@@ -109,7 +109,7 @@ public class MessageQualifier
     /// <returns>
     /// <see cref="List"/> of <see cref="ICustomerSubscription"/> that reasonably match the provided <paramref name="message"/>
     /// </returns>
-    internal static List<ICustomerSubscription> CustomerMatches(IMessage message, LinkedList<ICustomerSubscription> customerRecords)
+    public static List<ICustomerSubscription> CustomerMatches(IMessage message, LinkedList<ICustomerSubscription> customerRecords)
     {
         // Iterate through the customer list to create a list of customers relevant to this specific message
         // Customer number must match AND customer must have become a customer before the message
@@ -142,24 +142,16 @@ public class MessageQualifier
     /// <para>If there is no <see cref="ICustomerSubscription"/> after the <paramref name="message"/>, return the most recent <see cref="ICustomerSubscription"/> before the <paramref name="message"/></para>
     /// <para>If there are no customers, return <see cref="NullCustomer"/>, which is an <see cref="ICustomerSubscription"/> with all values set to a specific <see cref="default"/></para>
     /// </returns>
-    internal static ICustomerSubscription CustomerAttributableToMsg(IMessage message, List<ICustomerSubscription> matches, out bool possibleBillable)
+    public static ICustomerSubscription CustomerAttributableToMsg(IMessage message, List<ICustomerSubscription> matches, out bool possibleBillable)
     {
         // We will use a null customer for a default
         ICustomerSubscription nullCustomer = NullCustomer;
 
         // Create lists that split the matching customer records into categories based on when they occurred in relation to the message
-        List<ICustomerSubscription> dAfter_sAfter = matches
-            .Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date > message.Date & c.SubscriptionStartDate > message.Date)
-            .ToList();
-        List<ICustomerSubscription> dAfter_sBefore = matches
-            .Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date > message.Date & c.SubscriptionStartDate < message.Date)
-            .ToList();
-        List<ICustomerSubscription> dBefore_sAfter = matches
-            .Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date < message.Date & c.SubscriptionStartDate > message.Date)
-            .ToList();
-        List<ICustomerSubscription> dBefore_sBefore = matches
-            .Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date < message.Date & c.SubscriptionStartDate < message.Date)
-            .ToList();
+        List<ICustomerSubscription> dAfter_sAfter = [.. matches.Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date > message.Date & c.SubscriptionStartDate > message.Date)];
+        List<ICustomerSubscription> dAfter_sBefore = [.. matches.Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date > message.Date & c.SubscriptionStartDate < message.Date)];
+        List<ICustomerSubscription> dBefore_sAfter = [.. matches.Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date < message.Date & c.SubscriptionStartDate > message.Date)];
+        List<ICustomerSubscription> dBefore_sBefore = [.. matches.Where(c => c.Date != DateTimeOffset.MaxValue & c.Date != DateTimeOffset.MinValue & c.Date < message.Date & c.SubscriptionStartDate < message.Date)];
 
         // Try to find out whether any of the matches occurred before the message
         bool occurredBefore = dAfter_sBefore.Count > 0 || dBefore_sAfter.Count > 0 || dBefore_sBefore.Count > 0;
