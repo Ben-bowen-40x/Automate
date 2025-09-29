@@ -19,5 +19,5 @@ echo Build failure
 pause
 
 :end
-timeout \t 5
+timeout /t 5
 echo.
