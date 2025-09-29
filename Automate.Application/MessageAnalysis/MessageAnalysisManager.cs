@@ -41,7 +41,7 @@ public class MessageAnalysisManager(IMessageService textService, IReportService 
         if (truncate)
         {
             DateTimeOffset past = DateTimeOffset.Now - TimeSpan.FromDays(days);
-            qualified = qualified.Where(q => DateTimeOffset.Compare(past, q.Message.Date) >= 0).ToList();
+            qualified = [.. qualified.Where(q => DateTimeOffset.Compare(past, q.Message.Date) >= 0)];
         }
 
         // Generate Report
