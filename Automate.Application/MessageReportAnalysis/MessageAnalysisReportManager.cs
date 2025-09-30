@@ -103,35 +103,13 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         static QualifiedMessageRecord resetRecords(QualifiedMessageRecord r, List<ICustomerSubscription> repoCust)
         {
             // Find Customer
-            //long rph = r.Customer.Number.Number;
-            //long r2ph = r.Customer.Number2.Number;
-            //long rsubid = r.Customer.SubscriptionId;
-            var customerMatches = MessageQualifier.CustomerMatches(r.Message, new LinkedList<ICustomerSubscription>(repoCust));
-            var newcust = MessageQualifier.CustomerAttributableToMsg(r.Message, customerMatches, out bool _);
-            if (newcust.SubscriptionId == 0)
-                newcust = r.Customer;
-
-            //ICustomerSubscription? newc = repoCust.FirstOrDefault(c => //c.Number.Number == rph || c.Number2.Number == r2ph || 
-            //c.SubscriptionId == rsubid);
-            //ICustomerSubscription newcust = newc ?? r.Customer; // This means that the report contains subscription records that don't exist in the repo. This happens all the time because the report cannot use NULL: the report uses default values that either do not exist in the repo, or they exist as NULL.
-
-            // Customer Matches
-            /*
-            bool idMatch = r.Customer.CustomerId == newcust.CustomerId;
-            bool subMatch = r.Customer.SubscriptionId == newcust.SubscriptionId;
-            bool dtmatch = DateTime.Compare(r.Customer.Date.DateTime, newcust.Date.DateTime) == 0; // DateTimeOffset.DateTime does not do any weird conversions
-            bool subDtMatch = DateTime.Compare(r.Customer.SubscriptionStartDate.DateTime, newcust.SubscriptionStartDate.DateTime) == 0;
-            bool cxlDtMatch = DateTime.Compare(r.Customer.CustomerCancelDate.DateTime, newcust.CustomerCancelDate.DateTime) == 0;
-            bool sCxlDtMatch = DateTime.Compare(r.Customer.SubscriptionCancelDate.DateTime, newcust.SubscriptionCancelDate.DateTime) == 0;
-            bool activeMatch = r.Customer.CustomerActive == newcust.CustomerActive;
-            bool subActMatch = r.Customer.SubscriptionActive == newcust.SubscriptionActive;
-            bool initialMatch = r.Customer.InitialCompleted == newcust.InitialCompleted;
-            bool phMatch = r.Customer.Number.Number == newcust.Number.Number;
-            bool ph2Match = r.Customer.Number2.Number == newcust.Number2.Number;
-            bool cvMatch = r.Customer.ContractValue == newcust.ContractValue;
-            bool sellMatch = r.Customer.Sellers.Equals(newcust.Sellers, StringComparison.CurrentCultureIgnoreCase);
-            bool customerMatches = idMatch && subMatch && dtmatch && subDtMatch && cxlDtMatch && sCxlDtMatch && activeMatch && subActMatch && initialMatch && phMatch && ph2Match && cvMatch && sellMatch;
-            */
+            List<ICustomerSubscription> customerMatches;
+            ICustomerSubscription newcust = r.Customer;
+            if (r.Customer.SubscriptionId == 0)
+            {
+                customerMatches = MessageQualifier.CustomerMatches(r.Message, new LinkedList<ICustomerSubscription>(repoCust));
+                newcust = MessageQualifier.CustomerAttributableToMsg(r.Message, customerMatches, out bool _);
+            }
 
             QualifiedMessageRecord result = new(r.Message, newcust, r.Billable, r.IsSalesLead, r.Type);
             return result;
