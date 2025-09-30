@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using CsvHelper;
 using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 using System.Globalization;
 
 namespace Automate.Infrastructure.CsvManipulationService;
@@ -64,6 +65,7 @@ internal static class CsvService
         {
             using StreamReader reader = new(path.FullName);
             using CsvReader csv = new(reader, config);
+            //csv.Context.TypeConverterCache.AddConverter<DateTimeOffset>(new UtcDateTimeOffsetConverter());
             List<T> records = [.. csv.GetRecords<T>()];
             return records;
         }
@@ -79,6 +81,7 @@ internal static class CsvService
             using StreamWriter writer = new(path.FullName);
             using CsvWriter csv = new(writer, config);
             csv.Context.RegisterClassMap<TMap>();
+            csv.Context.TypeConverterCache.AddConverter<DateTimeOffset>(new UtcDateTimeOffsetConverter());
             csv.WriteRecords(unparsedObject);
             return Result.Success();
         }
@@ -95,6 +98,7 @@ internal static class CsvService
         {
             using StreamWriter writer = new(path.FullName);
             using CsvWriter csv = new(writer, config);
+            csv.Context.TypeConverterCache.AddConverter<DateTimeOffset>(new UtcDateTimeOffsetConverter());
             csv.WriteRecords(unparsedObject);
             return Result.Success();
         }
@@ -112,6 +116,7 @@ internal static class CsvService
             using FileStream stream = File.Open(path.FullName, FileMode.Append);
             using StreamWriter writer = new(stream);
             using CsvWriter csv = new(writer, noHeader);
+            csv.Context.TypeConverterCache.AddConverter<DateTimeOffset>(new UtcDateTimeOffsetConverter());
             csv.WriteRecords(unparsed);
             return Result.Success();
         }
@@ -119,4 +124,18 @@ internal static class CsvService
         { return Result.Failure(CsvException(path, ex, nameof(Append))); }
     }
     #endregion
+}
+
+public class UtcDateTimeOffsetConverter : DefaultTypeConverter
+{
+    public override string? ConvertToString(object? value, IWriterRow row, MemberMapData memberMapData)
+    {
+        if (value is DateTimeOffset dto)
+        {
+            // Force UTC and format
+            return dto.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss K", CultureInfo.InvariantCulture);
+        }
+        string? result = base.ConvertToString(value, row, memberMapData);
+        return result;
+    }
 }
