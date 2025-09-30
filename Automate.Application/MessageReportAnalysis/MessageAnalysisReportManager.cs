@@ -103,11 +103,10 @@ public class MessageAnalysisReportManager(IReportMessageService msgService, IRep
         static QualifiedMessageRecord resetRecords(QualifiedMessageRecord r, List<ICustomerSubscription> repoCust)
         {
             // Find Customer
-            List<ICustomerSubscription> customerMatches;
             ICustomerSubscription newcust = r.Customer;
             if (r.Customer.SubscriptionId == 0)
             {
-                customerMatches = MessageQualifier.CustomerMatches(r.Message, new LinkedList<ICustomerSubscription>(repoCust));
+                List<ICustomerSubscription> customerMatches = MessageQualifier.CustomerMatches(r.Message, new LinkedList<ICustomerSubscription>(repoCust));
                 newcust = MessageQualifier.CustomerAttributableToMsg(r.Message, customerMatches, out bool _);
             }
 
