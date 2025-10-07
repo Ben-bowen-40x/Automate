@@ -20,6 +20,7 @@ echo Something went wrong. Pausing execution.
 pause
 
 :end
+timeout /t 5
 cd %USERPROFILE%
 
 echo.
