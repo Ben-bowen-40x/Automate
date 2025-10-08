@@ -13,8 +13,17 @@ try {
     # Open the workbook
     $workbook = $excel.Workbooks.Open($excelPath)
 
+    #Refresh external data connections
+    $workbook.RefreshAll()
+    
+    #Sleep for 10 seconds. This gives the workbook time to refresh
+    Start-Sleep -Seconds 10
+
     # Save the workbook
     $workbook.Save()
+
+    #Sleep for 5 seconds. This gives the workbook time to save
+    Start-Sleep -Seconds 5
 
     # Close the workbook
     $workbook.Close($false)  # false means don't prompt to save again
