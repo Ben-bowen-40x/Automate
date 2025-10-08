@@ -13,6 +13,9 @@ try {
     # Open the workbook
     $workbook = $excel.Workbooks.Open($excelPath)
 
+    #Sleep for 30 seconds. This gives the workbook time to refresh
+    Start-Sleep -Seconds 30
+
     # Save the workbook
     $workbook.Save()
 
