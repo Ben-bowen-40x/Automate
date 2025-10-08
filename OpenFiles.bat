@@ -20,4 +20,5 @@ if exist "%SCRIPT_PATH%" (
 )
 
 echo Done.
+timeout /t 5
 echo. 
