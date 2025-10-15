@@ -28,6 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "info", "info", "{DD91B9B7-0
 	ProjectSection(SolutionItems) = preProject
 		.info_VersionNaming.txt = .info_VersionNaming.txt
 		ForceUpdateRepos.bat = ForceUpdateRepos.bat
+		GitMerge.bat = GitMerge.bat
 		LeafExclusion.bat = LeafExclusion.bat
 		LeafRepo Manual.bat = LeafRepo Manual.bat
 		LeafRepo.bat = LeafRepo.bat
@@ -35,8 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "info", "info", "{DD91B9B7-0
 		MasterTask.bat = MasterTask.bat
 		OpenFiles.bat = OpenFiles.bat
 		Queries.bat = Queries.bat
-		ReportGeneration.bat = ReportGeneration.bat
 		ReleaseBuild.bat = ReleaseBuild.bat
+		ReportGeneration.bat = ReportGeneration.bat
 		test.bat = test.bat
 		TrackReportChanges.bat = TrackReportChanges.bat
 	EndProjectSection
