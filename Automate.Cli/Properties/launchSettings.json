@@ -70,7 +70,7 @@
     },
     "Analyze Messages - Produce New Leased": {
       "commandName": "Project",
-      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LeasedMessagesInput.csv -t Leased"
+      "commandLineArgs": "analyzeMessages -c ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CallRepo.json -q ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\ApiRepos\\CustomerRepo.json -s ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\MessageAnalysis\\LeasedMessagesInput.csv -t Leased -o ..\\..\\..\\..\\..\\Automate\\Automate.Infrastructure\\.info\\Reports\\LeasedMessages.csv"
     },
     "Analyze Messages - Produce New CalliValley": {
       "commandName": "Project",
