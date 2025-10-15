@@ -1,4 +1,4 @@
-@echo off
+::@echo off
 title Merge git branches from dev
 
 :: Switch to the correct directory
