@@ -10,18 +10,18 @@ echo.
 set customerRepo=%errorlevel%
 echo.
 
-call ".\LeafRepo.bat"
-set leafRepo=%errorlevel%
-echo.
+rem call ".\LeafRepo.bat"
+rem set leafRepo=%errorlevel%
+rem echo.
 
 echo Return codes. Return code 0 indicates success
-echo	CallRepo returned the following code: %callRepo%
-echo	CustomerRepo returned the following code: %customerRepo%
-echo	LeafRepo returned the following code: %leafRepo%
+echo "	CallRepo returned the following code: %callRepo%"
+echo "	CustomerRepo returned the following code: %customerRepo%"
+rem echo "	LeafRepo returned the following code: %leafRepo%"
 
 if not "%callRepo%"=="0" goto :pauseExecution
 if not "%customerRepo%"=="0" goto :pauseExecution
-if not "%leafRepo%"=="0" goto :pauseExecution
+rem if not "%leafRepo%"=="0" goto :pauseExecution
 
 echo All commands succeeded. Continuing...
 echo.
