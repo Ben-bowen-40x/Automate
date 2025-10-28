@@ -197,10 +197,11 @@ public class MessageQualifier
             foreach (var record in dAfter_sBefore)
             {
                 // In these combinations, we can't care about the subscription because it's before the message
-                bool recordDateFirst =
-                    record.Date <= afterBefore.Date
-                    && record.Date <= afterBefore.SubscriptionStartDate;
-                if (recordDateFirst)
+                bool recordDateFirst = record.Date < afterBefore.Date;
+                bool subDateLatest =
+                    record.Date == afterBefore.Date
+                    && record.SubscriptionStartDate >= afterBefore.SubscriptionStartDate;
+                if (recordDateFirst || subDateLatest)
                     afterBefore = record;
             }
 
@@ -209,10 +210,11 @@ public class MessageQualifier
             foreach (var record in dBefore_sAfter)
             {
                 // In these combinations, we can't use the customer start date because it's before the message
-                bool recordSubFirst =
-                    record.SubscriptionStartDate <= beforeAfter.Date
-                    && record.SubscriptionStartDate <= beforeAfter.SubscriptionStartDate;
-                if (recordSubFirst)
+                bool recordSubFirst = record.SubscriptionStartDate < beforeAfter.SubscriptionStartDate;
+                bool customerRecordLatest = 
+                    record.SubscriptionStartDate == beforeAfter.SubscriptionStartDate 
+                    && record.Date >= beforeAfter.Date;
+                if (recordSubFirst || customerRecordLatest)
                     beforeAfter = record;
             }
 
