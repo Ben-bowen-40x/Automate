@@ -120,7 +120,7 @@ public class MessageQualifier
             bool numberMatches = record.Number.Number == message.Number.Number || record.Number2.Number == message.Number.Number;
             if (numberMatches) // Add the matching customer to the result
                 matches.Add(record);
-        }
+            }
 
         // Remove the number of customers that have to be iterated through later
         foreach (var m in matches)
