@@ -95,6 +95,30 @@ set leafQutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Report
 "C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %leafQ% > %leafQutput%
 set leafQErr=%errorlevel%
 
+rem Code1
+echo.
+echo Code HepYepNoTerms
+set codeQ="%USERPROFILE%\Repos\Sql-Queries\Code\HepYepNoTerms.sql"
+set codeQutput="%USERPROFILE%\Repos\Sql-Queries\Code\HepYepNoTerms.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %codeQ% > %codeQutput%
+set codeQErr=%errorlevel%
+
+rem Code2
+echo.
+echo Code2 UnpurSubs
+set code2Q="%USERPROFILE%\Repos\Sql-Queries\Code\UnPurSubs.sql"
+set code2Qutput="%USERPROFILE%\Repos\Sql-Queries\Code\UnPurSubs.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %code2Q% > %code2Qutput%
+set code2QErr=%errorlevel%
+
+rem Code3
+echo.
+echo Code3 Winner
+set code3Q="%USERPROFILE%\Repos\Sql-Queries\Code\Winner.sql"
+set code3Qutput="%USERPROFILE%\Repos\Sql-Queries\Code\Winner.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %code3Q% > %code3Qutput%
+set code3QErr=%errorlevel%
+
 rem Error Levels
 echo.
 echo.
@@ -165,6 +189,24 @@ rem error messages are placed in the output file
 if not %leafQErr%==0 type %leafQutput% 
 echo.
 
+echo Code Query success: %codeQErr%
+echo Code output: %codeQutput%
+rem error messages are placed in the output file
+if not %codeQErr%==0 type %codeQutput% 
+echo.
+
+echo Code Query success: %code2QErr%
+echo Code 2 output: %code2Qutput%
+rem error messages are placed in the output file
+if not %code2QErr%==0 type %code2Qutput% 
+echo.
+
+echo Code Query success: %code3QErr%
+echo Code 3 output: %code3Qutput%
+rem error messages are placed in the output file
+if not %code3QErr%==0 type %code3Qutput% 
+echo.
+
 rem Stop if there is an error
 if not "%notTermiteErr%"=="0" goto :pauseExecution
 if not "%termiteErr%"=="0" goto :pauseExecution
@@ -175,7 +217,9 @@ if not "%pan%"=="0" goto :pauseExecution
 if not "%lotus%"=="0" goto :pauseExecution
 if not "%katharsis%"=="0" goto :pauseExecution
 if not "%upsilon%"=="0" goto :pauseExecution
-if not "%custardErr%"=="0" goto :pauseExecution
+if not "%codeQErr%"=="0" goto :pauseExecution
+if not "%code2QErr%"=="0" goto :pauseExecution
+if not "%code3QErr%"=="0" goto :pauseExecution
 
 rem Ending
 echo All Executions were successful!
