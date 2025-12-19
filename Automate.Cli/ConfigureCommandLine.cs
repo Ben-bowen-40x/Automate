@@ -10,13 +10,29 @@ internal static class ConfigureCommandLine
 {
     public static void ConfigureCli(this IServiceCollection services, IConfiguration configuration)
     {
-        // Add a service
+        // Add services
         services.AddScoped<IUserInformation, UserInformation>();
 
-        // Add settings and bind to configuration
+        // Add settings
         Settings settings = new();
         configuration.Bind(settings);
-        typeof(Settings).GetInterfaces().ToList().ForEach(s => services.AddSingleton(s, settings));
+
+        // ConnectionStrings
+        settings.CallsConnectionString =
+            configuration.GetConnectionString("Calls");
+        settings.CustomersConnectionString =
+            configuration.GetConnectionString("Customers");
+        settings.ContactFormsConnectionString =
+            configuration.GetConnectionString("ContactForms");
+
+        // register once
+        services.AddSingleton(settings);
+
+        // expose via interfaces
+        typeof(Settings)
+            .GetInterfaces()
+            .ToList()
+            .ForEach(i => services.AddSingleton(i, settings));
 
         services.AddInfrastructure(settings).AddApplication();
     }
