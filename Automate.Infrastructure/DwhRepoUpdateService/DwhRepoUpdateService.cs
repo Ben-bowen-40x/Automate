@@ -59,9 +59,9 @@ public class DwhRepoService(IDwhSettings settings) : IDwhRepoUpdateService
         {
             DwhContext<TEntity> context = new(connectionString);
             Task<IEnumerable<TEntity>> values = DwhContextHelpers.GetItemsFromRawAsync(context, query.QueryString);
-            if (!values.IsFaulted)
-                return values.Result.ToList();
-            return Result.Failure<List<TEntity>>($"Failed to get values from Dwh. Fault/Exception message: {values.Exception.Message}");
+            if (values.IsFaulted)
+                return Result.Failure<List<TEntity>>($"Failed to get values from Dwh. Fault/Exception message: {values.Exception.Message}");
+            return values.Result.ToList();
         }
         catch (Exception ex)
         {
