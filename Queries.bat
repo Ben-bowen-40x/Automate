@@ -10,216 +10,212 @@ set /p pass="Please enter your password: "
 rem Active Not Termite
 echo.
 echo Active not Termite query
-set notTermite="%USERPROFILE%\Repos\Sql-Queries\Current Customers by Service type\Active NOT Termite.sql"
-set notTermiteOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\NotTermite.tsv
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %notTermite% > %notTermiteOutput%
+set notTermiteQuery="%USERPROFILE%\Repos\Sql-Queries\Current Customers by Service type\Active NOT Termite.sql"
+set notTermiteOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\NotTermite.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %notTermiteQuery% > %notTermiteOutput%
 set notTermiteErr=%errorlevel%
+echo.
+echo Not Termite Query success: %notTermiteErr%
+echo Not Termite output: %notTermiteOutput%
+rem error messages are placed in the output file
+if not "%notTermiteErr%"==0 type %notTermiteOutput% 
+if not "%notTermiteErr%"=="0" goto :pauseExecution
+echo.
 
 rem Active Termite
 echo.
 echo Active Termite Query
-set termite="%USERPROFILE%\Repos\Sql-Queries\Current Customers by Service type\Active Termite only.sql"
-set termiteOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\Termite.tsv
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %termite% > %termiteOutput%
+set termiteQuery="%USERPROFILE%\Repos\Sql-Queries\Current Customers by Service type\Active Termite only.sql"
+set termiteOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\Termite.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %termiteQuery% > %termiteOutput%
 set termiteErr=%errorlevel%
+echo.
+echo Termite Query success: %termiteErr%
+echo Termite output: %termiteOutput%
+rem error messages are placed in the output file
+if not "%termiteErr%"==0 type %termiteOutput% 
+if not "%termiteErr%"=="0" goto :pauseExecution
+echo.
 
 rem CornFormation
 echo.
 echo Corn Formation Query
-set cornOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\CornFormationReport.tsv
-set cornQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\CornFormation.sql
+set cornQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\CornFormation.sql"
+set cornOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\CornFormationReport.tsv"
 "C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %cornQuery% > %cornOutput%
-set corn=%errorlevel%
+set cornErr=%errorlevel%
+echo.
+echo Corn Query success: %cornErr%
+echo Corn output: %cornOutput%
+rem error messages are placed in the output file
+if not "%cornErr%"==0 type %cornOutput% 
+if not "%cornErr%"=="0" goto :pauseExecution
+echo.
 
 rem GoonDoggle
 echo.
 echo GoonDoggle Query
-set goonOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GoonDoggleReport.tsv
-set goonQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GoonDoggle.sql
+set goonQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GoonDoggle.sql"
+set goonOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GoonDoggleReport.tsv"
 "C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %goonQuery% > %goonOutput%
-set goon=%errorlevel%
+set goonErr=%errorlevel%
+echo.
+echo Goon Query success: %goonErr%
+echo Goon output: %goonOutput%
+rem error messages are placed in the output file
+if not "%goonErr%"==0 type %goonOutput% 
+if not "%goonErr%"=="0" goto :pauseExecution
+echo.
 
 rem MacBang
 echo.
 echo MacBang Query
-set macBangOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\MacBangReport.tsv
-set macbangQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\MacBang.sql
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %macbangQuery% > %macBangOutput%
-set macBang=%errorlevel%
+set macBangQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\MacBang.sql"
+set macBangOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\MacBangReport.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %macBangQuery% > %macBangOutput%
+set macBangErr=%errorlevel%
+echo.
+echo MacBang Query success: %macBangErr%
+echo MacBang output: %macBangOutput%
+rem error messages are placed in the output file
+if not "%macBangErr%"==0 type %macBangOutput% 
+if not "%macBangErr%"=="0" goto :pauseExecution
+echo.
 
 rem PanFries
 echo.
 echo Pan Fries Query
-set panOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\PanFriesReport.tsv
-set panQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\PanFries.sql
+set panQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\PanFries.sql"
+set panOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\PanFriesReport.tsv"
 "C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %panQuery% > %panOutput%
-set pan=%errorlevel%
+set panErr=%errorlevel%
+echo.
+echo Pan Query success: %panErr%
+echo Pan output: %panOutput%
+rem error messages are placed in the output file
+if not "%panErr%"==0 type %panOutput% 
+if not "%panErr%"=="0" goto :pauseExecution
+echo.
 
 rem Lotus
 echo.
 echo Lotus Query
-set lotusOut=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LotusReport.tsv
-set lotusQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\Lotus.sql
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %lotusQuery% > %lotusOut%
-set lotus=%errorlevel%
+set lotusQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\Lotus.sql"
+set lotusOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LotusReport.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %lotusQuery% > %lotusOutput%
+set lotusErr=%errorlevel%
+echo.
+echo Lotus Query success: %lotusErr%
+echo Lotus output: %lotusOutput%
+rem error messages are placed in the output file
+if not "%lotusErr%"==0 type %lotusOutput% 
+if not "%lotusErr%"=="0" goto :pauseExecution
+echo.
 
 rem KatharticSummary
 echo.
 echo KatharticSummary Query
-set katharticOut=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\KatharticSummary.tsv
-set katharticQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\KatharticSummary.sql
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %katharticQuery% > %katharticOut%
-set katharsis=%errorlevel%
+set katharticQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\KatharticSummary.sql"
+set katharticOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\KatharticSummary.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %katharticQuery% > %katharticOutput%
+set katharticErr=%errorlevel%
+echo.
+echo KatharticSummary Query success: %katharticErr%
+echo KatharticSummary output: %katharticOutput%
+rem error messages are placed in the output file
+if not "%katharticErr%"==0 type %katharticOutput% 
+if not "%katharticErr%"=="0" goto :pauseExecution
+echo.
 
 rem Upsilon
 echo.
 echo Upsilon Query
-set upsilonOut=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\UpsilonOut.tsv
-set upsilonQuery=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\Upsilon.sql
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %upsilonQuery% > %upsilonOut%
-set upsilon=%errorlevel%
+set upsilonQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\Upsilon.sql"
+set upsilonOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\UpsilonOut.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %upsilonQuery% > %upsilonOutput%
+set upsilonErr=%errorlevel%
+echo.
+echo Upsilon Query success: %upsilonErr%
+echo Upsilon output: %upsilonOutput%
+rem error messages are placed in the output file
+if not "%upsilonErr%"==0 type %upsilonOutput% 
+if not "%upsilonErr%"=="0" goto :pauseExecution
+echo.
 
 rem Giggle
 echo.
 echo Giggle Custard
-set custard="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GiggleCustardQuery.sql"
-set custardOutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GigglyCustard.tsv
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %custard% > %custardOutput%
+set custardQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GiggleCustardQuery.sql"
+set custardOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GigglyCustard.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %custardQuery% > %custardOutput%
 set custardErr=%errorlevel%
+echo.
+echo Custard Query success: %custardErr%
+echo Custard output: %custardOutput%
+rem error messages are placed in the output file
+if not "%custardErr%"==0 type %custardOutput% 
+if not "%custardErr%"=="0" goto :pauseExecution
+echo.
 
 rem LeafQuery
 echo.
 echo LeafQuery
-set leafQ="%USERPROFILE%\Repos\Sql-Queries\LeafDataQuery.sql"
-set leafQutput=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LeafQueryOut.tsv
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %leafQ% > %leafQutput%
-set leafQErr=%errorlevel%
+set leafQuery="%USERPROFILE%\Repos\Sql-Queries\LeafDataQuery.sql"
+set leafOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LeafQueryOut.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %leafQuery% > %leafOutput%
+set leafErr=%errorlevel%
+echo.
+echo Leaf Query success: %leafErr%
+echo Leaf output: %leafOutput%
+rem error messages are placed in the output file
+if not "%leafErr%"==0 type %leafOutput% 
+if not "%leafErr%"=="0" goto :pauseExecution
+echo.
 
 rem Code1
 echo.
 echo Code HepYepNoTerms
-set codeQ="%USERPROFILE%\Repos\Sql-Queries\Code\HepYepNoTerms.sql"
-set codeQutput="%USERPROFILE%\Repos\Sql-Queries\Code\HepYepNoTerms.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %codeQ% > %codeQutput%
-set codeQErr=%errorlevel%
+set codeQuery="%USERPROFILE%\Repos\Sql-Queries\Code\HepYepNoTerms.sql"
+set codeOutput="%USERPROFILE%\Repos\Sql-Queries\Code\HepYepNoTerms.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %codeQuery% > %codeOutput%
+set codeErr=%errorlevel%
+echo.
+echo Code HepYepNoTerms Query success: %codeErr%
+echo Code HepYepNoTerms output: %codeOutput%
+rem error messages are placed in the output file
+if not "%codeErr%"==0 type %codeOutput% 
+if not "%codeErr%"=="0" goto :pauseExecution
+echo.
 
 rem Code2
 echo.
 echo Code2 UnpurSubs
-set code2Q="%USERPROFILE%\Repos\Sql-Queries\Code\UnPurSubs.sql"
-set code2Qutput="%USERPROFILE%\Repos\Sql-Queries\Code\UnPurSubs.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %code2Q% > %code2Qutput%
-set code2QErr=%errorlevel%
+set code2Query="%USERPROFILE%\Repos\Sql-Queries\Code\UnPurSubs.sql"
+set code2Output="%USERPROFILE%\Repos\Sql-Queries\Code\UnPurSubs.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %code2Query% > %code2Output%
+set code2Err=%errorlevel%
+echo.
+echo Code2 UnpurSubs Query success: %code2Err%
+echo Code2 UnpurSubs output: %code2Output%
+rem error messages are placed in the output file
+if not "%code2Err%"==0 type %code2Output% 
+if not "%code2Err%"=="0" goto :pauseExecution
+echo.
 
 rem Code3
 echo.
 echo Code3 Winner
-set code3Q="%USERPROFILE%\Repos\Sql-Queries\Code\Winner.sql"
-set code3Qutput="%USERPROFILE%\Repos\Sql-Queries\Code\Winner.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %code3Q% > %code3Qutput%
-set code3QErr=%errorlevel%
-
-rem Error Levels
+set code3Query="%USERPROFILE%\Repos\Sql-Queries\Code\Winner.sql"
+set code3Output="%USERPROFILE%\Repos\Sql-Queries\Code\Winner.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %code3Query% > %code3Output%
+set code3Err=%errorlevel%
 echo.
-echo.
-echo Error levels specified here
-echo Not Termite success: %notTermiteErr%
-echo Not Termite output: %notTermiteOutput%
+echo Code3 Winner Query success: %code3Err%
+echo Code3 Winner output: %code3Output%
 rem error messages are placed in the output file
-if not %notTermiteErr%==0 type %notTermiteOutput% 
+if not "%code3Err%"==0 type %code3Output% 
+if not "%code3Err%"=="0" goto :pauseExecution
 echo.
-
-echo Termite success: %termiteErr%
-echo Termite output: %termiteOutput%
-rem error messages are placed in the output file
-if not %termiteErr%==0 type %termiteOutput% 
-echo.
-
-echo Corn success: %corn%
-echo Corn output: %cornOutput%
-rem error messages are placed in the output file
-if not %corn%==0 type %cornOutput% 
-echo.
-
-echo Goon success: %goon%
-echo Goon output: %goonOutput%
-rem error messages are placed in the output file
-if not %goon%==0 type %goonOutput% 
-echo.
-
-echo MacBang success: %macBang%
-echo MacBang output: %macBangOutput%
-rem error messages are placed in the output file
-if not %macBang%==0 type %macBangOutput% 
-echo.
-
-echo Pan success: %pan%
-echo Pan output: %panOutput%
-rem error messages are placed in the output file
-if not %pan%==0 type %panOutput% 
-echo.
-
-echo Lotus success: %lotus%
-echo Lotus output: %lotusOut%
-rem error messages are placed in the output file
-if not %lotus%==0 type %lotusOut% 
-echo.
-
-echo KatharticSummary success: %katharsis%
-echo KatharticSummary output: %katharticOu
-rem error messages are placed in the output filet%
-if not %katharsis%==0 type %katharticOut% 
-echo.
-
-echo Upsilon Query success: %upsilon%
-echo Upsilon output: %upsilonOut%
-rem error messages are placed in the output file
-if not %upsilon%==0 type %upsilonOut% 
-echo.
-
-echo Custard Query success: %custardErr%
-echo Custard output: %custardOutput%
-rem error messages are placed in the output file
-if not %custardErr%==0 type %custardOutput% 
-echo.
-
-echo Leaf Query success: %leafQErr%
-echo Leaf output: %leafQutput%
-rem error messages are placed in the output file
-if not %leafQErr%==0 type %leafQutput% 
-echo.
-
-echo Code Query success: %codeQErr%
-echo Code output: %codeQutput%
-rem error messages are placed in the output file
-if not %codeQErr%==0 type %codeQutput% 
-echo.
-
-echo Code Query success: %code2QErr%
-echo Code 2 output: %code2Qutput%
-rem error messages are placed in the output file
-if not %code2QErr%==0 type %code2Qutput% 
-echo.
-
-echo Code Query success: %code3QErr%
-echo Code 3 output: %code3Qutput%
-rem error messages are placed in the output file
-if not %code3QErr%==0 type %code3Qutput% 
-echo.
-
-rem Stop if there is an error
-if not "%notTermiteErr%"=="0" goto :pauseExecution
-if not "%termiteErr%"=="0" goto :pauseExecution
-if not "%corn%"=="0" goto :pauseExecution
-if not "%goon%"=="0" goto :pauseExecution
-if not "%macBang%"=="0" goto :pauseExecution
-if not "%pan%"=="0" goto :pauseExecution
-if not "%lotus%"=="0" goto :pauseExecution
-if not "%katharsis%"=="0" goto :pauseExecution
-if not "%upsilon%"=="0" goto :pauseExecution
-if not "%codeQErr%"=="0" goto :pauseExecution
-if not "%code2QErr%"=="0" goto :pauseExecution
-if not "%code3QErr%"=="0" goto :pauseExecution
 
 rem Ending
 echo All Executions were successful!
@@ -230,4 +226,3 @@ echo At least one execution failed
 pause
 
 :end
-timeout /t 5
