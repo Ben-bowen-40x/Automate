@@ -18,7 +18,7 @@ echo.
 echo Not Termite Query success: %notTermiteErr%
 echo Not Termite output: %notTermiteOutput%
 rem error messages are placed in the output file
-if not "%notTermiteErr%"==0 type %notTermiteOutput% 
+if not "%notTermiteErr%"=="0" type %notTermiteOutput% 
 if not "%notTermiteErr%"=="0" goto :pauseExecution
 echo.
 
@@ -33,7 +33,7 @@ echo.
 echo Termite Query success: %termiteErr%
 echo Termite output: %termiteOutput%
 rem error messages are placed in the output file
-if not "%termiteErr%"==0 type %termiteOutput% 
+if not "%termiteErr%"=="0" type %termiteOutput% 
 if not "%termiteErr%"=="0" goto :pauseExecution
 echo.
 
@@ -48,7 +48,7 @@ echo.
 echo Corn Query success: %cornErr%
 echo Corn output: %cornOutput%
 rem error messages are placed in the output file
-if not "%cornErr%"==0 type %cornOutput% 
+if not "%cornErr%"=="0" type %cornOutput% 
 if not "%cornErr%"=="0" goto :pauseExecution
 echo.
 
@@ -63,7 +63,7 @@ echo.
 echo Goon Query success: %goonErr%
 echo Goon output: %goonOutput%
 rem error messages are placed in the output file
-if not "%goonErr%"==0 type %goonOutput% 
+if not "%goonErr%"=="0" type %goonOutput% 
 if not "%goonErr%"=="0" goto :pauseExecution
 echo.
 
@@ -78,7 +78,7 @@ echo.
 echo MacBang Query success: %macBangErr%
 echo MacBang output: %macBangOutput%
 rem error messages are placed in the output file
-if not "%macBangErr%"==0 type %macBangOutput% 
+if not "%macBangErr%"=="0" type %macBangOutput% 
 if not "%macBangErr%"=="0" goto :pauseExecution
 echo.
 
@@ -93,7 +93,7 @@ echo.
 echo Pan Query success: %panErr%
 echo Pan output: %panOutput%
 rem error messages are placed in the output file
-if not "%panErr%"==0 type %panOutput% 
+if not "%panErr%"=="0" type %panOutput% 
 if not "%panErr%"=="0" goto :pauseExecution
 echo.
 
@@ -108,7 +108,7 @@ echo.
 echo Lotus Query success: %lotusErr%
 echo Lotus output: %lotusOutput%
 rem error messages are placed in the output file
-if not "%lotusErr%"==0 type %lotusOutput% 
+if not "%lotusErr%"=="0" type %lotusOutput% 
 if not "%lotusErr%"=="0" goto :pauseExecution
 echo.
 
@@ -123,7 +123,7 @@ echo.
 echo KatharticSummary Query success: %katharticErr%
 echo KatharticSummary output: %katharticOutput%
 rem error messages are placed in the output file
-if not "%katharticErr%"==0 type %katharticOutput% 
+if not "%katharticErr%"=="0" type %katharticOutput% 
 if not "%katharticErr%"=="0" goto :pauseExecution
 echo.
 
@@ -138,7 +138,7 @@ echo.
 echo Upsilon Query success: %upsilonErr%
 echo Upsilon output: %upsilonOutput%
 rem error messages are placed in the output file
-if not "%upsilonErr%"==0 type %upsilonOutput% 
+if not "%upsilonErr%"=="0" type %upsilonOutput% 
 if not "%upsilonErr%"=="0" goto :pauseExecution
 echo.
 
@@ -153,7 +153,7 @@ echo.
 echo Custard Query success: %custardErr%
 echo Custard output: %custardOutput%
 rem error messages are placed in the output file
-if not "%custardErr%"==0 type %custardOutput% 
+if not "%custardErr%"=="0" type %custardOutput% 
 if not "%custardErr%"=="0" goto :pauseExecution
 echo.
 
@@ -168,7 +168,7 @@ echo.
 echo Leaf Query success: %leafErr%
 echo Leaf output: %leafOutput%
 rem error messages are placed in the output file
-if not "%leafErr%"==0 type %leafOutput% 
+if not "%leafErr%"=="0" type %leafOutput% 
 if not "%leafErr%"=="0" goto :pauseExecution
 echo.
 
@@ -183,7 +183,7 @@ echo.
 echo Code HepYepNoTerms Query success: %codeErr%
 echo Code HepYepNoTerms output: %codeOutput%
 rem error messages are placed in the output file
-if not "%codeErr%"==0 type %codeOutput% 
+if not "%codeErr%"=="0" type %codeOutput% 
 if not "%codeErr%"=="0" goto :pauseExecution
 echo.
 
@@ -198,7 +198,7 @@ echo.
 echo Code2 UnpurSubs Query success: %code2Err%
 echo Code2 UnpurSubs output: %code2Output%
 rem error messages are placed in the output file
-if not "%code2Err%"==0 type %code2Output% 
+if not "%code2Err%"=="0" type %code2Output% 
 if not "%code2Err%"=="0" goto :pauseExecution
 echo.
 
@@ -213,7 +213,7 @@ echo.
 echo Code3 Winner Query success: %code3Err%
 echo Code3 Winner output: %code3Output%
 rem error messages are placed in the output file
-if not "%code3Err%"==0 type %code3Output% 
+if not "%code3Err%"=="0" type %code3Output% 
 if not "%code3Err%"=="0" goto :pauseExecution
 echo.
 
