@@ -2,11 +2,11 @@
 title Lead Pipeline
 
 :: Execute Catman
-"%USERPROFILE%\Repos\LeadPipe\LeadPipe.Cli\bin\Release\net10.0\LeadPipe.Cli.exe" catman
+"%USERPROFILE%\Repos\LeadPipe\LeadPipe.Cli\bin\Release\net10.0\LeadPipe.Cli.exe" catman -r
 set catmanErr=%errorlevel%
 
 :: Execute data. Data is not reliant on catman in order to run
-"%USERPROFILE%\Repos\LeadPipe\LeadPipe.Cli\bin\Release\net10.0\LeadPipe.Cli.exe" data
+"%USERPROFILE%\Repos\LeadPipe\LeadPipe.Cli\bin\Release\net10.0\LeadPipe.Cli.exe" data -r
 set dataErr=%errorlevel%
 
 :: Report any errors
