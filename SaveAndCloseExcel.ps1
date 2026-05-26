@@ -1,4 +1,4 @@
-$excelPath = "$env:USERPROFILE\Repos\Sql-Queries\Code\Recurring\RecurringData.xlsx"
+$excelPath = "$env:USERPROFILE\OneDrive - Rollins\Documents\RecurringEmailData.xlsx"
 
 if (-Not (Test-Path $excelPath)) {
     Write-Error "Excel file not found at path: $excelPath"

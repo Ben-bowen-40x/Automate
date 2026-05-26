@@ -7,9 +7,9 @@ set /p host="Please enter the url of the database: "
 set /p user="Please enter your username: "
 set /p pass="Please enter your password: "
 set failedQuery="None"
+echo.
 
 rem Active Not Termite
-echo.
 echo Active not Termite query
 set notTermiteQuery="%USERPROFILE%\Repos\Sql-Queries\Current Customers by Service type\Active NOT Termite.sql"
 set notTermiteOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\NotTermite.tsv"
@@ -27,7 +27,6 @@ if not "%notTermiteErr%"=="0" (
 echo.
 
 rem Active Termite
-echo.
 echo Active Termite Query
 set termiteQuery="%USERPROFILE%\Repos\Sql-Queries\Current Customers by Service type\Active Termite only.sql"
 set termiteOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\Termite.tsv"
@@ -45,7 +44,6 @@ if not "%termiteErr%"=="0" (
 echo.
 
 rem CornFormation
-echo.
 echo Corn Formation Query
 set cornQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\CornFormation.sql"
 set cornOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\CornFormationReport.tsv"
@@ -63,7 +61,6 @@ if not "%cornErr%"=="0" (
 echo.
 
 rem GoonDoggle
-echo.
 echo GoonDoggle Query
 set goonQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GoonDoggle.sql"
 set goonOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GoonDoggleReport.tsv"
@@ -81,7 +78,6 @@ if not "%goonErr%"=="0" (
 echo.
 
 rem MacBang
-echo.
 echo MacBang Query
 set macBangQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\MacBang.sql"
 set macBangOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\MacBangReport.tsv"
@@ -99,7 +95,6 @@ if not "%macBangErr%"=="0" (
 echo.
 
 rem PanFries
-echo.
 echo Pan Fries Query
 set panQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\PanFries.sql"
 set panOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\PanFriesReport.tsv"
@@ -117,7 +112,6 @@ if not "%panErr%"=="0" (
 echo.
 
 rem Lotus
-echo.
 echo Lotus Query
 set lotusQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\Lotus.sql"
 set lotusOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LotusReport.tsv"
@@ -135,7 +129,6 @@ if not "%lotusErr%"=="0" (
 echo.
 
 rem KatharticSummary
-echo.
 echo KatharticSummary Query
 set katharticQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\KatharticSummary.sql"
 set katharticOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\KatharticSummary.tsv"
@@ -153,7 +146,6 @@ if not "%katharticErr%"=="0" (
 echo.
 
 rem Upsilon
-echo.
 echo Upsilon Query
 set upsilonQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\Upsilon.sql"
 set upsilonOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\UpsilonOut.tsv"
@@ -171,7 +163,6 @@ if not "%upsilonErr%"=="0" (
 echo.
 
 rem Giggle
-echo.
 echo Giggle Custard
 set custardQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GiggleCustardQuery.sql"
 set custardOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GigglyCustard.tsv"
@@ -189,7 +180,6 @@ if not "%custardErr%"=="0" (
 echo.
 
 rem Giggle
-echo.
 echo Giggle Custard Not
 set custardNotQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GiggleNotCustardQuery.sql"
 set custardNotOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GigglyNotCustard.tsv"
@@ -207,7 +197,6 @@ if not "%custardNotErr%"=="0" (
 echo.
 
 rem LeafQuery
-echo.
 echo LeafQuery
 set leafQuery="%USERPROFILE%\Repos\Sql-Queries\LeafDataQuery.sql"
 set leafOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LeafQueryOut.tsv"
@@ -225,7 +214,6 @@ if not "%leafErr%"=="0" (
 echo.
 
 rem Code1
-echo.
 echo Code HepYepNoTerms
 set codeQuery="%USERPROFILE%\Repos\Sql-Queries\Code\HepYepNoTerms.sql"
 set codeOutput="%USERPROFILE%\Repos\Sql-Queries\Code\HepYepNoTerms.tsv"
@@ -243,7 +231,6 @@ if not "%codeErr%"=="0" (
 echo.
 
 rem Code2
-echo.
 echo Code2 UnpurSubs
 set code2Query="%USERPROFILE%\Repos\Sql-Queries\Code\UnPurSubs.sql"
 set code2Output="%USERPROFILE%\Repos\Sql-Queries\Code\UnPurSubs.tsv"
@@ -261,7 +248,6 @@ if not "%code2Err%"=="0" (
 echo.
 
 rem Code3
-echo.
 echo Code3 Winner
 set code3Query="%USERPROFILE%\Repos\Sql-Queries\Code\Winner.sql"
 set code3Output="%USERPROFILE%\Repos\Sql-Queries\Code\Winner.tsv"
@@ -279,7 +265,6 @@ if not "%code3Err%"=="0" (
 echo.
 
 rem HPP
-echo. 
 echo HPP
 set hppQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\HPP Recurring.sql"
 set hppOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\HPP Recurring.tsv"
@@ -297,7 +282,6 @@ if not "%hppErr%"=="0" (
 echo.
 
 rem SS
-echo. 
 echo SS
 set ssQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\SS Recurring.sql"
 set ssOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\SS Recurring.tsv"
@@ -315,7 +299,6 @@ if not "%ssErr%"=="0" (
 echo.
 
 rem TDP
-echo. 
 echo TDP
 set tdpQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\TDP Recurring.sql"
 set tdpOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\TDP Recurring.tsv"
@@ -333,7 +316,6 @@ if not "%tdpErr%"=="0" (
 echo.
 
 rem YEP
-echo. 
 echo YEP
 set yepQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\YEP Recurring.sql"
 set yepOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\YEP Recurring.tsv"
@@ -346,6 +328,23 @@ rem error messages are placed in the output file
 if not "%yepErr%"=="0" (
     type %yepOutput%
     set failedQuery="YEP"
+    goto :pauseExecution
+)
+echo.
+
+rem Cxl60
+echo Cxl60
+set cxl60Query="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\Cxl60 Recurring.sql"
+set cxl60Output="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\Cxl60 Recurring.tsv"
+"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %cxl60Query% > %cxl60Output%
+set cxl60Err=%errorlevel%
+echo.
+echo Cxl60 Query success: %cxl60Err%
+echo Cxl60 output: %cxl60Output%
+rem error messages are placed in the output file
+if not "%cxl60Err%"=="0" (
+    type %yepOutput%
+    set failedQuery="Cxl60"
     goto :pauseExecution
 )
 echo.
