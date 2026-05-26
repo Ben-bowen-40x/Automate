@@ -1,47 +1,64 @@
 @echo off
-title Update Release build
-echo Ensure that the release build is up-to-date with debug
+title Update Release Builds
+setlocal enabledelayedexpansion
 
-:: Move into the correct folder location
-cd %USERPROFILE%\Repos\Automate
+set REPOS=Automate LeadPipe
 
-:: Move into the main branch of the repo
-FOR /F "delims=" %%i IN ('git rev-parse --abbrev-ref HEAD') DO SET CURRENT_BRANCH=%%i
-IF "%CURRENT_BRANCH%"=="main" (
-    ECHO Current branch is main
-) ELSE (
-    ECHO Current branch is not main. It is %CURRENT_BRANCH%. Switching to main.
-    git checkout main
+for %%R in (%REPOS%) do (
+    set REPO=%%R
+    title Update %%R Release Build
+    echo.
+    echo ========================================
+    echo Building %%R
+    echo ========================================
+
+    cd %USERPROFILE%\Repos\%%R || (
+        echo ERROR: Could not navigate to %%R repo.
+        goto :failure
+    )
+
+    :: Capture and switch to main if needed
+    for /f "delims=" %%B in ('git rev-parse --abbrev-ref HEAD') do set CURRENT_BRANCH=%%B
+    if "!CURRENT_BRANCH!" neq "main" (
+        echo Switching to main from !CURRENT_BRANCH!...
+        git checkout main
+        if errorlevel 1 goto :gitfailure
+    ) else (
+        echo Already on main.
+    )
+
+    dotnet build --configuration Release
+    if errorlevel 1 goto :buildfailure
+
+    echo Successfully built %%R Release!
+
+    :: Return to dev
+    for /f "delims=" %%B in ('git rev-parse --abbrev-ref HEAD') do set CURRENT_BRANCH=%%B
+    if "!CURRENT_BRANCH!" neq "dev" (
+        echo Switching back to dev...
+        git checkout dev
+        if errorlevel 1 goto :gitfailure
+    ) else (
+        echo Already on dev.
+    )
 )
 
-:: Build release from main branch
-dotnet build --configuration Release
-set built=%errorlevel%
-
-echo Were there execution errors?
-echo %built%
-
-if not "%built%"=="0" goto :pauseExecution
-
-echo Successfully built Release!
 goto :end
 
-:pauseExecution
-echo Build failure
+:buildfailure
+echo Build failure in %REPO%. Check the output above.
 pause
+goto :end
 
 :gitfailure
-echo Git failed to checkout into main branch. Please check on that
+echo Git failed to switch branches in %REPO%. Please resolve manually.
+pause
+goto :end
+
+:failure
+echo Unexpected failure in %REPO%.
 pause
 
 :end
-:: Move into the dev branch of the repo
-FOR /F "delims=" %%i IN ('git rev-parse --abbrev-ref HEAD') DO SET CURRENT_BRANCH=%%i
-IF "%CURRENT_BRANCH%"=="dev" (
-    ECHO Current branch is dev
-) ELSE (
-    ECHO Current branch is not dev. It is %CURRENT_BRANCH%. Switching to dev.
-    git checkout dev
-)
-timeout /t 5
 echo.
+echo Done.
