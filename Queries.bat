@@ -343,7 +343,7 @@ echo Cxl60 Query success: %cxl60Err%
 echo Cxl60 output: %cxl60Output%
 rem error messages are placed in the output file
 if not "%cxl60Err%"=="0" (
-    type %yepOutput%
+    type %cxl60Output%
     set failedQuery="Cxl60"
     goto :pauseExecution
 )
