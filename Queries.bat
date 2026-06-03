@@ -43,22 +43,22 @@ if not "%termiteErr%"=="0" (
 )
 echo.
 
-rem CornFormation
-echo Corn Formation Query
-set cornQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\CornFormation.sql"
-set cornOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\CornFormationReport.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %cornQuery% > %cornOutput%
-set cornErr=%errorlevel%
-echo.
-echo Corn Query success: %cornErr%
-echo Corn output: %cornOutput%
-rem error messages are placed in the output file
-if not "%cornErr%"=="0" (
-    type %cornOutput% 
-    set failedQuery="Corn Formation Query"
-    goto :pauseExecution
-)
-echo.
+:: CornFormation
+:: echo Corn Formation Query
+:: set cornQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\CornFormation.sql"
+:: set cornOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\CornFormationReport.tsv"
+:: "C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %cornQuery% > %cornOutput%
+:: set cornErr=%errorlevel%
+:: echo.
+:: echo Corn Query success: %cornErr%
+:: echo Corn output: %cornOutput%
+:: error messages are placed in the output file
+:: if not "%cornErr%"=="0" (
+::     type %cornOutput% 
+::     set failedQuery="Corn Formation Query"
+::     goto :pauseExecution
+:: )
+:: echo.
 
 rem GoonDoggle
 echo GoonDoggle Query
@@ -351,11 +351,9 @@ echo.
 
 rem Ending
 echo All Executions were successful!
-goto :end
+goto :EOF
 
 :pauseExecution
 echo At least one execution failed
 echo Failed Query: %failedQuery%
 pause
-
-:end
