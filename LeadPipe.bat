@@ -1,6 +1,9 @@
 @echo off
 title Lead Pipeline
 
+:: Keep secrets up to date in case of changes
+copy /Y "%USERPROFILE%\AppData\Roaming\Microsoft\UserSecrets\f61f648e-c555-4854-ab9a-40533affb5d6\secrets.json" "%USERPROFILE%\.leadpipe\secrets.json"
+
 :: Execute Catman
 "%USERPROFILE%\Repos\LeadPipe\LeadPipe.Cli\bin\Release\net10.0\LeadPipe.Cli.exe" catman -r
 set catmanErr=%errorlevel%
