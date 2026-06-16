@@ -13,7 +13,7 @@ rem Active Not Termite
 echo Active not Termite query
 set notTermiteQuery="%USERPROFILE%\Repos\Sql-Queries\Current Customers by Service type\Active NOT Termite.sql"
 set notTermiteOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\NotTermite.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %notTermiteQuery% > %notTermiteOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %notTermiteQuery% > %notTermiteOutput%
 set notTermiteErr=%errorlevel%
 echo.
 echo Not Termite Query success: %notTermiteErr%
@@ -30,7 +30,7 @@ rem Active Termite
 echo Active Termite Query
 set termiteQuery="%USERPROFILE%\Repos\Sql-Queries\Current Customers by Service type\Active Termite only.sql"
 set termiteOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\Termite.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %termiteQuery% > %termiteOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %termiteQuery% > %termiteOutput%
 set termiteErr=%errorlevel%
 echo.
 echo Termite Query success: %termiteErr%
@@ -47,7 +47,7 @@ echo.
 :: echo Corn Formation Query
 :: set cornQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\CornFormation.sql"
 :: set cornOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\CornFormationReport.tsv"
-:: "C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %cornQuery% > %cornOutput%
+:: "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %cornQuery% > %cornOutput%
 :: set cornErr=%errorlevel%
 :: echo.
 :: echo Corn Query success: %cornErr%
@@ -64,7 +64,7 @@ rem GoonDoggle
 echo GoonDoggle Query
 set goonQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GoonDoggle.sql"
 set goonOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GoonDoggleReport.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %goonQuery% > %goonOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %goonQuery% > %goonOutput%
 set goonErr=%errorlevel%
 echo.
 echo Goon Query success: %goonErr%
@@ -81,7 +81,7 @@ rem MacBang
 echo MacBang Query
 set macBangQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\MacBang.sql"
 set macBangOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\MacBangReport.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %macBangQuery% > %macBangOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %macBangQuery% > %macBangOutput%
 set macBangErr=%errorlevel%
 echo.
 echo MacBang Query success: %macBangErr%
@@ -98,7 +98,7 @@ rem PanFries
 echo Pan Fries Query
 set panQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\PanFries.sql"
 set panOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\PanFriesReport.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %panQuery% > %panOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %panQuery% > %panOutput%
 set panErr=%errorlevel%
 echo.
 echo Pan Query success: %panErr%
@@ -115,7 +115,7 @@ rem Lotus
 echo Lotus Query
 set lotusQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\Lotus.sql"
 set lotusOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LotusReport.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %lotusQuery% > %lotusOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %lotusQuery% > %lotusOutput%
 set lotusErr=%errorlevel%
 echo.
 echo Lotus Query success: %lotusErr%
@@ -132,7 +132,7 @@ rem KatharticSummary
 echo KatharticSummary Query
 set katharticQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\KatharticSummary.sql"
 set katharticOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\KatharticSummary.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %katharticQuery% > %katharticOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %katharticQuery% > %katharticOutput%
 set katharticErr=%errorlevel%
 echo.
 echo KatharticSummary Query success: %katharticErr%
@@ -149,7 +149,7 @@ rem Upsilon
 echo Upsilon Query
 set upsilonQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\Upsilon.sql"
 set upsilonOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\UpsilonOut.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %upsilonQuery% > %upsilonOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %upsilonQuery% > %upsilonOutput%
 set upsilonErr=%errorlevel%
 echo.
 echo Upsilon Query success: %upsilonErr%
@@ -166,7 +166,7 @@ rem Giggle
 echo Giggle Custard
 set custardQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GiggleCustardQuery.sql"
 set custardOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GigglyCustard.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %custardQuery% > %custardOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %custardQuery% > %custardOutput%
 set custardErr=%errorlevel%
 echo.
 echo Custard Query success: %custardErr%
@@ -183,7 +183,7 @@ rem Giggle
 echo Giggle Custard Not
 set custardNotQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GiggleNotCustardQuery.sql"
 set custardNotOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GigglyNotCustard.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %custardNotQuery% > %custardNotOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %custardNotQuery% > %custardNotOutput%
 set custardNotErr=%errorlevel%
 echo.
 echo Custard Not Query success: %custardNotErr%
@@ -200,7 +200,7 @@ rem LeafQuery
 echo LeafQuery
 set leafQuery="%USERPROFILE%\Repos\Sql-Queries\LeafDataQuery.sql"
 set leafOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LeafQueryOut.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %leafQuery% > %leafOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %leafQuery% > %leafOutput%
 set leafErr=%errorlevel%
 echo.
 echo Leaf Query success: %leafErr%
@@ -217,7 +217,7 @@ rem Code1
 echo Code HepYepNoTerms
 set codeQuery="%USERPROFILE%\Repos\Sql-Queries\Code\HepYepNoTerms.sql"
 set codeOutput="%USERPROFILE%\Repos\Sql-Queries\Code\HepYepNoTerms.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %codeQuery% > %codeOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %codeQuery% > %codeOutput%
 set codeErr=%errorlevel%
 echo.
 echo Code HepYepNoTerms Query success: %codeErr%
@@ -234,7 +234,7 @@ rem Code2
 echo Code2 UnpurSubs
 set code2Query="%USERPROFILE%\Repos\Sql-Queries\Code\UnPurSubs.sql"
 set code2Output="%USERPROFILE%\Repos\Sql-Queries\Code\UnPurSubs.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %code2Query% > %code2Output%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %code2Query% > %code2Output%
 set code2Err=%errorlevel%
 echo.
 echo Code2 UnpurSubs Query success: %code2Err%
@@ -251,7 +251,7 @@ rem Code3
 echo Code3 Winner
 set code3Query="%USERPROFILE%\Repos\Sql-Queries\Code\Winner.sql"
 set code3Output="%USERPROFILE%\Repos\Sql-Queries\Code\Winner.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %code3Query% > %code3Output%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %code3Query% > %code3Output%
 set code3Err=%errorlevel%
 echo.
 echo Code3 Winner Query success: %code3Err%
@@ -268,7 +268,7 @@ rem HPP
 echo HPP
 set hppQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\HPP Recurring.sql"
 set hppOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\HPP Recurring.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %hppQuery% > %hppOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %hppQuery% > %hppOutput%
 set hppErr=%errorlevel%
 echo.
 echo HPP Query success: %hppErr%
@@ -285,7 +285,7 @@ rem SS
 echo SS
 set ssQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\SS Recurring.sql"
 set ssOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\SS Recurring.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %ssQuery% > %ssOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %ssQuery% > %ssOutput%
 set ssErr=%errorlevel%
 echo.
 echo SS Query success: %ssErr%
@@ -302,7 +302,7 @@ rem TDP
 echo TDP
 set tdpQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\TDP Recurring.sql"
 set tdpOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\TDP Recurring.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %tdpQuery% > %tdpOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %tdpQuery% > %tdpOutput%
 set tdpErr=%errorlevel%
 echo.
 echo Tdp Query success: %tdpErr%
@@ -319,7 +319,7 @@ rem YEP
 echo YEP
 set yepQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\YEP Recurring.sql"
 set yepOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\YEP Recurring.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %yepQuery% > %yepOutput%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %yepQuery% > %yepOutput%
 set yepErr=%errorlevel%
 echo.
 echo YEP Query succeyep: %yepErr%
@@ -336,7 +336,7 @@ rem Cxl60
 echo Cxl60
 set cxl60Query="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\Cxl60 Recurring.sql"
 set cxl60Output="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\Cxl60 Recurring.tsv"
-"C:\Program Files\MySQL\MySQl Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %cxl60Query% > %cxl60Output%
+"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %cxl60Query% > %cxl60Output%
 set cxl60Err=%errorlevel%
 echo.
 echo Cxl60 Query success: %cxl60Err%
