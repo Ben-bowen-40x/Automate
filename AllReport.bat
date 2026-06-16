@@ -15,6 +15,13 @@ set sql=%queries%\AllReport.sql
 call :runQuery
 if errorlevel 1 goto :pauseExecution
 
+:: --- All Query Aggregates ---
+set queryName=All Query Aggregates
+set output=%outBase%\AllReportAggregates_Test.csv
+set sql=%queries%\AllReportAggregates.sql
+call :runQuery
+if errorlevel 1 goto :pauseExecution
+
 :: --- Yeller Corn Query ---
 set queryName=Yeller Corn Query
 set output=%outBase%\YellerCorn_Test.csv
