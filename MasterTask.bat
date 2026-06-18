@@ -19,6 +19,9 @@ set leadPipe=%errorlevel%
 call ".\AllReport.bat"
 set allreport=%errorlevel%
 
+call "%USERPROFILE%\Repos\Sql-Queries\ROI Report\Temporary ROI\ManualBatch.bat"
+set manualBatch=%errorlevel%
+
 call ".\OpenFiles.bat"
 set excelOpen=%errorlevel%
 
