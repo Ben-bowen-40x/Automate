@@ -7,8 +7,8 @@ set queries=%errorlevel%
 call ".\ReleaseBuild.bat"
 set build=%errorlevel%
 
-call ".\ForceUpdateRepos.bat"
-set repos=%errorlevel%
+:: call ".\ForceUpdateRepos.bat"
+:: set repos=%errorlevel%
 
 call ".\ReportGeneration.bat"
 set reportGen=%errorlevel%
