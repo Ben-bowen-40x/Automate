@@ -38,8 +38,8 @@ echo %queries%
 echo Were there errors in the build?
 echo %build%
 
-echo Were there errors in the repo updates?
-echo %repos%
+:: echo Were there errors in the repo updates?
+:: echo %repos%
 
 echo Were there errors in the report generation?
 echo %reportGen%
@@ -49,6 +49,9 @@ echo %leadPipe%
 
 echo Were there errors in the All Report?
 echo %allreport%
+
+echo Were there errors in the TempROI?
+echo %manualBatch%
 
 echo Were there errors in the Excel opening and saving?
 echo %excelOpen%
