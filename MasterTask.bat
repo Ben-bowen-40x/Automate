@@ -10,8 +10,8 @@ set build=%errorlevel%
 :: call ".\ForceUpdateRepos.bat"
 :: set repos=%errorlevel%
 
-call ".\ReportGeneration.bat"
-set reportGen=%errorlevel%
+:: call ".\ReportGeneration.bat"
+:: set reportGen=%errorlevel%
 
 call ".\LeadPipe.bat"
 set leadPipe=%errorlevel%
@@ -41,8 +41,8 @@ echo %build%
 :: echo Were there errors in the repo updates?
 :: echo %repos%
 
-echo Were there errors in the report generation?
-echo %reportGen%
+:: echo Were there errors in the report generation?
+:: echo %reportGen%
 
 echo Were there errors in the Lead Pipe?
 echo %leadPipe%
