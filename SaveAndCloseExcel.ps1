@@ -1,4 +1,4 @@
-$excelPath = "$env:USERPROFILE\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\MacBangReportXL.xlsx"
+$excelPath = "$env:USERPROFILE\OneDrive - Rollins\Documents\RecurringEmailData.xlsx"
 
 if (-Not (Test-Path $excelPath)) {
     Write-Error "Excel file not found at path: $excelPath"
