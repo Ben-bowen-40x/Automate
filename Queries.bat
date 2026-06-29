@@ -73,21 +73,21 @@ if not "%lotusErr%"=="0" (
 )
 echo.
 
-rem KatharticSummary
-echo KatharticSummary Query
-set katharticQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\KatharticSummary.sql"
-set katharticOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\KatharticSummary.tsv"
-"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %katharticQuery% > %katharticOutput%
-set katharticErr=%errorlevel%
-echo KatharticSummary Query success: %katharticErr%
-echo KatharticSummary output: %katharticOutput%
-rem error messages are placed in the output file
-if not "%katharticErr%"=="0" (
-    type %katharticOutput% 
-    set failedQuery="KatharticSummary Query"
-    goto :pauseExecution
-)
-echo.
+:: rem KatharticSummary
+:: echo KatharticSummary Query
+:: set katharticQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\KatharticSummary.sql"
+:: set katharticOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\KatharticSummary.tsv"
+:: "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %katharticQuery% > %katharticOutput%
+:: set katharticErr=%errorlevel%
+:: echo KatharticSummary Query success: %katharticErr%
+:: echo KatharticSummary output: %katharticOutput%
+:: rem error messages are placed in the output file
+:: if not "%katharticErr%"=="0" (
+::     type %katharticOutput% 
+::     set failedQuery="KatharticSummary Query"
+::     goto :pauseExecution
+:: )
+:: echo.
 
 :: rem Upsilon
 :: echo Upsilon Query
