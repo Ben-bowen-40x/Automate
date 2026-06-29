@@ -179,7 +179,7 @@ if not "%custardErr%"=="0" (
 )
 echo.
 
-rem Giggle
+rem Not Giggle
 echo Giggle Custard Not
 set custardNotQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GiggleNotCustardQuery.sql"
 set custardNotOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GigglyNotCustard.tsv"
@@ -196,22 +196,24 @@ if not "%custardNotErr%"=="0" (
 )
 echo.
 
-rem LeafQuery
-echo LeafQuery
-set leafQuery="%USERPROFILE%\Repos\Sql-Queries\LeafDataQuery.sql"
-set leafOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LeafQueryOut.tsv"
-"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %leafQuery% > %leafOutput%
-set leafErr=%errorlevel%
-echo.
-echo Leaf Query success: %leafErr%
-echo Leaf output: %leafOutput%
-rem error messages are placed in the output file
-if not "%leafErr%"=="0" (
-    type %leafOutput% 
-    set failedQuery="LeafQuery"
-    goto :pauseExecution
-)
-echo.
+:: Obsolete
+:: rem LeafQuery
+:: echo LeafQuery
+:: set leafQuery="%USERPROFILE%\Repos\Sql-Queries\LeafDataQuery.sql"
+:: set leafOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LeafQueryOut.tsv"
+:: "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %leafQuery% > %leafOutput%
+:: set leafErr=%errorlevel%
+:: echo.
+:: echo Leaf Query success: %leafErr%
+:: echo Leaf output: %leafOutput%
+:: rem error messages are placed in the output file
+:: if not "%leafErr%"=="0" (
+::     type %leafOutput% 
+::     set failedQuery="LeafQuery"
+::     goto :pauseExecution
+:: )
+:: echo.
+:: Obsolete
 
 :: rem Code1
 :: echo Code HepYepNoTerms
