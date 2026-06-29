@@ -9,57 +9,6 @@ set /p pass="Please enter your password: "
 set failedQuery="None"
 echo.
 
-:: rem Active Not Termite
-:: echo Active not Termite query
-:: set notTermiteQuery="%USERPROFILE%\Repos\Sql-Queries\Current Customers by Service type\Active NOT Termite.sql"
-:: set notTermiteOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\NotTermite.tsv"
-:: "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %notTermiteQuery% > %notTermiteOutput%
-:: set notTermiteErr=%errorlevel%
-:: echo.
-:: echo Not Termite Query success: %notTermiteErr%
-:: echo Not Termite output: %notTermiteOutput%
-:: rem error messages are placed in the output file
-:: if not "%notTermiteErr%"=="0" (
-::     type %notTermiteOutput% 
-::     set failedQuery="Active not Termite query"
-::     goto :pauseExecution
-:: )
-:: echo.
-
-:: rem Active Termite
-:: echo Active Termite Query
-:: set termiteQuery="%USERPROFILE%\Repos\Sql-Queries\Current Customers by Service type\Active Termite only.sql"
-:: set termiteOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\Termite.tsv"
-:: "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %termiteQuery% > %termiteOutput%
-:: set termiteErr=%errorlevel%
-:: echo.
-:: echo Termite Query success: %termiteErr%
-:: echo Termite output: %termiteOutput%
-:: rem error messages are placed in the output file
-:: if not "%termiteErr%"=="0" (
-::     type %termiteOutput% 
-::     set failedQuery="Active Termite Query"
-::     goto :pauseExecution
-:: )
-:: echo.
-
-:: CornFormation
-:: echo Corn Formation Query
-:: set cornQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\CornFormation.sql"
-:: set cornOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\CornFormationReport.tsv"
-:: "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %cornQuery% > %cornOutput%
-:: set cornErr=%errorlevel%
-:: echo.
-:: echo Corn Query success: %cornErr%
-:: echo Corn output: %cornOutput%
-:: error messages are placed in the output file
-:: if not "%cornErr%"=="0" (
-::     type %cornOutput% 
-::     set failedQuery="Corn Formation Query"
-::     goto :pauseExecution
-:: )
-:: echo.
-
 rem GoonDoggle
 echo GoonDoggle Query
 set goonQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GoonDoggle.sql"
@@ -195,76 +144,6 @@ if not "%custardNotErr%"=="0" (
     goto :pauseExecution
 )
 echo.
-
-:: Obsolete
-:: rem LeafQuery
-:: echo LeafQuery
-:: set leafQuery="%USERPROFILE%\Repos\Sql-Queries\LeafDataQuery.sql"
-:: set leafOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LeafQueryOut.tsv"
-:: "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %leafQuery% > %leafOutput%
-:: set leafErr=%errorlevel%
-:: echo.
-:: echo Leaf Query success: %leafErr%
-:: echo Leaf output: %leafOutput%
-:: rem error messages are placed in the output file
-:: if not "%leafErr%"=="0" (
-::     type %leafOutput% 
-::     set failedQuery="LeafQuery"
-::     goto :pauseExecution
-:: )
-:: echo.
-:: Obsolete
-
-:: rem Code1
-:: echo Code HepYepNoTerms
-:: set codeQuery="%USERPROFILE%\Repos\Sql-Queries\Code\HepYepNoTerms.sql"
-:: set codeOutput="%USERPROFILE%\Repos\Sql-Queries\Code\HepYepNoTerms.tsv"
-:: "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %codeQuery% > %codeOutput%
-:: set codeErr=%errorlevel%
-:: echo.
-:: echo Code HepYepNoTerms Query success: %codeErr%
-:: echo Code HepYepNoTerms output: %codeOutput%
-:: rem error messages are placed in the output file
-:: if not "%codeErr%"=="0" (
-::     type %codeOutput% 
-::     set failedQuery="Code HepYepNoTerms"
-::     goto :pauseExecution
-:: )
-:: echo.
-
-:: rem Code2
-:: echo Code2 UnpurSubs
-:: set code2Query="%USERPROFILE%\Repos\Sql-Queries\Code\UnPurSubs.sql"
-:: set code2Output="%USERPROFILE%\Repos\Sql-Queries\Code\UnPurSubs.tsv"
-:: "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %code2Query% > %code2Output%
-:: set code2Err=%errorlevel%
-:: echo.
-:: echo Code2 UnpurSubs Query success: %code2Err%
-:: echo Code2 UnpurSubs output: %code2Output%
-:: rem error messages are placed in the output file
-:: if not "%code2Err%"=="0" (
-::     type %code2Output% 
-::     set failedQuery="Code2 UnpuSubs"
-::     goto :pauseExecution
-:: )
-:: echo.
-
-:: rem Code3
-:: echo Code3 Winner
-:: set code3Query="%USERPROFILE%\Repos\Sql-Queries\Code\Winner.sql"
-:: set code3Output="%USERPROFILE%\Repos\Sql-Queries\Code\Winner.tsv"
-:: "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %code3Query% > %code3Output%
-:: set code3Err=%errorlevel%
-:: echo.
-:: echo Code3 Winner Query success: %code3Err%
-:: echo Code3 Winner output: %code3Output%
-:: rem error messages are placed in the output file
-:: if not "%code3Err%"=="0" (
-::     type %code3Output% 
-::     set failedQuery="Code3 Winner"
-::     goto :pauseExecution
-:: )
-:: echo.
 
 rem HPP
 echo HPP
