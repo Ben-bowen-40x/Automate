@@ -15,7 +15,6 @@ set goonQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Querie
 set goonOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GoonDoggleReport.tsv"
 "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %goonQuery% > %goonOutput%
 set goonErr=%errorlevel%
-echo.
 echo Goon Query success: %goonErr%
 echo Goon output: %goonOutput%
 rem error messages are placed in the output file
@@ -32,7 +31,6 @@ set macBangQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Que
 set macBangOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\MacBangReport.tsv"
 "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %macBangQuery% > %macBangOutput%
 set macBangErr=%errorlevel%
-echo.
 echo MacBang Query success: %macBangErr%
 echo MacBang output: %macBangOutput%
 rem error messages are placed in the output file
@@ -49,7 +47,6 @@ set panQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries
 set panOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\PanFriesReport.tsv"
 "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %panQuery% > %panOutput%
 set panErr=%errorlevel%
-echo.
 echo Pan Query success: %panErr%
 echo Pan output: %panOutput%
 rem error messages are placed in the output file
@@ -66,7 +63,6 @@ set lotusQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queri
 set lotusOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LotusReport.tsv"
 "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %lotusQuery% > %lotusOutput%
 set lotusErr=%errorlevel%
-echo.
 echo Lotus Query success: %lotusErr%
 echo Lotus output: %lotusOutput%
 rem error messages are placed in the output file
@@ -83,7 +79,6 @@ set katharticQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Q
 set katharticOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\KatharticSummary.tsv"
 "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %katharticQuery% > %katharticOutput%
 set katharticErr=%errorlevel%
-echo.
 echo KatharticSummary Query success: %katharticErr%
 echo KatharticSummary output: %katharticOutput%
 rem error messages are placed in the output file
@@ -100,7 +95,6 @@ echo.
 :: set upsilonOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\UpsilonOut.tsv"
 :: "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %upsilonQuery% > %upsilonOutput%
 :: set upsilonErr=%errorlevel%
-:: echo.
 :: echo Upsilon Query success: %upsilonErr%
 :: echo Upsilon output: %upsilonOutput%
 :: rem error messages are placed in the output file
@@ -117,7 +111,6 @@ set custardQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Que
 set custardOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GigglyCustard.tsv"
 "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %custardQuery% > %custardOutput%
 set custardErr=%errorlevel%
-echo.
 echo Custard Query success: %custardErr%
 echo Custard output: %custardOutput%
 rem error messages are placed in the output file
@@ -134,7 +127,6 @@ set custardNotQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\
 set custardNotOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GigglyNotCustard.tsv"
 "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %custardNotQuery% > %custardNotOutput%
 set custardNotErr=%errorlevel%
-echo.
 echo Custard Not Query success: %custardNotErr%
 echo Custard Not output: %custardNotOutput%
 rem error messages are placed in the output file
@@ -151,7 +143,6 @@ set hppQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\HPP Recurring.sql"
 set hppOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\HPP Recurring.tsv"
 "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %hppQuery% > %hppOutput%
 set hppErr=%errorlevel%
-echo.
 echo HPP Query success: %hppErr%
 echo hpp output: %hppOutput%
 rem error messages are placed in the output file
@@ -168,7 +159,6 @@ set ssQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\SS Recurring.sql"
 set ssOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\SS Recurring.tsv"
 "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %ssQuery% > %ssOutput%
 set ssErr=%errorlevel%
-echo.
 echo SS Query success: %ssErr%
 echo ss output: %ssOutput%
 rem error messages are placed in the output file
@@ -185,7 +175,6 @@ set tdpQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\TDP Recurring.sql"
 set tdpOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\TDP Recurring.tsv"
 "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %tdpQuery% > %tdpOutput%
 set tdpErr=%errorlevel%
-echo.
 echo Tdp Query success: %tdpErr%
 echo tdp output: %tdpOutput%
 rem error messages are placed in the output file
@@ -202,7 +191,6 @@ set yepQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\YEP Recurring.sql"
 set yepOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\YEP Recurring.tsv"
 "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %yepQuery% > %yepOutput%
 set yepErr=%errorlevel%
-echo.
 echo YEP Query succeyep: %yepErr%
 echo yep output: %yepOutput%
 rem error messages are placed in the output file
@@ -219,7 +207,6 @@ set cxl60Query="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\Cxl60 Recurring.s
 set cxl60Output="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\Cxl60 Recurring.tsv"
 "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %cxl60Query% > %cxl60Output%
 set cxl60Err=%errorlevel%
-echo.
 echo Cxl60 Query success: %cxl60Err%
 echo Cxl60 output: %cxl60Output%
 rem error messages are placed in the output file
