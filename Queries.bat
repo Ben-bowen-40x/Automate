@@ -1,262 +1,166 @@
 @echo off
+setlocal EnableExtensions DisableDelayedExpansion
 title Execute daily queries
 
-rem Inputs from Command Line
-echo Please have your password ready
-set /p host="Please enter the url of the database: "
-set /p user="Please enter your username: "
-set /p pass="Please enter your password: "
-set failedQuery="None"
-echo.
+rem ============================================================
+rem  Configuration
+rem ============================================================
+set "MYSQL=C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe"
+set "AUTO=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info"
+set "RECUR=%USERPROFILE%\Repos\Sql-Queries\Code\Recurring"
+set "LOGDIR=%TEMP%\DailyQueries"
 
-rem GoonDoggle
-echo GoonDoggle Query
-set goonQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GoonDoggle.sql"
-set goonOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GoonDoggleReport.tsv"
-"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %goonQuery% > %goonOutput%
-set goonErr=%errorlevel%
-echo Goon Query success: %goonErr%
-echo Goon output: %goonOutput%
-rem error messages are placed in the output file
-if not "%goonErr%"=="0" (
-    type %goonOutput% 
-    set failedQuery="GoonDoggle Query"
-    goto :pauseExecution
+set "CNF="
+set "failedQuery=None"
+
+if not exist "%MYSQL%" (
+    echo Cannot find mysql.exe at:
+    echo   %MYSQL%
+    goto :failed
 )
+if not exist "%LOGDIR%" md "%LOGDIR%" >nul 2>&1
+
+rem ============================================================
+rem  Credentials
+rem ============================================================
+echo Please have your password ready.
 echo.
+set /p "host=Database host: "
+set /p "user=Username: "
+call :readPassword
 
-::rem Leaf Query
-::set q="Leaf Query"
-::echo %q%
-::set leafQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\LeafQuery.sql"
-::set leafOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LeafQueryOut.tsv"
-::"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %leafQuery% > %leafOutput%
-::pause
-::set leafErr=%errorlevel%
-::echo Leaf Query success: %leafErr%
-::echo Leaf output: %leafOutput%
-::rem error messages are placed in the output file
-::if not "%leafErr"="0" (
-::    type %leafOutput%
-::    set failedQuery=%q%
-::    goto :pauseExecution
-::)
-::echo.
+if not defined host goto :missingInput
+if not defined user goto :missingInput
+if not defined pass goto :missingInput
 
-rem Leaf Query B
-::set q="Leaf Query"
-::echo %q%
-::set leafBQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\LeafQueryB.sql"
-::set leafBOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LeafQueryOutB.tsv"
-::"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %leafBQuery% > %leafBOutput%
-::set leafBErr=%errorlevel%
-::echo Leaf Query success: %leafBErr%
-::echo Leaf output: %leafBOutput%
-::rem error messages are placed in the output file
-::if not "%leafBErr"="0" (
-::    type %leafBOutput%
-::    set failedQuery=%q%
-::    goto :pauseExecution
-::)
-::echo.
-
-rem MacBang
-echo MacBang Query
-set macBangQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\MacBang.sql"
-set macBangOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\MacBangReport.tsv"
-"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %macBangQuery% > %macBangOutput%
-set macBangErr=%errorlevel%
-echo MacBang Query success: %macBangErr%
-echo MacBang output: %macBangOutput%
-rem error messages are placed in the output file
-if not "%macBangErr%"=="0" (
-    type %macBangOutput% 
-    set failedQuery="MacBang Query"
-    goto :pauseExecution
+rem Write a temporary option file so the password never appears on the
+rem command line (safe for ^& ^| ^< ^> ^^ %% in the password, and keeps it out of the process list).
+set "CNF=%TEMP%\dq_%RANDOM%%RANDOM%.cnf"
+setlocal EnableDelayedExpansion
+> "!CNF!" (
+    echo [client]
+    echo host=!host!
+    echo user=!user!
+    echo password=!pass!
 )
-echo.
+endlocal
+set "pass="
 
-rem PanFries
-echo Pan Fries Query
-set panQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\PanFries.sql"
-set panOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\PanFriesReport.tsv"
-"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %panQuery% > %panOutput%
-set panErr=%errorlevel%
-echo Pan Query success: %panErr%
-echo Pan output: %panOutput%
-rem error messages are placed in the output file
-if not "%panErr%"=="0" (
-    type %panOutput% 
-    set failedQuery="Pan Fries Query"
-    goto :pauseExecution
+echo.
+echo Connecting as %user% @ %host% ...
+"%MYSQL%" --defaults-extra-file="%CNF%" --batch --execute="SELECT 1" >nul 2>"%LOGDIR%\connect.err"
+if errorlevel 1 (
+    echo Connection test FAILED:
+    type "%LOGDIR%\connect.err"
+    set "failedQuery=Connection test"
+    goto :failed
 )
+echo Connection OK.
 echo.
 
-rem Lotus
-echo Lotus Query
-set lotusQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\Lotus.sql"
-set lotusOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LotusReport.tsv"
-"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %lotusQuery% > %lotusOutput%
-set lotusErr=%errorlevel%
-echo Lotus Query success: %lotusErr%
-echo Lotus output: %lotusOutput%
-rem error messages are placed in the output file
-if not "%lotusErr%"=="0" (
-    type %lotusOutput% 
-    set failedQuery="Lotus Query"
-    goto :pauseExecution
-)
+rem ============================================================
+rem  Queries      name              sql file                                        output file                                              database
+rem ============================================================
+call :runQuery "GoonDoggle"        "%AUTO%\Queries\GoonDoggle.sql"                  "%AUTO%\Reports\QueryReports\GoonDoggleReport.tsv"       dwh_internetmarketingdb || goto :failed
+rem call :runQuery "Leaf"          "%AUTO%\Queries\LeafQuery.sql"                   "%AUTO%\Reports\QueryReports\LeafQueryOut.tsv"           dwh_internetmarketingdb || goto :failed
+rem call :runQuery "Leaf B"        "%AUTO%\Queries\LeafQueryB.sql"                  "%AUTO%\Reports\QueryReports\LeafQueryOutB.tsv"          dwh_internetmarketingdb || goto :failed
+call :runQuery "MacBang"           "%AUTO%\Queries\MacBang.sql"                     "%AUTO%\Reports\QueryReports\MacBangReport.tsv"          dwh_internetmarketingdb || goto :failed
+call :runQuery "Pan Fries"         "%AUTO%\Queries\PanFries.sql"                    "%AUTO%\Reports\QueryReports\PanFriesReport.tsv"         dwh_internetmarketingdb || goto :failed
+call :runQuery "Lotus"             "%AUTO%\Queries\Lotus.sql"                       "%AUTO%\Reports\QueryReports\LotusReport.tsv"            dwh_internetmarketingdb || goto :failed
+rem call :runQuery "Kathartic"     "%AUTO%\Queries\KatharticSummary.sql"            "%AUTO%\Reports\QueryReports\KatharticSummary.tsv"       dwh_ctmdb               || goto :failed
+rem call :runQuery "Upsilon"       "%AUTO%\Queries\Upsilon.sql"                     "%AUTO%\Reports\QueryReports\UpsilonOut.tsv"             dwh_ctmdb               || goto :failed
+call :runQuery "Giggle Custard"    "%AUTO%\Queries\GiggleCustardQuery.sql"          "%AUTO%\Reports\QueryReports\GigglyCustard.tsv"          dwh_reportsdb           || goto :failed
+call :runQuery "Giggle Not"        "%AUTO%\Queries\GiggleNotCustardQuery.sql"       "%AUTO%\Reports\QueryReports\GigglyNotCustard.tsv"       dwh_reportsdb           || goto :failed
+call :runQuery "HPP"               "%RECUR%\HPP Recurring.sql"                      "%RECUR%\HPP Recurring.tsv"                              dwh_reportsdb           || goto :failed
+call :runQuery "SS"                "%RECUR%\SS Recurring.sql"                       "%RECUR%\SS Recurring.tsv"                               dwh_reportsdb           || goto :failed
+call :runQuery "TDP"               "%RECUR%\TDP Recurring.sql"                      "%RECUR%\TDP Recurring.tsv"                              dwh_reportsdb           || goto :failed
+call :runQuery "YEP"               "%RECUR%\YEP Recurring.sql"                      "%RECUR%\YEP Recurring.tsv"                              dwh_reportsdb           || goto :failed
+call :runQuery "Cxl60"             "%RECUR%\Cxl60 Recurring.sql"                    "%RECUR%\Cxl60 Recurring.tsv"                            dwh_reportsdb           || goto :failed
+
+rem ============================================================
+rem  Success
+rem ============================================================
+call :cleanup
 echo.
-
-:: rem KatharticSummary
-:: echo KatharticSummary Query
-:: set katharticQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\KatharticSummary.sql"
-:: set katharticOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\KatharticSummary.tsv"
-:: "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %katharticQuery% > %katharticOutput%
-:: set katharticErr=%errorlevel%
-:: echo KatharticSummary Query success: %katharticErr%
-:: echo KatharticSummary output: %katharticOutput%
-:: rem error messages are placed in the output file
-:: if not "%katharticErr%"=="0" (
-::     type %katharticOutput% 
-::     set failedQuery="KatharticSummary Query"
-::     goto :pauseExecution
-:: )
-:: echo.
-
-:: rem Upsilon
-:: echo Upsilon Query
-:: set upsilonQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\Upsilon.sql"
-:: set upsilonOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\UpsilonOut.tsv"
-:: "C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_ctmdb --batch < %upsilonQuery% > %upsilonOutput%
-:: set upsilonErr=%errorlevel%
-:: echo Upsilon Query success: %upsilonErr%
-:: echo Upsilon output: %upsilonOutput%
-:: rem error messages are placed in the output file
-:: if not "%upsilonErr%"=="0" (
-::     type %upsilonOutput% 
-::     set failedQuery="Upsilon Query"
-::     goto :pauseExecution
-:: )
-:: echo.
-
-rem Giggle
-echo Giggle Custard
-set custardQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GiggleCustardQuery.sql"
-set custardOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GigglyCustard.tsv"
-"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %custardQuery% > %custardOutput%
-set custardErr=%errorlevel%
-echo Custard Query success: %custardErr%
-echo Custard output: %custardOutput%
-rem error messages are placed in the output file
-if not "%custardErr%"=="0" (
-    type %custardOutput% 
-    set failedQuery="Giggle Custard"
-    goto :pauseExecution
-)
-echo.
-
-rem Not Giggle
-echo Giggle Custard Not
-set custardNotQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\GiggleNotCustardQuery.sql"
-set custardNotOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\GigglyNotCustard.tsv"
-"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %custardNotQuery% > %custardNotOutput%
-set custardNotErr=%errorlevel%
-echo Custard Not Query success: %custardNotErr%
-echo Custard Not output: %custardNotOutput%
-rem error messages are placed in the output file
-if not "%custardNotErr%"=="0" (
-    type %custardNotOutput% 
-    set failedQuery="Giggle Custard Not"
-    goto :pauseExecution
-)
-echo.
-
-rem HPP
-echo HPP
-set hppQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\HPP Recurring.sql"
-set hppOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\HPP Recurring.tsv"
-"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %hppQuery% > %hppOutput%
-set hppErr=%errorlevel%
-echo HPP Query success: %hppErr%
-echo hpp output: %hppOutput%
-rem error messages are placed in the output file
-if not "%hppErr%"=="0" (
-    type %hppOutput%
-    set failedQuery="HPP"
-    goto :pauseExecution
-)
-echo.
-
-rem SS
-echo SS
-set ssQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\SS Recurring.sql"
-set ssOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\SS Recurring.tsv"
-"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %ssQuery% > %ssOutput%
-set ssErr=%errorlevel%
-echo SS Query success: %ssErr%
-echo ss output: %ssOutput%
-rem error messages are placed in the output file
-if not "%ssErr%"=="0" (
-    type %ssOutput%
-    set failedQuery="SS"
-    goto :pauseExecution
-)
-echo.
-
-rem TDP
-echo TDP
-set tdpQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\TDP Recurring.sql"
-set tdpOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\TDP Recurring.tsv"
-"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %tdpQuery% > %tdpOutput%
-set tdpErr=%errorlevel%
-echo Tdp Query success: %tdpErr%
-echo tdp output: %tdpOutput%
-rem error messages are placed in the output file
-if not "%tdpErr%"=="0" (
-    type %tdpOutput%
-    set failedQuery="TDP"
-    goto :pauseExecution
-)
-echo.
-
-rem YEP
-echo YEP
-set yepQuery="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\YEP Recurring.sql"
-set yepOutput="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\YEP Recurring.tsv"
-"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %yepQuery% > %yepOutput%
-set yepErr=%errorlevel%
-echo YEP Query succeyep: %yepErr%
-echo yep output: %yepOutput%
-rem error messages are placed in the output file
-if not "%yepErr%"=="0" (
-    type %yepOutput%
-    set failedQuery="YEP"
-    goto :pauseExecution
-)
-echo.
-
-rem Cxl60
-echo Cxl60
-set cxl60Query="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\Cxl60 Recurring.sql"
-set cxl60Output="%USERPROFILE%\Repos\Sql-Queries\Code\Recurring\Cxl60 Recurring.tsv"
-"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_reportsdb --batch < %cxl60Query% > %cxl60Output%
-set cxl60Err=%errorlevel%
-echo Cxl60 Query success: %cxl60Err%
-echo Cxl60 output: %cxl60Output%
-rem error messages are placed in the output file
-if not "%cxl60Err%"=="0" (
-    type %cxl60Output%
-    set failedQuery="Cxl60"
-    goto :pauseExecution
-)
-echo.
-
-rem Ending
-echo All Executions were successful!
-goto :EOF
-
-:pauseExecution
-echo At least one execution failed
-echo Failed Query: %failedQuery%
+echo All executions were successful!
 pause
+endlocal
+exit /b 0
+
+rem ============================================================
+rem  :runQuery  name  sqlPath  outPath  database
+rem ============================================================
+:runQuery
+setlocal
+set "name=%~1"
+set "sql=%~2"
+set "out=%~3"
+set "db=%~4"
+set "err=%LOGDIR%\%~1.err"
+
+echo [%name%]
+if not exist "%sql%" (
+    echo   ERROR: query file not found:
+    echo     %sql%
+    endlocal & set "failedQuery=%~1" & exit /b 2
+)
+
+"%MYSQL%" --defaults-extra-file="%CNF%" -D "%db%" --batch < "%sql%" > "%out%" 2> "%err%"
+set "rc=%errorlevel%"
+
+if not "%rc%"=="0" (
+    echo   FAILED, exit code %rc%
+    type "%err%"
+    endlocal & set "failedQuery=%~1" & exit /b %rc%
+)
+
+rem Non-fatal warnings still land in the .err file
+for %%F in ("%err%") do if %%~zF GTR 0 (
+    echo   warnings:
+    type "%err%"
+)
+
+for %%F in ("%out%") do (
+    if %%~zF EQU 0 (
+        echo   WARNING: output file is empty
+    ) else (
+        echo   OK -^> %out%
+    )
+)
+echo.
+endlocal & exit /b 0
+
+rem ============================================================
+rem  :readPassword   sets %pass%, masked if PowerShell is available
+rem ============================================================
+:readPassword
+set "pass="
+for /f "usebackq delims=" %%P in (`
+    powershell -NoProfile -Command ^
+      "$s=Read-Host 'Password' -AsSecureString;" ^
+      "[Runtime.InteropServices.Marshal]::PtrToStringAuto(" ^
+      "[Runtime.InteropServices.Marshal]::SecureStringToBSTR($s))" 2^>nul
+`) do set "pass=%%P"
+if not defined pass set /p "pass=Password: "
+exit /b 0
+
+rem ============================================================
+rem  Cleanup / failure
+rem ============================================================
+:cleanup
+if defined CNF if exist "%CNF%" del /q "%CNF%" >nul 2>&1
+set "CNF="
+exit /b 0
+
+:missingInput
+set "failedQuery=Missing host, username, or password"
+
+:failed
+call :cleanup
+echo.
+echo At least one execution failed.
+echo Failed query: %failedQuery%
+echo Error logs:   %LOGDIR%
+pause
+endlocal
+exit /b 1
