@@ -9,23 +9,30 @@ set queries=%common%\.queries
 set database=%common%\.info\leadpipe.test.db
 
 :: --- All Query ---
-set queryName=All Query
-set output=%outBase%\AllReport_Test.csv
-set sql=%queries%\AllReport.sql
-call :runQuery
-if errorlevel 1 goto :pauseExecution
+:: set queryName=All Query
+:: set output=%outBase%\AllReport_Test.csv
+:: set sql=%queries%\AllReport.sql
+:: call :runQuery
+:: if errorlevel 1 goto :pauseExecution
 
 :: --- All Query Aggregates ---
-set queryName=All Query Aggregates
-set output=%outBase%\AllReportAggregates_Test.csv
-set sql=%queries%\AllReportAggregates.sql
-call :runQuery
-if errorlevel 1 goto :pauseExecution
+:: set queryName=All Query Aggregates
+:: set output=%outBase%\AllReportAggregates_Test.csv
+:: set sql=%queries%\AllReportAggregates.sql
+:: call :runQuery
+:: if errorlevel 1 goto :pauseExecution
 
 :: --- Yeller Corn Query ---
-set queryName=Yeller Corn Query
-set output=%outBase%\YellerCorn_Test.csv
-set sql=%queries%\YellerCorns.sql
+:: set queryName=Yeller Corn Query
+:: set output=%outBase%\YellerCorn_Test.csv
+:: set sql=%queries%\YellerCorns.sql
+:: call :runQuery
+:: if errorlevel 1 goto :pauseExecution
+
+:: --- Hemorrhoid Sheet Query ---
+set queryName=Hemorrhoid Query
+set output=%outBase%\Hemorrhoid_Test.csv
+set sql=%queries%\HemorrhoidSheet.sql
 call :runQuery
 if errorlevel 1 goto :pauseExecution
 
