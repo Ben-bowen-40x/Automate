@@ -25,6 +25,41 @@ if not "%goonErr%"=="0" (
 )
 echo.
 
+::rem Leaf Query
+::set q="Leaf Query"
+::echo %q%
+::set leafQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\LeafQuery.sql"
+::set leafOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LeafQueryOut.tsv"
+::"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %leafQuery% > %leafOutput%
+::pause
+::set leafErr=%errorlevel%
+::echo Leaf Query success: %leafErr%
+::echo Leaf output: %leafOutput%
+::rem error messages are placed in the output file
+::if not "%leafErr"="0" (
+::    type %leafOutput%
+::    set failedQuery=%q%
+::    goto :pauseExecution
+::)
+::echo.
+
+rem Leaf Query B
+::set q="Leaf Query"
+::echo %q%
+::set leafBQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\LeafQueryB.sql"
+::set leafBOutput="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Reports\QueryReports\LeafQueryOutB.tsv"
+::"C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe" -u %user% -p%pass% -h %host% -D dwh_internetmarketingdb --batch < %leafBQuery% > %leafBOutput%
+::set leafBErr=%errorlevel%
+::echo Leaf Query success: %leafBErr%
+::echo Leaf output: %leafBOutput%
+::rem error messages are placed in the output file
+::if not "%leafBErr"="0" (
+::    type %leafBOutput%
+::    set failedQuery=%q%
+::    goto :pauseExecution
+::)
+::echo.
+
 rem MacBang
 echo MacBang Query
 set macBangQuery="%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info\Queries\MacBang.sql"
