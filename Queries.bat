@@ -83,7 +83,6 @@ rem ============================================================
 call :cleanup
 echo.
 echo All executions were successful!
-pause
 endlocal
 exit /b 0
 
