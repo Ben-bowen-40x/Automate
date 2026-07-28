@@ -16,14 +16,14 @@ try {
     #Refresh external data connections
     $workbook.RefreshAll()
     
-    #Sleep for 30 seconds. This gives the workbook time to refresh
-    Start-Sleep -Seconds 30
+    #Sleep for x seconds. This gives the workbook time to refresh
+    Start-Sleep -Seconds 300
 
     # Save the workbook
     $workbook.Save()
 
-    #Sleep for 10 seconds. This gives the workbook time to save
-    Start-Sleep -Seconds 10
+    #Sleep for y seconds. This gives the workbook time to save
+    Start-Sleep -Seconds 60
 
     # Close the workbook
     $workbook.Close($false)  # false means don't prompt to save again

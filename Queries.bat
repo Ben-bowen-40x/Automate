@@ -33,8 +33,7 @@ if not defined host goto :missingInput
 if not defined user goto :missingInput
 if not defined pass goto :missingInput
 
-rem Write a temporary option file so the password never appears on the
-rem command line (safe for ^& ^| ^< ^> ^^ %% in the password, and keeps it out of the process list).
+rem Write a temporary option file so the password never appears on the command line (safe for & | < > ^^ %% in the password, and keeps it out of the process list).
 set "CNF=%TEMP%\dq_%RANDOM%%RANDOM%.cnf"
 setlocal EnableDelayedExpansion
 > "!CNF!" (
@@ -62,13 +61,13 @@ rem ============================================================
 rem  Queries      name              sql file                                        output file                                              database
 rem ============================================================
 call :runQuery "GoonDoggle"        "%AUTO%\Queries\GoonDoggle.sql"                  "%AUTO%\Reports\QueryReports\GoonDoggleReport.tsv"       dwh_internetmarketingdb || goto :failed
-rem call :runQuery "Leaf"          "%AUTO%\Queries\LeafQuery.sql"                   "%AUTO%\Reports\QueryReports\LeafQueryOut.tsv"           dwh_internetmarketingdb || goto :failed
-rem call :runQuery "Leaf B"        "%AUTO%\Queries\LeafQueryB.sql"                  "%AUTO%\Reports\QueryReports\LeafQueryOutB.tsv"          dwh_internetmarketingdb || goto :failed
+call :runQuery "Leaf"              "%AUTO%\Queries\LeafQuery.sql"                   "%AUTO%\Reports\QueryReports\LeafQueryOut.tsv"           dwh_internetmarketingdb || goto :failed
+call :runQuery "Leaf B"            "%AUTO%\Queries\LeafQueryB.sql"                  "%AUTO%\Reports\QueryReports\LeafQueryOutB.tsv"          dwh_internetmarketingdb || goto :failed
 call :runQuery "MacBang"           "%AUTO%\Queries\MacBang.sql"                     "%AUTO%\Reports\QueryReports\MacBangReport.tsv"          dwh_internetmarketingdb || goto :failed
 call :runQuery "Pan Fries"         "%AUTO%\Queries\PanFries.sql"                    "%AUTO%\Reports\QueryReports\PanFriesReport.tsv"         dwh_internetmarketingdb || goto :failed
 call :runQuery "Lotus"             "%AUTO%\Queries\Lotus.sql"                       "%AUTO%\Reports\QueryReports\LotusReport.tsv"            dwh_internetmarketingdb || goto :failed
-rem call :runQuery "Kathartic"     "%AUTO%\Queries\KatharticSummary.sql"            "%AUTO%\Reports\QueryReports\KatharticSummary.tsv"       dwh_ctmdb               || goto :failed
-rem call :runQuery "Upsilon"       "%AUTO%\Queries\Upsilon.sql"                     "%AUTO%\Reports\QueryReports\UpsilonOut.tsv"             dwh_ctmdb               || goto :failed
+rem call :runQuery "Kathartic"         "%AUTO%\Queries\KatharticSummary.sql"            "%AUTO%\Reports\QueryReports\KatharticSummary.tsv"       dwh_ctmdb               || goto :failed
+rem call :runQuery "Upsilon"           "%AUTO%\Queries\Upsilon.sql"                     "%AUTO%\Reports\QueryReports\UpsilonOut.tsv"             dwh_ctmdb               || goto :failed
 call :runQuery "Giggle Custard"    "%AUTO%\Queries\GiggleCustardQuery.sql"          "%AUTO%\Reports\QueryReports\GigglyCustard.tsv"          dwh_reportsdb           || goto :failed
 call :runQuery "Giggle Not"        "%AUTO%\Queries\GiggleNotCustardQuery.sql"       "%AUTO%\Reports\QueryReports\GigglyNotCustard.tsv"       dwh_reportsdb           || goto :failed
 call :runQuery "HPP"               "%RECUR%\HPP Recurring.sql"                      "%RECUR%\HPP Recurring.tsv"                              dwh_reportsdb           || goto :failed
