@@ -61,7 +61,7 @@ call :CalculateTime "%master_start%" "%TIME%" total_time
 :: Results Output
 :: ==============================================================================
 echo ==============================================================================
-echo                           EXECUTION RESULTS & METRICS
+echo                           EXECUTION RESULTS AND METRICS
 echo ==============================================================================
 echo.
 
