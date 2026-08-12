@@ -53,6 +53,12 @@ call ".\TrackReportChanges.bat"
 set tracking=%errorlevel%
 call :CalculateTime "%start%" "%TIME%" tracking_time
 
+:: Upload G Sheet
+set "start=%TIME%"
+call ".\UploadGSheet.bat"
+set uploadGSheet=%errorlevel%
+call :CalculateTime "%start%" "%TIME%" uploadSheet_time
+
 :: Record master end time
 call :CalculateTime "%master_start%" "%TIME%" total_time
 
@@ -103,6 +109,11 @@ echo.
 echo [Tracking Report Changes] 
 echo   - Errors: %tracking%
 echo   - Elapsed Time: %tracking_time%
+echo.
+
+echo [Upload G Sheet] 
+echo   - Errors: %uploadGSheet%
+echo   - Elapsed Time: %uploadSheet_time%
 echo.
 
 echo ==============================================================================
