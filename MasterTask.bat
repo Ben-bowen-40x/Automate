@@ -30,10 +30,10 @@ set allreport=%errorlevel%
 call :CalculateTime "%start%" "%TIME%" allreport_time
 
 :: Temp ROI
-set "start=%TIME%"
-call "%USERPROFILE%\Repos\Sql-Queries\ROI Report\Temporary ROI\ManualBatch.bat"
-set manualBatch=%errorlevel%
-call :CalculateTime "%start%" "%TIME%" manualBatch_time
+:: set "start=%TIME%"
+:: call "%USERPROFILE%\Repos\Sql-Queries\ROI Report\Temporary ROI\ManualBatch.bat"
+:: set manualBatch=%errorlevel%
+:: call :CalculateTime "%start%" "%TIME%" manualBatch_time
 
 :: Excel Open
 set "start=%TIME%"
@@ -85,10 +85,10 @@ echo   - Errors: %allreport%
 echo   - Elapsed Time: %allreport_time%
 echo.
 
-echo [TempROI] 
-echo   - Errors: %manualBatch%
-echo   - Elapsed Time: %manualBatch_time%
-echo.
+:: echo [TempROI] 
+:: echo   - Errors: %manualBatch%
+:: echo   - Elapsed Time: %manualBatch_time%
+:: echo.
 
 echo [Excel Opening/Saving] 
 echo   - Errors: %excelOpen%
