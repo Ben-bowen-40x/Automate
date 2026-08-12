@@ -30,10 +30,10 @@ set allreport=%errorlevel%
 call :CalculateTime "%start%" "%TIME%" allreport_time
 
 :: Temp ROI
-:: set "start=%TIME%"
-:: call "%USERPROFILE%\Repos\Sql-Queries\ROI Report\Temporary ROI\ManualBatch.bat"
-:: set manualBatch=%errorlevel%
-:: call :CalculateTime "%start%" "%TIME%" manualBatch_time
+set "start=%TIME%"
+call "%USERPROFILE%\Repos\Sql-Queries\ROI Report\Temporary ROI\ManualBatch.bat"
+set manualBatch=%errorlevel%
+call :CalculateTime "%start%" "%TIME%" manualBatch_time
 
 :: Excel Open
 set "start=%TIME%"
@@ -52,6 +52,12 @@ set "start=%TIME%"
 call ".\TrackReportChanges.bat"
 set tracking=%errorlevel%
 call :CalculateTime "%start%" "%TIME%" tracking_time
+
+:: Upload G Sheet
+set "start=%TIME%"
+call ".\UploadGSheet.bat"
+set uploadGSheet=%errorlevel%
+call :CalculateTime "%start%" "%TIME%" uploadSheet_time
 
 :: Record master end time
 call :CalculateTime "%master_start%" "%TIME%" total_time
@@ -85,10 +91,10 @@ echo   - Errors: %allreport%
 echo   - Elapsed Time: %allreport_time%
 echo.
 
-:: echo [TempROI] 
-:: echo   - Errors: %manualBatch%
-:: echo   - Elapsed Time: %manualBatch_time%
-:: echo.
+echo [TempROI] 
+echo   - Errors: %manualBatch%
+echo   - Elapsed Time: %manualBatch_time%
+echo.
 
 echo [Excel Opening/Saving] 
 echo   - Errors: %excelOpen%
@@ -103,6 +109,11 @@ echo.
 echo [Tracking Report Changes] 
 echo   - Errors: %tracking%
 echo   - Elapsed Time: %tracking_time%
+echo.
+
+echo [Upload G Sheet] 
+echo   - Errors: %uploadGSheet%
+echo   - Elapsed Time: %uploadSheet_time%
 echo.
 
 echo ==============================================================================
