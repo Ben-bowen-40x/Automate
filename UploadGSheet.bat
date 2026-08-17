@@ -42,6 +42,10 @@ set "hemorrhoidData=%AUTO%\Hemorrhoid_Test.csv"
 call :runScript      "%hemorrhoidData%"               "https://docs.google.com/spreadsheets/d/1WnGelviCwxgWdtynzop-XaBJ4xHuy76PdjMupY39Jig/"    "New ROI Sheet"
 call :checkFailure   "%errorlevel%"                    "%hemorrhoidData%"                                                                       "File not found: %hemorrhoidData%"
 
+set "yellerData=%AUTO%\QueryReports\YellerROI.tsv"
+call :runScript     "%yellerData%"                    "https://docs.google.com/spreadsheets/d/1uTSbyMz65XB72OWzmx5SUN5sHv0zJq7CtUqqUqA6IeA/"    "Upload"
+call :checkFailure  "%errorlevel%"                    "%yellerData%"                                                                            "File not found: %yellerData%"
+
 rem Check for any failure at all, exit cleanly
 if "%FOUNDERR%"=="TRUE" (
    echo Errors found. Please review
