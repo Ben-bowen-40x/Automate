@@ -294,8 +294,8 @@ def execute_with_retry(request, what: str, max_retries: int = 5,
 
         attempt += 1
         delay = min(60.0, 2.0 * (2 ** (attempt - 1))) + random.uniform(0, 1.0)
-        print(f"  WARN {what}: {reason} -- retry {attempt}/{max_retries} "
-              f"in {delay:.1f}s", file=sys.stderr, flush=True)
+        print(f"  WARN {what}: {reason} -- retry {attempt}/{max_retries} in {delay:.1f}s", 
+            file=sys.stderr, flush=True)
         sleep(delay)
 
 

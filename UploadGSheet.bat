@@ -42,6 +42,14 @@ set "hemorrhoidData=%AUTO%\Hemorrhoid_Test.csv"
 call :runScript      "%hemorrhoidData%"               "https://docs.google.com/spreadsheets/d/1WnGelviCwxgWdtynzop-XaBJ4xHuy76PdjMupY39Jig/"    "New ROI Sheet"
 call :checkFailure   "%errorlevel%"                    "%hemorrhoidData%"                                                                       "File not found: %hemorrhoidData%"
 
+set "yellerData=%AUTO%\QueryReports\YellerROI.tsv"
+call :runScript     "%yellerData%"                    "https://docs.google.com/spreadsheets/d/1uTSbyMz65XB72OWzmx5SUN5sHv0zJq7CtUqqUqA6IeA/"    "Upload"
+call :checkFailure  "%errorlevel%"                    "%yellerData%"                                                                            "File not found: %yellerData%"
+
+set "vennData=%AUTO%\QueryReports\VennDiagram.tsv"
+call :runScript     "%vennData%"                      "https://docs.google.com/spreadsheets/d/1DlW3l-yocPJev6P7Qqq0pZ4KLr4VxWKdo-CzWMdS6FM/"    "Upload"
+call :checkFailure  "%errorlevel%"                    "%vennData%"                                                                              "File not found: %vennData%"
+
 rem Check for any failure at all, exit cleanly
 if "%FOUNDERR%"=="TRUE" (
    echo Errors found. Please review
@@ -86,6 +94,8 @@ if not "%scripterr%"=="0" (
    echo.
    endlocal & exit /b %scripterr%
 )
+echo.
+echo.
 endlocal & exit /b 0
 
 rem ---------------------------------------------------------------------------------------------
@@ -102,8 +112,6 @@ if not exist "%file%" (
    echo.
    endlocal & exit /b 1
 )
-echo.
-echo.
 endlocal & exit /b 0
 
 rem ---------------------------------------------------------------------------------------------
