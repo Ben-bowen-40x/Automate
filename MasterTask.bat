@@ -4,28 +4,29 @@ title Update repos and generate reports
 
 :: Record master start time
 set "master_start=%TIME%"
+set "ROOT=%~dp0"
 
 :: Queries
 set "start=%TIME%"
-call ".\Queries.bat"
+call "%ROOT%Queries.bat"
 set queries=%errorlevel%
 call :CalculateTime "%start%" "%TIME%" queries_time
 
 :: Release Build
 set "start=%TIME%"
-call ".\ReleaseBuild.bat"
+call "%ROOT%ReleaseBuild.bat"
 set build=%errorlevel%
 call :CalculateTime "%start%" "%TIME%" build_time
 
 :: Lead Pipe
 set "start=%TIME%"
-call ".\LeadPipe.bat"
+call "%ROOT%LeadPipe.bat"
 set leadPipe=%errorlevel%
 call :CalculateTime "%start%" "%TIME%" leadPipe_time
 
 :: All Report
 set "start=%TIME%"
-call ".\AllReport.bat"
+call "%ROOT%AllReport.bat"
 set allreport=%errorlevel%
 call :CalculateTime "%start%" "%TIME%" allreport_time
 
@@ -37,25 +38,25 @@ call :CalculateTime "%start%" "%TIME%" manualBatch_time
 
 :: Excel Open
 set "start=%TIME%"
-call ".\OpenFiles.bat"
+call "%ROOT%OpenFiles.bat"
 set excelOpen=%errorlevel%
 call :CalculateTime "%start%" "%TIME%" excelOpen_time
 
 :: Leaf Exclusion
 set "start=%TIME%"
-call ".\LeafExclusion.bat"
+call "%ROOT%LeafExclusion.bat"
 set exclusion=%errorlevel%
 call :CalculateTime "%start%" "%TIME%" exclusion_time
 
 :: Track Report Changes
 set "start=%TIME%"
-call ".\TrackReportChanges.bat"
+call "%ROOT%TrackReportChanges.bat"
 set tracking=%errorlevel%
 call :CalculateTime "%start%" "%TIME%" tracking_time
 
 :: Upload G Sheet
 set "start=%TIME%"
-call ".\UploadGSheet.bat"
+call "%ROOT%UploadGSheet.bat"
 set uploadGSheet=%errorlevel%
 call :CalculateTime "%start%" "%TIME%" uploadSheet_time
 
