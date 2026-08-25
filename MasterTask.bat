@@ -37,10 +37,10 @@ set manualBatch=%errorlevel%
 call :CalculateTime "%start%" "%TIME%" manualBatch_time
 
 :: Excel Open
-set "start=%TIME%"
-call "%ROOT%OpenFiles.bat"
-set excelOpen=%errorlevel%
-call :CalculateTime "%start%" "%TIME%" excelOpen_time
+:: set "start=%TIME%"
+:: call "%ROOT%OpenFiles.bat"
+:: set excelOpen=%errorlevel%
+:: call :CalculateTime "%start%" "%TIME%" excelOpen_time
 
 :: Leaf Exclusion
 set "start=%TIME%"
