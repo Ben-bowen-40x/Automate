@@ -97,10 +97,10 @@ echo   - Errors: %manualBatch%
 echo   - Elapsed Time: %manualBatch_time%
 echo.
 
-echo [Excel Opening/Saving] 
-echo   - Errors: %excelOpen%
-echo   - Elapsed Time: %excelOpen_time%
-echo.
+::echo [Excel Opening/Saving] 
+::echo   - Errors: %excelOpen%
+::echo   - Elapsed Time: %excelOpen_time%
+::echo.
 
 echo [Exclusion Execution] 
 echo   - Errors: %exclusion%
@@ -131,6 +131,10 @@ exit /b
 :CalculateTime
 set "start_time=%~1"
 set "end_time=%~2"
+
+:: " 9:05:23.45" -> "09:05:23.45"
+set "start_time=%start_time: =0%"
+set "end_time=%end_time: =0%"
 
 :: Parse start time
 for /f "tokens=1-4 delims=:.," %%a in ("%start_time%") do (
