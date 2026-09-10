@@ -1,4 +1,5 @@
 @echo off
+title Open Files
 echo Opening Excel file...
 
 :: Define the script path
