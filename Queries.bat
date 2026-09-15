@@ -105,7 +105,7 @@ if not exist "%sql%" (
     endlocal & set "failedQuery=%~1" & exit /b 2
 )
 
-"%MYSQL%" --defaults-extra-file="%CNF%" -D "%db%" --batch < "%sql%" > "%out%" 2> "%err%"
+"%MYSQL%" --defaults-extra-file="%CNF%" --default-character-set=utf8mb4 -D "%db%" --batch < "%sql%" > "%out%" 2> "%err%"
 set "rc=%errorlevel%"
 
 if not "%rc%"=="0" (
