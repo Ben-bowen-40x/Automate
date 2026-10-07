@@ -10,6 +10,12 @@ set "AUTO=%USERPROFILE%\Repos\Automate\Automate.Infrastructure\.info"
 set "RECUR=%USERPROFILE%\Repos\Sql-Queries\Code\Recurring"
 set "LOGDIR=%TEMP%\DailyQueries"
 
+rem Credentials: host/user come from ConnectionStrings, password from DbPassword
+set "SECRETS=%USERPROFILE%\.leadpipe\secrets.json"
+set "CNF_SCRIPT=%~dp0Write-MysqlCnf.ps1"
+rem Which ConnectionStrings entry to use (leave empty = first entry)
+set "SCHEMA="
+
 set "CNF="
 set "failedQuery=None"
 
@@ -18,35 +24,29 @@ if not exist "%MYSQL%" (
     echo   %MYSQL%
     goto :failed
 )
+if not exist "%CNF_SCRIPT%" (
+    echo Cannot find helper script at:
+    echo   %CNF_SCRIPT%
+    goto :failed
+)
 if not exist "%LOGDIR%" md "%LOGDIR%" >nul 2>&1
 
 rem ============================================================
-rem  Credentials
+rem  Credentials  (read from secrets.json into a temp option file)
 rem ============================================================
-echo Please have your password ready.
-echo.
-set /p "host=Database host: "
-set /p "user=Username: "
-call :readPassword
-
-if not defined host goto :missingInput
-if not defined user goto :missingInput
-if not defined pass goto :missingInput
-
-rem Write a temporary option file so the password never appears on the command line (safe for & | < > ^^ %% in the password, and keeps it out of the process list).
 set "CNF=%TEMP%\dq_%RANDOM%%RANDOM%.cnf"
-setlocal EnableDelayedExpansion
-> "!CNF!" (
-    echo [client]
-    echo host=!host!
-    echo user=!user!
-    echo password=!pass!
+
+set "schemaArg="
+if defined SCHEMA set "schemaArg=-Schema "%SCHEMA%""
+
+powershell -NoProfile -ExecutionPolicy Bypass -File "%CNF_SCRIPT%" -SecretsPath "%SECRETS%" -OutPath "%CNF%" %schemaArg%
+if errorlevel 1 (
+    set "failedQuery=Reading credentials from secrets.json"
+    goto :failed
 )
-endlocal
-set "pass="
 
 echo.
-echo Connecting as %user% @ %host% ...
+echo Connecting ...
 "%MYSQL%" --defaults-extra-file="%CNF%" --batch --execute="SELECT 1" >nul 2>"%LOGDIR%\connect.err"
 if errorlevel 1 (
     echo Connection test FAILED:
@@ -131,29 +131,12 @@ echo.
 endlocal & exit /b 0
 
 rem ============================================================
-rem  :readPassword   sets %pass%, masked if PowerShell is available
-rem ============================================================
-:readPassword
-set "pass="
-for /f "usebackq delims=" %%P in (`
-    powershell -NoProfile -Command ^
-      "$s=Read-Host 'Password' -AsSecureString;" ^
-      "[Runtime.InteropServices.Marshal]::PtrToStringAuto(" ^
-      "[Runtime.InteropServices.Marshal]::SecureStringToBSTR($s))" 2^>nul
-`) do set "pass=%%P"
-if not defined pass set /p "pass=Password: "
-exit /b 0
-
-rem ============================================================
 rem  Cleanup / failure
 rem ============================================================
 :cleanup
 if defined CNF if exist "%CNF%" del /q "%CNF%" >nul 2>&1
 set "CNF="
 exit /b 0
-
-:missingInput
-set "failedQuery=Missing host, username, or password"
 
 :failed
 call :cleanup
